@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.lec.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
