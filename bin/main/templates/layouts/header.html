@@ -1,5 +1,21 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
-<header th:fragment="header">
-	<h1>헤더입니다</h1>
+<header th:fragment="header" class="header">
+   <div class="logo-menu">
+            <button class="menu-button">≡</button>
+            <span class="logo">SHARE.IT</span>
+        </div>
+        <div class="toggle-buttons">
+		    <button class="toggle-button work">Work</button>
+		    <button class="toggle-button life selected">Life</button>
+		</div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="반짝이는 도시를 품은, 야경이 예쁜 공간">
+            <button class="search-button">🔍</button>
+        </div>
+        <div class="right-icons">
+            <a href="#" class="icon-link">지도</a>
+            <a href="#" class="icon-link">공간로그</a>
+            <a href="#" class="icon-link">마이</a>
+        </div>
 </header>
 </html>
