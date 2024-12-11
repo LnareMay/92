@@ -2,7 +2,7 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
 <head>
 <!-- meta_tag include -->
-<div th:insert="~{layouts/meta_tag :: meta}"></div>
+<div th:insert="~{layouts/meta_tag :: div}"></div>
 <title></title>
 
 <!-- 공통 css -->
@@ -23,17 +23,15 @@
 <body>
 	<div th:insert="~{layouts/header :: header}"></div>
   	<main class="container main" id="club_main_pg">
-  	전체 / 운동 / 자기계발 / 동네친구 / 아웃도어,여행 / 가족,육아 / 반려동물 / 음식,음료 / 취미,오락 / 독서,인문학 / 문화,예술 / 음악,악기 / 기타
-  	
-  	<button type="button" class="btn btn-primary">전</button>
-	<button type="button" class="btn btn-secondary">런닝</button>
-	<button type="button" class="btn btn-success">자기계발</button>
-	<button type="button" class="btn btn-info">동네친구</button>
-	<button type="button" class="btn btn-warning">아웃도어,여행</button>
-	<button type="button" class="btn btn-danger">반려동물</button>
-	<button type="button" class="btn btn-light">Light</button>
-	<button type="button" class="btn btn-dark">Dark</button>
-	<button type="button" class="btn btn-link">Link</button>
+  	<button type="button" class="btn btn-primary">운동클럽</button>
+  	<button type="button" class="btn btn-primary">운동일지</button>
+	<button type="button" class="btn btn-secondary">영양제/식단</button>
+	<button type="button" class="btn btn-success">헬스</button>
+	<button type="button" class="btn btn-info">체중감량</button>
+	<button type="button" class="btn btn-warning">바디프로필</button>
+	<button type="button" class="btn btn-light">부상/재활</button>
+	<button type="button" class="btn btn-dark">대회준비</button>
+	<button type="button" class="btn btn-dark">입시준비</button>
   	</main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
