@@ -45,16 +45,30 @@ table {
 	border-spacing: 0;
 }
 
+/* 전체 컨테이너 너비 */
+.container{
+	max-width:1200px;
+}
+
+/* header랑 main 사이 간격 */
+.main.container{
+	margin-top:40px;
+	height:800px;
+}
+
 
 /* header */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #fff;
     border-bottom: 1px solid #ddd;
 }
+.header .container{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background-color: #fff;
+}
+
 /* Logo and menu */
 .logo-menu {
     display: flex;
@@ -102,7 +116,6 @@ table {
     border-radius: 25px; /* 둥근 모서리 */
     border: 1px solid #ddd; /* 테두리 */
     width: fit-content;
-    margin: 0 auto; /* 가운데 정렬 */
 }
 
 /* Common styles for buttons */
@@ -165,6 +178,10 @@ table {
     font-size: 16px;
     margin-left: 5px;
     cursor: pointer;
+}
+
+.search-button img{
+	width:24px;
 }
 
 /* Right icons */

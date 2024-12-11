@@ -22,19 +22,19 @@
 </head>
 <body>
 	<div th:insert="~{layouts/header :: header}"></div>
-  	<div class="container">
-  	페이지코드 작성
-  	테스트할게요
-  	<button type="button" class="btn btn-primary">Primary</button>
-	<button type="button" class="btn btn-secondary">Secondary</button>
-	<button type="button" class="btn btn-success">Success</button>
-	<button type="button" class="btn btn-info">Info</button>
-	<button type="button" class="btn btn-warning">Warning</button>
-	<button type="button" class="btn btn-danger">Danger</button>
+  	<main class="container main" id="club_main_pg">
+  	전체 / 운동 / 자기계발 / 동네친구 / 아웃도어,여행 / 가족,육아 / 반려동물 / 음식,음료 / 취미,오락 / 독서,인문학 / 문화,예술 / 음악,악기 / 기타
+  	
+  	<button type="button" class="btn btn-primary">전</button>
+	<button type="button" class="btn btn-secondary">런닝</button>
+	<button type="button" class="btn btn-success">자기계발</button>
+	<button type="button" class="btn btn-info">동네친구</button>
+	<button type="button" class="btn btn-warning">아웃도어,여행</button>
+	<button type="button" class="btn btn-danger">반려동물</button>
 	<button type="button" class="btn btn-light">Light</button>
 	<button type="button" class="btn btn-dark">Dark</button>
 	<button type="button" class="btn btn-link">Link</button>
-  	</div>
+  	</main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>
