@@ -38,6 +38,7 @@ public class clubDTO {
 
     private String CLUB_ADDRESS;
 
+    @NotEmpty
     private String MEM_ID;
 
     private boolean CLUB_ISPRIVATE;
