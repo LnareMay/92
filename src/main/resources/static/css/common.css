@@ -59,8 +59,12 @@ table {
 
 /* header랑 main 사이 간격 */
 .main.container{
-	margin-top:40px;
 	height:800px;
+}
+
+/* section 끼리의 간격 */
+section{
+	margin-top:40px;
 }
 
 
@@ -207,4 +211,78 @@ table {
 
 .icon-link:hover {
     color: #000;
+}
+
+/* footer */
+/* 공통 스타일 */
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333;
+    border-top: 1px solid #e9ecef;
+}
+
+.footer .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* 상단 푸터 스타일 */
+.footer-top {
+    margin-bottom: 15px;
+}
+
+.footer-top h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.footer-top h2 .logo {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.footer-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-nav ul li {
+    display: inline;
+}
+
+.footer-nav ul li a {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+}
+
+.footer-nav ul li a:hover {
+    color: #007bff;
+}
+
+/* 하단 푸터 스타일 */
+.footer-bottom {
+    font-size: 12px;
+    color: #777;
+}
+
+.footer-bottom p {
+    margin: 5px 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .footer-nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

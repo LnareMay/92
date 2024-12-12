@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+ul{
+	margin:0;
+}
+
 /* 클럽 메인페이지 */
 #club_main_pg h1 {
 	font-size: 10px;
@@ -7,31 +11,43 @@
 
 /* 내 클럽 상단 카드 */
 #club_main_pg #my_club {
+	background-color: #f5f5f5;
+	margin-top: 0;
+	padding: 50px 0;
+}
+
+#club_main_pg #my_club .container {
 	display: flex;
 	gap: 20px;
 }
 
 #club_main_pg #my_club .card {
 	background-color: #fff;
-	border-radius: 10px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border-radius: 20px;
 	overflow: hidden;
 	width: 200px;
 	text-align: center;
+	border: 0;
 }
 
 #club_main_pg #my_club .card.create {
 	display: flex;
 	align-items: center;
+	gap:10px;
 	justify-content: center;
 	font-size: 18px;
 	color: #555;
 	height: 250px;
 }
 
+#club_main_pg #my_club .card.create img{
+	width:40px;
+	height:40px;
+}
+
 #club_main_pg #my_club .card img {
 	width: 100%;
-	height: 150px;
+	height: 140px;
 	object-fit: cover;
 }
 
@@ -47,6 +63,7 @@
 #club_main_pg #my_club .card-content p {
 	font-size: 14px;
 	color: #888;
+	margin-bottom: 0;
 }
 
 #club_main_pg #my_club .ad-label {
@@ -69,6 +86,40 @@
 	position: relative;
 }
 
+/* 클럽 테마 */
+#club_main_pg .btn-secondary.active {
+	
+}
+
+#club_main_pg #club_theme .club-location {
+	font-size: 24px;
+	font-weight: bold;
+	margin: 20px 0;
+	text-align: center;
+}
+
+#club_main_pg #club_theme .club-location .region_btn {
+	width: 31px;
+	height: 31px;
+	background-size: 29px 29px;
+	overflow: hidden;
+	display: inline-block;
+	background-repeat: no-repeat;
+	text-indent: -999px;
+	background-image: url(../img/arrow_down_circle.png);
+	background-position: center;
+	position: relative;
+	top: -2px;
+	/* margin-left: 6px; */
+	vertical-align: middle;
+	line-height: 1;
+	overflow: hidden;
+	background-color: #fff;
+	box-shadow: none;
+	border: none;
+	color: transparent;
+}
+
 /* 클럽 목록 */
 #club_main_pg #club_list {
 	list-style: none;
@@ -80,16 +131,14 @@
 #club_main_pg #club_list .club-card {
 	display: flex;
 	align-items: center;
-	border-radius: 10px;
 	overflow: hidden;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 	padding: 15px;
+	border-bottom: 1px solid #ddd;
 }
 
 #club_main_pg #club_list .club-card img {
 	width: 80px;
 	height: 80px;
-	border-radius: 10px;
 	margin-right: 15px;
 	object-fit: cover;
 }
