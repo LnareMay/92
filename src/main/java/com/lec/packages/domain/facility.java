@@ -37,13 +37,13 @@ public class facility extends BaseEntity{
     private String FACILITY_ZIPCODE;
 
     @Column(name = "FACILITY_IMAGE_1", columnDefinition = "LONGBLOB")
-    private String FACILITY_IMAGE_1;
+    private long FACILITY_IMAGE_1;
     @Column(name = "FACILITY_IMAGE_2", columnDefinition = "LONGBLOB")
-    private String FACILITY_IMAGE_2;
+    private long FACILITY_IMAGE_2;
     @Column(name = "FACILITY_IMAGE_3", columnDefinition = "LONGBLOB")
-    private String FACILITY_IMAGE_3;
+    private long FACILITY_IMAGE_3;
     @Column(name = "FACILITY_IMAGE_4", columnDefinition = "LONGBLOB")
-    private String FACILITY_IMAGE_4;
+    private long FACILITY_IMAGE_4;
 
     @JoinColumn(name = "EXERCISE_CODE")
     @Column(name = "EXERCISE_CODE", length = 20)
