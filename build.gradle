@@ -39,6 +39,12 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
+	// DTO와 Entity간의 변환처리를 간단히 처리하기 위한 라이브러리
+	implementation 'org.modelmapper:modelmapper:3.2.1'
 }
 
 tasks.named('test') {
