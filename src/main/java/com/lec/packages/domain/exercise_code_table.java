@@ -14,7 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class exercise_code_table {
-    
+    // Id => P.K 명시
+    // @Column => 컬럼 정보 셋업
+    // length => 컬럼 데이터 길이
+    // name => 컬럼 이름
+    // columnDefinition => 컬럼 데이터 타입 지정
+    // @JoinColumn => 외래키 명시
+
     @Id
     @Column(name = "EXERCISE_CODE", length = 20)
     private String EXERCISE_CODE;
