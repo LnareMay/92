@@ -1,6 +1,128 @@
 @charset "UTF-8";
 
 /* 클럽 메인페이지 */
-#club_main_pg h1{
+#club_main_pg h1 {
 	font-size: 10px;
+}
+
+/* 내 클럽 상단 카드 */
+#club_main_pg #my_club {
+	display: flex;
+	gap: 20px;
+}
+
+#club_main_pg #my_club .card {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	width: 200px;
+	text-align: center;
+}
+
+#club_main_pg #my_club .card.create {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	color: #555;
+	height: 250px;
+}
+
+#club_main_pg #my_club .card img {
+	width: 100%;
+	height: 150px;
+	object-fit: cover;
+}
+
+#club_main_pg #my_club .card-content {
+	padding: 15px;
+}
+
+#club_main_pg #my_club .card-content h3 {
+	font-size: 16px;
+	margin-bottom: 8px;
+}
+
+#club_main_pg #my_club .card-content p {
+	font-size: 14px;
+	color: #888;
+}
+
+#club_main_pg #my_club .ad-label {
+	color: #77b900;
+	font-size: 12px;
+	margin-top: 8px;
+}
+
+#club_main_pg #my_club .dot {
+	width: 8px;
+	height: 8px;
+	background-color: red;
+	border-radius: 50%;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+#club_main_pg #my_club .card.ad {
+	position: relative;
+}
+
+/* 클럽 목록 */
+#club_main_pg #club_list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#club_main_pg #club_list .club-card {
+	display: flex;
+	align-items: center;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+	padding: 15px;
+}
+
+#club_main_pg #club_list .club-card img {
+	width: 80px;
+	height: 80px;
+	border-radius: 10px;
+	margin-right: 15px;
+	object-fit: cover;
+}
+
+#club_main_pg #club_list .club-content {
+	flex: 1;
+}
+
+#club_main_pg #club_list .club-title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+#club_main_pg #club_list .club-description {
+	font-size: 14px;
+	margin-bottom: 8px;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3(integer);
+	overflow: hidden;
+}
+
+#club_main_pg #club_list .club-details {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 12px;
+	color: #aaa;
+}
+
+#club_main_pg #club_list .club-details svg {
+	width: 14px;
+	height: 14px;
+	fill: currentColor;
 }

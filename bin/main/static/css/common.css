@@ -31,6 +31,7 @@ body {
 }
 ol, ul {
 	list-style: none;
+	padding-left:0 !important;
 }
 blockquote, q {
 	quotes: none;
@@ -49,6 +50,12 @@ table {
 .container{
 	max-width:1200px;
 }
+
+/* 공통 css */
+.blind{position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;margin:-1px;overflow:hidden}
+.bold{font-weight:600;}
+.orange{color:#FFA200;}
+.flex{display:flex;}
 
 /* header랑 main 사이 간격 */
 .main.container{

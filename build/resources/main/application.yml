@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:mysql://3.107.192.1:3306/92s_database?createDatabaseIfNotExist=true
+    username: springboot
+    password: gPwl3977!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false      
+    properties:
+      hibernate:
+        format_sql: true 
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+  # Thymeleaf Cache Setting
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      enabled: true
+      location: #로컬 폴더 경로
+      max-request-size: 30MB
+      max-file-size: 10MB        
+
+# Logging Setting
+logging:
+  level:
+    org:
+      hibernate: info
+
+server:
+  port: 8088
+  servlet:
+    encoding:
+      force-response: true
+      charset: utf-8
+
+#file upload/download
+path:
+  upload: #로컬 폴더 경로
+  lownload: #로컬 폴더 경로
+
+com:
+  lec:
+    upload:
+      path: #로컬 폴더 경로
