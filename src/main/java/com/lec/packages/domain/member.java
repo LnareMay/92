@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class member {
+public class member extends BaseEntity{
 
     @Id
     @Column(name = "MEM_ID", length = 20)
