@@ -17,7 +17,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class member extends BaseEntity{
-
+    // Id => P.K 명시
+    // @Column => 컬럼 정보 셋업
+    // length => 컬럼 데이터 길이
+    // name => 컬럼 이름
+    // columnDefinition => 컬럼 데이터 타입 지정
+    // @JoinColumn => 외래키 명시
+    
     @Id
     @Column(name = "MEM_ID", length = 20)
     private String MEM_ID;
