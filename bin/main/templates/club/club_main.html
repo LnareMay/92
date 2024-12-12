@@ -12,6 +12,7 @@
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
 <link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
+<link rel="stylesheet" th:href="@{/css/detail_yj.css}">
 <link rel="stylesheet" th:href="@{/css/dg_1.css}">
 <link rel="stylesheet" th:href="@{/css/dg_2.css}">
 <link rel="stylesheet" th:href="@{/css/dg_3.css}">
@@ -32,8 +33,37 @@
 	<button type="button" class="btn btn-light">부상/재활</button>
 	<button type="button" class="btn btn-dark">대회준비</button>
 	<button type="button" class="btn btn-dark">입시준비</button>
-    <section th:insert="~{club/club_main}"></div>
-  	</main>
+	
+  	 <section class="club-section">
+            <div class="club-header">
+                <div class="club-cards">
+   	             	<!-- <button class="create-btn">만들기</button> -->
+                    <div class="card">만들기</div>
+                    <div class="card">문화체험<br>동아리 홍보방</div>
+                    <div class="card">한마에 맛집 리스트 공유</div>
+                    <div class="card">방앗이 탐방 모임</div>
+                </div>
+            </div>
+            <h2 class="club-location">역삼동 소모임</h2>
+            <div class="filters">
+                <button class="filter active">전체</button>
+                <button class="filter">스포츠/레저</button>
+                <button class="filter">취미</button>
+                <button class="filter">친목/모임</button>
+                <button class="filter">음악</button>
+            </div>
+            <div class="club-list">
+                <div class="club-item">
+                    <h3>손 끝에서 시작되는 방</h3>
+                    <p>손뜨개...</p>
+                    <span>인원: 212</span>
+                </div>
+                <div class="club-item">
+                    <h3>2nd...</h3>
+                </div>
+            </div>
+        </section>
+     </main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>
