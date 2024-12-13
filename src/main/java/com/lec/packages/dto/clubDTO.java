@@ -2,7 +2,7 @@ package com.lec.packages.dto;
 
 import java.time.LocalDateTime;
 
-// import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class clubDTO {
     // @NotEmpty => Not null
 
-    // @NotEmpty
+    @NotEmpty
     private String CLUB_CODE;
 
-    // @NotEmpty
+    @NotEmpty
     private String CLUB_NAME;
 
     private String CLUB_EXERCISE;
@@ -27,18 +27,18 @@ public class clubDTO {
 
     private String CLUB_THEME;
 
-    // @NotEmpty
+    @NotEmpty
     private long CLUB_IMAGE_1;
-    // @NotEmpty
+    @NotEmpty
     private long CLUB_IMAGE_2;
-    // @NotEmpty
+    @NotEmpty
     private long CLUB_IMAGE_3;
-    // @NotEmpty
+    @NotEmpty
     private long CLUB_IMAGE_4;
 
     private String CLUB_ADDRESS;
 
-    // @NotEmpty
+    @NotEmpty
     private String MEM_ID;
 
     private boolean CLUB_ISPRIVATE;
