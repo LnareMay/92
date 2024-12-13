@@ -39,6 +39,7 @@
             <label for="group-name">클럽명</label>
             <input type="text" id="group-name" width="50%" placeholder="클럽명이 짧을수록 이해하기 쉬워요."></input>
 
+<<<<<<< Updated upstream
             <div class="category-container">
 			    <label>카테고리</label>
 			    <div class="category-selection">
@@ -70,6 +71,69 @@
             <div class="actions">
                 <button type="button" class="btn btn-secondary">만들기</button>
             </div>
+=======
+            <label for="club-category">클럽 테마</label>
+	           	<div class="category-container">
+	                <div class="category-selection">
+	                    <span>운동클럽</span>
+	                    <span>운동일지</span>
+	                    <span>영양제/식단</span>
+	                    <span>헬스</span>
+	                    <span>체중감량</span>
+	                    <span>바디프로필</span>
+	                    <span>부상/재활</span>
+	                    <span>대회준비</span>
+	                </div>
+	            </div>
+            
+            <label for="club-description">클럽 소개</label>
+            	<div class="club-intro-container">
+              	  <textarea id="club-intro" maxlength="500" rows="5" placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
+				</div>
+            
+            <!-- 사진 추가 -->
+            <label for="club-image">클럽 사진</label>
+                <div class="photo-container">
+                    <div class="photo-upload">
+                        <label for="photo-upload-1">
+                            <img id="preview-1" src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="첫 번째 사진" style="display: none;" />
+                            <span class="photo-placeholder">첫 번째 사진</span>
+                        </label>
+                        <input id="photo-upload-1" type="file" accept="image/*" onchange="previewImage(event, 'preview-1')" style="display: none;" />
+                    </div>
+                    <div class="photo-upload">
+                        <label for="photo-upload-2">
+                            <img id="preview-2" src="#" alt="두 번째 사진" style="display: none;" />
+                            <span class="photo-placeholder">두 번째 사진</span>
+                        </label>
+                        <input id="photo-upload-2" type="file" accept="image/*" onchange="previewImage(event, 'preview-2')" style="display: none;" />
+                    </div>
+                    <div class="photo-upload">
+                        <label for="photo-upload-3">
+                            <img id="preview-3" src="#" alt="세 번째 사진" style="display: none;" />
+                            <span class="photo-placeholder">세 번째 사진</span>
+                        </label>
+                        <input id="photo-upload-3" type="file" accept="image/*" onchange="previewImage(event, 'preview-3')" style="display: none;" />
+                    </div>
+                    <div class="photo-upload">
+                        <label for="photo-upload-4">
+                            <img id="preview-4" src="#" alt="네 번째 사진" style="display: none;" />
+                            <span class="photo-placeholder">네 번째 사진</span>
+                        </label>
+                        <input id="photo-upload-4" type="file" accept="image/*" onchange="previewImage(event, 'preview-4')" style="display: none;" />
+                    </div>
+                </div>
+
+            <!-- 클럽공개여부 --> 
+	        <label for="club-isprivate">클럽 공개여부</label>
+	            <div class="club-isprivate">
+	                <input type="checkbox" id="club-isprivate" name="club-isprivate">비공개 </input>
+	           	</div>
+
+			<!--  -->
+			
+            <button type="submit" class="btn btn-primary mt-4">만들기</button>
+>>>>>>> Stashed changes
         </form>
     </main>
     <div th:insert="~{layouts/footer :: footer}"></div>
