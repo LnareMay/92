@@ -65,7 +65,7 @@ public class facility extends BaseEntity{
     // DECIMAL TYPE 선언
     // precision 소수점 앞자리
     // scale 소수점 뒷자리
-    @Column(name = "PRICE", columnDefinition = "DECIMAL", precision = 10, scale = 0)
+    @Column(name = "PRICE", columnDefinition = "DECIMAL", precision = 50, scale = 0)
     private BigDecimal PRICE;
 
     @Column(name = "FACILITY_START_TIME")
