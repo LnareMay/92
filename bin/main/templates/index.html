@@ -7,7 +7,10 @@
 
 <!-- 공통 css -->
 <link rel="stylesheet" th:href="@{/css/common.css}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
@@ -22,90 +25,6 @@
 </head>
 <body>
 	<div th:insert="~{layouts/header :: header}"></div>
-  	<main class="container main" id="club_main_pg">
-	  	<button type="button" class="btn btn-secondary">운동클럽</button>
-	  	<button type="button" class="btn btn-secondary">운동일지</button>
-		<button type="button" class="btn btn-secondary">영양제/식단</button>
-		<button type="button" class="btn btn-secondary">헬스</button>
-		<button type="button" class="btn btn-secondary">체중감량</button>
-		<button type="button" class="btn btn-secondary">바디프로필</button>
-		<button type="button" class="btn btn-secondary">부상/재활</button>
-		<button type="button" class="btn btn-secondary">대회준비</button>
-		<button type="button" class="btn btn-secondary">입시준비</button>
-		
-		<ul class="wofckr3 _588sy42q _588sy4172 _588sy4138 _588sy413f _588sy413n">
-          <li>
-            <a href="#none">
-                  <div class="_588sy41z _588sy421 _588sy42q _588sy4132 nqueul0">
-                      <div class="_588sy41z _588sy421 nqueul2 nqueul1 _588sy49e _588sy41b _588sy4ak">
-                          <span>
-                          	  <!-- 클럽 대표 이미지 START -->
-                              <img class="nqueul3" src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="🤍김포 라이프🤍 썸네일"/>
-                              <!-- 클럽 대표 이미지 END -->
-                          </span>
-                          <span class=" lazy-load-image-background opacity" style="color:transparent;display:inline-block">
-                          <span class="nqueul3" style="display:inline-block"></span>
-                          </span>
-                      </div>
-                      <div class="nqueul4">
-                      	  <!-- 클럽명 START -->
-                          <span class="_588sy4198 _588sy419f _588sy41x _588sy41b8 _588sy41bf _588sy41">🤍김포 라이프🤍</span>
-                          <!-- 클럽명 END -->
-                          
-                          <!-- 클럽소개글 START -->
-                          <span class="_588sy4192 _588sy41w _588sy41b2 _588sy43 _5q5n611 _5q5n61i _588sy4se _588sy4px" style="--seed-max-lines-base:1;--seed-max-lines-small:1;--seed-max-lines-medium:1;--seed-max-lines-large:1;--seed-max-lines-xlarge:1;--seed-max-lines-xxlarge:1">지친 일상에서 벗어나 좋은 분들 만나 
-                          즐거운 모임 만들었으면 합니다. 
-
-                          김포 거주 주민 
-                          (90년~ 76년)
-                          누구나 환영합니다~^♡^
-
-                          모든 주제 환영♡♡
-
-                          누구나 시간 되실 때 
-                          벙 올려 좋은 재밋게 놀아요 ^^
-
-
-                          </span>
-                          <!-- 클럽소개글 END -->
-                          <span class="_588sy4192 _588sy41w _588sy41b2 _588sy42q _588sy417e _588sy412k _588sy42 _588sy4sk _588sy4q9">
-                              <div class="_588sy41z _588sy421 _588sy42q _588sy415q _588sy4152 _588sy4192 _588sy41w _588sy41b2 _588sy42">
-                                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" data-seed-icon="true" data-seed-icon-version="0.4.0-beta.2" width="24" height="24" style="width:14px;height:14px" class="_588sy42" aria-hidden="true">
-                                      <g>
-                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M2.19995 10.5798C2.19995 5.16739 6.58756 0.779785 12 0.779785C17.4123 0.779785 21.8 5.16739 21.8 10.5798C21.8 13.9799 19.5985 17.1391 17.4217 19.3764C16.3174 20.5113 15.1817 21.4481 14.2536 22.1055C13.7903 22.4337 13.3694 22.6988 13.0225 22.8857C12.8498 22.9788 12.6843 23.0584 12.5339 23.1169C12.4059 23.1666 12.2081 23.2342 12 23.2342C11.7918 23.2342 11.594 23.1666 11.466 23.1169C11.3156 23.0584 11.1501 22.9788 10.9774 22.8857C10.6305 22.6988 10.2096 22.4337 9.74627 22.1055C8.81823 21.4481 7.68247 20.5113 6.57819 19.3764C4.40138 17.1391 2.19995 13.9799 2.19995 10.5798ZM8.38442 10.1041C8.38442 8.10725 10.0031 6.48852 12 6.48852C13.9968 6.48852 15.6155 8.10725 15.6155 10.1041C15.6155 12.1009 13.9968 13.7196 12 13.7196C10.0031 13.7196 8.38442 12.1009 8.38442 10.1041Z" fill="currentColor"></path>
-                                      </g>
-                                  </svg>
-                                  <!-- 지역 START -->
-                                  장기동
-                                  <!-- 지역 START -->
-                              </div>
-                              <span class="_588sy42q _588sy412k">
-                                  <span>·</span>
-                                  <div class="_588sy41z _588sy421 _588sy42q _588sy415q _588sy4152 _588sy4192 _588sy41w _588sy41b2 _588sy42">
-                                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" data-seed-icon="true" data-seed-icon-version="0.4.0-beta.2" width="24" height="24" style="width:14px;height:14px" class="_588sy42" aria-hidden="true">
-                                          <g>
-                                              <g>
-                                                  <path d="M11.9999 2.6001C8.90711 2.6001 6.3999 5.1073 6.3999 8.2001C6.3999 11.2929 8.90711 13.8001 11.9999 13.8001C15.0927 13.8001 17.5999 11.2929 17.5999 8.2001C17.5999 5.1073 15.0927 2.6001 11.9999 2.6001Z" fill="currentColor"></path>
-                                                  <path d="M11.9999 14.6001C6.80842 14.6001 3.3999 17.4293 3.3999 21.2001C3.3999 21.5315 3.66853 21.8001 3.9999 21.8001H19.9999C20.3313 21.8001 20.5999 21.5315 20.5999 21.2001C20.5999 17.4293 17.1914 14.6001 11.9999 14.6001Z" fill="currentColor"></path>
-                                              </g>
-                                          </g>
-                                      </svg>
-                                      <div class="ar0rax0">멤버 수</div>
-                                      35
-                                  </div>
-                              </span>
-                              <span class="_588sy42q _588sy412k">
-                                  <span>·</span>
-                                  <!-- 클럽테마 START -->
-                                  <span class="_588sy4192 _588sy41w _588sy41b2 _588sy42">운동클럽</span>
-                                  <!-- 클럽테마 START -->
-                              </span>
-                          </span>
-                      </div>
-                  </div>
-              </a>
-          </li>
-  	</main>
-    <div th:insert="~{layouts/footer :: footer}"></div>
+  	    <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>
