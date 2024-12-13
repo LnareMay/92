@@ -9,22 +9,14 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Controller
-@RequestMapping("/club")
+@RequestMapping("/facility")
 @RequiredArgsConstructor
-public class ClubController {
-    
-    @GetMapping("/list")
-    public void getClubList(){
-        
-    }
-    
-	@GetMapping("/club_main")
-	public String clubMain() {
-		return "club/club_main"; 
-	}
+public class FacilityController {
+
+	@GetMapping("/facility_main")
+	public String facilityMain() {
+		return "facility/facility_main"; 
+	    }
 	
-	@GetMapping("/club_create")
-	public String clubCreate() {
-		return "club/club_create"; 
-	}
+	
 }
