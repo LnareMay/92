@@ -7,3 +7,6 @@
 /.gradle/8.11.1/fileHashes
 /build/
 .DS_Store
+/.settings
+.project
+/.vscode
