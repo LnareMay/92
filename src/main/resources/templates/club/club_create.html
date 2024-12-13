@@ -20,28 +20,58 @@
 
     <!-- 공통 js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-    <script>
-    function previewImage(event, targetId) {
-        const reader = new FileReader(); 
-        reader.onload = function () {
-            const preview = document.getElementById(targetId); 
-            preview.src = reader.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(event.target.files[0]); 
-    }
-</script>
 </head>
 <body>
     <div th:insert="~{layouts/header :: header}"></div>
     
     <main class="container main">
-<!--         <h5><b>어떤 클럽을 만들까요?</b></h5> -->
+        <h2>어떤 클럽을 만들까요?</h2>
     
+			<div class="image-upload">
+		  	  <label for="file-input">
+		        <div class="image-placeholder">
+		        	 <img id="preview" src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" />
+		        </div>
+		   	  </label>
+		      <input id="file-input" type="file" accept="image/*" style="display: none;">
+		    </div>
         <form class="club-title">
-            <label for="club-name">클럽명</label>
-            	<input type="text" id="group-name" width="50%" placeholder="클럽명"></input>
+            <label for="group-name">클럽명</label>
+            <input type="text" id="group-name" width="50%" placeholder="클럽명이 짧을수록 이해하기 쉬워요."></input>
 
+<<<<<<< Updated upstream
+            <div class="category-container">
+			    <label>카테고리</label>
+			    <div class="category-selection">
+			        <span>운동클럽</span>
+			        <span>운동일지</span>
+			        <span>영양제/식단</span>
+			        <span>헬스</span>
+			        <span>체중감량</span>
+			        <span>바디프로필</span>
+			        <span>부상/재활</span>
+			        <span>대회준비</span>
+			    </div>
+			</div>
+
+			<div class="container">
+	            <label for="group-description">클럽 소개</label>
+	            <textarea id="group-description" maxlength="500" rows="5" placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
+	        </div>
+
+          <!--   <div class="tip">
+                <p>이런 내용으로 모임을 소개해보세요.</p>
+                <ul>
+                    <li>주로 어떤 활동을 하나요?</li>
+                    <li>언제, 어디에서 활동하나요?</li>
+                    <li>어떤 사람들과 함께하고 싶나요?</li>
+                </ul>
+            </div> -->
+
+            <div class="actions">
+                <button type="button" class="btn btn-secondary">만들기</button>
+            </div>
+=======
             <label for="club-category">클럽 테마</label>
 	           	<div class="category-container">
 	                <div class="category-selection">
@@ -93,15 +123,19 @@
                         <input id="photo-upload-4" type="file" accept="image/*" onchange="previewImage(event, 'preview-4')" style="display: none;" />
                     </div>
                 </div>
-            
+
             <!-- 클럽공개여부 --> 
 	        <label for="club-isprivate">클럽 공개여부</label>
 	            <div class="club-isprivate">
 	                <input type="checkbox" id="club-isprivate" name="club-isprivate">비공개 </input>
 	           	</div>
 
+			<!--  -->
+			
             <button type="submit" class="btn btn-primary mt-4">만들기</button>
+>>>>>>> Stashed changes
         </form>
+    </main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>
