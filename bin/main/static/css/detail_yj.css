@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/* 클럽메인페이지 */
 .club-section {
     max-width: 1200px;
     margin: 0 auto;
@@ -115,3 +116,128 @@
     color: #007bff;
     align-self: flex-end;
 }
+
+/* 시설예약메인페이지 */
+/* body {
+    font-family: 'Arial', sans-serif;
+} */
+
+.filter-bar select,
+.filter-bar button {
+    height: 38px;
+}
+
+.tabs button {
+    font-size: 14px;
+}
+
+.card {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-body {
+    text-align: center;
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.card-text {
+    color: #555;
+    font-size: 14px;
+}
+
+/* 클럽 테마 */
+.category-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.category-selection {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+.category-selection span {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.category-selection span.selected {
+    background-color: #007bff;
+    color: white; 
+    border-color: #007bff; 
+}
+
+.category-selection span:hover {
+    background-color: #e0e0e0; 
+    color: black; 
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.club-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* 사진 업로드 섹션 */
+.photo-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px; 
+    margin-top: 10px;
+    padding-bottom: 15px;
+}
+
+.photo-upload {
+    width: 150px;
+    height: 150px;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative;
+    overflow: hidden; 
+}
+
+.photo-upload img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.default-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+
+
