@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/* 클럽메인페이지 */
 .club-section {
     max-width: 1200px;
     margin: 0 auto;
@@ -114,4 +115,109 @@
     font-size: 14px;
     color: #007bff;
     align-self: flex-end;
+}
+
+/* 시설예약메인페이지 */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.filter-bar select,
+.filter-bar button {
+    height: 38px;
+}
+
+.tabs button {
+    font-size: 14px;
+}
+
+.card {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-body {
+    text-align: center;
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.card-text {
+    color: #555;
+    font-size: 14px;
+}
+
+/* 클럽생성 */
+.category-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.category-selection {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+.category-selection span {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+    font-size: 14px;
+}
+.category-selection span.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.club-title {
+    margin-top: 20px;
+}
+
+/* 클럽생성 이미지 */
+.image-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.image-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-placeholder img {
+     max-width: auto;
+     max-height: 100%;
+     object-fit: cover;
 }
