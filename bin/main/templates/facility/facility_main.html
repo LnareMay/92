@@ -1,101 +1,545 @@
 <!DOCTYPE html>
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <!-- meta_tag include -->
-    <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-    <title>FITLINK</title>
+	<!-- meta_tag include -->
 
-<!-- 공통 css -->
-<link rel="stylesheet" th:href="@{/css/common.css}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+	<title>FITLINK</title>
 
+<<<<<<< HEAD
+	<!-- 공통 css -->
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+=======
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
 <link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
 <link rel="stylesheet" th:href="@{/css/detail_yj.css}"/>
 
+>>>>>>> branch 'main' of https://github.com/LnareMay/92.git
 
-<!-- 공통 js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+	<!-- Linking CSS files -->
+	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+
+	<!-- 공통 js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <!-- Header -->
-    <div th:insert="~{layouts/header :: header}"></div>
+	<!-- Header -->
+	<div th:insert="~{layouts/header :: header}"></div>
 
-    <!-- Main Content -->
-    <main class="container mt-4">
-        <!-- Filter Bar -->
-        <div class="filter-bar d-flex align-items-center mb-3">
-            <select class="form-select me-2" style="width: auto;">
-                <option>지역</option>
-            </select>
-            <select class="form-select me-2" style="width: auto;">
-                <option>스튜디오</option>
-            </select>
-            <select class="form-select me-2" style="width: auto;">
-                <option>인원</option>
-            </select>
-            <select class="form-select me-2" style="width: auto;">
-                <option>날짜</option>
-            </select>
-            <button class="btn btn-primary">필터적용</button>
-        </div>
+	<!-- Main Content -->
+	<main class="container mt-4" id="facility_main_pg">
 
-<!--         Tabs
-        <div class="tabs mb-3">
-            <button class="btn btn-outline-secondary me-2">실시간 예약</button>
-            <button class="btn btn-outline-secondary me-2">학교 공간</button>
-            <button class="btn btn-outline-secondary me-2">비교 견적</button>
-            <button class="btn btn-outline-secondary me-2">승인 결제</button>
-            <button class="btn btn-outline-secondary me-2">쿠폰</button>
-        </div> -->
+		<!-- 배경 어둡게 -->
+		<div id="modal-overlay" class="modal-overlay"></div>
 
-        <!-- Cards Section -->
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="card-img-top" alt="MJ GYM">
-                    <div class="card-body">
-                        <h7 class="card-text"> 서울시 강남구 </h7>
-                        <h5 class="card-title">[농구/실내체육]실내체육관</h5>
-                        <p class="card-text">60,000원~ / 패키지[2시간]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                     <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="card-img-top" alt="회의실">
-                    <div class="card-body">
-                        <h7 class="card-text"> 서울시 강남구 </h7>
-                        <h5 class="card-title">야외시설 테니스장/풋살장</h5>
-                        <p class="card-text">49,000원 / 0.5시간 [1시간부터]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                     <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="card-img-top" alt="스페이스 juda">
-                    <div class="card-body">
-                        <h7 class="card-text"> 서울시 강남구 </h7>
-                        <h5 class="card-title">비전타워 실내체육관</h5>
-                        <p class="card-text">120,000원 / 패키지[2시간]</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                     <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="card-img-top" alt="상업체육관">
-                    <div class="card-body">
-                        <h7 class="card-text"> 서울시 강남구 </h7>
-                        <h5 class="card-title">상업체육관</h5>
-                        <p class="card-text">32,500원 / 0.5시간 [1시간부터]</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+		<!-- 검색창 -->
+		<div class="search-bar">
+			<!-- 타이틀 -->
+			<!-- <div class="finder-title">쉐어잇 공간 파인더</div> -->
 
-    <!-- Footer -->
-    <div th:insert="~{layouts/footer :: footer}"></div>
+			<!-- 지역 -->
+			<div class="search-item">
+				<label>지역</label>
+				<div id="region-select" class="search-placeholder">
+					<span>어느 지역을 찾으세요?</span>
+				</div>
+
+				<!-- 모달: 시/도 선택 -->
+				<div id="region-modal" class="modal">
+					<div class="modal-content">
+						<h3>시/도 선택</h3>
+						<div id="province-buttons-region" class="button-grid">
+							<!-- 시/도 버튼 -->
+							<button data-province="서울">서울</button>
+							<button data-province="부산">부산</button>
+							<button data-province="대구">대구</button>
+							<button data-province="인천">인천</button>
+							<button data-province="광주">광주</button>
+							<button data-province="대전">대전</button>
+							<button data-province="울산">울산</button>
+							<button data-province="세종">세종</button>
+							<button data-province="경기">경기</button>
+							<button data-province="충북">충북</button>
+							<button data-province="충남">충남</button>
+							<button data-province="전남">전남</button>
+							<button data-province="경북">경북</button>
+							<button data-province="경남">경남</button>
+							<button data-province="제주">제주</button>
+							<button data-province="강원">강원</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- 모달: 시/군/구 선택 -->
+				<div id="city-modal" class="modal" style="display: none;">
+					<div class="modal-content">
+						<h3 id="city-title"></h3>
+						<div id="city-buttons" class="button-grid"></div>
+						<button id="back-btn">이전으로</button>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- 공간유형 -->
+			<div class="search-item">
+				<label>운동유형</label>
+				<div id="sport-select" class="search-placeholder">
+					<span>어떤 운동을 하시나요?</span>
+				</div>
+				<!-- 모달: 운동 종목 선택 -->
+				<div id="sport-modal" class="modal">
+					<div class="modal-content">
+						<h3>운동 종목 선택</h3>
+						<div id="province-buttons-sport" class="button-grid">
+							<!-- 시/도 버튼 -->
+							<button data-province="잔디구장">잔디구장</button>
+							<button data-province="야구장">야구장</button>
+							<button data-province="테니스장">테니스장</button>
+							<button data-province="배드민턴장">배드민턴장</button>
+							<button data-province="인공암벽장">인공암벽장</button>
+							<button data-province="풋살장">풋살장</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- 인원 -->
+			<div class="search-item">
+				<label>인원</label>
+				<div id="people-select" class="people-placeholder">
+					<span>몇 명이 이용하시나요?</span>
+				</div>
+			</div>
+
+			<!-- 인원 선택 모달 -->
+			<div id="people-modal" class="modal">
+				<div class="modal-content">
+					<div class="counter-container">
+						<button id="decrease-btn" class="counter-btn">-</button>
+						<span>인원</span>
+						<span id="people-count">0</span> 명
+						<button id="increase-btn" class="counter-btn">+</button>
+					</div>
+					<button id="apply-btn" class="apply-btn">인원적용</button>
+				</div>
+			</div>
+
+			<!-- 날짜 -->
+			<div class="search-item">
+				<label>날짜</label>
+				<div id="date-select" class="date-placeholder">
+					<span>대여날짜는 언제인가요?</span>
+				</div>
+
+				<!-- 날짜 선택 모달 -->
+				<div id="date-modal" class="modal hidden">
+					<div class="modal-content">
+						<div class="calendar-container">
+							<div class="calendar-header">
+								<span id="calendar-prev" class="calendar-nav">&lt;</span>
+								<span id="calendar-month-year">0000년 00월</span>
+								<span id="calendar-next" class="calendar-nav">&gt;</span>
+							</div>
+							<table class="calendar">
+								<thead>
+									<tr>
+										<th>일</th>
+										<th>월</th>
+										<th>화</th>
+										<th>수</th>
+										<th>목</th>
+										<th>금</th>
+										<th>토</th>
+									</tr>
+								</thead>
+								<tbody id="calendar-body">
+									<!-- 달력 날짜가 JavaScript에서 동적으로 삽입됩니다 -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 검색 버튼 -->
+			<button class="search-btn">검색하기</button>
+		</div>
+
+		<!-- 지역 선택 모달 -->
+		<div class="modal" id="region-modal">
+			<div class="modal-content">
+				<h3>시/도 선택</h3>
+				<div class="options">
+					<button>서울</button>
+					<button>부산</button>
+					<button>대구</button>
+					<button>인천</button>
+					<button>광주</button>
+					<button>대전</button>
+					<button>울산</button>
+					<button>세종</button>
+					<button>경기</button>
+					<button>충북</button>
+					<button>충남</button>
+					<button>전남</button>
+				</div>
+				<button class="close-btn" id="close-btn">닫기</button>
+			</div>
+		</div>
+
+		<!-- Cards Section -->
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-img">
+						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+							class="card-img-top" alt="MJ GYM">
+					</div>
+
+					<!-- 운동코드 START -->
+					<div class="tag">잔디구장</div>
+					<!-- 운동코드 END -->
+					<div class="card-body">
+						<h7 class="card-text"> 서울시 강남구 </h7>
+						<h5 class="card-title">[농구/실내체육]실내체육관 [농구/실내체육]실내체육관
+							[농구/실내체육]실내체육관</h5>
+						<p class="card-text">60,000원~ / 패키지[2시간] 60,000원~ / 패키지[2시간]
+							60,000원~ / 패키지[2시간]</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-img">
+						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+							class="card-img-top" alt="MJ GYM">
+					</div>
+					<!-- 운동코드 START -->
+					<div class="tag">잔디구장</div>
+					<!-- 운동코드 END -->
+					<div class="card-body">
+						<h7 class="card-text"> 서울시 강남구 </h7>
+						<h5 class="card-title">야외시설 테니스장/풋살장</h5>
+						<p class="card-text">49,000원 / 0.5시간 [1시간부터]</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-img">
+						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+							class="card-img-top" alt="MJ GYM">
+					</div>
+					<!-- 운동코드 START -->
+					<div class="tag">잔디구장</div>
+					<!-- 운동코드 END -->
+					<div class="card-body">
+						<h7 class="card-text"> 서울시 강남구 </h7>
+						<h5 class="card-title">비전타워 실내체육관</h5>
+						<p class="card-text">120,000원 / 패키지[2시간]</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-img">
+						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+							class="card-img-top" alt="MJ GYM">
+					</div>
+					<!-- 운동코드 START -->
+					<div class="tag">잔디구장</div>
+					<!-- 운동코드 END -->
+					<div class="card-body">
+						<h7 class="card-text"> 서울시 강남구 </h7>
+						<h5 class="card-title">상업체육관</h5>
+						<p class="card-text">32,500원 / 0.5시간 [1시간부터]</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card">
+					<div class="card-img">
+						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+							class="card-img-top" alt="MJ GYM">
+					</div>
+					<!-- 운동코드 START -->
+					<div class="tag">잔디구장</div>
+					<!-- 운동코드 END -->
+					<div class="card-body">
+						<h7 class="card-text"> 서울시 강남구 </h7>
+						<h5 class="card-title">상업체육관</h5>
+						<p class="card-text">32,500원 / 0.5시간 [1시간부터]</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer -->
+	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script>
+	// 검색창 - 지역 클릭시 모달 
+	const regionSelect = document.getElementById("region-select");
+	const regionModal = document.getElementById("region-modal");
+	const cityModal = document.getElementById("city-modal");
+	const cityTitle = document.getElementById("city-title");
+	const cityButtons = document.getElementById("city-buttons");
+	// 운동유형
+	const sportSelect = document.getElementById("sport-select");
+	const sportModal = document.getElementById("sport-modal");
+
+	const modal = document.querySelectorAll(".modal");
+	const backBtn = document.getElementById("back-btn");
+	const body = document.body;
+	const overlay = document.getElementById("modal-overlay"); // 오버레이 생성
+
+	// 시/군/구 데이터
+	const cities = {
+		서울: ["강남구", "강동구", "강북구", "관악구", "광진구", "노원구", "동작구", "서초구", "송파구"],
+		부산: ["해운대구", "서구", "사하구", "북구", "수영구"],
+		대구: ["수성구", "달서구", "중구", "서구"],
+		인천: ["미추홀구", "연수구", "부평구", "계양구"],
+		경기: ["수원시", "용인시", "성남시", "고양시", "안양시"]
+	};
+
+	// 지역 선택 클릭 시 모달 열기
+	regionSelect.addEventListener("click", () => {
+		regionModal.style.display = "block";
+		overlay.style.display = "block";
+	});
+
+	// 시/도 버튼 클릭 이벤트
+	document.querySelectorAll("#province-buttons-region button").forEach(button => {
+		button.addEventListener("click", () => {
+			const province = button.dataset.province;
+			openCityModal(province);
+		});
+	});
+
+	// 세부 지역 모달 열기
+	function openCityModal(province) {
+		regionModal.style.display = "none";
+		cityModal.style.display = "block";
+		cityTitle.textContent = `${province} > 시/군/구 선택`;
+
+		// 시/군/구 버튼 추가
+		cityButtons.innerHTML = "";
+		cities[province].forEach(city => {
+			const btn = document.createElement("button");
+			btn.textContent = city;
+			btn.addEventListener("click", () => {
+				regionSelect.textContent = `${province} · ${city}`;
+				regionSelect.style.color = "#1669c7";
+				regionSelect.style.fontWeight = "bold";
+				closeModals();
+			});
+			cityButtons.appendChild(btn);
+		});
+	}
+
+	// 운동유형 선택 클릭 시 모달 열기
+	sportSelect.addEventListener("click", () => {
+		sportModal.style.display = "block";
+		overlay.style.display = "block";
+
+		document.querySelectorAll("#province-buttons-sport button").forEach(button => {
+			button.addEventListener("click", () => {
+				const province = button.dataset.province;
+				sportSelect.textContent = `${province}`;
+				sportSelect.style.color = "#1669c7";
+				sportSelect.style.fontWeight = "bold";
+				closeModals();
+			});
+		});
+	});
+
+
+
+	// 인원 모달
+	const peopleSelect = document.getElementById("people-select");
+	const peopleModal = document.getElementById("people-modal");
+	const decreaseBtn = document.getElementById("decrease-btn");
+	const increaseBtn = document.getElementById("increase-btn");
+	const peopleCount = document.getElementById("people-count");
+	const applyBtn = document.getElementById("apply-btn");
+
+	// 초기값 설정
+	let count = 0;
+
+	// "몇 명이 이용하시나요?" 클릭 시 모달 열기
+	peopleSelect.addEventListener("click", () => {
+		peopleModal.style.display = "block";
+		overlay.style.display = "block";
+	});
+
+	// 숫자 감소 버튼
+	decreaseBtn.addEventListener("click", () => {
+		if (count > 0) {
+			count--;
+			peopleCount.textContent = count;
+		}
+	});
+
+	// 숫자 증가 버튼
+	increaseBtn.addEventListener("click", () => {
+		count++;
+		peopleCount.textContent = count;
+	});
+
+	// 인원적용 버튼 클릭 시
+	applyBtn.addEventListener("click", () => {
+		const placeholder = document.querySelector(".people-placeholder");
+		placeholder.textContent = `${count} 명`;
+		peopleSelect.style.color = "#1669c7";
+		peopleSelect.style.fontWeight = "bold";
+		closeModals();
+	});
+
+
+
+
+	// 달력 모달
+	const dateSelect = document.getElementById("date-select");
+	const dateModal = document.getElementById("date-modal");
+	const calendarBody = document.getElementById("calendar-body");
+	const calendarMonthYear = document.getElementById("calendar-month-year");
+	const prevBtn = document.getElementById("calendar-prev");
+	const nextBtn = document.getElementById("calendar-next");
+
+	let currentYear = new Date().getFullYear();
+	let currentMonth = new Date().getMonth();
+	let currentDate = new Date().getDate();
+
+	// 모달 열기
+	dateSelect.addEventListener("click", () => {
+		dateModal.style.display = "block";
+		renderCalendar(currentYear, currentMonth);
+		overlay.style.display = "block";
+	});
+
+
+	// 달력 렌더링 함수
+	function renderCalendar(year, month) {
+		calendarBody.innerHTML = ""; // 기존 내용 초기화
+		const firstDay = new Date(year, month, 1);
+		const lastDay = new Date(year, month + 1, 0);
+
+		calendarMonthYear.textContent = `${year}년 ${month + 1}월`;
+
+		let date = 1;
+		for (let i = 0; i < 6; i++) {
+			const row = document.createElement("tr");
+
+			for (let j = 0; j < 7; j++) {
+				const cell = document.createElement("td");
+
+				if (i === 0 && j < firstDay.getDay()) {
+					cell.textContent = "";
+				} else if (date > lastDay.getDate()) {
+					// 날짜 범위를 초과한 경우 빈 칸 추가
+					cell.textContent = "";
+				} else if (date == currentDate) {
+					cell.classList.add("selected");
+					cell.textContent = date;
+					date++;
+				} else {
+					cell.textContent = date;
+					date++;
+				}
+				row.appendChild(cell);
+			}
+			calendarBody.appendChild(row);
+		}
+
+		// 새로 렌더링한 td 요소에 이벤트 리스너 추가
+		addDateClickEvent(year, month);
+	}
+
+	// 날짜 클릭 이벤트 추가 함수
+	function addDateClickEvent(year, month) {
+		document.querySelectorAll(".calendar td").forEach(td => {
+			td.addEventListener("click", function () {
+				// 이전에 선택된 날짜 초기화
+				document.querySelectorAll(".calendar td").forEach(cell => {
+					cell.classList.remove("selected");
+				});
+
+				// 현재 클릭된 td에 클래스 추가
+				this.classList.add("selected");
+
+				// 클릭한 날짜 값 가져오기
+				const date = this.textContent.trim();
+				if (date) {
+					const placeholder = document.querySelector(".date-placeholder");
+					placeholder.textContent = `${year}년 ${month + 1}월 ${date}일`;
+					closeModals();
+					placeholder.style.color = "#1669c7";
+					placeholder.style.fontWeight = "bold";
+				}
+			});
+		});
+	}
+
+
+
+	// 이전 달 이동
+	prevBtn.addEventListener("click", () => {
+		currentMonth--;
+		if (currentMonth < 0) {
+			currentMonth = 11;
+			currentYear--;
+		}
+		renderCalendar(currentYear, currentMonth);
+	});
+
+	// 다음 달 이동
+	nextBtn.addEventListener("click", () => {
+		currentMonth++;
+		if (currentMonth > 11) {
+			currentMonth = 0;
+			currentYear++;
+		}
+		renderCalendar(currentYear, currentMonth);
+	});
+
+	// 이전 버튼 클릭 시
+	backBtn.addEventListener("click", () => {
+		cityModal.style.display = "none";
+		regionModal.style.display = "block";
+	});
+
+	// 모달 닫기
+	function closeModals() {
+		cityModal.style.display = "none";
+		sportModal.style.display = "none";
+		peopleModal.style.display = "none";
+		dateModal.style.display = "none";
+		// 오버레이 삭제
+		if (overlay.style.display = "block") {
+			overlay.style.display = "none";
+		}
+	}
+
+	// 모달 닫기 (바깥 클릭 시)
+	window.addEventListener("click", (event) => {
+		if (event.target === modal) {
+			modal.style.display = "none";
+		}
+	});
+
+
+</script>
+
 </html>
