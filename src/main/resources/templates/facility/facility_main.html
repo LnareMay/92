@@ -109,16 +109,58 @@
 			<!-- 인원 -->
 			<div class="search-item">
 				<label>인원</label>
-				<div>
+				<div id="people-select" class="people-placeholder">
 					<span>몇 명이 이용하시나요?</span>
+				</div>
+			</div>
+
+			<!-- 인원 선택 모달 -->
+			<div id="people-modal" class="modal">
+				<div class="modal-content">
+					<div class="counter-container">
+						<button id="decrease-btn" class="counter-btn">-</button>
+						<span>인원</span>
+						<span id="people-count">0</span> 명
+						<button id="increase-btn" class="counter-btn">+</button>
+					</div>
+					<button id="apply-btn" class="apply-btn">인원적용</button>
 				</div>
 			</div>
 
 			<!-- 날짜 -->
 			<div class="search-item">
 				<label>날짜</label>
-				<div>
+				<div id="date-select" class="date-placeholder">
 					<span>대여날짜는 언제인가요?</span>
+				</div>
+
+				<!-- 날짜 선택 모달 -->
+				<div id="date-modal" class="modal hidden">
+					<div class="modal-content">
+						<div class="calendar-container">
+							<div class="calendar-header">
+								<span id="calendar-prev" class="calendar-nav">&lt;</span>
+								<span id="calendar-month-year">0000년 00월</span>
+								<span id="calendar-next" class="calendar-nav">&gt;</span>
+							</div>
+							<table class="calendar">
+								<thead>
+									<tr>
+										<th>일</th>
+										<th>월</th>
+										<th>화</th>
+										<th>수</th>
+										<th>목</th>
+										<th>금</th>
+										<th>토</th>
+									</tr>
+								</thead>
+								<tbody id="calendar-body">
+									<!-- 달력 날짜가 JavaScript에서 동적으로 삽입됩니다 -->
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -299,9 +341,6 @@
 		});
 	}
 
-
-
-
 	// 운동유형 선택 클릭 시 모달 열기
 	sportSelect.addEventListener("click", () => {
 		sportModal.style.display = "block";
@@ -320,6 +359,153 @@
 
 
 
+	// 인원 모달
+	const peopleSelect = document.getElementById("people-select");
+	const peopleModal = document.getElementById("people-modal");
+	const decreaseBtn = document.getElementById("decrease-btn");
+	const increaseBtn = document.getElementById("increase-btn");
+	const peopleCount = document.getElementById("people-count");
+	const applyBtn = document.getElementById("apply-btn");
+
+	// 초기값 설정
+	let count = 0;
+
+	// "몇 명이 이용하시나요?" 클릭 시 모달 열기
+	peopleSelect.addEventListener("click", () => {
+		peopleModal.style.display = "block";
+		overlay.style.display = "block";
+	});
+
+	// 숫자 감소 버튼
+	decreaseBtn.addEventListener("click", () => {
+		if (count > 0) {
+			count--;
+			peopleCount.textContent = count;
+		}
+	});
+
+	// 숫자 증가 버튼
+	increaseBtn.addEventListener("click", () => {
+		count++;
+		peopleCount.textContent = count;
+	});
+
+	// 인원적용 버튼 클릭 시
+	applyBtn.addEventListener("click", () => {
+		const placeholder = document.querySelector(".people-placeholder");
+		placeholder.textContent = `${count} 명`;
+		peopleSelect.style.color = "#1669c7";
+		peopleSelect.style.fontWeight = "bold";
+		closeModals();
+	});
+
+
+
+
+	// 달력 모달
+	const dateSelect = document.getElementById("date-select");
+	const dateModal = document.getElementById("date-modal");
+	const calendarBody = document.getElementById("calendar-body");
+	const calendarMonthYear = document.getElementById("calendar-month-year");
+	const prevBtn = document.getElementById("calendar-prev");
+	const nextBtn = document.getElementById("calendar-next");
+
+	let currentYear = new Date().getFullYear();
+	let currentMonth = new Date().getMonth();
+	let currentDate = new Date().getDate();
+
+	// 모달 열기
+	dateSelect.addEventListener("click", () => {
+		dateModal.style.display = "block";
+		renderCalendar(currentYear, currentMonth);
+		overlay.style.display = "block";
+	});
+
+
+	// 달력 렌더링 함수
+	function renderCalendar(year, month) {
+		calendarBody.innerHTML = ""; // 기존 내용 초기화
+		const firstDay = new Date(year, month, 1);
+		const lastDay = new Date(year, month + 1, 0);
+
+		calendarMonthYear.textContent = `${year}년 ${month + 1}월`;
+
+		let date = 1;
+		for (let i = 0; i < 6; i++) {
+			const row = document.createElement("tr");
+
+			for (let j = 0; j < 7; j++) {
+				const cell = document.createElement("td");
+
+				if (i === 0 && j < firstDay.getDay()) {
+					cell.textContent = "";
+				} else if (date > lastDay.getDate()) {
+					// 날짜 범위를 초과한 경우 빈 칸 추가
+					cell.textContent = "";
+				} else if (date == currentDate) {
+					cell.classList.add("selected");
+					cell.textContent = date;
+					date++;
+				} else {
+					cell.textContent = date;
+					date++;
+				}
+				row.appendChild(cell);
+			}
+			calendarBody.appendChild(row);
+		}
+
+		// 새로 렌더링한 td 요소에 이벤트 리스너 추가
+		addDateClickEvent(year, month);
+	}
+
+	// 날짜 클릭 이벤트 추가 함수
+	function addDateClickEvent(year, month) {
+		document.querySelectorAll(".calendar td").forEach(td => {
+			td.addEventListener("click", function () {
+				// 이전에 선택된 날짜 초기화
+				document.querySelectorAll(".calendar td").forEach(cell => {
+					cell.classList.remove("selected");
+				});
+
+				// 현재 클릭된 td에 클래스 추가
+				this.classList.add("selected");
+
+				// 클릭한 날짜 값 가져오기
+				const date = this.textContent.trim();
+				if (date) {
+					const placeholder = document.querySelector(".date-placeholder");
+					placeholder.textContent = `${year}년 ${month + 1}월 ${date}일`;
+					closeModals();
+					placeholder.style.color = "#1669c7";
+					placeholder.style.fontWeight = "bold";
+				}
+			});
+		});
+	}
+
+
+
+	// 이전 달 이동
+	prevBtn.addEventListener("click", () => {
+		currentMonth--;
+		if (currentMonth < 0) {
+			currentMonth = 11;
+			currentYear--;
+		}
+		renderCalendar(currentYear, currentMonth);
+	});
+
+	// 다음 달 이동
+	nextBtn.addEventListener("click", () => {
+		currentMonth++;
+		if (currentMonth > 11) {
+			currentMonth = 0;
+			currentYear++;
+		}
+		renderCalendar(currentYear, currentMonth);
+	});
+
 	// 이전 버튼 클릭 시
 	backBtn.addEventListener("click", () => {
 		cityModal.style.display = "none";
@@ -330,11 +516,21 @@
 	function closeModals() {
 		cityModal.style.display = "none";
 		sportModal.style.display = "none";
+		peopleModal.style.display = "none";
+		dateModal.style.display = "none";
 		// 오버레이 삭제
 		if (overlay.style.display = "block") {
 			overlay.style.display = "none";
 		}
 	}
+
+	// 모달 닫기 (바깥 클릭 시)
+	window.addEventListener("click", (event) => {
+		if (event.target === modal) {
+			modal.style.display = "none";
+		}
+	});
+
 
 </script>
 
