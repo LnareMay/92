@@ -1,5 +1,6 @@
 package com.lec.packages.domain;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -28,13 +29,13 @@ public class member extends BaseEntity{
     @Column(name = "MEM_ID", length = 20)
     private String MEM_ID;
 
-    @Column(name = "MEM_PW", length = 30)
+    @Column(name = "MEM_PW", length = 30, nullable = false)
     private String MEM_PW;
 
-    @Column(name = "MEM_NAME", length = 5)
+    @Column(name = "MEM_NAME", length = 5, nullable = false)
     private String MEM_NAME;
 
-    @Column(name = "MEM_NICKNAME", length = 10)
+    @Column(name = "MEM_NICKNAME", length = 10, nullable = false)
     private String MEM_NICKNAME;
 
     @JoinColumn(name = "EXERCISE_CODE")
@@ -50,7 +51,7 @@ public class member extends BaseEntity{
     @Column(name = "MEM_GENDER")
     private boolean MEM_GENDER;
 
-    @Column(name = "MEM_TELL", length = 11)
+    @Column(name = "MEM_TELL", length = 11, nullable = false)
     private String MEM_TELL;
 
     @Column(name = "MEM_EMAIL", length = 30)
@@ -59,10 +60,10 @@ public class member extends BaseEntity{
     @Column(name = "MEM_BIRTHDAY", length = 9)
     private String MEM_BIRTHDAY;
 
-    @Column(name = "MEM_ADDRESS", length = 100)
+    @Column(name = "MEM_ADDRESS", length = 100, nullable = false)
     private String MEM_ADDRESS;
 
-    @Column(name = "MEM_ZIPCODE", length = 10)
+    @Column(name = "MEM_ZIPCODE", length = 10, nullable = false)
     private String MEM_ZIPCODE;
 
     @Column(name = "MEM_ADDRESS_SET", length = 100)
@@ -74,4 +75,5 @@ public class member extends BaseEntity{
     @Column(name = "DELETE_FLAG")
     private boolean DELETE_FLAG;
 
+    
 }
