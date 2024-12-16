@@ -136,6 +136,10 @@ ul {
 	border-bottom: 1px solid #ddd;
 }
 
+#club_main_pg #club_list .club-card:last-of-type {
+	border-bottom: 0;
+}
+
 #club_main_pg #club_list .club-card img {
 	width: 80px;
 	height: 80px;
@@ -177,13 +181,143 @@ ul {
 }
 
 /* 시설 메인페이지 */
-#facility_main_pg .filter-bar select, #facility_main_pg .filter-bar button
+/* #facility_main_pg .filter-bar select, #facility_main_pg .filter-bar button
 	{
 	height: 48px;
 }
 
 #facility_main_pg .tabs button {
 	font-size: 14px;
+} */
+#facility_main_pg .search-bar {
+	display: flex;
+	align-items: center;
+	background-color: white;
+	border: 2px solid #1a73e8;
+	border-radius: 50px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+	margin: 50px auto;
+	padding: 30px 60px;
+	max-width: 1200px;
+}
+
+#facility_main_pg .finder-title {
+	font-size: 0.9em;
+	font-weight: bold;
+	color: #fff;
+	background-color: #4c8cf0;
+	border-radius: 25px;
+	padding: 5px 12px;
+	margin-right: 20px;
+}
+
+#facility_main_pg .search-item {
+	display: flex;
+	flex-direction: column;
+	margin-right: 20px;
+	flex: 1;
+	color: #9e9e9e;
+	border-right: 1px solid #ddd;
+}
+
+#facility_main_pg .search-item label {
+	font-size: 0.85em;
+	color: #9e9e9e;
+	margin-bottom: 2px;
+}
+
+#facility_main_pg .search-item .selected {
+	font-weight: bold;
+	font-size: 1em;
+	color: #333;
+}
+
+#facility_main_pg .close-btn {
+	color: #9e9e9e;
+	font-size: 0.9em;
+	cursor: pointer;
+	margin-left: 5px;
+}
+
+#facility_main_pg button.search-btn {
+	background-color: #1a73e8;
+	color: white;
+	border: none;
+	border-radius: 25px;
+	padding: 10px 20px;
+	font-size: 1em;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+#facility_main_pg button.search-btn:hover {
+	background-color: #1669c7;
+}
+
+/* 세부 조정 */
+#facility_main_pg .search-item:last-of-type {
+	margin-right: 0;
+	border-right: 0;
+}
+
+/* 모달 스타일 */
+/* 배경을 어둡게 처리하는 오버레이 */
+#facility_main_pg .modal-overlay {
+	display: none;
+	position : fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+	position: fixed; /* 검색창보다 뒤에 있어야 하므로 z-index를 조절 */
+}
+
+#facility_main_pg .modal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	width: 390px;
+	height: auto;
+	z-index: 1000;
+}
+
+#facility_main_pg .modal-content {
+	text-align: center;
+	border: 0;
+}
+
+#facility_main_pg .modal .button-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+	margin: 10px 0;
+}
+
+#facility_main_pg .modal button {
+	padding: 10px;
+	border: none;
+	background-color: #f1f1f1;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+}
+
+#facility_main_pg .modal button:hover {
+	background-color: #e0e0e0;
+}
+
+#facility_main_pg .modal #back-btn {
+	margin-top: 10px;
+	background-color: #e74c3c;
+	color: white;
 }
 
 #facility_main_pg .row {
@@ -191,15 +325,34 @@ ul {
 }
 
 #facility_main_pg .card {
-	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-	border-radius: 8px;
+	box-shadow: -1px 5px 6px rgba(0, 0, 0, 0.1);
+	border-color: #fff;
 	transition: transform 0.2s ease-in-out;
 	position: relative;
+	border-radius: 8px;
+	border-color: #fff;
+	overflow: hidden;
+}
+
+#facility_main_pg .card .card-img {
+	height: 200px;
+	overflow: hidden;
 }
 
 #facility_main_pg .card img {
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
+	width: 100%;
+	height: 200px;
+	transition: transform .3s ease-in-out;
+}
+
+#facility_main_pg .card:hover {
+	overflow: hidden;
+}
+
+#facility_main_pg .card:hover img {
+	transform: scale(1.2);
 }
 
 #facility_main_pg .card .tag {
