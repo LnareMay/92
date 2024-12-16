@@ -27,4 +27,9 @@ public class ClubController {
 	public String clubCreate() {
 		return "club/club_create"; 
 	}
+	
+	@GetMapping("/club_detail")
+	public String clubDetail() {
+		return "club/club_detail"; 
+	}
 }
