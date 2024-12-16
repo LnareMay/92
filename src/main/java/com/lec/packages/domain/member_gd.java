@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class member extends BaseEntity{
+public class member_gd extends BaseEntity{
     // Id => P.K 명시
     // @Column => 컬럼 정보 셋업
     // length => 컬럼 데이터 길이

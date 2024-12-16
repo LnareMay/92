@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 <!-- meta_tag include -->
 <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
@@ -24,13 +24,15 @@
 
 </head>
 <body>
+	<button onclick="location.href='/member/join'">회원가입</button>
+	<button onclick="location.href='/member/login'">로그인</button>
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
 		<!-- 상단 클럽 생성 / 나의 클럽 START -->
 		<section id="my_club">
 			<div class="container">
 				<!-- Create Card -->
-				<div class="card create"><img src="/img/plus_icon.png" alt='"'>만들기</div>
+				<div class="card create"><img src="/img/plus_icon.png" alt="">만들기</div>
 
 				<!-- First Card -->
 				<div class="card">
