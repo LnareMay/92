@@ -1,0 +1,123 @@
+package com.lec.packages.domain;
+
+
+import java.util.HashSet;
+import java.util.Set;
+
+import com.lec.packages.domain.MemberRole;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(exclude = "roleSet")
+public class Member extends BaseEntity{
+    // Id => P.K 명시
+    // @Column => 컬럼 정보 셋업
+    // length => 컬럼 데이터 길이
+    // name => 컬럼 이름
+    // columnDefinition => 컬럼 데이터 타입 지정
+    // @JoinColumn => 외래키 명시
+    
+    @Id
+    @Column(name = "MEM_ID", length = 20)
+    private String MEM_ID;
+
+    @Column(name = "MEM_PW", length = 255, nullable = false)
+    private String MEM_PW;
+
+    @Column(name = "MEM_NAME", length = 5, nullable = false)
+    private String MEM_NAME;
+
+    @Column(name = "MEM_NICKNAME", length = 10, nullable = false)
+    private String MEM_NICKNAME;
+
+    @JoinColumn(name = "EXERCISE_CODE")
+    @Column(name = "MEM_EXERCISE", length = 15)
+    private String MEM_EXERCISE;
+    
+    @JoinColumn(name = "EXERCISE_CODE")
+    @Column(name = "MEM_CLUB", length = 15)
+    private String MEM_CLUB;
+    
+
+    @Column(name = "MEM_PICTURE",length = 255)
+    private String MEM_PICTURE;
+
+    @Column(name = "MEM_INTRODUCTION", columnDefinition = "TEXT")
+    private String MEM_INTRODUCTION;
+
+    @Column(name = "MEM_GENDER")
+    private boolean MEM_GENDER;
+
+    @Column(name = "MEM_TELL", length = 11, nullable = false)
+    private String MEM_TELL;
+
+    @Column(name = "MEM_EMAIL", length = 30)
+    private String MEM_EMAIL;
+
+    @Column(name = "MEM_BIRTHDAY", length = 9)
+    private String MEM_BIRTHDAY;
+
+    @Column(name = "MEM_ADDRESS", length = 100, nullable = false)
+    private String MEM_ADDRESS;
+
+    @Column(name = "MEM_ZIPCODE", length = 10, nullable = false)
+    private String MEM_ZIPCODE;
+
+    // @Column(name = "MEM_ADDRESS_SET", length = 100)
+    // private String MEM_ADDRESS_SET;
+
+    @Column(name = "MEM_ISMANAGER")
+    private boolean MEM_ISMANAGER;
+
+    @Column(name = "MEM_SOCIAL")
+    private boolean MEM_SOCIAL;
+    
+    @Column(name = "DELETE_FLAG")
+    private boolean DELETE_FLAG;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+	private Set<MemberRole> roleSet = new HashSet<>();
+	
+    @Builder
+	public void changePassword(String MEM_PW) {
+		this.MEM_PW = MEM_PW;
+	}
+	
+	public void changeEmail(String MEM_EMAIL) {
+		this.MEM_EMAIL = MEM_EMAIL;
+	}
+	
+	public void changeDel(boolean DELETE_FLAG) {
+		this.DELETE_FLAG = DELETE_FLAG;
+	}
+	
+	public void addRole(MemberRole memberRole) {
+		this.roleSet.add(memberRole);
+	}
+	
+	public void clearRole() {
+		this.roleSet.clear();
+	}
+	
+	public void changeSocial(boolean MEM_SOCIAL) {
+		this.MEM_SOCIAL = MEM_SOCIAL;
+	}
+    
+}
