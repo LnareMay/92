@@ -26,6 +26,8 @@ public class facilityDTO {
 
     @NotEmpty
     private String FACILITY_ZIPCODE;
+    
+    private String FACILITY_DESCRIPTION;
 
     private long FACILITY_IMAGE_1;
     

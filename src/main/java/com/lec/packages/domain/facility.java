@@ -41,6 +41,9 @@ public class facility extends BaseEntity{
 
     @Column(nullable = false, name = "FACILITY_ZIPCODE", length = 20)
     private String FACILITY_ZIPCODE;
+    
+    @Column(columnDefinition = "TEXT", name = "FACILITY_DESCRIPTION")
+    private String FACILITY_DESCRIPTION;
 
     @Column(name = "FACILITY_IMAGE_1", columnDefinition = "LONGBLOB")
     private long FACILITY_IMAGE_1;
