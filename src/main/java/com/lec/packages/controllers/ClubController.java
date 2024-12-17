@@ -17,11 +17,6 @@ public class ClubController {
     public void getClubList(){
         
     }
-    
-	@GetMapping("/club_main")
-	public String clubMain() {
-		return "club/club_main"; 
-	}
 	
 	@GetMapping("/club_create")
 	public String clubCreate() {
@@ -31,5 +26,15 @@ public class ClubController {
 	@GetMapping("/club_detail")
 	public String clubDetail() {
 		return "club/club_detail"; 
+	}
+	
+	@GetMapping("/club_board")
+	public String clubBoard() {
+		return "club/club_board"; 
+	}
+	
+	@GetMapping("/club_calendar")
+	public String clubCalendar() {
+		return "club/club_calendar"; 
 	}
 }

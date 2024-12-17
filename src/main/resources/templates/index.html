@@ -32,7 +32,9 @@
 		<section id="my_club">
 			<div class="container">
 				<!-- Create Card -->
-				<div class="card create"><img src="/img/plus_icon.png" alt="">만들기</div>
+				<div class="card create">
+					<a href="/club/club_create"><img src="/img/plus_icon.png" alt=""></a>만들기
+				</div>
 
 				<!-- First Card -->
 				<div class="card">
@@ -87,12 +89,12 @@
 
 		<!-- 클럽 목록 START -->
 		<section id="club_list" class="container">
-			<ul>
-				<li class="club-card"><img
+			<ul> 
+				<li class="club-card" onclick="location.href='/club/club_detail'"><img
 					src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
 					alt="Club Thumbnail">
 					<div class="club-content">
-						<div class="club-title">🤍김포 라이프🤍</div>
+						<div class="club-title" id="CLUB_NAME">🤍김포 라이프🤍</div>
 						<div class="club-description">지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
 							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
 							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
@@ -182,3 +184,4 @@
 	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>
+
