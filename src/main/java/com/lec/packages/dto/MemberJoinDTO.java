@@ -19,7 +19,7 @@ public class MemberJoinDTO {
 	private String MEM_BIRTHDAY;
 	private String MEM_ADDRESS;
 	private String MEM_ZIPCODE;
-	// private String MEM_ADDRESS_SET;
+	private String MEM_ADDRESS_SET;
 	private boolean MEM_ISMANAGER;
 	private boolean DELETE_FLAG;
 	private boolean MEM_SOCIAL;

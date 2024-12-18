@@ -67,7 +67,7 @@ public class Member extends BaseEntity{
 
     @Column(name = "MEM_TELL", length = 11, nullable = false)
     private String MEM_TELL;
-
+ 
     @Column(name = "MEM_EMAIL", length = 30)
     private String MEM_EMAIL;
 
@@ -80,8 +80,8 @@ public class Member extends BaseEntity{
     @Column(name = "MEM_ZIPCODE", length = 10, nullable = false)
     private String MEM_ZIPCODE;
 
-    // @Column(name = "MEM_ADDRESS_SET", length = 100)
-    // private String MEM_ADDRESS_SET;
+    @Column(name = "MEM_ADDRESS_SET", length = 100)
+    private String MEM_ADDRESS_SET;
 
     @Column(name = "MEM_ISMANAGER")
     private boolean MEM_ISMANAGER;

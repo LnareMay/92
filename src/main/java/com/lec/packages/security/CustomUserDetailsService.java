@@ -93,6 +93,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 					  , member.getMEM_BIRTHDAY()
 					  , member.getMEM_ADDRESS()
 					  , member.getMEM_ZIPCODE()
+					  , member.getMEM_ADDRESS_SET()
 					  , member.isMEM_ISMANAGER()
 					  , member.isMEM_SOCIAL()
 					  , member.isDELETE_FLAG()
