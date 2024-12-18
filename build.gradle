@@ -77,7 +77,7 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
 }
 
-def querydslDir = "$buildDir/generated/querydsl"
+def querydslDir = "src/main/java/generated"
 
 querydsl {
     jpa = true
