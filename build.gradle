@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'		
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.lec'
@@ -77,21 +77,17 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
 }
 
-def querydslDir = "$buildDir/generated/querydsl"
+def querydslDir = "src/main/java/generated"
 
 querydsl {
     jpa = true
     querydslSourcesDir = querydslDir
 }
 
-sourceSets {
-    main.java.srcDir querydslDir
+clean {
+    delete file(querydslDir)
 }
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslDir)
 }
