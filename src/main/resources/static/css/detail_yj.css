@@ -158,20 +158,41 @@
 }
 
 /* 클럽 테마 */
-.theme-container, .exercise-container {
+.exercise-container {
     display: flex;
     align-items: center;
     gap: 10px; 
 }
 
-.theme-selection , .exercise-selection {
+.exercise-selection  {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.exercise-selection button.selected {
+    background-color: #007bff; 
+    color: white; 
+    border-color: #007bff; 
+}
+
+.theme-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.theme-selection  {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 20px;
     justify-content: center;
 }
-.theme-selection button , .exercise-selection button {
+
+.theme-selection button, .exercise-selection button {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 20px;
@@ -181,13 +202,13 @@
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.theme-selection button.selected , .exercise-selection button.selected {
+.theme-selection button.selected {
     background-color: #007bff;
     color: white; 
     border-color: #007bff; 
 }
 
-.theme-selection button:hover, .exercise-selection button:hover {
+.theme-selection button:hover {
     background-color: #e0e0e0; 
     color: black; 
 }
