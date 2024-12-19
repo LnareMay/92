@@ -13,7 +13,7 @@ public class MemberJoinDTO {
 	private String MEM_CLUB;
 	private String MEM_PICTURE;
 	private String MEM_INTRODUCTION;
-	private Boolean MEM_GENDER;
+	private boolean MEM_GENDER;
 	private String MEM_TELL;
 	private String MEM_EMAIL;
 	private String MEM_BIRTHDAY;
@@ -21,8 +21,8 @@ public class MemberJoinDTO {
 	private String MEM_ADDRESS_DETAIL;
 	private String MEM_ZIPCODE;
 	private String MEM_ADDRESS_SET;
-	private Boolean MEM_ISMANAGER;
-	private Boolean DELETE_FLAG;
-	private Boolean MEM_SOCIAL;
+	private boolean MEM_ISMANAGER;
+	private boolean DELETE_FLAG;
+	private boolean MEM_SOCIAL;
 
 }
