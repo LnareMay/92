@@ -265,7 +265,7 @@ ul {
 /* 배경을 어둡게 처리하는 오버레이 */
 #facility_main_pg .modal-overlay {
 	display: none;
-	position : fixed;
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -321,84 +321,82 @@ ul {
 }
 
 #facility_main_pg .counter-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 20px;
 }
 
 #facility_main_pg .counter-btn {
-  width: 30px;
-  height: 30px;
-  font-size: 18px;
-  border: none;
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+	width: 30px;
+	height: 30px;
+	font-size: 18px;
+	border: none;
+	background-color: #f1f1f1;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.3s ease;
 }
 
 #facility_main_pg .counter-btn:hover {
-  background-color: #e0e0e0;
+	background-color: #e0e0e0;
 }
 
 #facility_main_pg .modal .apply-btn {
-  padding: 10px;
-  background-color: rgb(22, 105, 199);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+	padding: 10px;
+	background-color: rgb(22, 105, 199);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.3s ease;
 }
 
 #facility_main_pg .modal .apply-btn:hover {
-  background-color: #1669c7;
+	background-color: #1669c7;
 }
 
 #facility_main_pg .calendar-container {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 #facility_main_pg .calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  margin-bottom: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: bold;
+	margin-bottom: 10px;
 }
 
 #facility_main_pg .calendar-nav {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 #facility_main_pg .calendar {
-  width: 100%;
-  border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 #facility_main_pg .calendar th, .calendar td {
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #ddd;
+	text-align: center;
+	padding: 10px;
+	border: 1px solid #ddd;
 }
 
 #facility_main_pg .calendar td {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 #facility_main_pg .calendar td:hover {
-  background-color: #f1f1f1;
+	background-color: #f1f1f1;
 }
 
 #facility_main_pg .calendar td.selected {
-  background-color: #1a73e8;
-  color: white;
-  border-radius: 50%;
+	background-color: #1a73e8;
+	color: white;
+	border-radius: 50%;
 }
-
-
 
 #facility_main_pg .row {
 	gap: 30px 0;
@@ -466,4 +464,267 @@ ul {
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
 	overflow: hidden;
+}
+
+/* 로그인 페이지 */
+.login_pg_body {
+	background: #f6f5f7;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-family: 'Montserrat', sans-serif;
+	height: 100vh;
+	margin: -20px 0 50px;
+}
+
+#login_pg h1 {
+	font-weight: bold;
+	margin: 0;
+}
+
+#login_pg h2 {
+	text-align: center;
+}
+
+#login_pg p {
+	font-size: 14px;
+	font-weight: 100;
+	line-height: 20px;
+	letter-spacing: 0.5px;
+	margin: 20px 0 30px;
+}
+
+#login_pg span {
+	font-size: 12px;
+}
+
+#login_pg a {
+	color: #333;
+	font-size: 14px;
+	text-decoration: none;
+	margin: 15px 0;
+}
+
+/* #login_pg button {
+	border-radius: 20px;
+	border: 1px solid #FF4B2B;
+	background-color: #FF4B2B;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+} */
+
+/* #login_pg button:active {
+	transform: scale(0.95);
+}
+
+#login_pg button:focus {
+	outline: none;
+} */
+
+#login_pg button.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+#login_pg form {
+	background-color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 50px;
+	height: 100%;
+	text-align: center;
+}
+
+#login_pg form#registerForm{
+	display:block;
+	overflow-y:scroll;
+	padding:50px;
+	text-align:left;
+}
+
+/* #login_pg form#registerForm input{
+	width:100%;
+} */
+
+#login_pg form#registerForm label{
+	/* width: 100%; */
+	display: inline-block;	
+}
+
+#login_pg form#registerForm .form-check-input{
+	width:auto;
+	margin-right:10px;
+	float:none;
+	height:30px;
+}
+
+#login_pg form#registerForm .form-select{
+	margin:8px 0;
+}
+
+#login_pg form#registerForm .form-check{
+	padding-left:0;
+	display: flex;
+	align-items: center;
+}
+
+#login_pg form#registerForm .form-check-input:checked{
+	background-color:#4582ec;
+} 
+
+#login_pg input {
+	background-color: #eee;
+	border: none;
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+}
+#login_pg input[type="button"]{
+	background-color:#4582ec;
+	border-radius:0.375rem;
+}
+
+#login_pg.container {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px
+		rgba(0, 0, 0, 0.22);
+	position: relative;
+	overflow: hidden;
+	max-width: 1200px;
+	width: 100%;
+	min-height: 480px;
+	/* height:100%; */
+}
+
+#login_pg .form-container {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	transition: all 0.6s ease-in-out;
+}
+
+#login_pg .sign-in-container {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+}
+
+#login_pg.container.right-panel-active .sign-in-container {
+	transform: translateX(100%);
+}
+
+#login_pg .sign-up-container {
+	left: 0;
+	width: 50%;
+	opacity: 0;
+	z-index: 1;
+}
+
+#login_pg.container.right-panel-active .sign-up-container {
+	transform: translateX(100%);
+	opacity: 1;
+	z-index: 5;
+	animation: show 0.6s;
+}
+
+@keyframes show { 
+	0%, 49.99% {
+	opacity: 0;
+	z-index: 1;
+}
+
+50%,100%{
+opacity:1;
+z-index:5;	
+}
+}
+#login_pg .overlay-container {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	transition: transform 0.6s ease-in-out;
+	z-index: 100;
+}
+
+#login_pg.container.right-panel-active .overlay-container {
+	transform: translateX(-100%);
+}
+
+#login_pg .overlay {
+	background: #4582ec;
+	background: -webkit-linear-gradient(to right, #4582ec 67.65%, #6e49e4);
+	background: linear-gradient(to right, #4582ec 67.65%, #6e49e4);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 0 0;
+	color: #FFFFFF;
+	position: relative;
+	left: -100%;
+	height: 100%;
+	width: 200%;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+#login_pg.container.right-panel-active .overlay {
+	transform: translateX(50%);
+}
+
+#login_pg .overlay-panel {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 40px;
+	text-align: center;
+	top: 0;
+	height: 100%;
+	width: 50%;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+#login_pg .overlay-left {
+	transform: translateX(-20%);
+}
+
+#login_pg.container.right-panel-active .overlay-left {
+	transform: translateX(0);
+}
+
+#login_pg .overlay-right {
+	right: 0;
+	transform: translateX(0);
+}
+
+#login_pg.container.right-panel-active .overlay-right {
+	transform: translateX(20%);
+}
+
+#login_pg .social-container {
+	margin: 20px 0;
+}
+
+#login_pg .social-container a {
+	border: 1px solid #DDDDDD;
+	border-radius: 50%;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 5px;
+	height: 40px;
+	width: 40px;
 }
