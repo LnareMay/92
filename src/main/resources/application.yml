@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo
+    name: 92_FITLINK
   datasource:
     url: jdbc:mysql://3.107.192.1:3306/92s_database?createDatabaseIfNotExist=true
     username: springboot

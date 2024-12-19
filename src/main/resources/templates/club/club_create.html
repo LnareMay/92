@@ -17,10 +17,30 @@
     <!-- 공통 js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <script>
-    function toggleCategory(element) {
-        element.classList.toggle('selected');
-    }
+    
+    function selectExercise(button) {
+        document.getElementById('clubExercise').value = button.value;
 
+        const exercisebuttons = document.querySelectorAll('.exercise-selection button');
+        exercisebuttons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+    }
+    
+	function selectTheme(button) {
+	    const themevalue = document.getElementById('clubTheme'); 
+	    let selectedThemes = themevalue.value ? themevalue.value.split(',') : [];
+
+	    if (button.classList.contains('selected')) {
+	        selectedThemes = selectedThemes.filter(theme => theme !== button.value);
+	        button.classList.remove('selected');
+	    } else {
+	        selectedThemes.push(button.value);
+	        button.classList.add('selected');
+	    }
+	    themevalue.value = selectedThemes.join(',');
+	}
+    
+    /* 클럽 사진 */
     function previewImage(event, targetId) {
         const reader = new FileReader();
         reader.onload = function () {
@@ -32,13 +52,14 @@
         reader.readAsDataURL(event.target.files[0]);
     }
     
+    /* 클럽 공개여부 비밀번호 */
     function togglePasswordField() {
-        const isPrivate = document.getElementById('club-isprivate').checked;
-        const passwordField = document.getElementById('password-field');
+        const isPrivate = document.getElementById('CLUB_ISPRIVATE').checked;
+        const passwordField = document.getElementById('CLUB_PW');
         if (isPrivate) {
-            passwordField.style.display = 'inline-block'; // 비밀번호 입력칸 보이기
+            passwordField.style.display = 'inline-block'; 
         } else {
-            passwordField.style.display = 'none'; // 비밀번호 입력칸 숨기기
+            passwordField.style.display = 'none'; 
         }
     }
 </script>
@@ -49,66 +70,94 @@
     <main class="container main">
 <!--         <h5><b>어떤 클럽을 만들까요?</b></h5> -->
     
-        <form class="club-title">
-            <label for="club-name">클럽명</label>
-            	<input type="text" id="group-name" width="50%" placeholder="클럽명"></input>
+        <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
+           	
+            <label for="club-code">클럽코드 </label>
+            	<input type="text" name="CLUB_CODE" id="clubCode" placeholder="클럽명"></input>
+            
+            <label for="club-name">클럽명	</label>
+            	<input type="text" name="CLUB_NAME" id="clubName" placeholder="클럽명"></input>
 
-            <label for="club-category">클럽 테마</label>
-	           	<div class="category-container">
-				    <div class="category-selection">
-				        <span onclick="toggleCategory(this)">운동클럽</span>
-				        <span onclick="toggleCategory(this)">운동일지</span>
-				        <span onclick="toggleCategory(this)">영양제/식단</span>
-				        <span onclick="toggleCategory(this)">헬스</span>
-				        <span onclick="toggleCategory(this)">체중감량</span>
-				        <span onclick="toggleCategory(this)">바디프로필</span>
-				        <span onclick="toggleCategory(this)">부상/재활</span>
-				        <span onclick="toggleCategory(this)">대회준비</span>
+		    <label for="club-exercise">선호 운동 코드</label>
+				<div class="exercise-container">
+				    <div class="exercise-selection">
+				        <input type="hidden" id="clubExercise" name="CLUB_EXERCISE" />				
+					        <button type="button" onclick="selectExercise(this)" value="EXE-BADMINTON">배드민턴</button>
+					        <button type="button" onclick="selectExercise(this)" value="EXE-BASEBALL">야구</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-BASKET">농구</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-CLIMB">암벽등반</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-FOOTBALL">축구</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-FUTSAL">풋살</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-GYM">헬스</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-MOUNT">등산</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-PILATES">필라테스</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-TENNIS">테니스</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE-YOGA">요가</button>
+			        </div>
+			    </div>
+			    
+			<label for="club-theme">클럽 테마</label>
+	           	<div class="theme-container">
+				    <div class="theme-selection">
+				    	<input type="hidden" id="clubTheme" name="CLUB_THEME" />		
+							<button type="button" onclick="selectTheme(this)" value="THM-SPORTCLUB">운동클럽</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-SPORTJOURNAL">운동일지</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-FOOD">영양제/식단</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-FITNESS">헬스</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-DIET">체중감량</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-BODYPROFILE">바디프로필</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-RECOVER">부상/재활</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-CONTEST">대회준비</button>
+							<button type="button" onclick="selectTheme(this)" value="THM-EXAM">입시준비</button>
 				    </div>
 				</div>
-            
+
             <label for="club-description">클럽 소개</label>
             	<div class="club-intro-container">
-              	  <textarea id="club-intro" maxlength="500" rows="5" placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
+              	  <textarea name="CLUB_INTRODUCTION" id="clubIntroduction" maxlength="500" rows="5" placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
 				</div>
             
             <!-- 사진 추가 -->
-            <label for="club-image">클럽 사진</label>
-			 <div class="photo-container">
-				<div class="photo-upload">
-			       <label for="photo-upload-1">
-			           <img id="preview-1" src="/img/plus_icon.png" alt="대표이미지1" class="default-icon">
+            <label for="club-image">대표 이미지</label>
+			 <div class="club-image-container">
+				<div class="club-image-upload">
+			       <label for="CLUB_IMAGE_1">
+			           <img id="photo-upload-1" src="/img/plus_icon.png" alt="대표이미지1" class="default-icon">
 			       </label>
-			       <input id="photo-upload-1" type="file" accept="image/*" onchange="previewImage(event, 'preview-1')" style="display: none;">
+			       <input id="clubImage1" name="CLUB_IMAGE_1" type="file" accept="image/*" onchange="previewImage(event, 'photo-clubImage1')" style="display: none;">
 			    </div>
-			    <div class="photo-upload">
+			    <div class="club-image-upload">
 			 		<label for="photo-upload-2">   	
-			           <img id="preview-2" src="/img/plus_icon.png" alt="대표이미지2" class="default-icon">
+			           <img id="clubImage2" name="CLUB_IMAGE_2" src="/img/plus_icon.png" alt="대표이미지2" class="default-icon">
 			        </label>
-			        <input id="photo-upload-2" type="file" accept="image/*" onchange="previewImage(event, 'preview-2')" style="display: none;" />
+			        <input id="photo-upload-2" type="file" accept="image/*" onchange="previewImage(event, 'clubImage2')" style="display: none;" />
 			    </div>
-			    <div class="photo-upload">
+			    <div class="club-image-upload">
 			    	<label for="photo-upload-3">   	
-			           <img id="preview-3" src="/img/plus_icon.png" alt="대표이미지3" class="default-icon">
+			           <img id="clubImage3" src="/img/plus_icon.png" alt="대표이미지3" class="default-icon">
 			        </label>
-			        <input id="photo-upload-3" type="file" accept="image/*" onchange="previewImage(event, 'preview-3')" style="display: none;" />
+			        <input id="photo-upload-3" type="file" accept="image/*" onchange="previewImage(event, 'clubImage3')" style="display: none;" />
 			    </div>
-			    <div class="photo-upload">
+			    <div class="club-image-upload">
 			   	 	<label for="photo-upload-4">   	
-			           <img id="preview-4" src="/img/plus_icon.png" alt="대표이미지4" class="default-icon">
+			           <img id="clubImage4" src="/img/plus_icon.png" alt="대표이미지4" class="default-icon">
 			        </label>
-			        <input id="photo-upload-4" type="file" accept="image/*" onchange="previewImage(event, 'preview-4')" style="display: none;" />
+			        <input id="photo-upload-4" type="file" accept="image/*" onchange="previewImage(event, 'clubImage4')" style="display: none;" />
 			    </div>
 			</div>
+			<!-- 주활동지역 -->
+			<label for="club-address">주활동지역</label>
+            	<input type="text" id="clubAddress" name="CLUB_ADDRESS" placeholder=""></input>
 			
-			<!-- 클럽 공개여부 -->
+			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-			    <input type="checkbox" id="club-isprivate" name="club-isprivate" onchange="togglePasswordField()"> 비공개
-			    <input type="password" id="password-field" placeholder="비밀번호 입력" style="display: none; margin-left: 10px;">
+			    <input type="checkbox" id="clubIsprivate" name="CLUB_ISPRIVATE" onchange="togglePasswordField()"> 비공개
+			    <input type="password" id="clubPw" name="CLUB_PW" placeholder="비밀번호 입력" style="display: none; margin-left: 10px;">
 			</div>
 
             <button type="submit" class="btn btn-primary mt-4">만들기</button>
+            <button type="reset" class="btn btn-secondary mt-4">새로고침</button>
         </form>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>

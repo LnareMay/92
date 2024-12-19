@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class clubDTO {
+public class ClubDTO {
     // @NotEmpty => Not null
 
     @NotEmpty
@@ -28,13 +28,13 @@ public class clubDTO {
     private String CLUB_THEME;
 
     @NotEmpty
-    private long CLUB_IMAGE_1;
-    @NotEmpty
-    private long CLUB_IMAGE_2;
-    @NotEmpty
-    private long CLUB_IMAGE_3;
-    @NotEmpty
-    private long CLUB_IMAGE_4;
+    private String CLUB_IMAGE_1;
+//  @NotEmpty
+    private String CLUB_IMAGE_2;
+//  @NotEmpty
+    private String CLUB_IMAGE_3;
+//  @NotEmpty
+    private String CLUB_IMAGE_4;
 
     private String CLUB_ADDRESS;
 

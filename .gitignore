@@ -10,3 +10,6 @@
 .project
 /.vscode
 /.settings/org.eclipse.buildship.core.prefs
+*.bin
+*.bin
+*.lock

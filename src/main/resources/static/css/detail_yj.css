@@ -117,11 +117,11 @@
     align-self: flex-end;
 }
 
-/* 시설예약메인페이지 */
-/* body {
-    font-family: 'Arial', sans-serif;
-} */
+#clubcreate {
+	margin-top: 20px;
+}
 
+/* 시설예약메인페이지 */
 .filter-bar select,
 .filter-bar button {
     height: 38px;
@@ -158,20 +158,41 @@
 }
 
 /* 클럽 테마 */
-.category-container {
+.exercise-container {
     display: flex;
     align-items: center;
     gap: 10px; 
 }
 
-.category-selection {
+.exercise-selection  {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.exercise-selection button.selected {
+    background-color: #007bff; 
+    color: white; 
+    border-color: #007bff; 
+}
+
+.theme-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.theme-selection  {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 20px;
     justify-content: center;
 }
-.category-selection span {
+
+.theme-selection button, .exercise-selection button {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 20px;
@@ -181,13 +202,13 @@
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.category-selection span.selected {
+.theme-selection button.selected {
     background-color: #007bff;
     color: white; 
     border-color: #007bff; 
 }
 
-.category-selection span:hover {
+.theme-selection button:hover {
     background-color: #e0e0e0; 
     color: black; 
 }
@@ -206,8 +227,8 @@ input[type="text"], textarea {
     margin-bottom: 20px;
 }
 
-/* 사진 업로드 섹션 */
-.photo-container {
+/* 클럽사진 업로드 */
+.club-image-container {
     display: flex;
     justify-content: flex-start;
     gap: 10px; 
@@ -215,7 +236,7 @@ input[type="text"], textarea {
     padding-bottom: 15px;
 }
 
-.photo-upload {
+.club-image-upload {
     width: 150px;
     height: 150px;
     border: 2px dashed #ddd;
@@ -227,7 +248,7 @@ input[type="text"], textarea {
     overflow: hidden; 
 }
 
-.photo-upload img {
+.club-image-upload img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
@@ -240,4 +261,74 @@ input[type="text"], textarea {
 }
 
 
+/* 멤버 섹션 스타일 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.rounded-circle {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+.fw-bold {
+    margin-bottom: 0.3rem;
+}
+
+/* 일정 섹션 날짜 */
+.bg-light {
+    width: 50px;
+    height: 50px;
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.club-headerimg {
+    width: 1300px;
+    height: 300px;
+}
+
+p.fw-bold {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+        
+ /* 게시글 섹션 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.more-link {
+    color: #aaa;
+    font-size: 0.9rem;
+    text-align: right; 
+    display: block; 
+    margin-left: auto; 
+}
+
+.btn-sm {
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+.d-flex img {
+    object-fit: cover;
+    width: 80px;
+    height: 80px;
+}
+
+.board-text {
+	font-size: 18px;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	overflow: hidden;
+}
 
