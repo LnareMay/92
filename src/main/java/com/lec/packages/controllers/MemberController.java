@@ -2,6 +2,8 @@ package com.lec.packages.controllers;
 
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.MemberJoinDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.service.MemberService;
 import com.lec.packages.service.MemberService.MidExistException;
 
@@ -58,4 +61,20 @@ public class MemberController {
 		redirectAttributes.addFlashAttribute("result", "회원가입 성공");
 		return "redirect:/member/login";
 	}
+	
+	
+	@GetMapping("/profile")
+	public String getProfile() {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    Object principal = authentication.getPrincipal();
+
+	    if (principal instanceof MemberSecurityDTO) {
+	        log.info("Principal is MemberSecurityDTO: " + principal);
+	    } else {
+	        log.info("Principal is not MemberSecurityDTO, it is: " + principal.getClass().getName());
+	    }
+
+	    return "profile";
+	}
+
 }
