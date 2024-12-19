@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.service.ClubService;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -55,9 +55,21 @@ public class ClubController {
 	public String clubBoard() {
 		return "club/club_board"; 
 	}
+
+	@PostMapping("board_register")
+	public String clubBoardPost(){
+		log.info("registerController");
+		return "redirect:/club/club_board";
+	}
 	
 	@GetMapping("/club_calendar")
 	public String clubCalendar() {
 		return "club/club_calendar"; 
+	}
+
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/club_board_write")
+	public String clubBoardWrite(){
+		return "club/club_board_write";
 	}
 }
