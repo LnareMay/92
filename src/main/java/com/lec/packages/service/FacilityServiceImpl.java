@@ -1,4 +1,4 @@
-package com.lec.admin.service;
+package com.lec.packages.service;
 
 
 
@@ -10,12 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.lec.admin.domain.facility;
-import com.lec.admin.dto.PageRequestDTO;
-import com.lec.admin.dto.PageResponseDTO;
-import com.lec.admin.dto.facilityDTO;
-import com.lec.admin.repository.FacilityRepository;
-
+import com.lec.packages.domain.facility;
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.facilityDTO;
+import com.lec.packages.repository.FacilityRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

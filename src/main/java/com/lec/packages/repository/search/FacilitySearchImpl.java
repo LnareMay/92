@@ -1,4 +1,4 @@
-package com.lec.admin.repository.search;
+package com.lec.packages.repository.search;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import com.lec.admin.domain.Qfacility;
-import com.lec.admin.domain.facility;
+import com.lec.packages.domain.Qfacility;
+import com.lec.packages.domain.facility;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 
