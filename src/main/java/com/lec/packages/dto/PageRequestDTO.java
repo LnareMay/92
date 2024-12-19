@@ -24,8 +24,9 @@ public class PageRequestDTO {
     @Builder.Default
     private int size = 10;
 
-    // 검색 유형, t/c/w/tc/tcw
-    private String type = "t";
+    // 검색 유형
+    @Builder.Default
+    private String type = "c";
 
     private String keyword;
 

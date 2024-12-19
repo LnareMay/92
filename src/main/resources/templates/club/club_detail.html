@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- meta_tag include -->
+<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+<title>클럽 상세</title>
+
+<!-- 공통 css -->
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+<!-- Linking CSS files -->
+<link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
+<link rel="stylesheet" th:href="@{/css/detail_yj.css}">
+
+<!-- 공통 js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+
+</head>
+<body>
+	<div th:insert="~{/layouts/header :: header}"></div>
+ 	<main class="container my-4">
+ 	<section>
+        <!-- 대표이미지 -->
+        <div>
+            <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" class="club-headerimg">
+        </div>
+
+        <!-- 클럽 정보 -->
+        <div class="club-header-content mt-3">
+            <div>
+                <h5 class="fw-bold mb-1" id="CLUB_NAME">🤍김포 라이프🤍</h5>
+                <p class="text-muted mb-0">회원 35 · 게시글 139</p>
+            </div>
+        </div>
+
+        <!-- 클럽 소개 -->
+        <p class="mt-3 club-description">
+           지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^
+        </p>
+        <!-- 클럽 테마 -->
+        <p class="text-muted">#운동 #취미</p>
+            <!-- 가입 버튼 -->
+        <button class="btn btn-warning fw-bold join-btn shadow-sm">클럽 가입하기</button>
+		</section>
+				   <hr >
+				
+               <!-- 멤버 섹션 -->
+			   <div class="row">
+			       <div class="col-md-6">
+			               <section>
+			                   <div class="section-header mb-3">
+			                       <h6>멤버 10</h6>
+			                       <a href="#" class="more-link">더보기 ></a>
+			                   </div>
+			                   <div class="d-flex flex-column">
+			                       <!-- 첫 번째 멤버 -->
+			                       <div class="d-flex align-items-center mb-3">
+			                           <img src="https://via.placeholder.com/50" alt="프로필 이미지" class="rounded-circle me-3">
+			                           <div>
+			                               <p class="mb-1 fw-bold">디글 <span class="text-warning small">⭐</span></p>
+			                               <small class="text-muted">서계동</small>
+			                           </div>
+			                       </div>
+			                       <!-- 두 번째 멤버 -->
+			                       <div class="d-flex align-items-center mb-3">
+			                           <img src="https://via.placeholder.com/50" alt="프로필 이미지" class="rounded-circle me-3">
+			                           <div>
+			                               <p class="mb-1 fw-bold">당근당근</p>
+			                               <small class="text-muted">성산제2동</small>
+			                           </div>
+			                       </div>
+			                   </div>
+			               </section>
+			           </div>
+
+			           <!-- 일정 섹션 -->
+			           <div class="col-md-6">
+			               <section>
+			                   <div class="section-header mb-3">
+			                       <h6>일정 3</h6>
+			                       <a href="/club/club_calendar" class="more-link">더보기 ></a>
+			                   </div>
+			                   <div>
+			                       <!-- 첫 번째 일정 -->
+			                       <div class="d-flex align-items-center mb-3">
+			                           <div class="me-3 text-center">
+			                               <div class="bg-light p-2 rounded">
+			                                   <strong>12월<br>16</strong>
+			                               </div>
+			                           </div>
+			                           <div>
+			                               <p class="mb-1 fw-bold">독서가 곁들여진 일상 글쓰기 모임</p>
+			                               <span class="text-danger small">모집중</span><br>
+			                               <small class="text-muted">오후 3:30 · 2/4명</small>
+			                           </div>
+			                       </div>
+			                       <!-- 두 번째 일정 -->
+			                       <div class="d-flex align-items-center mb-3">
+			                           <div class="me-3 text-center">
+			                               <div class="bg-light p-2 rounded">
+			                                   <strong>12월<br>16</strong>
+			                               </div>
+			                           </div>
+			                           <div>
+			                               <p class="mb-1 fw-bold">유종의 미 거두는 연말독서 같이해요</p>
+			                               <span class="text-muted small">종료</span><br>
+			                               <small class="text-muted">오후 5:00 · 1/4명</small>
+			                           </div>
+			                       </div>
+			                   </div>
+			               </section>
+			           </div>
+					</div>
+				<hr >
+                <!-- 게시글 섹션 -->
+				<section>
+				    <div class="section-header mb-3">
+				        <h6>게시글 139</h6>
+				        <a href="/club/club_board" class="more-link">더보기 ></a>
+				    </div>
+				
+				    <!-- 첫 번째 게시글 -->
+				    <div class="d-flex mb-4">
+				        <!-- 게시글 본문 -->
+				        <div class="me-3" style="flex: 1;">
+				            <p class="board-text text-muted">모임에만 공개된 게시글이에요.</p>
+				            <small class="text-muted">감자 · 6일 전 · 전체<span class="ms-3">💬 3</span></small>
+				        </div>
+				    </div>
+				
+				    <!-- 두 번째 게시글 -->
+				    <div class="d-flex mb-4">
+				        <!-- 게시글 본문 -->
+				        <div class="me-3" style="flex: 1;">
+				            <p class="board-text">
+				                첫병 축하축하~ 몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹어라 쫌!! 🔥🔥🔥🔥 
+				                몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹
+				            </p>
+				            <small class="text-muted">권근 · 13일 전 · 전체<span class="ms-3">💬 9</span></small>
+				        </div>
+				        <!-- 게시글 이미지 -->
+				        <div>
+				            <img src="https://via.placeholder.com/80" alt="게시글 이미지" class="rounded">
+				        </div>
+				    </div>
+				</section>
+    </main>
+  
+    <div th:insert="~{layouts/footer :: footer}"></div>
+</body>
+</html>

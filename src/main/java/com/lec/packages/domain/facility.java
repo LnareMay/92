@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,53 +31,57 @@ public class facility extends BaseEntity{
     // columnDefinition => 컬럼 데이터 타입 지정
     // @JoinColumn => 외래키 명시
 
-    @Id
-    @Column(length = 20, name = "FACILITY_CODE")
-    private String FACILITY_CODE;
+	 	@Id
+	    @Column(length = 20, name = "FACILITY_CODE")
+	    private String facilityCode;
 
-    @Column(nullable = false, name = "FACILITY_NAME", length = 50)
-    private String FACILITY_NAME;
+	    @Column(nullable = false, name = "FACILITY_NAME", length = 50)
+	    private String facilityName;
 
-    @Column(nullable = false, name = "FACILITY_ADDRESS", length = 100)
-    private String FACILITY_ADDRESS;
+	    @Column(nullable = false, name = "FACILITY_ADDRESS", length = 100)
+	    private String facilityAddress;
 
-    @Column(nullable = false, name = "FACILITY_ZIPCODE", length = 20)
-    private String FACILITY_ZIPCODE;
-    
-    @Column(columnDefinition = "TEXT", name = "FACILITY_DESCRIPTION")
-    private String FACILITY_DESCRIPTION;
+	    @Column(nullable = false, name = "FACILITY_ZIPCODE", length = 20)
+	    private String facilityZipcode;
 
-    @Column(name = "FACILITY_IMAGE_1", columnDefinition = "LONGBLOB")
-    private long FACILITY_IMAGE_1;
-    @Column(name = "FACILITY_IMAGE_2", columnDefinition = "LONGBLOB")
-    private long FACILITY_IMAGE_2;
-    @Column(name = "FACILITY_IMAGE_3", columnDefinition = "LONGBLOB")
-    private long FACILITY_IMAGE_3;
-    @Column(name = "FACILITY_IMAGE_4", columnDefinition = "LONGBLOB")
-    private long FACILITY_IMAGE_4;
+	    @Column(columnDefinition = "TEXT", name = "FACILITY_DESCRIPTION")
+	    private String facilityDescription;
 
-    @JoinColumn(name = "EXERCISE_CODE")
-    @Column(name = "EXERCISE_CODE", length = 20)
-    private String EXERCISE_CODE;
+	    @Column(name = "FACILITY_IMAGE_1",length = 255)
+	    private String facilityImage1;
 
-    @Column(name = "FACILITY_ISONLYCLUB")
-    private boolean FACILITY_ISONLYCLUB;
+	    @Column(name = "FACILITY_IMAGE_2",length = 255)
+	    private String facilityImage2;
 
-    @JoinColumn(name = "MEM_ID")
-    @Column(name = "MEM_ID", length = 20)
-    private String MEM_ID;
+	    @Column(name = "FACILITY_IMAGE_3", length = 255)
+	    private String facilityImage3;
 
-    // DECIMAL TYPE 선언
-    // precision 소수점 앞자리
-    // scale 소수점 뒷자리
-    @Column(name = "PRICE", columnDefinition = "DECIMAL", precision = 50, scale = 0)
-    private BigDecimal PRICE;
+	    @Column(name = "FACILITY_IMAGE_4", length = 255)
+	    private String facilityImage4;
 
-    @Column(name = "FACILITY_START_TIME")
-    private LocalDateTime FACILITY_START_TIME;
-    @Column(name = "FACILITY_END_TIME")
-    private LocalDateTime FACILITY_END_TIME;
+	    @JoinColumn(name = "EXERCISE_CODE")
+	    @Column(name = "EXERCISE_CODE", length = 20)
+	    private String exerciseCode;
 
-    @Column(name = "DELETE_FLAG")
-    private boolean DELETE_FLAG;
+	    @Column(name = "FACILITY_ISONLYCLUB")
+	    private Boolean facilityIsOnlyClub;
+
+	    @JoinColumn(name = "MEM_ID")
+	    @Column(name = "MEM_ID", length = 20)
+	    private String memId;
+
+	    // DECIMAL TYPE 선언
+	    // precision 소수점 앞자리
+	    // scale 소수점 뒷자리
+	    @Column(name = "PRICE", columnDefinition = "DECIMAL", precision = 50, scale = 0)
+	    private BigDecimal price;
+
+	    @Column(name = "FACILITY_START_TIME")
+	    private LocalDateTime facilityStartTime;
+
+	    @Column(name = "FACILITY_END_TIME")
+	    private LocalDateTime facilityEndTime;
+
+	    @Column(name = "DELETE_FLAG")
+	    private Boolean deleteFlag;
 }
