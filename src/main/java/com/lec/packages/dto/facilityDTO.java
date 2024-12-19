@@ -1,4 +1,4 @@
-package com.lec.admin.dto;
+package com.lec.packages.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

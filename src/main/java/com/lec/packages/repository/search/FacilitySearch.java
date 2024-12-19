@@ -1,10 +1,12 @@
-package com.lec.admin.repository.search;
+package com.lec.packages.repository.search;
 
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.lec.admin.domain.facility;
+import com.lec.packages.domain.facility;
+
+
 
 public interface FacilitySearch {
 	

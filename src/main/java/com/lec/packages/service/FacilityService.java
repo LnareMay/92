@@ -1,10 +1,8 @@
-package com.lec.admin.service;
+package com.lec.packages.service;
 
-
-
-import com.lec.admin.dto.PageRequestDTO;
-import com.lec.admin.dto.PageResponseDTO;
-import com.lec.admin.dto.facilityDTO;
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.facilityDTO;
 
 public interface FacilityService {
 

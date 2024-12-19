@@ -1,4 +1,4 @@
-package com.lec.admin.domain;
+package com.lec.packages.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
