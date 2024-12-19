@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 <!-- meta_tag include -->
 <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
@@ -28,12 +29,23 @@
 	<button onclick="location.href='/member/login'">로그인</button> -->
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
+		<div>
+			<p
+				th:if="${#authentication.principal instanceof T(com.lec.packages.dto.MemberSecurityDTO)}">
+				로그인된 사용자: <span th:text="${#authentication.principal.MEM_ID}"></span>
+			</p>
+			<p th:if="${#authentication.principal == 'anonymousUser'}">현재
+				로그인되지 않은 상태입니다.</p>
+		</div>
+
+
 		<!-- 상단 클럽 생성 / 나의 클럽 START -->
 		<section id="my_club">
 			<div class="container">
 				<!-- Create Card -->
 				<div class="card create">
-					<a href="/club/club_create"><img src="/img/plus_icon.png" alt=""></a>만들기
+					<a href="/club/club_create"><img src="/img/plus_icon.png"
+						alt=""></a>만들기
 				</div>
 
 				<!-- First Card -->
@@ -49,7 +61,9 @@
 
 				<!-- Second Card -->
 				<div class="card ad">
-					<img src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264" alt="Ad Image">
+					<img
+						src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264"
+						alt="Ad Image">
 					<div class="card-content">
 						<h3>할머니 입맛저격 재주문 갑니다</h3>
 						<p class="ad-label">AD · 밴드 미리보기</p>
@@ -58,7 +72,9 @@
 
 				<!-- Third Card -->
 				<div class="card">
-					<img src="https://coresos-phinf.pstatic.net/a/34g070/j_da1Ud018admpvjf5sy5gkho_5ksoqj.png?type=cover_a264" alt="Content Image">
+					<img
+						src="https://coresos-phinf.pstatic.net/a/34g070/j_da1Ud018admpvjf5sy5gkho_5ksoqj.png?type=cover_a264"
+						alt="Content Image">
 					<div class="card-content">
 						<h3>방문이 뜸한 밴드</h3>
 						<p>밴드 4</p>
@@ -89,7 +105,7 @@
 
 		<!-- 클럽 목록 START -->
 		<section id="club_list" class="container">
-			<ul> 
+			<ul>
 				<li class="club-card" onclick="location.href='/club/club_detail'"><img
 					src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
 					alt="Club Thumbnail">
@@ -97,13 +113,12 @@
 						<div class="club-title" id="CLUB_NAME">🤍김포 라이프🤍</div>
 						<div class="club-description">지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
 							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^</div>
+							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주
+							주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게
+							놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년)
+							누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서
+							벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^
+							모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^</div>
 						<div class="club-details">
 							<div>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -119,20 +134,19 @@
 							</div>
 						</div>
 					</div></li>
-					<li class="club-card"><img
+				<li class="club-card"><img
 					src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
 					alt="Club Thumbnail">
 					<div class="club-content">
 						<div class="club-title">🤍김포 라이프🤍</div>
 						<div class="club-description">지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
 							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^</div>
+							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주
+							주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게
+							놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년)
+							누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서
+							벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^
+							모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^</div>
 						<div class="club-details">
 							<div>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -148,20 +162,19 @@
 							</div>
 						</div>
 					</div></li>
-										<li class="club-card"><img
+				<li class="club-card"><img
 					src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
 					alt="Club Thumbnail">
 					<div class="club-content">
 						<div class="club-title">🤍김포 라이프🤍</div>
 						<div class="club-description">지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
 							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^</div>
+							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주
+							주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게
+							놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년)
+							누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서
+							벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^
+							모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^</div>
 						<div class="club-details">
 							<div>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
