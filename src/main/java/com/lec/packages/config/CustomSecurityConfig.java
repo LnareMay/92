@@ -49,7 +49,12 @@ public class CustomSecurityConfig {
 		// 인증처리로직
 		// http.formLogin(); 스프링시큐티에서 기본제공하는 로그인 화면
 		// http.formLogin().loginPage("/member/login");
-		http.formLogin(login -> login.loginPage("/member/login"));
+		http.formLogin(login -> login
+	    .loginPage("/member/login") // 로그인 페이지 URL
+	    .defaultSuccessUrl("/") // 로그인 성공 후 이동할 URL
+	    .failureUrl("/member/login?error") // 로그인 실패 시 이동할 URL
+	    .usernameParameter("username") // 사용자명 파라미터 이름
+	    .passwordParameter("password")); // 비밀번호 파라미터 이름
 		
 		// 기본적으로 스프링시큐리티에서는 GET방식을 제외한 POST/PUT/DELETE 요청시에 
 		// CSRF 토큰을 요구하기 때문에 403(Forbidden)에러가 발생하기 때문에 CSRF요구를
@@ -71,10 +76,18 @@ public class CustomSecurityConfig {
 		// 로그인정보를 보관하려면 DataSource와 UserDetailsService타입의 객체가 필요하다.
 		// 쿠키값을 생성할 때는 쿠키값을 인코딩하기 위하 key값과 필요한 정보를 보관할
 		// tokenRepository를 지정하는데 코드상에서는 persistentTokenRepository()를 이용
-		http.rememberMe(me -> me.key("12345678")
-				                .tokenRepository(persistentTokenRepository())
-				                .userDetailsService(userDetailsService)
-				                .tokenValiditySeconds(60*60*24*30));  // 유효기간 30일
+	//	http.rememberMe(me -> me.key("12345678")
+	//			                .tokenRepository(persistentTokenRepository())
+	//			                .userDetailsService(userDetailsService)
+	//			                .tokenValiditySeconds(60*60*24*30));  // 유효기간 30일
+		
+		 // 로그아웃 설정 추가
+	    http.logout(logout -> logout
+	        .logoutUrl("/member/logout") // 로그아웃 URL
+	        .logoutSuccessUrl("/") // 로그아웃 후 이동할 URL
+	        .invalidateHttpSession(true) // 세션 무효화
+	        .deleteCookies("JSESSIONID")); // 쿠키 삭제
+		
 		
 		// 403에러 핸들링
 		http.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()));

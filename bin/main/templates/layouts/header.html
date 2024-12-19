@@ -1,4 +1,4 @@
-<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <header th:fragment="header" class="header">
 <div class="container">
 	
@@ -26,8 +26,11 @@
             <a class="dropdown-item" href="#">나의정보</a>
             <a class="dropdown-item" href="#">나의시설예약</a>
             <a class="dropdown-item" href="#">나의클럽</a>
-            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">운동캘린더</a>
+            <div class="dropdown-divider"></div>
+            <!-- 로그인 상태에 따라 변경 -->
+            <a class="dropdown-item" th:if="${#authentication.principal instanceof T(com.lec.packages.dto.MemberSecurityDTO)}" href="/member/logout">로그아웃</a>
+            <a class="dropdown-item" th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a>
           </div>
         </li>
   	</ul>

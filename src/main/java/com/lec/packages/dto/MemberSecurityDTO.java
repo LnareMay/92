@@ -28,8 +28,9 @@ public class MemberSecurityDTO extends User {
 	private String MEM_EMAIL;
 	private String MEM_BIRTHDAY;
 	private String MEM_ADDRESS;
+	private String MEM_ADDRESS_DETAIL;
 	private String MEM_ZIPCODE;
-	// private String MEM_ADDRESS_SET;
+	private String MEM_ADDRESS_SET;
 	private boolean MEM_ISMANAGER;
 	private boolean DELETE_FLAG;
 	private boolean MEM_SOCIAL;
@@ -37,7 +38,7 @@ public class MemberSecurityDTO extends User {
 	// 생성자
 	public MemberSecurityDTO(String username, String password, String MEM_NAME, String MEM_NICKNAME,
 			String MEM_EXERCISE, String MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, boolean MEM_GENDER,
-			String MEM_TELL, String MEM_EMAIL, String MEM_BIRTHDAY, String MEM_ADDRESS, String MEM_ZIPCODE,
+			String MEM_TELL, String MEM_EMAIL, String MEM_BIRTHDAY, String MEM_ADDRESS,String MEM_ADDRESS_DETAIL, String MEM_ZIPCODE, String MEM_ADDRESS_SET, 
 			 boolean MEM_ISMANAGER, boolean DELETE_FLAG,boolean MEM_SOCIAL,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
@@ -55,8 +56,9 @@ public class MemberSecurityDTO extends User {
 		this.MEM_EMAIL = MEM_EMAIL;
 		this.MEM_BIRTHDAY = MEM_BIRTHDAY;
 		this.MEM_ADDRESS = MEM_ADDRESS;
+		this.MEM_ADDRESS_DETAIL = MEM_ADDRESS_DETAIL;
 		this.MEM_ZIPCODE = MEM_ZIPCODE;
-		// this.MEM_ADDRESS_SET = MEM_ADDRESS_SET;
+		this.MEM_ADDRESS_SET = MEM_ADDRESS_SET;
 		this.MEM_ISMANAGER = MEM_ISMANAGER;
 		this.DELETE_FLAG = DELETE_FLAG;
 		this.MEM_SOCIAL = MEM_SOCIAL;

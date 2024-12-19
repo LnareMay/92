@@ -3,6 +3,7 @@ package com.lec.packages.security;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,6 +65,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	private final MemberRepository memberRepository;
 	
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
@@ -92,7 +94,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 					  , member.getMEM_EMAIL()
 					  , member.getMEM_BIRTHDAY()
 					  , member.getMEM_ADDRESS()
+					  , member.getMEM_ADDRESS_DETAIL()
 					  , member.getMEM_ZIPCODE()
+					  , member.getMEM_ADDRESS_SET()
 					  , member.isMEM_ISMANAGER()
 					  , member.isMEM_SOCIAL()
 					  , member.isDELETE_FLAG()
