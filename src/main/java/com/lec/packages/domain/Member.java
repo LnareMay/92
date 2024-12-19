@@ -63,12 +63,12 @@ public class Member extends BaseEntity{
     private String MEM_INTRODUCTION;
 
     @Column(name = "MEM_GENDER")
-    private boolean MEM_GENDER;
+    private Boolean MEM_GENDER;
 
     @Column(name = "MEM_TELL", length = 11, nullable = false)
     private String MEM_TELL;
-
-    @Column(name = "MEM_EMAIL", length = 30)
+ 
+    @Column(name = "MEM_EMAIL", length = 30, nullable = false)
     private String MEM_EMAIL;
 
     @Column(name = "MEM_BIRTHDAY", length = 30)
@@ -76,21 +76,24 @@ public class Member extends BaseEntity{
 
     @Column(name = "MEM_ADDRESS", length = 100, nullable = false)
     private String MEM_ADDRESS;
+    
+    @Column(name = "MEM_ADDRESS_DETAIL", length = 100, nullable = false)
+    private String MEM_ADDRESS_DETAIL;
 
     @Column(name = "MEM_ZIPCODE", length = 10, nullable = false)
     private String MEM_ZIPCODE;
 
-    // @Column(name = "MEM_ADDRESS_SET", length = 100)
-    // private String MEM_ADDRESS_SET;
+    @Column(name = "MEM_ADDRESS_SET", length = 100)
+    private String MEM_ADDRESS_SET;
 
     @Column(name = "MEM_ISMANAGER")
-    private boolean MEM_ISMANAGER;
+    private Boolean MEM_ISMANAGER;
 
     @Column(name = "MEM_SOCIAL")
-    private boolean MEM_SOCIAL;
+    private Boolean MEM_SOCIAL;
     
     @Column(name = "DELETE_FLAG")
-    private boolean DELETE_FLAG;
+    private Boolean DELETE_FLAG;
 
     @ElementCollection(fetch = FetchType.LAZY)
 	private Set<MemberRole> roleSet = new HashSet<>();
