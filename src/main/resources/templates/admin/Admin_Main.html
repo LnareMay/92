@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,7 +39,7 @@
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item">
     	<!-- 로그아웃 버튼 만들기 -->
-    	<button type="button" class="btn btn-block btn-outline-danger">Logout</button>
+    	<a class="btn btn-block btn-outline-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">Logout</a>
       </li>
     </ul>
 	
@@ -63,7 +64,7 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/admin/Admin_edit" class="d-block">Alexander Pierce</a>
+          <a href="/admin/Admin_edit" class="d-block"><span th:text="${#authentication.principal.MEM_ID}"></a>
         </div>
       </div>
 
