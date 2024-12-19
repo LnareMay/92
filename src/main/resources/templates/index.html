@@ -31,7 +31,7 @@
 	<main class="main" id="club_main_pg">
 		<div>
 			<p
-				th:if="${#authentication.principal instanceof T(com.lec.packages.dto.MemberSecurityDTO)}">
+				th:if="${#authentication.principal != 'anonymousUser'}">
 				로그인된 사용자: <span th:text="${#authentication.principal.MEM_ID}"></span>
 			</p>
 			<p th:if="${#authentication.principal == 'anonymousUser'}">현재

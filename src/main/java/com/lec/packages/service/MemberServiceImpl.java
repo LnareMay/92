@@ -31,7 +31,14 @@ public class MemberServiceImpl implements MemberService{
 		
 		Member member = modelMapper.map(memberJoinDTO, Member.class);
 		member.changePassword(passwordEncoder.encode(memberJoinDTO.getMEM_PW()));
-		member.addRole(MemberRole.USER);
+		
+		 // MEM_ISMANAGER 값이 true(1)인 경우 ROLE_ADMIN 추가
+	    if (memberJoinDTO.isMEM_ISMANAGER()) {
+	        member.addRole(MemberRole.ADMIN);
+	    } else {
+	        member.addRole(MemberRole.USER);
+	    }
+
 		
 		// log.info("========>" + member + "[" + member.getRoleSet() + "]");
 		
