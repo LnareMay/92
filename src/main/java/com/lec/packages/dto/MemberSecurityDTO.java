@@ -23,7 +23,7 @@ public class MemberSecurityDTO extends User {
 	private String MEM_CLUB;
 	private String MEM_PICTURE;
 	private String MEM_INTRODUCTION;
-	private Boolean MEM_GENDER;
+	private boolean MEM_GENDER;
 	private String MEM_TELL;
 	private String MEM_EMAIL;
 	private String MEM_BIRTHDAY;
@@ -31,15 +31,15 @@ public class MemberSecurityDTO extends User {
 	private String MEM_ADDRESS_DETAIL;
 	private String MEM_ZIPCODE;
 	private String MEM_ADDRESS_SET;
-	private Boolean MEM_ISMANAGER;
-	private Boolean DELETE_FLAG;
-	private Boolean MEM_SOCIAL;
+	private boolean MEM_ISMANAGER;
+	private boolean DELETE_FLAG;
+	private boolean MEM_SOCIAL;
 
 	// 생성자
 	public MemberSecurityDTO(String username, String password, String MEM_NAME, String MEM_NICKNAME,
-			String MEM_EXERCISE, String MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, Boolean MEM_GENDER,
+			String MEM_EXERCISE, String MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, boolean MEM_GENDER,
 			String MEM_TELL, String MEM_EMAIL, String MEM_BIRTHDAY, String MEM_ADDRESS,String MEM_ADDRESS_DETAIL, String MEM_ZIPCODE, String MEM_ADDRESS_SET, 
-			 Boolean MEM_ISMANAGER, Boolean DELETE_FLAG,Boolean MEM_SOCIAL,
+			 boolean MEM_ISMANAGER, boolean DELETE_FLAG,boolean MEM_SOCIAL,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 

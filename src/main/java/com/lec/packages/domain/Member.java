@@ -63,7 +63,7 @@ public class Member extends BaseEntity{
     private String MEM_INTRODUCTION;
 
     @Column(name = "MEM_GENDER")
-    private Boolean MEM_GENDER;
+    private boolean MEM_GENDER;
 
     @Column(name = "MEM_TELL", length = 11, nullable = false)
     private String MEM_TELL;
@@ -87,13 +87,13 @@ public class Member extends BaseEntity{
     private String MEM_ADDRESS_SET;
 
     @Column(name = "MEM_ISMANAGER")
-    private Boolean MEM_ISMANAGER;
+    private boolean MEM_ISMANAGER;
 
     @Column(name = "MEM_SOCIAL")
-    private Boolean MEM_SOCIAL;
+    private boolean MEM_SOCIAL;
     
     @Column(name = "DELETE_FLAG")
-    private Boolean DELETE_FLAG;
+    private boolean DELETE_FLAG;
 
     @ElementCollection(fetch = FetchType.LAZY)
 	private Set<MemberRole> roleSet = new HashSet<>();
