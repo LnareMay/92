@@ -84,10 +84,17 @@ querydsl {
    querydslSourcesDir = querydslDir
 }
 
-clean {
-    delete file(querydslDir)
+sourceSets {
+   main.java.srcDir querydslDir
 }
 
-tasks.withType(JavaCompile) {
-    options.generatedSourceOutputDirectory = file(querydslDir)
+compileQuerydsl{
+   options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+   compileOnly {
+      extendsFrom annotationProcessor
+   }
+   querydsl.extendsFrom compileClasspath
 }
