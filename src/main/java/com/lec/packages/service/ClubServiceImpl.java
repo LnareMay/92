@@ -22,7 +22,7 @@ public class ClubServiceImpl implements ClubService {
 	
 	public String create(ClubDTO clubDTO) {
 		Club club = modelMapper.map(clubDTO, Club.class);
-		String code = clubRepository.save(club).getCLUB_CODE();
+		String code = clubRepository.save(club).getClubCode();
 		return code;		
 	}
 	

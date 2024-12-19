@@ -37,6 +37,7 @@ public class ClubController {
 	
 	@PostMapping("/club_create")
 	public String clubCreatePost(@Valid ClubDTO clubDTO
+			, BindingResult bindingResult
 			, RedirectAttributes redirectAttributes) {
 		
 		log.info("Create.." + clubDTO);		
