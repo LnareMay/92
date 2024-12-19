@@ -77,17 +77,24 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
 }
 
-def querydslDir = "src/main/java/generated"
+def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
+   jpa = true
+   querydslSourcesDir = querydslDir
 }
 
-clean {
-    delete file(querydslDir)
+sourceSets {
+   main.java.srcDir querydslDir
 }
 
-tasks.withType(JavaCompile) {
-    options.generatedSourceOutputDirectory = file(querydslDir)
+compileQuerydsl{
+   options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+   compileOnly {
+      extendsFrom annotationProcessor
+   }
+   querydsl.extendsFrom compileClasspath
 }
