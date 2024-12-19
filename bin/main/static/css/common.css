@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* reset */
 html, body, div, span, applet, object, iframe,
@@ -21,6 +22,8 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 	box-sizing:border-box;
+	font-family: "Noto Sans KR";
+	line-height:1.5;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 

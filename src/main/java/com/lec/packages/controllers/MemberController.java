@@ -26,55 +26,39 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-	
+
 	private final MemberService memberService;
 
-	@GetMapping({"/login", "/login/{error}/{logout}", "/login/{logout}"})
-	public void loginGet(
-			@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error, 
+	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
+	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
 			@RequestParam(name = "logout", defaultValue = "") @PathVariable Optional<String> logout) {
 		log.info("login get ................... ");
 		log.info("logout ................... " + logout);
-		
-		if(logout != null) {
+
+		if (logout != null) {
 			log.info("user logout ................... ");
 		}
 	}
-	
+
 	@GetMapping("/join")
 	public void joinGet() {
 		log.info("회원가입 GET방식.....");
 	}
-	
+
 	@PostMapping("/join")
 	public String joinPost(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes) {
 		log.info("회원가입 POST방식.....");
 		log.info(memberJoinDTO);
-		
+
 		try {
 			memberService.join(memberJoinDTO);
 		} catch (MemberService.MidExistException e) {
 			redirectAttributes.addFlashAttribute("error", memberJoinDTO.getMEM_ID() + "는 이미 존재하는 아이디입니다.");
 			return "redirect:/member/join";
 		}
-		
+
 		redirectAttributes.addFlashAttribute("result", "회원가입 성공");
 		return "redirect:/member/login";
-	}
-	
-	
-	@GetMapping("/profile")
-	public String getProfile() {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    Object principal = authentication.getPrincipal();
-
-	    if (principal instanceof MemberSecurityDTO) {
-	        log.info("Principal is MemberSecurityDTO: " + principal);
-	    } else {
-	        log.info("Principal is not MemberSecurityDTO, it is: " + principal.getClass().getName());
-	    }
-
-	    return "profile";
 	}
 
 }

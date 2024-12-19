@@ -1,39 +1,48 @@
-<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <header th:fragment="header" class="header">
-<div class="container">
-	
-  <div class="toggle-buttons">
-    <button class="toggle-button work">시설예약</button>
-    <button class="toggle-button life selected">클럽</button>
-  </div>
-  <!-- <div class="search-container">
+	<div class="container">
+		<div class="toggle-buttons">
+			<!-- 클럽 버튼 -->
+			<button class="toggle-button life"
+				th:classappend="${currentURI.startsWith('/facility/') ? 'selected' : ''}"
+				onclick="location.href='/facility/facility_main'">시설예약</button>
+
+			<!-- 클럽 버튼 -->
+			<button class="toggle-button life"
+				th:classappend="${currentURI == '/' || currentURI.startsWith('/member/') ? 'selected' : ''}"
+				onclick="location.href='/'">클럽</button>
+		</div>
+		<!-- <div class="search-container">
       <input type="text" class="search-input" placeholder="반짝이는 도시를 품은, 야경이 예쁜 공간">
       <button class="search-button"><img loading="lazy" src="https://img.shareit.kr/front-assets/icons/magnifier_lineBold_gray064.svg?version=1.0"></button>
   </div> -->
-  <!-- <div class="right-icons">
+		<!-- <div class="right-icons">
       <a href="#" class="icon-link">지도</a>
       <a href="#" class="icon-link">마이페이지</a>
   </div> -->
-  <div class="logo-menu">
-    <!--   <button class="menu-button">≡</button> -->
-      <span class="logo">FITLINK</span>
-  </div>
-  
-  <ul>
-  		<li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">나의정보</a>
-            <a class="dropdown-item" href="#">나의시설예약</a>
-            <a class="dropdown-item" href="#">나의클럽</a>
-            <a class="dropdown-item" href="#">운동캘린더</a>
-            <div class="dropdown-divider"></div>
-            <!-- 로그인 상태에 따라 변경 -->
-            <a class="dropdown-item" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
-            <a class="dropdown-item" th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a>
-          </div>
-        </li>
-  	</ul>
-</div>
+		<div class="logo-menu">
+			<!--   <button class="menu-button">≡</button> -->
+			<span class="logo">FITLINK</span>
+		</div>
+
+		<ul>
+			<li class="nav-item dropdown"><a
+				class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+				role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#">나의정보</a> <a class="dropdown-item"
+						href="#">나의시설예약</a> <a class="dropdown-item" href="#">나의클럽</a> <a
+						class="dropdown-item" href="#">운동캘린더</a>
+					<div class="dropdown-divider"></div>
+					<!-- 로그인 상태에 따라 변경 -->
+					<a class="dropdown-item"
+						th:if="${#authentication.principal != 'anonymousUser'}"
+						href="/member/logout">로그아웃</a> <a class="dropdown-item"
+						th:if="${#authentication.principal == 'anonymousUser'}"
+						href="/member/login">로그인</a>
+				</div></li>
+		</ul>
+	</div>
 </header>
 </html>
