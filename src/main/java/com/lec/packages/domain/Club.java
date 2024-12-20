@@ -43,17 +43,17 @@ public class Club extends BaseEntity{
     @Column(length = 50, name = "CLUB_THEME")
     private String clubTheme;
 
-    @Column(name = "CLUB_IMAGE_1", columnDefinition = "LONGBLOB")
-    private long clubImage1;
+    @Column(name = "CLUB_IMAGE_1")
+    private String clubImage1;
     
-    @Column(name = "CLUB_IMAGE_2", columnDefinition = "LONGBLOB")
-    private long clubImage2;
+    @Column(name = "CLUB_IMAGE_2")
+    private String clubImage2;
 
-    @Column(name = "CLUB_IMAGE_3", columnDefinition = "LONGBLOB")
-    private long clubImage3;
+    @Column(name = "CLUB_IMAGE_3")
+    private String clubImage3;
 
-    @Column(name = "CLUB_IMAGE_4", columnDefinition = "LONGBLOB")
-    private long clubImage4;
+    @Column(name = "CLUB_IMAGE_4")
+    private String clubImage4;
     
     @Column(length = 100, name = "CLUB_ADDRESS")
     private String clubAddress;
