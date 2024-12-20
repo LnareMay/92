@@ -1,7 +1,11 @@
 package com.lec.packages.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.service.MemberService;
-import com.lec.packages.service.MemberService.MidExistException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -50,15 +53,40 @@ public class MemberController {
 		log.info("회원가입 POST방식.....");
 		log.info(memberJoinDTO);
 
-		try {
-			memberService.join(memberJoinDTO);
-		} catch (MemberService.MidExistException e) {
-			redirectAttributes.addFlashAttribute("error", memberJoinDTO.getMEM_ID() + "는 이미 존재하는 아이디입니다.");
-			return "redirect:/member/join";
-		}
-
+//		try {
+//			memberService.join(memberJoinDTO);
+//		} catch (MemberService.MidExistException e) {
+//			redirectAttributes.addFlashAttribute("error", memberJoinDTO.getMEM_ID() + "는 이미 존재하는 아이디입니다.");
+//			return "member/login";
+//		}
+		
+		memberService.join(memberJoinDTO);
 		redirectAttributes.addFlashAttribute("result", "회원가입 성공");
 		return "redirect:/member/login";
 	}
+	
+	@GetMapping("/checkId")
+	public ResponseEntity<Map<String, String>> checkId(@RequestParam("MEM_ID") String memId) {
+	    Map<String, String> response = new HashMap<>();
 
+	    try {
+	        boolean isDuplicate = memberService.isDuplicateId(memId);
+
+	        if (isDuplicate) {
+	            response.put("status", "FAIL");
+	            response.put("message", "이미 존재하는 아이디입니다.");
+	        } else {
+	            response.put("status", "SUCCESS");
+	            response.put("message", "사용 가능한 아이디입니다.");
+	        }
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        response.put("status", "ERROR");
+	        response.put("message", "서버 처리 중 문제가 발생했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
+	}
 }
+

@@ -555,7 +555,7 @@ ul {
 } */
 
 #login_pg form#registerForm label{
-	/* width: 100%; */
+	width: 100%;
 	display: inline-block;	
 }
 
