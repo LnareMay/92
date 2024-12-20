@@ -12,11 +12,6 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/facility")
 @RequiredArgsConstructor
 public class AdminController {
-
-	@GetMapping("/facility_main")
-	public String facilityMain() {
-		return "facility/facility_main"; 
-	    }
 	
 	 @GetMapping("/main")
 	 public String adminMainPage() {
