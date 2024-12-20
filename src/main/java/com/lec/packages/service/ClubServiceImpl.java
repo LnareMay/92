@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -10,9 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.lec.packages.domain.Club;
+import com.lec.packages.domain.Club_Board;
+import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,6 +31,7 @@ public class ClubServiceImpl implements ClubService {
 
 	private final ModelMapper modelMapper;
 	private final ClubRepository clubRepository;
+	private final ClubBoardRepository clubBoardRepository;
 	
 	public String create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
@@ -67,4 +72,22 @@ public class ClubServiceImpl implements ClubService {
                 .build();
 	}
 	
+	public int registerClubBoard(ClubBoardDTO clubBoardDTO){
+		String code = clubBoardDTO.getCLUB_CODE();
+		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
+
+		Club_Board club_Board = boardNoResult.orElseThrow();
+		int boardNo = 0;
+		if (club_Board != null) {
+			boardNo = club_Board.getBoardNo();
+		}
+
+		boardNo += 1;
+		clubBoardDTO.setBOARD_NO(boardNo);
+
+		Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
+		int resultBoardNo = clubBoardRepository.save(saveClubBoard).getBoardNo();
+		
+		return resultBoardNo;
+	}
 }

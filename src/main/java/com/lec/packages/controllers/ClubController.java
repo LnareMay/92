@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
@@ -25,11 +26,6 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/club")
 @RequiredArgsConstructor
 public class ClubController {
-	
-	
-	
-	
-	
 	@Autowired
 	private final ClubService clubService;
 	
@@ -71,13 +67,21 @@ public class ClubController {
 	}
 
 	@PostMapping("board_register")
-	public String clubBoardPost(HttpServletRequest request, Model model){
+	public String clubBoardPost(HttpServletRequest request, Model model,
+	@Valid ClubBoardDTO clubBoardDTO
+	, BindingResult bindingResult
+	, RedirectAttributes redirectAttributes){
 		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
+		model.addAttribute("currentURI", requestURI);
 		log.info("registerController");
+
+		log.info(clubBoardDTO);
+		int bno = clubService.registerClubBoard(clubBoardDTO);
+
+		log.info(bno);
 		return "redirect:/club/club_board";
 	}
+	
 	
 	@GetMapping("/club_calendar")
 	public String clubCalendar(HttpServletRequest request, Model model) {
