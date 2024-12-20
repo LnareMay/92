@@ -9,7 +9,7 @@ public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
 	String generateClubCode();
-
+  
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);

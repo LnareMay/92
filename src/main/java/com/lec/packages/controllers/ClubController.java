@@ -26,7 +26,6 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/club")
 @RequiredArgsConstructor
 public class ClubController {
-
 	@Autowired
 	private final ClubService clubService;
 	
