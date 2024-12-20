@@ -22,12 +22,12 @@ public class MemberServiceImpl implements MemberService{
 	private final PasswordEncoder passwordEncoder;
 	
 	@Override
-	public void join(MemberJoinDTO memberJoinDTO) throws MidExistException {
+	public void join(MemberJoinDTO memberJoinDTO) /*throws MidExistException*/ {
 		String mid = memberJoinDTO.getMEM_ID();
-		boolean exist = memberRepository.existsById(mid);
-		if(exist) {
-			throw new MidExistException();
-		}
+//		boolean exist = memberRepository.existsById(mid);
+//		if(exist) {
+//			throw new MidExistException("동일한 아이디가 존재합니다.");
+//		}
 		
 		Member member = modelMapper.map(memberJoinDTO, Member.class);
 		member.changePassword(passwordEncoder.encode(memberJoinDTO.getMEM_PW()));
@@ -44,5 +44,11 @@ public class MemberServiceImpl implements MemberService{
 		
 		memberRepository.save(member);
 	}
+
+	@Override
+	public boolean isDuplicateId(String memId) {
+	    return memberRepository.existsById(memId); // 존재하면 true 반환
+	}
+
 
 }
