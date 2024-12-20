@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ClubBoardKeyClass implements Serializable{
     private String clubCode;
-    private Long boardNo;
+    private int boardNo;
 }

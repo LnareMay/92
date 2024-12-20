@@ -6,8 +6,8 @@
 <title>클럽 게시글 작성</title>
 
 <!-- 공통 css -->
-<link rel="stylesheet" th:href="@{/css/common.css}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" th:href="@{/css/common.css}">
 
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
@@ -34,19 +34,20 @@
                       <form action="/club/board_register" method="post">
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-pen-nib"></i></span>
-                          <input type="text" name="title" class="form-control mb-0" placeholder="Title">
+                          <input type="text" name="BOARD_TYPE" class="form-control mb-0" placeholder="Type">
+                          <input type="hidden" name="CLUB_CODE" th:value="${param.clubCode}">
                         </div>
             
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
-                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="content"></textarea>
+                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT"></textarea>
                         </div>
             
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-user"></i></span>
-                          <input type="text" name="writer" class="form-control  mb-0"
+                          <input type="text" name="MEM_ID" class="form-control  mb-0"
                                   th:value="${#authentication.principal.username}"
-                                  placeholder="Writer" readonly>
+                                  placeholder="작성자" readonly>
                         </div>
                         
                         <div class="input-group mb-3">

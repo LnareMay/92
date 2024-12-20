@@ -16,37 +16,38 @@ public class ClubDTO {
     // @NotEmpty => Not null
 
     @NotEmpty
-    private String CLUB_CODE;
+    private String clubCode;
 
     @NotEmpty
-    private String CLUB_NAME;
+    private String clubName;
 
-    private String CLUB_EXERCISE;
+    private String clubExercise;
 
-    private String CLUB_INTRODUCTION;
+    private String clubIntroduction;
 
-    private String CLUB_THEME;
+    private String clubTheme;
+
+//    @NotEmpty
+    private String clubImage1;
+
+    private String clubImage2;
+
+    private String clubImage3;
+
+    private String clubImage4;
+
+    private String clubAddress;
 
     @NotEmpty
-    private String CLUB_IMAGE_1;
-//  @NotEmpty
-    private String CLUB_IMAGE_2;
-//  @NotEmpty
-    private String CLUB_IMAGE_3;
-//  @NotEmpty
-    private String CLUB_IMAGE_4;
+    private String memId;
 
-    private String CLUB_ADDRESS;
+    private boolean clubIsprivate;
 
-    @NotEmpty
-    private String MEM_ID;
-
-    private boolean CLUB_ISPRIVATE;
-
-    private String CLUB_PW;
+    private String clubPw;
     
-    private boolean DELETE_FLAG;
+    private boolean deleteFlag;
 
     private LocalDateTime CREATEDATE;
     private LocalDateTime MODIFYDATE;
+
 }

@@ -15,7 +15,7 @@ public class ClubBoardDTO {
     @NotEmpty
     private String CLUB_CODE;
 
-    private Long BOARD_NO;
+    private int BOARD_NO;
     
     private String BOARD_TYPE;
 
