@@ -9,14 +9,9 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/facility")
 @RequiredArgsConstructor
 public class AdminController {
-
-	@GetMapping("/admin_main")
-	public String facilityMain() {
-		return "admin/admin_main"; 
-	    }
 	
 	 @GetMapping("/main")
 	 public String adminMainPage() {
@@ -52,5 +47,6 @@ public class AdminController {
 	 public String Calendar() {
 		 return "admin/calendar";
 	 }
+	
 	
 }

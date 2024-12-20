@@ -3,6 +3,7 @@ package com.lec.packages.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.validation.Valid;
@@ -24,11 +27,6 @@ public class ClubController {
 	
 	@Autowired
 	private final ClubService clubService;
-    
-    @GetMapping("/list")
-    public void getClubList(){
-        
-    }
 	
 	@GetMapping("/club_create")
 	public String clubCreateGet() {
@@ -43,7 +41,7 @@ public class ClubController {
 		log.info("Create.." + clubDTO);		
 		String code = clubService.create(clubDTO);
 		redirectAttributes.addFlashAttribute("result", code);		
-		return "redirect:/club/club_create"; 
+		return "redirect:/"; 
 	}
 	
 	@GetMapping("/club_detail")

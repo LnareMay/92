@@ -1,10 +1,18 @@
 package com.lec.packages.service;
 
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.ClubRepository;
 
 import jakarta.transaction.Transactional;
@@ -21,9 +29,42 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	
 	public String create(ClubDTO clubDTO) {
+		String clubCode = generateClubCode();
+		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		String code = clubRepository.save(club).getClubCode();
-		return code;		
+		
+		String saveCode = clubRepository.save(club).getClubCode();
+		return saveCode;		
+	}
+	
+	// 클럽코드생성
+	@Override
+	public String generateClubCode() {
+		String clubCode;
+		do {
+			clubCode = String.format("%06d", ThreadLocalRandom.current().nextInt(100000, 1000000));
+		} while (clubRepository.existsById(clubCode)); 
+		return clubCode;
+	}
+
+	@Override
+	public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
+		String[] types = pageRequestDTO.getTypes();
+		String keyword = pageRequestDTO.getKeyword();
+		Pageable pageable = pageRequestDTO.getPageable("clubCode");
+		
+		Page<Club> result = clubRepository.searchAllImpl(types, keyword, pageable);
+		List<ClubDTO> clubList = result.getContent()
+									   .stream()
+									   .map(club -> modelMapper.map(club, ClubDTO.class))
+									   .collect(Collectors.toList());
+		
+		
+	    return PageResponseDTO.<ClubDTO>withAll()
+	    		.pageRequestDTO(pageRequestDTO)
+                .dtoList(clubList)
+                .total((int)result.getTotalElements())
+                .build();
 	}
 	
 }
