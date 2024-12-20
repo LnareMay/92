@@ -68,10 +68,12 @@ public class ClubController {
 	}
 
 	@PostMapping("board_register")
-	public String clubBoardPost(
+	public String clubBoardPost(HttpServletRequest request, Model model,
 	@Valid ClubBoardDTO clubBoardDTO
 	, BindingResult bindingResult
 	, RedirectAttributes redirectAttributes){
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
 		log.info("registerController");
 
 		log.info(clubBoardDTO);
