@@ -7,11 +7,11 @@
 <title></title>
 
 <!-- 공통 css -->
-<link rel="stylesheet" th:href="@{/css/common.css}">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
 	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
@@ -29,13 +29,13 @@
 	<button onclick="location.href='/member/login'">로그인</button> -->
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
-		<div>
+		<div class="container">
 			<p
-				th:if="${#authentication.principal instanceof T(com.lec.packages.dto.MemberSecurityDTO)}">
-				로그인된 사용자: <span th:text="${#authentication.principal.MEM_ID}"></span>
+				th:if="${#authentication.principal != 'anonymousUser'}">
+				안녕하세요! <span th:text="${#authentication.principal.MEM_NICKNAME}"></span>님. 오늘도 건강한 하루 보내세요.<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
 			</p>
-			<p th:if="${#authentication.principal == 'anonymousUser'}">현재
-				로그인되지 않은 상태입니다.</p>
+			<p th:if="${#authentication.principal == 'anonymousUser'}">우리 동네에서 운동메이트를 찾아보세요! <a class="btn btn-primary" th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a></p>
+            
 		</div>
 
 
