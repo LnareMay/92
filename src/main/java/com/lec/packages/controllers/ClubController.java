@@ -15,6 +15,7 @@ import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,19 +26,28 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class ClubController {
 	
+	
+	
+	
+	
 	@Autowired
 	private final ClubService clubService;
 	
 	@GetMapping("/club_create")
-	public String clubCreateGet() {
+	public String clubCreateGet(HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
 		return "club/club_create"; 
 	}
 	
 	@PostMapping("/club_create")
 	public String clubCreatePost(@Valid ClubDTO clubDTO
 			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes) {
+			, RedirectAttributes redirectAttributes, HttpServletRequest request, Model model) {
 		
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		log.info("Create.." + clubDTO);		
 		String code = clubService.create(clubDTO);
 		redirectAttributes.addFlashAttribute("result", code);		
@@ -45,29 +55,44 @@ public class ClubController {
 	}
 	
 	@GetMapping("/club_detail")
-	public String clubDetail() {
+	public String clubDetail(HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		return "club/club_detail"; 
 	}
 	
 	@GetMapping("/club_board")
-	public String clubBoard() {
+	public String clubBoard(HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		return "club/club_board"; 
 	}
 
 	@PostMapping("board_register")
-	public String clubBoardPost(){
+	public String clubBoardPost(HttpServletRequest request, Model model){
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		log.info("registerController");
 		return "redirect:/club/club_board";
 	}
 	
 	@GetMapping("/club_calendar")
-	public String clubCalendar() {
+	public String clubCalendar(HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		return "club/club_calendar"; 
 	}
 
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_board_write")
-	public String clubBoardWrite(){
+	public String clubBoardWrite(HttpServletRequest request, Model model){
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
 		return "club/club_board_write";
 	}
 }
