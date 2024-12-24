@@ -38,7 +38,7 @@
 	 <ul class="navbar-nav ml-auto">
       <li class="nav-item">
     	<!-- 로그아웃 버튼 만들기 -->
-    	<button type="button" class="btn btn-block btn-outline-danger">Logout</button>
+    	<a href="/member/logout" class="btn btn-block btn-outline-danger">Logout</a>
       </li>
     </ul>
     
@@ -64,7 +64,7 @@
           <img src="../../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="admin/Admin_edit" class="d-block">Alexander Pierce</a>
+          <a href="/admin/Admin_edit" class="d-block" th:text="${userId}"></a>
         </div>
       </div>
 
@@ -164,33 +164,19 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr>
+                  <tr th:each="facility , stat : ${facilities}">
+                      <td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td> 
                       <td>
-                          #
-                      </td>
-                      <td>
-                          <a>
-                              Facility Name
-                          </a>
+                          <a th:text="${facility.facilityName}"></a>
                           <br/>
-                          <small>
-                               Facility Created Date (01.01.2019)
-                          </small>
+                           <small th:text="${facility.formattedCreateDate}"></small> 	    
                       </td>
-                      <td>
-                       		Facility Leader Name
-                      </td>
-                      <td>
-                      		Facility Address
-                      </td>
-                      <td>
-                          Facility Price
-                      </td>
+                      <td th:text="${facility.memId}"></td>
+  					  <td th:text="${facility.facilityAddress}"></td>
+                     <td th:text="${facility.formattedPrice}"></td>
                       <td class="project-actions text-right">
-                          <a class="btn btn-primary btn-sm" href="/admin/Facility_detail">
-                              <i class="fas fa-folder">
-                              </i>
-                              View
+                          <a th:href="@{/admin/Facility_detail/{facilityCode}(facilityCode=${facility.facilityCode})}" class="btn btn-primary btn-sm" >
+                             <i class="fas fa-folder"></i> View
                           </a>
                           <a class="btn btn-info btn-sm" href="/admin/Facility_edit">
                               <i class="fas fa-pencil-alt">
@@ -207,7 +193,32 @@
 
               </tbody>
           </table>
-        </div>
+         <!-- 페이지네이션 추가 -->
+        <nav aria-label="Page navigation" class="mt-3">
+            <ul class="pagination justify-content-center">
+                <!-- 이전 페이지 버튼 -->
+                <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/Facility_list(page=${pageNumber - 1})}" aria-label="Previous">
+                        «                   
+                    </a>
+                </li>
+
+                <!-- 페이지 번호 -->
+                <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${page == pageNumber} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/Facility_list(page=${page})}" th:text="${page}"></a>
+                </li>
+
+                <!-- 다음 페이지 버튼 -->
+                <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/Facility_list(page=${pageNumber + 1})}" aria-label="Next">
+                    	»
+                    </a>
+                </li>
+            </ul>
+        </nav>
+         		
+       	</div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->

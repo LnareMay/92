@@ -1,7 +1,10 @@
 package com.lec.packages.dto;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -13,42 +16,64 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class facilityDTO {
+public class FacilityDTO {
     
     @NotEmpty
-    private String FACILITY_CODE;
+    private String facilityCode;
 
     @NotEmpty
-    private String FACILITY_NAME;
+    private String facilityName;
 
     @NotEmpty
-    private String FACILITY_ADDRESS;
+    private String facilityAddress;
 
     @NotEmpty
-    private String FACILITY_ZIPCODE;
+    private String facilityZipcode;
     
-    private String FACILITY_DESCRIPTION;
+    private String facilityDescription;
 
-    private long FACILITY_IMAGE_1;
+    private String facilityImage1;
     
-    private long FACILITY_IMAGE_2;
+    private String facilityImage2;
     
-    private long FACILITY_IMAGE_3;
+    private String facilityImage3;
     
-    private long FACILITY_IMAGE_4;
+    private String facilityImage4;
 
-    private String EXERCISE_CODE;
+    private String exerciseCode;
 
-    private boolean FACILITY_ISONLYCLUB;
+    private boolean facilityIsOnlyClub;
 
     @NotEmpty
-    private String MEM_ID;
+    private String memId;
 
-    private BigDecimal PRICE;
+    @NotEmpty
+    private BigDecimal price;
 
-    private LocalDateTime FACILITY_START_TIME;
+    @NotEmpty
+    private LocalDateTime facilityStartTime;
 
-    private LocalDateTime FACILITY_END_TIME;
+    @NotEmpty
+    private LocalDateTime facilityEndTime;
+    
+    @NotEmpty
+    private LocalDateTime createDate;
+    
+    private LocalDateTime modifyDate;
 
-    private boolean DELETE_FLAG;
+    private boolean deleteFlag;
+    
+    //PRICE 포멧팅
+    public String getFormattedPrice() {
+        if (price == null) {
+            return "0";
+        }
+        return NumberFormat.getNumberInstance(Locale.KOREA).format(price);
+    }
+    //createDate 포멧팅
+    public String getFormattedCreateDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm:ss");
+        return createDate != null ? createDate.format(formatter) : "";
+    }
+    
 }
