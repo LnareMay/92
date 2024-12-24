@@ -23,7 +23,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class facility extends BaseEntity{
+public class Facility extends BaseEntity{
     // Id => P.K 명시
     // @Column => 컬럼 정보 셋업
     // length => 컬럼 데이터 길이
@@ -83,5 +83,5 @@ public class facility extends BaseEntity{
 	    private LocalDateTime facilityEndTime;
 
 	    @Column(name = "DELETE_FLAG")
-	    private Boolean deleteFlag;
+	    private boolean deleteFlag;
 }

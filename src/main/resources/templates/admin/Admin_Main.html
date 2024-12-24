@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,8 +37,8 @@
     <ul class="navbar-nav ml-auto">
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item">
-    	<!-- 로그아웃 버튼 만들기 -->
-    	<a class="btn btn-block btn-outline-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">Logout</a>
+    	<!-- 로그아웃 버튼 -->
+    	<a href="/member/logout" class="btn btn-block btn-outline-danger">Logout</a>
       </li>
     </ul>
 	
@@ -64,7 +63,7 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/admin/Admin_edit" class="d-block"><span th:text="${#authentication.principal.MEM_ID}"></a>
+          <a href="/admin/Admin_edit" class="d-block" th:text="${userId}"></a>
         </div>
       </div>
 
@@ -186,20 +185,16 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td> 
+                  <tr th:each="facility , stat : ${facilities}">            
                     <!--Facility Name  -->    
-                      Some Product
-                    </td>
+                     <td th:text="${facility.facilityName}"></td>
                     <!--Facility Price  -->    
-                    <td>$13 USD</td>
-                    <td>
+                     <td th:text="${facility.formattedPrice}"></td>
                     <!--Facility Leader  -->    
-                      ADMIN
-                    </td>
+                     <td th:text="${facility.memId}"></td>
                     <td>
                     <!-- FACILITY DETAIL  -->
-                      <a href="/admin/Facility_detail" class="text-muted">
+                    <a th:href="@{/admin/Facility_detail/{facilityCode}(facilityCode=${facility.facilityCode})}" class="text-muted" >
                         <i class="fas fa-search"></i>
                       </a>
                     </td>

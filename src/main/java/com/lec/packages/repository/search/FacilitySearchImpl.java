@@ -7,8 +7,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import com.lec.packages.domain.Qfacility;
-import com.lec.packages.domain.facility;
+
+import com.lec.packages.domain.Facility;
+import com.lec.packages.domain.QFacility;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 
@@ -18,21 +19,42 @@ import lombok.extern.log4j.Log4j2;
 public class FacilitySearchImpl extends QuerydslRepositorySupport implements FacilitySearch{
 	
 	public FacilitySearchImpl() {
-		super(facility.class);
+		super(Facility.class);
+	}
+	
+
+
+
+	
+	@Override
+	public Page<Facility> searchByUser(String userId, Pageable pageable){
+		
+		QFacility facility = QFacility.facility;
+		JPQLQuery<Facility> query = from(facility);
+		
+		// 로그인된 사용자 ID로 필터링
+		query.where(facility.memId.eq(userId));
+		// 페이징 적용
+		this.getQuerydsl().applyPagination(pageable, query);
+		
+		List<Facility> list = query.fetch();
+		long count = query.fetchCount();
+		
+		return new PageImpl<>(list, pageable, count);
 	}
 
 	@Override
-	public Page<facility> searchAll(String[] types, String keyword, Pageable pageable) {
+	public Page<Facility> searchAll(String[] types, String keyword, Pageable pageable) {
 		
-		Qfacility facility = Qfacility.facility;
-		JPQLQuery<facility> query = from(facility);
+		QFacility facility = QFacility.facility;
+		JPQLQuery<Facility> query = from(facility);
 		
 		if((types!= null || types.length >0) && keyword != null) {
 			BooleanBuilder booleanBuilder = new BooleanBuilder();
 			for(String type:types) {
 				switch(type) {
-				case "c": 
-					booleanBuilder.or(facility.facilityCode.contains(keyword));
+				case "m": 
+					booleanBuilder.or(facility.memId.contains(keyword));
 					break;
 				case "n": 
 					booleanBuilder.or(facility.facilityName.contains(keyword));
@@ -45,7 +67,7 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 		}
 		
 			this.getQuerydsl().applyPagination(pageable, query);
-			List<facility> list = query.fetch();
+			List<Facility> list = query.fetch();
 			long count = query.fetchCount();
 			log.info("검색건수 = " + count);
 			
@@ -53,18 +75,18 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	}
 	
 	@Override
-	public Page<facility> searchAllImpl(String[] types, String keyword, Pageable pageable) {
+	public Page<Facility> searchAllImpl(String[] types, String keyword, Pageable pageable) {
 		
-		Qfacility facility = Qfacility.facility;
-		JPQLQuery<facility> query = from(facility);
+		QFacility facility = QFacility.facility;
+		JPQLQuery<Facility> query = from(facility);
 		
 
 		if((types!= null || types.length >0) && keyword != null) {
 			BooleanBuilder booleanBuilder = new BooleanBuilder();
 			for(String type:types) {
 				switch(type) {
-				case "c": 
-					booleanBuilder.or(facility.facilityCode.contains(keyword));
+				case "m": 
+					booleanBuilder.or(facility.memId.contains(keyword));
 					break;
 				case "n": 
 					booleanBuilder.or(facility.facilityName.contains(keyword));
@@ -77,7 +99,7 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 		}
 		
 		this.getQuerydsl().applyPagination(pageable, query);
-		List<facility> list = query.fetch();
+		List<Facility> list = query.fetch();
 		long count=query.fetchCount();
 		
 		return new PageImpl<>(list, pageable, count);
