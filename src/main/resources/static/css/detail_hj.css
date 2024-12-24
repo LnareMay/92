@@ -587,6 +587,11 @@ ul {
 	margin: 8px 0;
 	width: 100%;
 }
+
+#login_pg small.text-danger{
+	display:none;
+}
+
 #login_pg input[type="button"]{
 	background-color:#4582ec;
 	border-radius:0.375rem;
