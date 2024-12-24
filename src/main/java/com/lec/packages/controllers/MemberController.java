@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.service.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -87,6 +89,27 @@ public class MemberController {
 	        response.put("message", "서버 처리 중 문제가 발생했습니다.");
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	    }
+	}
+	
+	@GetMapping("/mypage")
+	public String mypageGet(HttpServletRequest request, Model model) {
+        String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI); 
+        return "member/mypage"; 
+    }
+	
+	@GetMapping("/mypage_modify")
+	public String mypageModifyPost(HttpServletRequest request, Model model) {
+        String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI); 
+        return "member/mypage_modify"; 
+    }
+	
+	@PostMapping("/modify")
+	public String modifyPost(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes) {
+		memberService.modify(memberJoinDTO);
+		redirectAttributes.addFlashAttribute("result", "나의정보 수정 성공");
+		return "redirect:/member/mypage";
 	}
 }
 
