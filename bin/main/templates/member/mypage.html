@@ -40,18 +40,6 @@
 		<div class="main">
 			<div class="header">
 				<div class="profile-section">
-<<<<<<< HEAD
-					<!-- <img src="https://via.placeholder.com/80" alt="Profile Picture"> -->
-					<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">
-					
-					<div>
-						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
-						<p th:text="${#authentication.principal.MEM_INTRODUCTION}"></p>
-					</div>
-				</div>
-				<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'">수정하기</button>
-				<button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button>
-=======
 					<img src="https://via.placeholder.com/80" alt="Profile Picture">
 					<div>
 						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
@@ -59,7 +47,6 @@
 					</div>
 				</div>
 				<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'">수정하기</button>
->>>>>>> branch 'main' of https://github.com/LnareMay/92.git
 			</div>
 		</div>
 	</main>

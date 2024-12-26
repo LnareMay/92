@@ -32,11 +32,7 @@
 		<div class="container">
 			<p
 				th:if="${#authentication.principal != 'anonymousUser'}">
-<<<<<<< HEAD
-				안녕하세요! <span th:text="${#authentication.principal.MEM_NICKNAME}" onclick="location.href='/member/mypage'"></span>님. 오늘도 건강한 하루 보내세요.<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
-=======
 				안녕하세요! <span th:text="${#authentication.principal.MEM_NICKNAME}" onclick="location.href='/member/mypage'" style="cursor:pointer"></span>님. 오늘도 건강한 하루 보내세요.<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
->>>>>>> branch 'main' of https://github.com/LnareMay/92.git
 			</p>
 			<p th:if="${#authentication.principal == 'anonymousUser'}">우리 동네에서 운동메이트를 찾아보세요! <a class="btn btn-primary" th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a></p>
             
