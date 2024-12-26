@@ -71,15 +71,12 @@
 <!--         <h5><b>어떤 클럽을 만들까요?</b></h5> -->
     
         <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
-           	
-               <!--   <label for="club-code">클럽코드 </label>
-            	<input type="text" name="CLUB_CODE" id="clubCode" placeholder="클럽명"></input> -->
             
             <label for="club-name">클럽명	</label>
             	<input type="text" name="clubName" id="clubName" placeholder="클럽명"></input>
             	
             <label for="club-name">클럽방장</label>
-            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}"  readonly></input>
+            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}" readonly></input>
 
 		    <label for="club-exercise">선호 운동 코드</label>
 				<div class="exercise-container">
@@ -91,15 +88,14 @@
 				            <button type="button" onclick="selectExercise(this)" value="EXE_CLIMB">암벽등반</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_FOOTBALL">축구</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_FUTSAL">풋살</button>
-				            <button type="button" onclick="selectExercise(this)" value="EXE_GYM">헬스</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE_FITNESS">헬스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_MOUNT">등산</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_PILATES">필라테스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_TENNIS">테니스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_YOGA">요가</button>
 			        </div>
 			    </div>		    
-			    
-			    
+			    		    
 			<label for="club-theme">클럽 테마</label>
 	           	<div class="theme-container">
 				    <div class="theme-selection">
