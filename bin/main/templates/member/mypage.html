@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<!-- meta_tag include -->
+<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+<title></title>
+
+<!-- 공통 css -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" th:href="@{/css/common.css}">
+
+<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+<!-- Linking CSS files -->
+<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+
+<!-- 공통 js -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+	crossorigin="anonymous"></script>
+
+</head>
+<body>
+	<div th:insert="~{layouts/header :: header}"></div>
+	<main class="main container" id="mypage_pg">
+		<div class="sidebar">
+			<div class="header">
+				<h2 style="font-size: 20px;">마이페이지</h2>
+				<!-- <button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button> -->
+			</div>
+
+			<a href="/member/mypage" class="active">나의정보</a> <a href="#">나의시설예약</a>
+			<a href="#">나의클럽</a> <a href="#">운동캘린더</a>
+		</div>
+
+		<div class="main">
+			<div class="header">
+				<div class="profile-section">
+					<!-- <img src="https://via.placeholder.com/80" alt="Profile Picture"> -->
+					<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">
+					
+					<div>
+						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
+						<p th:text="${#authentication.principal.MEM_INTRODUCTION}"></p>
+					</div>
+				</div>
+				<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'">수정하기</button>
+				<button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button>
+			</div>
+		</div>
+	</main>
+
+	<div th:insert="~{layouts/footer :: footer}"></div>
+</body>
+</html>
