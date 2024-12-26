@@ -16,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +41,8 @@ public class ClubRestController {
     
     @Value("${com.lec.upload.path}")
     private String uploadPath;
-    
-    @Autowired
     private ClubService clubService;
+
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> uploadFile(@RequestBody UploadFileDTO uploadFileDTO){
@@ -101,12 +101,10 @@ public class ClubRestController {
 		
 		return ResponseEntity.ok().headers(headers).body(resource);
 	}
-	
+
 	@DeleteMapping("/club/{clubCode}")
 	public String clubDelete(@PathVariable String clubCode) {
 		clubService.delete(clubCode);
 		return clubCode;
 	}
-	
-
 }
