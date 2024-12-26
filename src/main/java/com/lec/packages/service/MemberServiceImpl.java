@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public void modify(MemberJoinDTO memberJoinDTO) {
+	public void modify(MemberJoinDTO memberJoinDTO, String storedFileName) {
 		// 1. 기존 회원 정보 가져오기
         Optional<Member> existingMember = memberRepository.findById(memberJoinDTO.getMEM_ID());
         
@@ -69,7 +69,7 @@ public class MemberServiceImpl implements MemberService{
             member.setMEM_NICKNAME(memberJoinDTO.getMEM_NICKNAME());
             member.setMEM_EXERCISE(memberJoinDTO.getMEM_EXERCISE());
             member.setMEM_CLUB(memberJoinDTO.getMEM_CLUB());
-            // member.setMEM_PICTURE(memberJoinDTO.getMEM_PICTURE());
+            member.setMEM_PICTURE(storedFileName);
             member.setMEM_INTRODUCTION(memberJoinDTO.getMEM_INTRODUCTION());
             member.setMEM_TELL(memberJoinDTO.getMEM_TELL());
             member.setMEM_EMAIL(memberJoinDTO.getMEM_EMAIL());

@@ -20,7 +20,7 @@ public interface MemberService {
 
 	boolean isDuplicateId(String memId);
 
-	void modify(MemberJoinDTO memberJoinDTO);
+	void modify(MemberJoinDTO memberJoinDTO, String storedFileName);
 	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
 }
