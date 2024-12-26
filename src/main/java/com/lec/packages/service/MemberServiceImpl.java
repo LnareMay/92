@@ -50,5 +50,11 @@ public class MemberServiceImpl implements MemberService{
 	    return memberRepository.existsById(memId); // 존재하면 true 반환
 	}
 
+	@Override
+	public void modify(MemberJoinDTO memberJoinDTO) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
