@@ -34,7 +34,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class MemberController {
 
-	@Value("{com.lec.upload.path}")
+	@Value("${com.lec.upload.path}")
 	private String uploadPath;
 	
 	private final MemberService memberService;
@@ -108,17 +108,34 @@ public class MemberController {
     }
 	
 	@GetMapping("/mypage_modify")
-	public String mypageModifyPost(HttpServletRequest request, Model model) {
-        String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI); 
-        return "member/mypage_modify"; 
-    }
-	
-	@PostMapping("/modify")
-	public String modifyPost(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes) {
-		memberService.modify(memberJoinDTO);
-		redirectAttributes.addFlashAttribute("result", "나의정보 수정 성공");
-		return "redirect:/member/mypage";
+	public String mypageModifyGet(HttpServletRequest request, Model model) {
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI); // 템플릿에서 사용된다면 유지
+	    return "member/mypage_modify";
 	}
+
+	@PostMapping("/modify")
+	public String mypageModifyPost(MemberJoinDTO memberJoinDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	    // 세션에서 업로드된 파일 이름 가져오기
+	    HttpSession session = request.getSession();
+	    String storedFileName = (String) session.getAttribute("storedFileName");
+	    if (storedFileName == null) {
+	        storedFileName = ""; // 기본 파일 처리
+	    }
+
+	    try {
+	        memberService.modify(memberJoinDTO, storedFileName);
+	        redirectAttributes.addFlashAttribute("result", "나의 정보 수정 성공");
+	    } catch (Exception e) {
+	        log.error("회원 정보 수정 실패", e);
+	        redirectAttributes.addFlashAttribute("error", "회원 정보 수정 중 오류가 발생했습니다.");
+	        return "redirect:/member/mypage_modify"; // 에러 시 수정 페이지로 다시 이동
+	    }
+
+	    // 세션에서 파일 이름 제거
+	    session.removeAttribute("storedFileName");
+	    return "redirect:/member/mypage"; // 수정 성공 시 마이페이지로 이동
+	}
+
 }
 
