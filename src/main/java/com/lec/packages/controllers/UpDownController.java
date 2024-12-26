@@ -88,7 +88,7 @@ public class UpDownController {
 	
 	@Operation(summary = "파일보기", description = "GET방식으로 첨부파일조회!!")
 	@GetMapping(value = "/view/{fileName}")
-	public ResponseEntity<Resource> viewFileGET(@RequestBody @PathVariable("fileName") String fileName) {
+	public ResponseEntity<Resource> viewFileGET(@PathVariable("fileName") String fileName) {
 		
 		Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
 		String resourceName = resource.getFilename();
