@@ -103,31 +103,6 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 <script>
-    document.querySelector(".submitBtn").addEventListener("click", function(e){
-    e.preventDefault()
-    e.stopPropagation()
-
-    const target = document.querySelector(".uploadHidden")
-    const uploadFiles = uploadResult.querySelectorAll("img")
-
-    let str = ''
-
-    for (let i = 0; i < uploadFiles.length ; i++) {
-    const uploadFile = uploadFiles[i]
-    const imgLink = uploadFile.getAttribute("data-src")
-
-    str += `<input type='hidden' name='fileNames' value="${imgLink}">`
-    }
-
-    target.innerHTML = str;
-
-
-    const formObj = document.querySelector("form");
-    formObj.submit();
-    formObj.reset();
-
-    }, false)
-
   const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
   document.querySelector(".uploadFileBtn").addEventListener("click", function(e){
     e.stopPropagation()
@@ -184,5 +159,30 @@
     targetDiv.remove()
   })
   }
+  
+  document.querySelector(".submitBtn").addEventListener("click", function(e){
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = document.querySelector(".uploadHidden")
+    const uploadFiles = uploadResult.querySelectorAll("img")
+
+    let str = ''
+
+    for (let i = 0; i < uploadFiles.length ; i++) {
+    const uploadFile = uploadFiles[i]
+    const imgLink = uploadFile.getAttribute("data-src")
+
+    str += `<input type='hidden' name='fileNames' value="${imgLink}">`
+    }
+
+    target.innerHTML = str;
+
+
+    const formObj = document.querySelector("form");
+    formObj.submit();
+    formObj.reset();
+
+    }, false)
 </script>
 </html>
