@@ -37,7 +37,7 @@
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item">
     	<!-- 로그아웃 버튼 만들기 -->
-    	<button type="button" class="btn btn-block btn-outline-danger">Logout</button>
+    	<a href="/member/logout" class="btn btn-block btn-outline-danger">Logout</a>
       </li>
     </ul>
     
@@ -63,7 +63,7 @@
           <img src="../../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/admin/Admin_edit" class="d-block">Alexander Pierce</a>
+          <a href="/admin/Admin_edit" class="d-block" th:text="${userId}"></a>
         </div>
       </div>
 
@@ -145,28 +145,34 @@
             <div class="card-body">
 				
               <div class="form-group">
-                <label for="inputName">Facility Name</label>
-                <input type="text" id="inputFacilityName" class="form-control">
-              </div>
-			  
-              <div class="form-group">
-                <label for="inputProjectLeader">Facility Address</label>
-                <input type="text" id="inputFacilityaAddress" class="form-control">
-              </div>
-			  
-              <div class="form-group">
-                <label for="inputDescription">Facility Description</label>
-                <textarea id="inputFacilityDescription" class="form-control" rows="4"></textarea>
-              </div>
-			  
-              <div class="form-group">
-                <label for="inputClientCompany">Facility Leader</label>
-                <input type="text" id="inputFacilityLeader" class="form-control">
+                <label for="facilityName">Facility Code</label>
+                <input type="text" id="facilityCode" class="form-control">
               </div>
               
               <div class="form-group">
+                <label for="facilityName">Facility Name</label>
+                <input type="text" id="facilityName" class="form-control">
+              </div>
+			  
+		    <div class="form-group">
+                <label for="inputfacilityAddress">Facility Address</label>
+                <br />
+				<input type="text" id="facilityZipcode" placeholder="우편번호">
+				<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+				<input type="text" class="form-control" id="facilityAddress" placeholder="주소"><br>
+				<input type="text" id="sample6_detailAddress" placeholder="상세주소">
+				<input type="text" id="sample6_extraAddress" placeholder="참고항목">
+		    </div>
+             
+			  
+              <div class="form-group">
+                <label for="inputDescription">Facility Description</label>
+                <textarea id="facilityDescription" class="form-control" rows="4"></textarea>
+              </div>
+			       
+              <div class="form-group">
                 <label for="inputRegisterId">Register ID</label>
-                <input type="text" id="inputRegisterID" class="form-control" readonly>
+                <input type="text" id="memId" class="form-control" />
               </div>
   
   
@@ -184,18 +190,21 @@
               </div>
             </div>
             <div class="card-body">
-              <div class="form-group">
-                <label for="inputEstimatedBudget">Estimated budget</label>
-                <input type="number" id="inputEstimatedBudget" class="form-control">
-              </div>
+              
               <div class="form-group">
                 <label for="inputSpentBudget">Total amount spent</label>
-                <input type="number" id="inputSpentBudget" class="form-control">
+                <input type="number" id="price" class="form-control">
               </div>
-              <div class="form-group">
-                <label for="inputEstimatedDuration">Estimated project duration</label>
-                <input type="number" id="inputEstimatedDuration" class="form-control">
+              
+              <div class=" form-group">
+              	<label for="facilityStartTime">Facility Start Time</label>
+                <input type="number" id="facilityStartTime" class="form-control">
+                
+              	<label for="facilityEndTime">Facility End Time</label>
+                <input type="number" id="facilityEndTime" class="form-control">
+              
               </div>
+
             </div>
             <!-- /.card-body -->
           </div>
@@ -237,15 +246,13 @@
               </table>
             </div>
             <!-- /.card-body -->
-          </div>
-          
-          
+          </div>  
         </div>
       </div>
       <div class="row">
         <div class="col-12">
           <a href="/admin/main" class="btn btn-secondary">Cancel</a>
-          <input type="submit" value="Create new Porject" class="btn btn-success float-right">
+          <input type="submit" value="Create new Facility" class="btn btn-success float-right">
         </div>
       </div>
     </section>
@@ -277,6 +284,58 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/admin.js"></script>
+
+<!-- 도로명 주소 노출 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("facilityZipcode").value = data.zonecode;
+                document.getElementById("facilityAddress").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+            }
+        }).open();
+    }
+</script>
 
 </body>
 </html>

@@ -36,7 +36,7 @@
 	<ul class="navbar-nav ml-auto">
       <li class="nav-item">
     	<!-- 로그아웃 버튼 만들기 -->
-    	<button type="button" class="btn btn-block btn-outline-danger">Logout</button>
+    	<a href="/member/logout" class="btn btn-block btn-outline-danger">Logout</a>
       </li>
     </ul>
   </nav>
@@ -61,7 +61,7 @@
           <img src="../../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/admin/Admin_edit" class="d-block">Alexander Pierce</a>
+          <a href="/admin/Admin_edit" class="d-block" th:text="${userId}"></a>
         </div>
       </div>
 
@@ -145,21 +145,22 @@
             </div>
             <div class="col-12 col-sm-6">
             
-              <h1 class="my-3">Facility Name</h1>
-              <p>Facility Leader</p>
+              <h1 class="my-3" th:text="${facility.facilityName}"></h1>
+              <p th:text="${facility.memId}"></p>
 
               <hr>
               
               <h4>Facility Description</h4>
-              <p>Facility Description Description Description Description Description Description Description Description ....</p>
+              <p th:text="${facility.facilityDescription}"></p>
  
-              <h4>Facility Regist Date</h4>
-              <p>Facility Regist Date (2024-12-16)</p>
-              
+				<h4>Facility Create Date: 
+				<span th:text="${facility.formattedCreateDate}"></span>
+				</h4>
               <div class="bg-gray py-2 px-3 mt-4">
                 <h3 class="mb-0">
-                  Facility price : 999999
+                  Facility price 
                 </h3>
+                <p th:text="${facility.formattedPrice}">
               </div>
               <br />
             	<a href="/admin/Facility_list" class="btn btn-primary btn-block mb-3">Back to list</a>
