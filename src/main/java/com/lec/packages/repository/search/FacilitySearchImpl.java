@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.QFacility;
 import com.querydsl.core.BooleanBuilder;
