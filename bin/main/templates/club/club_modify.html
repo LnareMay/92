@@ -178,7 +178,7 @@
 				    <input type="checkbox" id="clubIsprivate" name="clubIsprivate" onchange="togglePasswordField()" 
 				    	   th:checked="${clubdto.clubIsprivate}" /> 비공개
 				    <input type="password" id="clubPw" name="clubPw" th:value="${clubdto.clubPw}" 
-				    	   th:style="${clubdto.clubIsprivate || clubdto.clubPw == '' ? '' : 'display: none;'}" style="margin-left: 10px;">
+				    	   th:style="${clubdto.clubIsprivate ? '' : 'display: none;'}" style="margin-left: 10px;">
 				</span>
 			</div>
 
