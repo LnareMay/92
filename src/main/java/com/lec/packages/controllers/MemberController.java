@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +41,7 @@ public class MemberController {
 	private String uploadPath;
 	
 	private final MemberService memberService;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
@@ -116,26 +120,41 @@ public class MemberController {
 
 	@PostMapping("/modify")
 	public String mypageModifyPost(MemberJoinDTO memberJoinDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-	    // 세션에서 업로드된 파일 이름 가져오기
 	    HttpSession session = request.getSession();
 	    String storedFileName = (String) session.getAttribute("storedFileName");
 	    if (storedFileName == null) {
-	        storedFileName = ""; // 기본 파일 처리
+	        storedFileName = "";
 	    }
 
 	    try {
+	        // 회원 정보 수정
 	        memberService.modify(memberJoinDTO, storedFileName);
+
+	        // 수정된 사용자 정보 가져오기
+	        UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memberJoinDTO.getMEM_ID());
+
+	        // 새 인증 정보 생성
+	        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	                updatedUser,
+	                updatedUser.getPassword(),
+	                updatedUser.getAuthorities()
+	        );
+
+	        // 보안 컨텍스트 갱신
+	        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
 	        redirectAttributes.addFlashAttribute("result", "나의 정보 수정 성공");
 	    } catch (Exception e) {
 	        log.error("회원 정보 수정 실패", e);
 	        redirectAttributes.addFlashAttribute("error", "회원 정보 수정 중 오류가 발생했습니다.");
-	        return "redirect:/member/mypage_modify"; // 에러 시 수정 페이지로 다시 이동
+	        return "redirect:/member/mypage_modify";
 	    }
 
-	    // 세션에서 파일 이름 제거
 	    session.removeAttribute("storedFileName");
-	    return "redirect:/member/mypage"; // 수정 성공 시 마이페이지로 이동
+	    return "redirect:/member/mypage";
 	}
+
+
 
 }
 
