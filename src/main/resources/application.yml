@@ -21,7 +21,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: #로컬 폴더 경로
+      location: static/img/upload
       max-request-size: 30MB
       max-file-size: 10MB        
 
@@ -40,10 +40,10 @@ server:
 
 #file upload/download
 path:
-  upload: #로컬 폴더 경로
-  lownload: #로컬 폴더 경로
+  upload: static/img/upload
+  download: static/img/download
 
 com:
   lec:
     upload:
-      path: #로컬 폴더 경로
+      path: static/img/upload

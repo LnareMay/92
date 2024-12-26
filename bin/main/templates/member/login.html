@@ -212,7 +212,8 @@
 		<!-- 로그인 END -->
 	</main>
 </body>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/js/upload.js"></script>
 <script>
 	// 애니메이션
 	const signUpButton = document.getElementById('signUp');
@@ -350,6 +351,32 @@
 	        document.getElementById('MEM_ID').focus();
 	        return;
 	    }
+	    
+	    
+	    // 프로필 이미지 업로드
+	    const formObj = new FormData();
+		const fileInput = document.querySelector("input[name='MEM_PICTURE']")
+		
+		console.log(fileInput.files)
+		const files = fileInput.files
+		
+		for(let i=0;i<files.length;i++) {
+			formObj.append("files", files[i])
+		}
+		
+		uploadToServer(formObj);
+		
+		/* uploadToServer(formObj).then(result => {
+				console.log(result)
+				
+				for(const uploadResult of result) {
+					showUploadFile(uploadResult);
+				}				
+				uploadModal.hide()
+			})
+			.catch(e => {
+				uploadModal.hide()
+			}) */
 
 	    // 유효성 검사가 모두 통과되었으면 폼 제출
 	    alert('회원가입이 완료되었습니다.');
