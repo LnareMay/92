@@ -739,6 +739,7 @@ z-index:5;
 /* 마이페이지 */
 #mypage_pg{
 	display:flex;
+<<<<<<< HEAD
 	margin-bottom:0;
 }
 #mypage_pg .sidebar {
@@ -790,6 +791,52 @@ z-index:5;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+=======
+}
+#mypage_pg .sidebar {
+    width: 250px;
+    /* height: 100vh; */
+    background-color: #ffffff;
+    /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); */
+    border-right: 1px solid #eee;
+    /* position: fixed; */
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+#mypage_pg .sidebar a {
+    text-decoration: none;
+    color: #333;
+    margin: 10px 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+#mypage_pg .sidebar a:hover,#mypage_pg .sidebar a.active {
+    color: #007bff;
+}
+
+#mypage_pg .main {
+    /* margin-left: 270px; */
+    padding: 20px;
+    width:100%;
+}
+
+#mypage_pg .header {
+   /*  display: flex; */
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+#mypage_pg .profile-section {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    gap: 15px;
+>>>>>>> branch 'main' of https://github.com/LnareMay/92.git
 }
 
 #mypage_pg .profile-section img {
