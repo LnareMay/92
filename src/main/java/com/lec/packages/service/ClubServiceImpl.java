@@ -76,6 +76,7 @@ public class ClubServiceImpl implements ClubService {
 		String code = clubBoardDTO.getCLUB_CODE();
 		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
 
+		log.info(boardNoResult);
 		Club_Board club_Board = boardNoResult.orElseThrow();
 		int boardNo = 0;
 		if (club_Board != null) {
@@ -85,7 +86,11 @@ public class ClubServiceImpl implements ClubService {
 		boardNo += 1;
 		clubBoardDTO.setBOARD_NO(boardNo);
 
-		Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
+		// Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
+		// log.info(saveClubBoard);
+		// saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
+		Club_Board saveClubBoard = dtoToEntity(clubBoardDTO);
+		saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
 		int resultBoardNo = clubBoardRepository.save(saveClubBoard).getBoardNo();
 		
 		return resultBoardNo;
