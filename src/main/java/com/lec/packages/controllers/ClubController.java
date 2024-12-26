@@ -100,6 +100,7 @@ public class ClubController {
 		return "club/club_board"; 
 	}
 
+
 	@PostMapping("board_register")
 	public String clubBoardPost(@RequestParam("clubCode") String clubCode
 			,HttpServletRequest request, Model model

@@ -95,7 +95,7 @@ public class ClubServiceImpl implements ClubService {
 		List<String> themes = Arrays.asList(clubTheme.split(","));
 		return themes.stream()
 					 .map(this::mapTheme)
-					 .collect(Collectors.joining(", "));
+					 .collect(Collectors.joining(" "));
 	}
 	
 	private String mapTheme(String clubTheme) {
@@ -125,6 +125,18 @@ public class ClubServiceImpl implements ClubService {
 				   ,clubDTO.isClubIsprivate());
 		clubRepository.save(club);
 	}
+	
+	// 클럽삭제
+	@Override
+	public void delete(String clubCode) {
+		Club club = clubRepository.findById(clubCode).orElseThrow();
+		
+		club.setDeleteFlag(true);
+		clubRepository.save(club);
+		
+	}
+	
+	
 		
 	// 클럽게시판
 	@Override
@@ -154,6 +166,7 @@ public class ClubServiceImpl implements ClubService {
 		
 		return resultBoardNo;
 	}
+
 
 
 }

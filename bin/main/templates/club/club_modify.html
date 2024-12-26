@@ -173,8 +173,6 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-<!-- 				<span th:if="${!clubdto.clubIsprivate}">공개</span>
-				<span th:if="${clubdto.clubIsprivate}"> -->
 				    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" 
 				    	   th:checked="${!clubdto.clubIsprivate}" onchange="togglePasswordField()" /> 공개
 				    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()" 

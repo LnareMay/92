@@ -74,7 +74,7 @@
         <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
             
             <label for="club-name">클럽명	</label>
-            	<input type="text" name="clubName" id="clubName" placeholder="클럽명"></input>
+            	<input type="text" name="clubName" id="clubName" placeholder="클럽명" maxlength="10"></input>
             	
             <label for="club-name">클럽방장</label>
             	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}" readonly></input>
