@@ -67,6 +67,11 @@
 							name="MEM_ID" th:value="${#authentication.principal.MEM_ID}"
 							class="form-control" disabled>
 					</div>
+					
+					<input type="text" id="MEM_ID"
+							name="MEM_ID" th:value="${#authentication.principal.MEM_ID}"
+							class="form-control blind">
+					
 					<div class="form-group">
 						<label for="MEM_NAME">이름</label> <input type="text" id="MEM_NAME"
 							name="MEM_NAME" th:value="${#authentication.principal.MEM_NAME}"

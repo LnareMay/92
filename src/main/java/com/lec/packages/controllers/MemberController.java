@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -32,6 +34,9 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class MemberController {
 
+	@Value("{com.lec.upload.path}")
+	private String uploadPath;
+	
 	private final MemberService memberService;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
@@ -51,21 +56,25 @@ public class MemberController {
 	}
 
 	@PostMapping("/join")
-	public String joinPost(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes) {
-		log.info("회원가입 POST방식.....");
-		log.info(memberJoinDTO);
+	public String joinPost(MemberJoinDTO memberJoinDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	    log.info("회원가입 POST방식.....");
+	    log.info(memberJoinDTO);
 
-//		try {
-//			memberService.join(memberJoinDTO);
-//		} catch (MemberService.MidExistException e) {
-//			redirectAttributes.addFlashAttribute("error", memberJoinDTO.getMEM_ID() + "는 이미 존재하는 아이디입니다.");
-//			return "member/login";
-//		}
-		
-		memberService.join(memberJoinDTO);
-		redirectAttributes.addFlashAttribute("result", "회원가입 성공");
-		return "redirect:/member/login";
+	    // 세션에서 업로드된 파일 이름 가져오기
+	    HttpSession session = request.getSession();
+	    String storedFileName = (String) session.getAttribute("storedFileName");
+	  
+	        // 회원가입 처리
+	        memberService.join(memberJoinDTO, storedFileName);
+	        redirectAttributes.addFlashAttribute("result", "회원가입 성공");
+	    
+
+	    // 회원가입 성공 후 세션에서 파일 이름 제거
+	    session.removeAttribute("storedFileName");
+
+	    return "redirect:/member/login";
 	}
+
 	
 	@GetMapping("/checkId")
 	public ResponseEntity<Map<String, String>> checkId(@RequestParam("MEM_ID") String memId) {

@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 import com.lec.packages.dto.MemberJoinDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 
 public interface MemberService {
 	// 회원가입에서 해당아이디가 존재할 경우에는
@@ -15,9 +16,11 @@ public interface MemberService {
 
 //	void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
 	
-	void join(MemberJoinDTO memberJoinDTO);
+	void join(MemberJoinDTO memberJoinDTO, String storedFileName);
 
 	boolean isDuplicateId(String memId);
 
 	void modify(MemberJoinDTO memberJoinDTO);
+	
+//	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
 }

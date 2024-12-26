@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
 import com.lec.packages.dto.MemberJoinDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,10 @@ public class MemberServiceImpl implements MemberService{
 	private final ModelMapper modelMapper;
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
+//	private final Member member;
 	
 	@Override
-	public void join(MemberJoinDTO memberJoinDTO) /*throws MidExistException*/ {
+	public void join(MemberJoinDTO memberJoinDTO, String storedFileName) /*throws MidExistException*/ {
 		String mid = memberJoinDTO.getMEM_ID();
 //		boolean exist = memberRepository.existsById(mid);
 //		if(exist) {
@@ -42,6 +44,8 @@ public class MemberServiceImpl implements MemberService{
 	    }
 
 		
+	    member.setMEM_PICTURE(storedFileName);
+	    
 		// log.info("========>" + member + "[" + member.getRoleSet() + "]");
 		
 		memberRepository.save(member);
@@ -80,7 +84,16 @@ public class MemberServiceImpl implements MemberService{
             throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMEM_ID());
         }
 		
+        
 	}
 
+
+//	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {
+//		// 업로드된 파일명을 MemberJoinDTO에 설정
+//		memberSecurityDTO.setMEM_PICTURE(fileName);
+//
+//		// DTO를 엔티티로 변환 후 DB에 저장 (변환 작업은 필요시 추가)
+//		memberRepository.save(member); // `toEntity`는 필요시 구현
+//	}
 
 }
