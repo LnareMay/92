@@ -15,6 +15,7 @@ public interface ClubService {
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
+	void delete(String clubCode);
 	
 	ClubDTO board(String clubCode);
   

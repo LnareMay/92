@@ -54,12 +54,13 @@
     
     // 클럽 공개여부 비밀번호
     function togglePasswordField() {
-        const isPrivate = document.getElementById('clubIsprivate').checked;
+        const isPrivate = document.getElementById('clubIsprivateYes').checked;
         const passwordField = document.getElementById('clubPw');
         if (isPrivate) {
             passwordField.style.display = 'inline-block'; 
         } else {
             passwordField.style.display = 'none'; 
+            passwordField.value= '';
         }
     }
 </script>
@@ -73,7 +74,7 @@
         <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
             
             <label for="club-name">클럽명	</label>
-            	<input type="text" name="clubName" id="clubName" placeholder="클럽명"></input>
+            	<input type="text" name="clubName" id="clubName" placeholder="클럽명" maxlength="10"></input>
             	
             <label for="club-name">클럽방장</label>
             	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}" readonly></input>
@@ -152,7 +153,8 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-			    <input type="checkbox" id="clubIsprivate" name="clubIsprivate" onchange="togglePasswordField()"> 비공개
+			    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" onchange="togglePasswordField()"> 공개
+			    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()"> 비공개
 			    <input type="password" id="clubPw" name="clubPw" placeholder="비밀번호 입력" style="display: none; margin-left: 10px;">
 			</div>
 

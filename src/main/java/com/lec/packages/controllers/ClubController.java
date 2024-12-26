@@ -2,6 +2,8 @@ package com.lec.packages.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
@@ -61,8 +64,13 @@ public class ClubController {
 		if(clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
 			clubDTO.setClubTheme(clubDTO.getClubTheme());
 		}
-			
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
+		
+		model.addAttribute("principal", principal);
         model.addAttribute("clubdto", clubDTO);
+
 	}
 	
 	@PostMapping("/club_modify")
@@ -91,6 +99,7 @@ public class ClubController {
         
 		return "club/club_board"; 
 	}
+
 
 	@PostMapping("board_register")
 	public String clubBoardPost(@RequestParam("clubCode") String clubCode
