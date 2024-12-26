@@ -52,6 +52,7 @@ public class ClubServiceImpl implements ClubService {
 		return clubCode;
 	}
 
+	// 클럽리스트
 	@Override
 	public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
 		String[] types = pageRequestDTO.getTypes();
@@ -72,6 +73,37 @@ public class ClubServiceImpl implements ClubService {
                 .build();
 	}
 	
+	// 클럽상세보기
+	@Override
+	public ClubDTO detail(String clubCode) {
+		Optional<Club> result = clubRepository.findById(clubCode);
+		Club club = result.orElseThrow();
+		ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+		
+		return clubDTO;
+	}
+	
+	// 클럽수정
+	@Override
+	public void modify(ClubDTO clubDTO) {
+		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
+		Club club = result.orElseThrow();
+		club.change(clubDTO.getClubIntroduction(), clubDTO.getClubAddress()
+				   ,clubDTO.getClubName(), clubDTO.getClubTheme()
+				   ,clubDTO.getClubExercise(), clubDTO.getClubPw());
+		clubRepository.save(club);
+	}
+		
+	// 클럽게시판
+	@Override
+	public ClubDTO board(String clubCode) {
+		Optional<Club> result = clubRepository.findById(clubCode);
+		Club club = result.orElseThrow();
+		ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+		
+		return clubDTO;
+	}
+	
 	public int registerClubBoard(ClubBoardDTO clubBoardDTO){
 		String code = clubBoardDTO.getCLUB_CODE();
 		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
@@ -90,4 +122,6 @@ public class ClubServiceImpl implements ClubService {
 		
 		return resultBoardNo;
 	}
+
+
 }
