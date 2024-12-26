@@ -13,3 +13,5 @@
 *.bin
 *.bin
 *.lock
+/img/upload/*
+/img/download/*
