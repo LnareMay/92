@@ -32,7 +32,7 @@
 		<div class="container">
 			<p
 				th:if="${#authentication.principal != 'anonymousUser'}">
-				안녕하세요! <span th:text="${#authentication.principal.MEM_NICKNAME}"></span>님. 오늘도 건강한 하루 보내세요.<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
+				안녕하세요! <span th:text="${#authentication.principal.MEM_NICKNAME}" onclick="location.href='/member/mypage'" style="cursor:pointer"></span>님. 오늘도 건강한 하루 보내세요.<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}" href="/member/logout">로그아웃</a>
 			</p>
 			<p th:if="${#authentication.principal == 'anonymousUser'}">우리 동네에서 운동메이트를 찾아보세요! <a class="btn btn-primary" th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a></p>
             
@@ -106,36 +106,7 @@
 		<!-- 클럽 목록 START -->
 		<section id="club_list" class="container">
 			<ul>
-				<li class="club-card" onclick="location.href='/club/club_detail'"><img
-					src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
-					alt="Club Thumbnail">
-					<div class="club-content">
-						<div class="club-title" id="clubName">🤍김포 라이프🤍</div>
-						<div class="club-description">지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임
-							만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실
-							때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주
-							주민 (90년~ 76년) 누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게
-							놀아요 ^^지친 일상에서 벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년)
-							누구나 환영합니다~^♡^ 모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^지친 일상에서
-							벗어나 좋은 분들 만나 즐거운 모임 만들었으면 합니다. 김포 거주 주민 (90년~ 76년) 누구나 환영합니다~^♡^
-							모든 주제 환영♡♡ 누구나 시간 되실 때 벙 올려 좋은 재밋게 놀아요 ^^</div>
-						<div class="club-details">
-							<div>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-									<path
-										d="M2.2 10.58C2.2 5.17 6.59.78 12 .78s9.8 4.39 9.8 9.8c0 3.4-2.2 6.56-4.38 8.79-1.1 1.14-2.24 2.08-3.17 2.74-.46.33-.88.6-1.23.78-.17.1-.34.18-.49.24-.13.05-.33.12-.53.12s-.39-.07-.53-.12c-.15-.06-.32-.14-.49-.24-.35-.18-.77-.45-1.23-.78-.93-.66-2.07-1.6-3.17-2.74C4.4 17.14 2.2 13.98 2.2 10.58Zm6.18-.48c0-1.99 1.62-3.62 3.62-3.62 2 0 3.62 1.63 3.62 3.62s-1.62 3.62-3.62 3.62c-2 0-3.62-1.63-3.62-3.62Z" /></svg>
-								장기동
-							</div>
-							<div>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-									<path
-										d="M12 2.6c-3.1 0-5.6 2.5-5.6 5.6 0 3.1 2.5 5.6 5.6 5.6s5.6-2.5 5.6-5.6c0-3.1-2.5-5.6-5.6-5.6Zm0 12c-5.2 0-8.6 2.8-8.6 6.6 0 .3.3.6.6.6h16c.3 0 .6-.3.6-.6 0-3.8-3.4-6.6-8.6-6.6Z" /></svg>
-								35명
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="club-card" th:each="dto : ${responseDTO.dtoList}" onclick="location.href='/club/club_detail'">
+				<li class="club-card" th:each="dto : ${responseDTO.dtoList}"  th:onclick="|location.href='@{/club/club_detail(clubCode=${dto.clubCode})}'|">
 					<img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816"
 					     alt="Club Thumbnail">
 				    <div class="club-content">
@@ -158,6 +129,23 @@
 				    </div>				    
 				</li>
 			</ul>
+			
+<!-- 		<div class="float-center">
+           <ul class="pagination flex-wrap">
+				<li class="page-item" th:if="${responseDTO.prev}">
+                  <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
+                </li>
+
+                <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+	                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >
+	                   <a class="page-link"  th:data-num="${i}">[[${i}]]</a>
+	                </li>
+               </th:block>
+				<li class="page-item" th:if="${responseDTO.next}">
+                    <a class="page-link"  th:data-num="${responseDTO.end + 1}">Next</a>
+                </li>
+           </ul>
+        </div> -->
 		</section>
 		<!-- 클럽 목록 END -->
 	</main>
