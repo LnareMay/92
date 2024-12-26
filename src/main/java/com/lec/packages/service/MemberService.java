@@ -18,4 +18,6 @@ public interface MemberService {
 	void join(MemberJoinDTO memberJoinDTO);
 
 	boolean isDuplicateId(String memId);
+
+	void modify(MemberJoinDTO memberJoinDTO);
 }
