@@ -1,5 +1,7 @@
 package com.lec.packages.service;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,36 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public boolean isDuplicateId(String memId) {
 	    return memberRepository.existsById(memId); // 존재하면 true 반환
+	}
+
+	@Override
+	public void modify(MemberJoinDTO memberJoinDTO) {
+		// 1. 기존 회원 정보 가져오기
+        Optional<Member> existingMember = memberRepository.findById(memberJoinDTO.getMEM_ID());
+        
+        if (existingMember.isPresent()) {
+            // 2. 회원 정보 수정
+            Member member =  modelMapper.map(memberJoinDTO, Member.class);
+            member.setMEM_ID(memberJoinDTO.getMEM_ID());
+            member.setMEM_NAME(memberJoinDTO.getMEM_NAME());
+            member.setMEM_NICKNAME(memberJoinDTO.getMEM_NICKNAME());
+            member.setMEM_EXERCISE(memberJoinDTO.getMEM_EXERCISE());
+            member.setMEM_CLUB(memberJoinDTO.getMEM_CLUB());
+            // member.setMEM_PICTURE(memberJoinDTO.getMEM_PICTURE());
+            member.setMEM_INTRODUCTION(memberJoinDTO.getMEM_INTRODUCTION());
+            member.setMEM_TELL(memberJoinDTO.getMEM_TELL());
+            member.setMEM_EMAIL(memberJoinDTO.getMEM_EMAIL());
+            member.setMEM_ADDRESS(memberJoinDTO.getMEM_ADDRESS());
+            member.setMEM_ADDRESS_DETAIL(memberJoinDTO.getMEM_ADDRESS_DETAIL());
+            member.setMEM_ZIPCODE(memberJoinDTO.getMEM_ZIPCODE());
+       
+            
+            // 3. 수정된 정보 저장
+            memberRepository.save(member);
+        } else {
+            throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMEM_ID());
+        }
+		
 	}
 
 
