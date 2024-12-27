@@ -41,12 +41,11 @@
 			<div class="header">
 				<div class="profile-section">
 					<!-- <img src="https://via.placeholder.com/80" alt="Profile Picture"> -->
-					
-						<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|
-     alt="프로필 이미지">
-						<img src="/img/profile_img.jpg" alt="">
 
-					<div class="flex" style="flex-direction:column; align-items:center">
+					<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">
+	
+					<div>
+
 						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
 						<p th:text="${#authentication.principal.MEM_INTRODUCTION}"></p>
 					</div>
@@ -58,6 +57,10 @@
 					</div>
 
 				</div>
+
+				<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'">수정하기</button>
+				<button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button>
+
 
 			</div>
 		</div>
