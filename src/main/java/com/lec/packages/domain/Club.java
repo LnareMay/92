@@ -87,9 +87,4 @@ public class Club extends BaseEntity{
 		this.deleteFlag = true;		
 	}
 	
-	public void join(String clubCode, String memId) {
-		this.clubCode = clubCode;
-		this.memId = memId;
-	}
-
 }

@@ -1,6 +1,5 @@
 package com.lec.packages.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,15 +33,13 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
 	
-	// 클럽생성
-	public void create(ClubDTO clubDTO, String storedFileName) {
+	public String create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		club.setClubImage1(storedFileName);
-
+		
 		String saveCode = clubRepository.save(club).getClubCode();
-		clubRepository.save(club);		
+		return saveCode;		
 	}
 	
 	// 클럽코드생성
@@ -55,7 +52,6 @@ public class ClubServiceImpl implements ClubService {
 		return clubCode;
 	}
 
-	// 클럽리스트
 	@Override
 	public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
 		String[] types = pageRequestDTO.getTypes();
@@ -76,6 +72,7 @@ public class ClubServiceImpl implements ClubService {
                 .build();
 	}
 	
+
 	// 클럽상세보기
 	@Override
 	public ClubDTO detail(String clubCode) {
@@ -178,12 +175,11 @@ public class ClubServiceImpl implements ClubService {
 		
 		return clubDTO;
 	}
-	
+
 	public int registerClubBoard(ClubBoardDTO clubBoardDTO){
 		String code = clubBoardDTO.getCLUB_CODE();
 		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
 
-		log.info(boardNoResult);
 		Club_Board club_Board = boardNoResult.orElseThrow();
 		int boardNo = 0;
 		if (club_Board != null) {
@@ -193,19 +189,10 @@ public class ClubServiceImpl implements ClubService {
 		boardNo += 1;
 		clubBoardDTO.setBOARD_NO(boardNo);
 
-		// Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
-		// log.info(saveClubBoard);
-		// saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
-		Club_Board saveClubBoard = dtoToEntity(clubBoardDTO);
-		saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
+		Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
 		int resultBoardNo = clubBoardRepository.save(saveClubBoard).getBoardNo();
 		
 		return resultBoardNo;
 	}
-
-
-
-
-
 
 }

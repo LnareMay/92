@@ -1,10 +1,5 @@
 package com.lec.packages.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import com.lec.packages.domain.Club_Board;
-
-
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -12,20 +7,21 @@ import com.lec.packages.dto.PageResponseDTO;
 
 public interface ClubService {
 	
-	void create(ClubDTO clubDTO, String storedFileName);
+	String create(ClubDTO clubDTO);
 	String generateClubCode();
+
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
 //	void remove(ClubDTO clubDTO);
 	void join(ClubDTO clubDTO);
 	
 	ClubDTO board(String clubCode);
+
   
-	List<ClubDTO> ListByTheme(String clubTheme);
-	List<ClubDTO> getAllClubs();
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
+
 
 	default Club_Board dtoToEntity(ClubBoardDTO boardDTO) {
 		
@@ -66,8 +62,5 @@ public interface ClubService {
 		return boardDTO;
 	}
 	
-
-	
-
 
 }
