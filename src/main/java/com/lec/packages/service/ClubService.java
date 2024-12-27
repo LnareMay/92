@@ -12,7 +12,7 @@ import com.lec.packages.dto.PageResponseDTO;
 
 public interface ClubService {
 	
-	String create(ClubDTO clubDTO);
+	void create(ClubDTO clubDTO, String storedFileName);
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
@@ -20,6 +20,8 @@ public interface ClubService {
 	
 	ClubDTO board(String clubCode);
   
+	List<ClubDTO> ListByTheme(String clubTheme);
+	List<ClubDTO> getAllClubs();
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
@@ -62,5 +64,7 @@ public interface ClubService {
 		
 		return boardDTO;
 	}
+	
+
 
 }

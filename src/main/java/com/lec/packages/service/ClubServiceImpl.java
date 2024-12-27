@@ -35,13 +35,14 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubBoardRepository clubBoardRepository;
 	
 	// 클럽생성
-	public String create(ClubDTO clubDTO) {
+	public void create(ClubDTO clubDTO, String storedFileName) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		
+		club.setClubImage1(storedFileName);
+
 		String saveCode = clubRepository.save(club).getClubCode();
-		return saveCode;		
+		clubRepository.save(club);		
 	}
 	
 	// 클럽코드생성
@@ -136,6 +137,27 @@ public class ClubServiceImpl implements ClubService {
 //		club.remove(clubDTO.isDeleteFlag());
 //		clubRepository.save(club);
 //	}
+	
+	// 클럽테마리스트
+	 @Override
+	    public List<ClubDTO> ListByTheme(String clubTheme) {
+	        List<Club> clubs = clubRepository.findByClubThemeContaining(clubTheme);
+	        return clubs.stream()
+	                    .map(club -> modelMapper.map(club, ClubDTO.class))
+	                    .collect(Collectors.toList());
+	    }
+	 
+	 
+	@Override
+	public List<ClubDTO> getAllClubs() {
+		List<Club> clubs = clubRepository.findAll();
+		
+        return clubs.stream()
+                .map(club -> modelMapper.map(club, ClubDTO.class))
+                .collect(Collectors.toList());
+	}
+
+
 
 	// 클럽게시판
 	@Override
@@ -170,6 +192,8 @@ public class ClubServiceImpl implements ClubService {
 		
 		return resultBoardNo;
 	}
+
+
 
 
 
