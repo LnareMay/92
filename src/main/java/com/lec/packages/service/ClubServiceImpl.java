@@ -34,13 +34,15 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
 	
-	public String create(ClubDTO clubDTO) {
+	// 클럽생성
+	public void create(ClubDTO clubDTO, String storedFileName) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		
+		club.setClubImage1(storedFileName);
+
 		String saveCode = clubRepository.save(club).getClubCode();
-		return saveCode;		
+		clubRepository.save(club);		
 	}
 	
 	// 클럽코드생성
@@ -127,17 +129,36 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽삭제
+//	@Override
+//	public void remove(ClubDTO clubDTO) {
+//		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
+//		Club club = result.orElseThrow();
+//		
+//		club.remove(clubDTO.isDeleteFlag());
+//		clubRepository.save(club);
+//	}
+	
+	// 클럽테마리스트
+	 @Override
+	    public List<ClubDTO> ListByTheme(String clubTheme) {
+	        List<Club> clubs = clubRepository.findByClubThemeContaining(clubTheme);
+	        return clubs.stream()
+	                    .map(club -> modelMapper.map(club, ClubDTO.class))
+	                    .collect(Collectors.toList());
+	    }
+	 
+	 
 	@Override
-	public void delete(String clubCode) {
-		Club club = clubRepository.findById(clubCode).orElseThrow();
+	public List<ClubDTO> getAllClubs() {
+		List<Club> clubs = clubRepository.findAll();
 		
-		club.setDeleteFlag(true);
-		clubRepository.save(club);
-		
+        return clubs.stream()
+                .map(club -> modelMapper.map(club, ClubDTO.class))
+                .collect(Collectors.toList());
 	}
-	
-	
-		
+
+
+
 	// 클럽게시판
 	@Override
 	public ClubDTO board(String clubCode) {
@@ -171,6 +192,8 @@ public class ClubServiceImpl implements ClubService {
 		
 		return resultBoardNo;
 	}
+
+
 
 
 

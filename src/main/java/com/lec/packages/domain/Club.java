@@ -82,4 +82,9 @@ public class Club extends BaseEntity{
 		this.clubPw = clubPw;
 		this.clubIsprivate = clubIsprivate;
 	}
+
+	public void remove(boolean deleteFlag) {
+		this.deleteFlag = true;		
+	}
+
 }
