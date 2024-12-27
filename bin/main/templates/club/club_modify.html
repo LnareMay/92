@@ -64,13 +64,13 @@
     
     // 클럽 공개여부 비밀번호
     function togglePasswordField() {
-        const isPrivate = document.getElementById('clubIsprivate').checked;
+        const isPrivate = document.getElementById('clubIsprivateYes').checked;
         const passwordField = document.getElementById('clubPw');
         if (isPrivate) {
             passwordField.style.display = 'inline-block'; 
         } else {
             passwordField.style.display = 'none'; 
-            passwordField.value = '';
+            passwordField.value= '';
         }
     }
 </script>
@@ -78,7 +78,7 @@
 <body>
     <div th:insert="~{layouts/header :: header}"></div>
     
-    <main class="container main" style="height: 1300px";>
+    <main class="container main" style="height: 650px";>
     
         <form id="clubmodify" action="/club/club_modify" method="post" enctype="multipart/form-data">
             <input type="hidden" name="clubCode" id="clubCode" th:value="${clubdto.clubCode}"/>
@@ -173,13 +173,12 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-				<span th:if="${!clubdto.clubIsprivate}">공개</span>
-				<span th:if="${clubdto.clubIsprivate}">
-				    <input type="checkbox" id="clubIsprivate" name="clubIsprivate" onchange="togglePasswordField()" 
+				    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" 
+				    	   th:checked="${!clubdto.clubIsprivate}" onchange="togglePasswordField()" /> 공개
+				    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()" 
 				    	   th:checked="${clubdto.clubIsprivate}" /> 비공개
 				    <input type="password" id="clubPw" name="clubPw" th:value="${clubdto.clubPw}" 
-				    	   th:style="${clubdto.clubIsprivate || clubdto.clubPw == '' ? '' : 'display: none;'}" style="margin-left: 10px;">
-				</span>
+				    	   th:style="${clubdto.clubIsprivate ? '' : 'display: none;'}" style="margin-left: 10px;">
 			</div>
 
 			<button type="submit" class="btn btn-primary mt-4" style="margin-bottom: 20px;">수정하기</button>	

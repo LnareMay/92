@@ -857,3 +857,7 @@ z-index:5;
     background-color: #007bff;
     color: #fff;
 }
+
+#mypage_pg #profileImage{
+	width:200px;
+}

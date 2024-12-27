@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
+import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -37,6 +41,8 @@ public class ClubRestController {
     
     @Value("${com.lec.upload.path}")
     private String uploadPath;
+    private ClubService clubService;
+
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> uploadFile(@RequestBody UploadFileDTO uploadFileDTO){
@@ -94,5 +100,11 @@ public class ClubRestController {
 		}
 		
 		return ResponseEntity.ok().headers(headers).body(resource);
+	}
+
+	@DeleteMapping("/club/{clubCode}")
+	public String clubDelete(@PathVariable String clubCode) {
+		clubService.delete(clubCode);
+		return clubCode;
 	}
 }
