@@ -2,8 +2,9 @@ package com.lec.packages.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.lec.packages.domain.Club_Board;
+
+
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -15,7 +16,7 @@ public interface ClubService {
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
-	void delete(String clubCode);
+//	void remove(ClubDTO clubDTO);
 	
 	ClubDTO board(String clubCode);
   
@@ -61,4 +62,5 @@ public interface ClubService {
 		
 		return boardDTO;
 	}
+
 }

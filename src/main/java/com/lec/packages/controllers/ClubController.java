@@ -1,5 +1,8 @@
 package com.lec.packages.controllers;
 
+import java.util.List;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -7,7 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,6 +91,24 @@ public class ClubController {
 		
 		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
 		return "redirect:/club/club_detail"; 
+	}
+	
+//	@PostMapping("/club_remove")
+//	public String clubRemove(@Valid ClubDTO clubDTO
+//			, RedirectAttributes redirectAttributes) {
+//		log.info("[remove]" + clubDTO);
+//		clubService.remove(clubDTO);
+//		
+//		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
+//		return "redirect:/club/club_detail"; 
+//	}
+	
+	@GetMapping("/theme_list")
+	public String clubList(@RequestParam("clubTheme") String clubTheme
+						, Model model) {
+		List<ClubDTO> filterClub = clubService.getClubByTheme(clubTheme);
+		model.addAttribute("responseDTO", new ResponseDTO(filterClub));
+		return "club/theme_list";
 	}
 	
 	@GetMapping("/club_board")

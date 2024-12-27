@@ -34,6 +34,7 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
 	
+	// 클럽생성
 	public String create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
@@ -127,17 +128,15 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽삭제
-	@Override
-	public void delete(String clubCode) {
-		Club club = clubRepository.findById(clubCode).orElseThrow();
-		
-		club.setDeleteFlag(true);
-		clubRepository.save(club);
-		
-	}
-	
-	
-		
+//	@Override
+//	public void remove(ClubDTO clubDTO) {
+//		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
+//		Club club = result.orElseThrow();
+//		
+//		club.remove(clubDTO.isDeleteFlag());
+//		clubRepository.save(club);
+//	}
+
 	// 클럽게시판
 	@Override
 	public ClubDTO board(String clubCode) {
