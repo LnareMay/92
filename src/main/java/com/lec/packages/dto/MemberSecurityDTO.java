@@ -5,9 +5,6 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import com.lec.packages.domain.Member;
-
-import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -66,6 +63,4 @@ public class MemberSecurityDTO extends User {
 		this.DELETE_FLAG = DELETE_FLAG;
 		this.MEM_SOCIAL = MEM_SOCIAL;
 	}
-
-	
 }

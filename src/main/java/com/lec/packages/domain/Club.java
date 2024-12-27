@@ -70,21 +70,4 @@ public class Club extends BaseEntity{
 
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;
-
-	public void change(String clubIntroduction, String clubAddress, String clubName
-					 , String clubTheme, String clubExercise, String clubPw
-					 , boolean clubIsprivate) {
-		this.clubIntroduction = clubIntroduction;
-		this.clubAddress = clubAddress;
-		this.clubName = clubName;
-		this.clubTheme = clubTheme;
-		this.clubExercise = clubExercise;		
-		this.clubPw = clubPw;
-		this.clubIsprivate = clubIsprivate;
-	}
-
-	public void remove(boolean deleteFlag) {
-		this.deleteFlag = true;		
-	}
-
 }

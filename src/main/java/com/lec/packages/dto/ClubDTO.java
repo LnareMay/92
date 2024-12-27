@@ -49,7 +49,5 @@ public class ClubDTO {
 
     private LocalDateTime CREATEDATE;
     private LocalDateTime MODIFYDATE;
-    
-    private String themeName;
 
 }

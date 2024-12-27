@@ -1,23 +1,15 @@
 package com.lec.packages.domain;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.hibernate.annotations.BatchSize;
-
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 
 import groovy.transform.ToString;
-import jakarta.persistence.CascadeType;
+import groovy.transform.builder.Builder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(ClubBoardKeyClass.class)
-@ToString(excludes = "imgaes")
+@ToString
 public class Club_Board extends BaseEntity{
     @Id
     @JoinColumn(name = "CLUB_CODE")
@@ -57,20 +49,4 @@ public class Club_Board extends BaseEntity{
         this.boardType = type;
         this.boardText = text;
     }
-
-    @OneToMany(mappedBy = "clubBoard", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
-    @Builder.Default
-    @BatchSize(size = 20)
-    private Set<Club_Board_Image> images = new HashSet<>();
-
-    public void addImage(String uuid, String fileName){
-        Club_Board_Image image = Club_Board_Image.builder()
-                                 .uuid(uuid)
-                                 .boardImage(fileName)
-                                 .clubBoard(this)
-                                 .ord(images.size())
-                                 .build();
-        images.add(image);
-    }
-
 }
