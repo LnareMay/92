@@ -15,6 +15,9 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
 	@Query("SELECT c FROM Club c WHERE c.clubTheme LIKE %:clubTheme%")
 	List<Club> findByClubThemeContaining(@Param("clubTheme") String clubTheme);
 
+//	@Query("SELECT c FROM club_member_list m ")
+//	Optional<Club> findById(clubDTO.getClubCode());
+	
 	//List<Club> findAllActiveClub();
 	
 	// @Query("SELECT c FROM Club c WHERE c.deleteFlag = false")

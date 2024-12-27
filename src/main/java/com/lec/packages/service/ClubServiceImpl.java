@@ -128,6 +128,16 @@ public class ClubServiceImpl implements ClubService {
 		clubRepository.save(club);
 	}
 	
+	// 클럽 가입하기
+	@Override
+	public void join(ClubDTO clubDTO) {
+		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
+		Club club = result.orElseThrow();
+		club.join(clubDTO.getClubCode(), clubDTO.getMemId());
+		clubRepository.save(club);
+	}
+
+	
 	// 클럽삭제
 //	@Override
 //	public void remove(ClubDTO clubDTO) {
@@ -138,7 +148,7 @@ public class ClubServiceImpl implements ClubService {
 //		clubRepository.save(club);
 //	}
 	
-	// 클럽테마리스트
+	// 클럽 테마별 리스트
 	 @Override
 	    public List<ClubDTO> ListByTheme(String clubTheme) {
 	        List<Club> clubs = clubRepository.findByClubThemeContaining(clubTheme);
@@ -147,7 +157,7 @@ public class ClubServiceImpl implements ClubService {
 	                    .collect(Collectors.toList());
 	    }
 	 
-	 
+	// 클럽 전체리스트 
 	@Override
 	public List<ClubDTO> getAllClubs() {
 		List<Club> clubs = clubRepository.findAll();
@@ -192,6 +202,7 @@ public class ClubServiceImpl implements ClubService {
 		
 		return resultBoardNo;
 	}
+
 
 
 

@@ -17,6 +17,7 @@ public interface ClubService {
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
 //	void remove(ClubDTO clubDTO);
+	void join(ClubDTO clubDTO);
 	
 	ClubDTO board(String clubCode);
   
@@ -64,6 +65,8 @@ public interface ClubService {
 		
 		return boardDTO;
 	}
+	
+
 	
 
 

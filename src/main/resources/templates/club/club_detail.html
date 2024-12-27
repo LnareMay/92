@@ -40,7 +40,12 @@
         <p class="text-muted" th:text="${clubdto.themeName}" style="margin-bottom: 10px"></p>
  
         <!-- 가입 버튼 -->
-        <button class="btn btn-warning fw-bold join-btn shadow-sm">클럽 가입하기</button>
+		<form id="clubjoinform" action="/club/club_join" method="post">
+			<input type="hidden" id="clubCode" name="clubCode" th:value="${clubdto.clubCode}"/>
+			<input type="hidden" id="memId" name="memId" th:value="${#authentication.principal.MEM_ID}"/>
+			
+        	<button type="submit" class="btn btn-warning fw-bold join-btn shadow-sm" onclick="joinClub(this)" >클럽 가입하기</button>
+		</form>
 		<span th:if="${clubdto.MemId == principal.MEM_ID}">
      		<a class="btn btn-warning fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
      	</span>
@@ -153,4 +158,11 @@
   
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+
+<script>
+	function joinClub() {
+		document.get
+	}
+</script>
+
 </html>

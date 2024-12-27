@@ -103,6 +103,16 @@ public class ClubController {
 //		return "redirect:/club/club_detail"; 
 //	}
 
+	@GetMapping("/club_join")
+	public void clubJoin(@RequestParam("clubCode") String clubCode
+					,HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+		
+		ClubDTO clubDTO = clubService.join(clubCode);
+		model.addAttribute("clubdto", clubDTO);		
+		
+	}
 
 	@GetMapping("/club_board")
 	public String clubBoard(@RequestParam("clubCode") String clubCode, HttpServletRequest request, Model model) {

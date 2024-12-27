@@ -86,5 +86,10 @@ public class Club extends BaseEntity{
 	public void remove(boolean deleteFlag) {
 		this.deleteFlag = true;		
 	}
+	
+	public void join(String clubCode, String memId) {
+		this.clubCode = clubCode;
+		this.memId = memId;
+	}
 
 }
