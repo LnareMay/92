@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,16 +20,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FacilityDTO {
     
-    @NotEmpty
+	
     private String facilityCode;
 
-    @NotEmpty
+    @NotNull
     private String facilityName;
 
-    @NotEmpty
+    @NotNull
     private String facilityAddress;
 
-    @NotEmpty
+    private String facilityAddressDetail;
+    
+    @NotNull
     private String facilityZipcode;
     
     private String facilityDescription;
@@ -41,24 +45,25 @@ public class FacilityDTO {
     private String facilityImage4;
 
     private String exerciseCode;
+    
+    private String exerciseName;
 
     private boolean facilityIsOnlyClub;
 
-    @NotEmpty
+    @NotNull
     private String memId;
 
-    @NotEmpty
+    @NotNull
     private BigDecimal price;
 
-    @NotEmpty
+    @NotNull(message = "시설 시작 시간은 필수 입력 항목입니다.")
     private LocalDateTime facilityStartTime;
 
-    @NotEmpty
+    @NotNull(message = "시설 종료 시간은 필수 입력 항목입니다.")
     private LocalDateTime facilityEndTime;
     
-    @NotEmpty
-    private LocalDateTime createDate;
     
+    private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
     private boolean deleteFlag;
