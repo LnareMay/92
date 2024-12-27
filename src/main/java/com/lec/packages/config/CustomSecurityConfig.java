@@ -93,7 +93,7 @@ public class CustomSecurityConfig {
 		http.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()));
 
 		http.authorizeRequests(auth -> auth
-	            .requestMatchers("/member/login", "/member/join", "/css/**", "/js/**", "/img/**", "/","/member/checkId","/club/club_detail",  "/upload/**", "/view/**").permitAll() // 로그인 페이지 및 정적 리소스 허용
+	            .requestMatchers("/member/login", "/member/join", "/css/**", "/js/**", "/img/**", "/","/member/checkId").permitAll() // 로그인 페이지 및 정적 리소스 허용
 	            .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한이 필요한 경로
 	            .anyRequest().authenticated() // 나머지 요청은 인증 필요
 	        );
@@ -125,7 +125,5 @@ public class CustomSecurityConfig {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-	
-	
 
 }

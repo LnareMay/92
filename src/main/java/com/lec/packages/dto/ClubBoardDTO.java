@@ -1,11 +1,8 @@
 package com.lec.packages.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import groovy.transform.builder.Builder;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,10 +24,4 @@ public class ClubBoardDTO {
     private String MEM_ID;
 
     private Boolean DELETE_FLAG;
-
-    private List<String> fileNames;
-
-    private LocalDateTime CREATEDATE;
-    
-    private LocalDateTime MODIFYDATE;
 }

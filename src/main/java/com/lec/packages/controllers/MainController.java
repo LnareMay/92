@@ -29,7 +29,18 @@ public class MainController {
         model.addAttribute("responseDTO", responseDTO);
 
         return "index"; // Thymeleaf 템플릿 파일 (index.html)
-    }   
+    }
+    
+   
+    /*    
+    @GetMapping("/")
+    public String index(PageRequestDTO pageRequestDTO, Model model){
+    	PageResponseDTO<ClubDTO> responseDTO = clubService.list(pageRequestDTO);
+        model.addAttribute("responseDTO", responseDTO);
+        
+        return "index";
+    }  
+    */
     
     @GetMapping("/facility/facility_main")
     public String mainFacility(HttpServletRequest request, Model model) {

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.lec.packages.domain.MemberRole;
-import com.lec.packages.dto.MemberJoinDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -123,12 +122,5 @@ public class Member extends BaseEntity{
 	public void changeSocial(boolean MEM_SOCIAL) {
 		this.MEM_SOCIAL = MEM_SOCIAL;
 	}
-	
-	 public void setMEM_PICTURE(String MEM_PICTURE) {
-	        this.MEM_PICTURE = MEM_PICTURE;
-	    }
-	
-	
-	
     
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
 import com.lec.packages.dto.MemberJoinDTO;
-import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +22,9 @@ public class MemberServiceImpl implements MemberService{
 	private final ModelMapper modelMapper;
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-//	private final Member member;
 	
 	@Override
-	public void join(MemberJoinDTO memberJoinDTO, String storedFileName) /*throws MidExistException*/ {
+	public void join(MemberJoinDTO memberJoinDTO) /*throws MidExistException*/ {
 		String mid = memberJoinDTO.getMEM_ID();
 //		boolean exist = memberRepository.existsById(mid);
 //		if(exist) {
@@ -44,8 +42,6 @@ public class MemberServiceImpl implements MemberService{
 	    }
 
 		
-	    member.setMEM_PICTURE(storedFileName);
-	    
 		// log.info("========>" + member + "[" + member.getRoleSet() + "]");
 		
 		memberRepository.save(member);
@@ -56,44 +52,5 @@ public class MemberServiceImpl implements MemberService{
 	    return memberRepository.existsById(memId); // 존재하면 true 반환
 	}
 
-	@Override
-	public void modify(MemberJoinDTO memberJoinDTO, String storedFileName) {
-		// 1. 기존 회원 정보 가져오기
-        Optional<Member> existingMember = memberRepository.findById(memberJoinDTO.getMEM_ID());
-        
-        if (existingMember.isPresent()) {
-            // 2. 회원 정보 수정
-            Member member =  modelMapper.map(memberJoinDTO, Member.class);
-            member.setMEM_ID(memberJoinDTO.getMEM_ID());
-            member.setMEM_NAME(memberJoinDTO.getMEM_NAME());
-            member.setMEM_NICKNAME(memberJoinDTO.getMEM_NICKNAME());
-            member.setMEM_EXERCISE(memberJoinDTO.getMEM_EXERCISE());
-            member.setMEM_CLUB(memberJoinDTO.getMEM_CLUB());
-            member.setMEM_PICTURE(storedFileName);
-            member.setMEM_INTRODUCTION(memberJoinDTO.getMEM_INTRODUCTION());
-            member.setMEM_TELL(memberJoinDTO.getMEM_TELL());
-            member.setMEM_EMAIL(memberJoinDTO.getMEM_EMAIL());
-            member.setMEM_ADDRESS(memberJoinDTO.getMEM_ADDRESS());
-            member.setMEM_ADDRESS_DETAIL(memberJoinDTO.getMEM_ADDRESS_DETAIL());
-            member.setMEM_ZIPCODE(memberJoinDTO.getMEM_ZIPCODE());
-       
-            
-            // 3. 수정된 정보 저장
-            memberRepository.save(member);
-        } else {
-            throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMEM_ID());
-        }
-		
-        
-	}
-
-
-//	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {
-//		// 업로드된 파일명을 MemberJoinDTO에 설정
-//		memberSecurityDTO.setMEM_PICTURE(fileName);
-//
-//		// DTO를 엔티티로 변환 후 DB에 저장 (변환 작업은 필요시 추가)
-//		memberRepository.save(member); // `toEntity`는 필요시 구현
-//	}
 
 }
