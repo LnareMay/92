@@ -2,9 +2,9 @@ package com.lec.packages.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import com.lec.packages.domain.Club_Board;
-
-
+import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -12,16 +12,17 @@ import com.lec.packages.dto.PageResponseDTO;
 
 public interface ClubService {
 	
-	void create(ClubDTO clubDTO, String storedFileName);
+	String create(ClubDTO clubDTO);
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
-//	void remove(ClubDTO clubDTO);
+	void delete(String clubCode);
 	
 	ClubDTO board(String clubCode);
-  
-	List<ClubDTO> ListByTheme(String clubTheme);
-	List<ClubDTO> getAllClubs();
+
+	ClubBoardDTO readOne(int boardNo, String clubCode);
+	
+	PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
@@ -49,6 +50,7 @@ public interface ClubService {
 	default ClubBoardDTO entityToDTO(Club_Board board) {
 		
 		ClubBoardDTO boardDTO = ClubBoardDTO.builder()
+				.CLUB_CODE(board.getClubCode())
 				.BOARD_NO(board.getBoardNo())
 				.BOARD_TYPE(board.getBoardType())
 				.BOARD_TEXT(board.getBoardText())
@@ -64,7 +66,4 @@ public interface ClubService {
 		
 		return boardDTO;
 	}
-	
-
-
 }
