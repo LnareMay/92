@@ -1,5 +1,8 @@
 package com.lec.packages.controllers;
 
+import java.util.List;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -7,7 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +26,7 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -32,81 +38,86 @@ import lombok.extern.log4j.Log4j2;
 public class ClubController {
 	@Autowired
 	private final ClubService clubService;
-	
+
 	@GetMapping("/club_create")
 	public String clubCreateGet(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-		return "club/club_create"; 
+		model.addAttribute("currentURI", requestURI);
+		return "club/club_create";
 	}
-	
+
 	@PostMapping("/club_create")
-	public String clubCreatePost(@Valid ClubDTO clubDTO
-			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes, HttpServletRequest request, Model model) {
-		
-		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
-		log.info("Create.." + clubDTO);		
-		String code = clubService.create(clubDTO);
-		redirectAttributes.addFlashAttribute("result", code);		
-		return "redirect:/"; 
-	}
-	
-	@GetMapping({"/club_detail", "/club_modify"})
-	public void clubDetail(@RequestParam("clubCode") String clubCode
-			, HttpServletRequest request, Model model) {
+	public String clubCreatePost(@Valid ClubDTO clubDTO, BindingResult bindingResult,
+			RedirectAttributes redirectAttributes, HttpServletRequest request, Model model) {
+
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
-				
-		ClubDTO clubDTO = clubService.detail(clubCode);		
-		if(clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
+		
+		HttpSession session = request.getSession();
+		String storedFileName = (String) session.getAttribute("storedFileName");
+
+		log.info("Create.." + clubDTO);
+		clubService.create(clubDTO, storedFileName);
+
+		return "redirect:/";
+	}
+
+	@GetMapping({ "/club_detail", "/club_modify" })
+	public void clubDetail(@RequestParam("clubCode") String clubCode, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		ClubDTO clubDTO = clubService.detail(clubCode);
+		if (clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
 			clubDTO.setClubTheme(clubDTO.getClubTheme());
 		}
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
-		
+
 		model.addAttribute("principal", principal);
-        model.addAttribute("clubdto", clubDTO);
+		model.addAttribute("clubdto", clubDTO);
 
 	}
-	
+
 	@PostMapping("/club_modify")
-	public String clubModify(@Valid ClubDTO clubDTO
-			, HttpServletRequest request, Model model
-			, PageRequestDTO pageRequestDTO
-			, RedirectAttributes redirectAttributes) {
+	public String clubModify(@Valid ClubDTO clubDTO, HttpServletRequest request, Model model,
+			PageRequestDTO pageRequestDTO, RedirectAttributes redirectAttributes) {
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
-		
+
 		log.info("modify : " + clubDTO);
-		clubService.modify(clubDTO);		
-		
-		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
-		return "redirect:/club/club_detail"; 
-	}
-	
-	@GetMapping("/club_board")
-	public String clubBoard(@RequestParam("clubCode") String clubCode
-			, HttpServletRequest request, Model model) {
-		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
-		ClubDTO clubDTO = clubService.detail(clubCode);
-        model.addAttribute("clubdto", clubDTO);
-        
-		return "club/club_board"; 
+		clubService.modify(clubDTO);
+
+		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());
+		return "redirect:/club/club_detail";
 	}
 
+//	@PostMapping("/club_remove")
+//	public String clubRemove(@Valid ClubDTO clubDTO
+//			, RedirectAttributes redirectAttributes) {
+//		log.info("[remove]" + clubDTO);
+//		clubService.remove(clubDTO);
+//		
+//		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
+//		return "redirect:/club/club_detail"; 
+//	}
+
+
+	@GetMapping("/club_board")
+	public String clubBoard(@RequestParam("clubCode") String clubCode, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		ClubDTO clubDTO = clubService.detail(clubCode);
+		model.addAttribute("clubdto", clubDTO);
+
+		return "club/club_board";
+	}
 
 	@PostMapping("board_register")
-	public String clubBoardPost(@RequestParam("clubCode") String clubCode
-			,HttpServletRequest request, Model model
-			,@Valid ClubBoardDTO clubBoardDTO
-			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes){
+	public String clubBoardPost(@RequestParam("clubCode") String clubCode, HttpServletRequest request, Model model,
+			@Valid ClubBoardDTO clubBoardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
 		log.info("registerController");
@@ -117,22 +128,21 @@ public class ClubController {
 		log.info(bno);
 		return "redirect:/club/club_board";
 	}
-	
-	
+
 	@GetMapping("/club_calendar")
 	public String clubCalendar(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
-		return "club/club_calendar"; 
+		model.addAttribute("currentURI", requestURI);
+
+		return "club/club_calendar";
 	}
 
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_board_write")
-	public String clubBoardWrite(HttpServletRequest request, Model model){
+	public String clubBoardWrite(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
+		model.addAttribute("currentURI", requestURI);
+
 		return "club/club_board_write";
 	}
 }
