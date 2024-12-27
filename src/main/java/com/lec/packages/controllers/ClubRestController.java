@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -106,5 +109,37 @@ public class ClubRestController {
 	public String clubDelete(@PathVariable String clubCode) {
 		clubService.delete(clubCode);
 		return clubCode;
+	}
+
+	@Operation(summary = "파일삭제", description = "DELETE 방식으로 첨부파일 삭제")
+	@DeleteMapping(value = "/remove/{fileName}")
+	public ResponseEntity<Map<String, Boolean>> removeFile(@PathVariable("fileName") String fileName) {
+	    Map<String, Boolean> resultMap = new HashMap<>();
+	    boolean removed = false;
+	    try {
+	        // 전달된 파일 이름이 썸네일 파일(s_)이라면, 원본 파일 이름 추출
+	        String originalFileName = fileName.startsWith("s_") ? fileName.substring(2) : fileName;
+	        // 원본 파일 경로
+	        File originalFile = new File(uploadPath + File.separator + originalFileName);
+	        // 썸네일 파일 경로
+	        File thumbnailFile = new File(uploadPath + File.separator + fileName);
+	        // 원본 파일 삭제
+	        if (originalFile.exists()) {
+	            String contentType = Files.probeContentType(originalFile.toPath());
+	            removed = originalFile.delete();
+	            // 썸네일 파일 삭제 (이미지일 경우만)
+	            if (contentType != null && contentType.startsWith("image") && thumbnailFile.exists()) {
+	                thumbnailFile.delete();
+	            }
+	        } else {
+	            log.warn("파일이 존재하지 않습니다: {}", originalFileName);
+	        }
+	    } catch (IOException e) {
+	        log.error("파일 삭제 중 오류 발생: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Map.of("result", false));
+	    }
+	    resultMap.put("result", removed);
+	    return ResponseEntity.ok(resultMap);
 	}
 }
