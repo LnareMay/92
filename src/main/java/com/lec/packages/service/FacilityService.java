@@ -13,7 +13,6 @@ public interface FacilityService {
 	PageResponseDTO<FacilityDTO> listByUser(String userId, PageRequestDTO pageRequestDTO);
 	PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO);
 	FacilityDTO getFacilityByCode(String facilityCode);
-	void modify(FacilityDTO facilityDTO);
 
 
 }

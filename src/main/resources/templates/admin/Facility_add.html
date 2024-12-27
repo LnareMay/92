@@ -7,8 +7,6 @@
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- 공통 css -->
-  <link rel="stylesheet" th:href="@{/css/common.css}">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
@@ -50,7 +48,9 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/admin/main" class="brand-link">
-      <img src="../../img/fitlink.png" alt="Fitlink Logo" class="brand-image img-circle elevation-3"
+      <img src="../../dist/img/AdminLTELogo.png"
+           alt="AdminLTE Logo"
+           class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">FITLINK</span>
     </a>
@@ -131,8 +131,6 @@
 
     <!-- Main content -->
     <section class="content">
-   <form id="facilityAdd" action="/admin/Facility_add" method="post"> 
-   
       <div class="row">
         <div class="col-md-6">
           <div class="card card-primary">
@@ -145,32 +143,39 @@
               </div>
             </div>
             <div class="card-body">
+				
+              <div class="form-group">
+                <label for="facilityName">Facility Code</label>
+                <input type="text" id="facilityCode" class="form-control">
+              </div>
               
               <div class="form-group">
                 <label for="facilityName">Facility Name</label>
-                <input type="text" class="form-control" id="facilityName" name="facilityName" required>
+                <input type="text" id="facilityName" class="form-control">
               </div>
 			  
 		    <div class="form-group">
                 <label for="inputfacilityAddress">Facility Address</label>
                 <br />
-				<input type="text" id="facilityZipcode" name="facilityZipcode" placeholder="우편번호"/>
-				<input type="button" onclick="searchPostcode()" value="우편번호 찾기"/><br>
-				<input type="text" class="form-control" id="facilityAddress" name="facilityAddress" placeholder="주소" required />
-				<input type="text" id="facilityAddressDetail" name="facilityAddressDetail" placeholder="상세주소" required />
+				<input type="text" id="facilityZipcode" placeholder="우편번호">
+				<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+				<input type="text" class="form-control" id="facilityAddress" placeholder="주소"><br>
+				<input type="text" id="sample6_detailAddress" placeholder="상세주소">
+				<input type="text" id="sample6_extraAddress" placeholder="참고항목">
 		    </div>
              
 			  
               <div class="form-group">
                 <label for="inputDescription">Facility Description</label>
-                <textarea id="facilityDescription" name="facilityDescription" class="form-control" rows="4"></textarea>
+                <textarea id="facilityDescription" class="form-control" rows="4"></textarea>
               </div>
 			       
               <div class="form-group">
                 <label for="inputRegisterId">Register ID</label>
-                <input type="text" id="memId" name="memId" class="form-control" th:value="${userId}" readonly/>
+                <input type="text" id="memId" class="form-control" />
               </div>
-
+  
+  
             </div>
             <!-- /.card-body -->
           </div>
@@ -186,27 +191,29 @@
             </div>
             <div class="card-body">
               
-              <div class=" form-group">
-              	<label for="facilityStartTime">Facility Start Time</label>
-               <input type="datetime-local" id="facilityStartTime" name="facilityStartTime" class="form-control" required>
-              </div> 
-       		 <div class=" form-group">
-              	<label for="facilityEndTime">Facility End Time</label>
-                 <input type="datetime-local" id="facilityEndTime" name="facilityEndTime" class="form-control" required>
-             </div>
-              
               <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" id="price" name="price" value="${facilityDTO.price}" >
+                <label for="inputSpentBudget">Total amount spent</label>
+                <input type="number" id="price" class="form-control">
               </div>
               
+              <div class=" form-group">
+              	<label for="facilityStartTime">Facility Start Time</label>
+                <input type="number" id="facilityStartTime" class="form-control">
+                
+              	<label for="facilityEndTime">Facility End Time</label>
+                <input type="number" id="facilityEndTime" class="form-control">
+              
+              </div>
+
             </div>
             <!-- /.card-body -->
-          </div>    
+          </div>
+          
+          
         </div>
         <div class="col-md-6">
  
-    	 <div class="card card-primary">
+    	<div class="card card-info">
             <div class="card-header">
               <h3 class="card-title">Files</h3>
 
@@ -217,7 +224,13 @@
             </div>
             <div class="card-body p-0">
               <table class="table">
-
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                
                 <tbody>
               
                   <tr>
@@ -233,47 +246,7 @@
               </table>
             </div>
             <!-- /.card-body -->
-          </div> 
-          
-           <div class="card card-secondary">
-            <div class="card-header">
-              <h3 class="card-title">Facility Detail</h3>
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fas fa-minus"></i></button>
-              </div>
-             </div>
-             
-              <div class="card-body">
-	   			<div class=" form-group">
-	   			<label for="exerciseCode">Facility Type</label> 
-	              <form>
-					  <select name="exerciseCode" >
-					    <option value="null" disabled >=== 선택 ===</option> <!-- 필수선택으로 수정하기 -->
-					    <option value="EXE_FOOTBALL">축구</option>
-					    <option value="EXE_BASKET">농구</option>
-					    <option value="EXE_BADMINTON">배드민턴</option>
-					    <option value="EXE_CLIMB">암벽등반</option>
-					    <option value="EXE_FUTSAL">풋살</option>
-					    <option value="EXE_BASEBALL">야구</option>
-					    <option value="EXE_YOGA">요가</option>
-					    <option value="EXE_TENNIS">테니스</option>
-					    <option value="EXE_PILATES">필라테스</option>
-					    <option value="EXE_FITNESS">헬스</option>
-					  </select>
-				 </form>
-	            </div>  
-	            
-	           <div class=" form-group">
-              	<div class="form-check form-switch">
-				  <input class="form-check-input" type="checkbox" id="facilityIsOnlyClub" name="facilityIsOnlyClub">
-				 <label class="form-check-label" for="facilityIsOnlyClub">Reservation Only Club</label>
-				</div>
-              </div>       
-              
-            </div>
-              
-           
+          </div>  
         </div>
       </div>
       <div class="row">
@@ -282,14 +255,18 @@
           <input type="submit" value="Create new Facility" class="btn btn-success float-right">
         </div>
       </div>
-   </form>
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
 
-	<!-- FOOTER  -->
-  <div th:insert="~{layouts/footer :: footer}"></div>
+<footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.4
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer> 
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
@@ -311,7 +288,7 @@
 <!-- 도로명 주소 노출 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-    function searchPostcode() {
+    function sample6_execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
                 // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
@@ -344,17 +321,17 @@
                         extraAddr = ' (' + extraAddr + ')';
                     }
                     // 조합된 참고항목을 해당 필드에 넣는다.
-                    document.getElementById("facilityAddress").value = extraAddr;
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
                 
                 } else {
-                    document.getElementById("facilityAddress").value = '';
+                    document.getElementById("sample6_extraAddress").value = '';
                 }
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById("facilityZipcode").value = data.zonecode;
                 document.getElementById("facilityAddress").value = addr;
                 // 커서를 상세주소 필드로 이동한다.
-                document.getElementById("facilityAddressDetail").focus();
+                document.getElementById("sample6_detailAddress").focus();
             }
         }).open();
     }

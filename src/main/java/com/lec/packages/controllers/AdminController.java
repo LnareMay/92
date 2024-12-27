@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.FacilityDTO;
@@ -55,117 +54,41 @@ public class AdminController {
 		 model.addAttribute("userId",userId);
 		 return "admin/Admin_edit";
 	 }
-	 //Get 시설 등록
+
 	 @GetMapping("/Facility_add")
-	 public String addFacilityPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-	     String userId = userDetails.getUsername();
-	     model.addAttribute("userId", userId);
-	     model.addAttribute("facilityDTO", new FacilityDTO()); // 빈 DTO 객체 전달
-	     return "admin/Facility_add"; // 입력 페이지로 이동
+	    public String addFaciltyPage(@AuthenticationPrincipal UserDetails userDetails,Model model) {
+		 String userId = userDetails.getUsername();
+		 model.addAttribute("userId",userId);
+		 
+		 return "admin/Facility_add";
 	 }
-	 
-	 //Post 시설 등록 
 	 @PostMapping("/Facility_add")
 	 public String addFaciltyPagePost(@Valid FacilityDTO facilityDTO
 			 							, BindingResult bindingResult
 			 							, RedirectAttributes redirectAttributes
 			 							,Model model
-			 							,@AuthenticationPrincipal UserDetails userDetails
-			 							,@RequestParam("exerciseCode") String exerciseCode) {
+			 							,@AuthenticationPrincipal UserDetails userDetails) {
 		 
-		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
-		 if (exerciseCode == null || exerciseCode.isEmpty()) {
-		        exerciseCode = null;
-		    }
-
-	    if (bindingResult.hasErrors()) {
-	  
-	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
-	       
-	        String userId = userDetails.getUsername();
-	        
-	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
-	        model.addAttribute("facilityDTO", facilityDTO);
-    	    model.addAttribute("userId", userId);
-    	    
-	        model.addAttribute("errors", bindingResult.getFieldErrors());
-
-
-	        // 입력 페이지로 다시 이동
-	        return "admin/Facility_add";
-	    }
-
-	    log.info("등록 요청: {}", facilityDTO);
-
-	    // 시설 등록 및 결과 처리
-	    String facilityCode = facilityService.register(facilityDTO);
-	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다: " + facilityCode);
-
-	    return "redirect:/admin/Facility_list";
+		 if(bindingResult.hasErrors()) {
+			 log.info("입력된 정보에 에러가 있습니다..");
+			 redirectAttributes.addFlashAttribute("errors",bindingResult.getAllErrors());
+			 
+			 
+			 String userId = userDetails.getUsername();
+			 model.addAttribute("userId",userId);
+			 
+			 
+			 return "redirect:/admin/main";
+		 }
+		 
+		 log.info("register..........."+facilityDTO);
+		 
+		 String facilityCode = facilityService.register(facilityDTO);
+		 redirectAttributes.addFlashAttribute("result",facilityCode);
+		 
+		 return "redirect:/admin/Facility_list";
 	 }
 	 
-	 //시설 수정하기 Get
-	 @GetMapping("/Facility_edit/{facilityCode}")
-	 public String EditFaciltyPage( @PathVariable("facilityCode") String facilityCode, 
-									 Model model,
-									 @AuthenticationPrincipal UserDetails userDetails) {
-		 
-		 String userId = userDetails.getUsername();
-		 
-		 //시설 정보를 가져오기 위해 서비스 호출
-		 FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
-		 
-		 //모델에 로그인 정보를 추가하여 뷰로 전달
-		 model.addAttribute("userId",userId);
-		 //모델에 시설 정보를 추가하여 뷰로 전달
-		 model.addAttribute("facility",facilityDTO);
-		 
-		 return "admin/Facility_edit";
-	 }
-	 
-	 
-	 //시설 수정하기 Post
-	 @PostMapping("/Facility_edit/{facilityCode}")
-	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
-									 	,@PathVariable("facilityCode") String facilityCode
-										,BindingResult bindingResult
-										,RedirectAttributes redirectAttributes
-										,Model model
-										,@AuthenticationPrincipal UserDetails userDetails
-										,@RequestParam("exerciseCode") String exerciseCode) {
-		 
-		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
-		 if (exerciseCode == null || exerciseCode.isEmpty()) {
-		        exerciseCode = null;
-		    }
-
-	    if (bindingResult.hasErrors()) {
-	  
-	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
-	       
-	        String userId = userDetails.getUsername();
-	        
-	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
-	        model.addAttribute("facilityDTO", facilityDTO);
-    	    model.addAttribute("userId", userId);
-    	    
-	        model.addAttribute("errors", bindingResult.getFieldErrors());
-
-
-	        // 입력 페이지로 다시 이동
-	        return "admin/Facility_add";
-	    }
-
-	    log.info("등록 요청: {}", facilityDTO);
-
-	    // 시설 등록 및 결과 처리
-	    facilityService.modify(facilityDTO);
-	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
-		 
-		 return "admin/Facility_list";
-	 }
-	 
-	 //시설 상세보기
 	 @GetMapping("/Facility_detail/{facilityCode}")
 	 public String DetailFaciltyPage(@PathVariable("facilityCode") String facilityCode, Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		 
@@ -182,9 +105,11 @@ public class AdminController {
 		 return "admin/Facility_detail";
 	 }
 	 
-
+	 @GetMapping("/Facility_edit")
+	 public String EditFaciltyPage() {
+		 return "admin/Facility_edit";
+	 }
 	 
-	 //시설 리스트 보기
 	 @GetMapping("/Facility_list")
 	 public String ListFaciltyPage(PageRequestDTO pageRequestDTO , Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		 
