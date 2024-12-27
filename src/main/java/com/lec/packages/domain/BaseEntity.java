@@ -2,6 +2,7 @@ package com.lec.packages.domain;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +19,7 @@ public abstract class BaseEntity {
     
     // 생성 일자
     // updatable = false => 데이터 생성할 때만 삽입
+	@CreationTimestamp
     @CreatedDate
     @Column(name = "CREATEDATE", updatable = false)
     private LocalDateTime CREATEDATE;

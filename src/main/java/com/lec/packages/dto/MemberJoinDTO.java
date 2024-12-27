@@ -25,9 +25,4 @@ public class MemberJoinDTO {
 	private boolean DELETE_FLAG;
 	private boolean MEM_SOCIAL;
 
-	
-	
 }
-
-
-
