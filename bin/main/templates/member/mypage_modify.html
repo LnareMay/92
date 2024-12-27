@@ -125,12 +125,12 @@
 					<div class="form-group">
 						<label for="MEM_INTRODUCTION">자기소개</label>
 						<textarea id="MEM_INTRODUCTION" name="MEM_INTRODUCTION"
-							th:value="${#authentication.principal.MEM_INTRODUCTION}" class="form-control"></textarea>
+							th:text="${#authentication.principal.MEM_INTRODUCTION}"  maxlength="100" class="form-control"></textarea>
 					</div>
 
 					<div class="form-group">
 						<label for="MEM_TELL">전화번호</label> <input type="tel" id="MEM_TELL" name="MEM_TELL"
-							th:value="${#authentication.principal.MEM_TELL}" class="form-control">
+							th:value="${#authentication.principal.MEM_TELL}" maxlength="11" class="form-control">
 					</div>
 
 					<div class="form-group">
