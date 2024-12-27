@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
+import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -191,6 +192,27 @@ public class ClubServiceImpl implements ClubService {
 		int resultBoardNo = clubBoardRepository.save(saveClubBoard).getBoardNo();
 		
 		return resultBoardNo;
+	}
+
+	@Override
+	public PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+		
+		String[] types = pageRequestDTO.getTypes();
+		Pageable pageable = pageRequestDTO.getPageable("boardNo");
+
+		Page<ClubBoardAllListDTO> result = clubBoardRepository.searchWithAll(types, pageable);
+
+		return null;
+	}
+
+	@Override
+	public ClubBoardDTO readOne(int boardNo, String clubCode) {
+		Optional<Club_Board> resultBoard = clubBoardRepository.findBoardByImages(clubCode, boardNo);
+		Club_Board club_Board = resultBoard.orElseThrow();
+
+		ClubBoardDTO clubBoardDTO = entityToDTO(club_Board);
+
+		return clubBoardDTO;
 	}
 
 
