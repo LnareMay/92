@@ -63,7 +63,17 @@
 
 					<div class="form-group">
 						<label for="MEM_PICTURE">프로필 사진</label>
-						<img id="profileImage" th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">
+						<!--<img id="profileImage" th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">-->
+
+						
+						<th:block th:if="${#authentication.principal.MEM_PICTURE != ''}">
+							<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지"
+								id="profileImage">
+						</th:block>
+						<th:block th:if="${#authentication.principal.MEM_PICTURE == ''}">
+							<img src="/img/profile_img.jpg" alt="프로필 이미지" id="profileImage">
+						</th:block>
+
 						<input type="file" class="blind" id="MEM_PICTURE" name="MEM_PICTURE" accept="image/*">
 					</div>
 
@@ -126,7 +136,8 @@
 					<div class="form-group">
 						<label for="MEM_INTRODUCTION">자기소개</label>
 						<textarea id="MEM_INTRODUCTION" name="MEM_INTRODUCTION"
-							th:text="${#authentication.principal.MEM_INTRODUCTION}"  maxlength="100" class="form-control"></textarea>
+							th:text="${#authentication.principal.MEM_INTRODUCTION}" maxlength="100"
+							class="form-control"></textarea>
 					</div>
 
 					<div class="form-group">
@@ -183,63 +194,63 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="/js/upload.js"></script>
 	<script>
-	    // 프로필 이미지 클릭 시 파일 선택 창 열기
-	    const profileImage = document.getElementById('profileImage');
-	    const fileInput = document.getElementById('MEM_PICTURE');
+		// 프로필 이미지 클릭 시 파일 선택 창 열기
+		const profileImage = document.getElementById('profileImage');
+		const fileInput = document.getElementById('MEM_PICTURE');
 
-	    // 현재 파일 이름을 저장 (초기값 설정)
-	    let currentFileName = "${#authentication.principal.MEM_PICTURE}";
+		// 현재 파일 이름을 저장 (초기값 설정)
+		let currentFileName = "${#authentication.principal.MEM_PICTURE}";
 
-	    profileImage.addEventListener('click', () => {
-	        fileInput.click(); // 숨겨진 파일 입력 클릭
-	    });
+		profileImage.addEventListener('click', () => {
+			fileInput.click(); // 숨겨진 파일 입력 클릭
+		});
 
-	    // 파일 선택 후 미리보기와 업로드
-	    fileInput.addEventListener('change', (e) => {
-	        const formObj = new FormData();
-	        const files = fileInput.files;
-	        const file = files.length > 0 ? files[0] : null; // 파일이 선택되지 않은 경우 null
+		// 파일 선택 후 미리보기와 업로드
+		fileInput.addEventListener('change', (e) => {
+			const formObj = new FormData();
+			const files = fileInput.files;
+			const file = files.length > 0 ? files[0] : null; // 파일이 선택되지 않은 경우 null
 
-	        if (!file) {
-	            console.log("파일이 선택되지 않았습니다.");
-	            return; // 파일이 없으면 작업 중단
-	        }
+			if (!file) {
+				console.log("파일이 선택되지 않았습니다.");
+				return; // 파일이 없으면 작업 중단
+			}
 
-	        const newFileName = file.name; // 선택된 파일 이름
+			const newFileName = file.name; // 선택된 파일 이름
 
-	        // 파일 이름이 동일하면 작업 중단
-	        if (newFileName === currentFileName) {
-	            console.log("선택한 파일이 현재 파일과 동일합니다.");
-	            alert("선택한 파일이 현재 파일과 동일합니다.");
-	            return;
-	        }
+			// 파일 이름이 동일하면 작업 중단
+			if (newFileName === currentFileName) {
+				console.log("선택한 파일이 현재 파일과 동일합니다.");
+				alert("선택한 파일이 현재 파일과 동일합니다.");
+				return;
+			}
 
-	        // 이미지 미리보기 설정
-	        const reader = new FileReader();
-	        reader.onload = function (event) {
-	            profileImage.src = event.target.result; // 이미지 src 업데이트
-	        };
-	        reader.readAsDataURL(file);
+			// 이미지 미리보기 설정
+			const reader = new FileReader();
+			reader.onload = function (event) {
+				profileImage.src = event.target.result; // 이미지 src 업데이트
+			};
+			reader.readAsDataURL(file);
 
-	        // 파일 데이터를 FormData에 추가
-	        formObj.append("files", file);
+			// 파일 데이터를 FormData에 추가
+			formObj.append("files", file);
 
-	        // 기존 이미지 삭제 및 새 이미지 업로드
-	        removeFileToServer(currentFileName)
-	            .then(() => {
-	                // 서버로 새 이미지 업로드 요청
-	                return uploadToServer(formObj);
-	            })
-	            .then(result => {
-	                console.log("업로드 성공:", result);
-	                alert("이미지가 업로드되었습니다.");
-	                currentFileName = newFileName; // 현재 파일 이름 갱신
-	            })
-	            .catch(e => {
-	                console.error("작업 실패:", e);
-	                alert("이미지 업로드 및 삭제 중 오류가 발생했습니다.");
-	            });
-	    });
+			// 기존 이미지 삭제 및 새 이미지 업로드
+			removeFileToServer(currentFileName)
+				.then(() => {
+					// 서버로 새 이미지 업로드 요청
+					return uploadToServer(formObj);
+				})
+				.then(result => {
+					console.log("업로드 성공:", result);
+					alert("이미지가 업로드되었습니다.");
+					currentFileName = newFileName; // 현재 파일 이름 갱신
+				})
+				.catch(e => {
+					console.error("작업 실패:", e);
+					alert("이미지 업로드 및 삭제 중 오류가 발생했습니다.");
+				});
+		});
 	</script>
 
 
