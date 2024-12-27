@@ -135,7 +135,7 @@
 
 				<!-- MEM_TELL -->
 				<label for="MEM_TELL" class="mt-2"><span class="text-danger">*</span> 전화번호</label> <input type="tel" id="MEM_TELL" name="MEM_TELL"
-					placeholder="ex.01012345678" maxlength="11" required class="form-control" />
+					placeholder="ex.01012345678" required class="form-control" />
 				<small class="text-danger">전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.</small>
 
 				<!-- MEM_EMAIL -->
@@ -158,7 +158,7 @@
 				<small class="text-danger">주소를 입력해주세요.</small>
 
 				<!-- MEM_ADDRESS_DETAIL -->
-				<label for="MEM_ADDRESS_DETAIL" class="mt-2"><span class="text-danger">*</span> 상세 주소</label> <input type="text" id="MEM_ADDRESS_DETAIL"
+				<label for="MEM_ADDRESS_DETAIL" class="mt-2">* 상세 주소</label> <input type="text" id="MEM_ADDRESS_DETAIL"
 					name="MEM_ADDRESS_DETAIL" required class="form-control" />
 				<small class="text-danger">상세 주소를 입력해주세요.</small>
 
@@ -182,7 +182,7 @@
 		<!-- 로그인 START -->
 		<div class="form-container sign-in-container">
 			<form id="loginForm" action="/member/login" method="post">
-				<h1 onclick="location.href='/'" style="cursor:pointer">FITLINK</h1>
+				<h1>FITLINK</h1>
 				<div class="social-container">
 					<a href="#" class="social"><img src="/img/social_naver.png" alt="네이버로 로그인"></a> <a href="#"
 						class="social"><img src="/img/social_kakao.png" alt="카카오로 로그인"></a> <a href="#"
@@ -199,7 +199,7 @@
 			<div class="overlay">
 				<div class="overlay-panel overlay-left">
 					<h1>환영합니다!</h1>
-					<p>계정을 생성하고, 동네친구들과 함께 운동을 즐겨보세요!</p>
+					<p>계정을 생성하시고, 동네친구들과 함께 운동을 즐겨보세요!</p>
 					<button class="ghost btn btn-primary" id="signIn">로그인</button>
 				</div>
 				<div class="overlay-panel overlay-right">
@@ -213,45 +213,7 @@
 	</main>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<script src="/js/upload.js"></script>
-	
 <script>
-	// 프로필 이미지 업로드
-	const fileInput = document.querySelector("input[name='MEM_PICTURE']");
-
-	fileInput.addEventListener('change', function (e) {
-	    const formObj = new FormData();
-
-	    // 파일 선택 여부 확인
-	    if (fileInput.files.length === 0) {
-	        console.log("파일이 선택되지 않았습니다.");
-	        return;
-	    }
-
-	    console.log(fileInput.files); // 선택된 파일 목록 로그 출력
-
-	    const files = fileInput.files;
-
-	    // 파일 데이터를 FormData에 추가
-	    for (let i = 0; i < files.length; i++) {
-	        formObj.append("files", files[i]);
-	    }
-
-	    // 서버로 업로드 요청
-	    uploadToServer(formObj)
-	        .then(result => {
-	            console.log("업로드 성공:", result);
-	            alert("이미지가 업로드되었습니다.");
-	        })
-	        .catch(e => {
-	            console.error("업로드 실패:", e);
-	            alert("이미지 업로드에 실패했습니다.");
-	        });
-	});
-
-	
-	
 	// 애니메이션
 	const signUpButton = document.getElementById('signUp');
 	const signInButton = document.getElementById('signIn');
@@ -315,87 +277,76 @@
 	}
 
 	// 유효성 검사
+	// 유효성 검사
 	const registerForm = document.getElementById('registerForm');
 	const checkIdButton = document.getElementById('checkIdButton');
 	let isIdChecked = false; // 아이디 중복확인 여부
 
 	// 아이디 중복 확인 버튼 클릭 이벤트
 	checkIdButton.addEventListener('click', function () {
-	    const memId = document.getElementById('MEM_ID').value.trim();
+		const memId = document.getElementById('MEM_ID').value.trim();
 
-	    if (!memId) {
-	        alert('아이디를 입력하세요.');
-	        return;
-	    }
+		if (!memId) {
+			alert('아이디를 입력하세요.');
+			return;
+		}
 
-	    // 서버로 아이디 중복 확인 요청
-	    fetch(`/member/checkId?MEM_ID=${encodeURIComponent(memId)}`)
-	        .then((response) => response.json())
-	        .then((data) => {
-	            if (data.status === 'SUCCESS') {
-	                alert(data.message); // 사용 가능한 아이디입니다.
-	                isIdChecked = true; // 중복확인 완료
-	            } else {
-	                alert(data.message); // 이미 존재하는 아이디입니다.
-	                isIdChecked = false;
-	            }
-	        })
-	        .catch((error) => {
-	            console.error('Error:', error);
-	            alert('아이디 중복 확인 중 문제가 발생했습니다.');
-	        });
+		// 서버로 아이디 중복 확인 요청
+		fetch(`/member/checkId?MEM_ID=${encodeURIComponent(memId)}`)
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.status === 'SUCCESS') {
+					alert(data.message); // 사용 가능한 아이디입니다.
+					isIdChecked = true; // 중복확인 완료
+				} else {
+					alert(data.message); // 이미 존재하는 아이디입니다.
+					isIdChecked = false;
+				}
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+				alert('아이디 중복 확인 중 문제가 발생했습니다.');
+			});
 	});
 
 	// 회원가입 폼 제출 이벤트
 	registerForm.addEventListener('submit', function (e) {
-	    e.preventDefault(); // 기본 제출 이벤트 방지
+		e.preventDefault(); // 기본 제출 이벤트 방지
 
-	    // 필수 입력값 검사
-	    const requiredFields = [
-	        { id: 'MEM_ID', label: '* 아이디', validate: (value) => /^[a-zA-Z0-9_]{5,20}$/.test(value), errorMessage: '아이디는 5~20자의 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.' },
-	        { id: 'MEM_PW', label: '* 비밀번호', validate: (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value), errorMessage: '비밀번호는 최소 8자 이상, 하나의 문자, 숫자, 특수문자를 포함해야 합니다.' },
-	        { id: 'MEM_PW_CK', label: '* 비밀번호 확인', validate: (value) => value === document.getElementById('MEM_PW').value.trim(), errorMessage: '비밀번호와 비밀번호 확인이 일치하지 않습니다.' },
-	        { id: 'MEM_NAME', label: '* 이름', validate: (value) => /^[가-힣a-zA-Z]{2,20}$/.test(value), errorMessage: '이름은 2~20자의 한글 또는 영문이어야 합니다.' },
-	        { id: 'MEM_NICKNAME', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,20}$/.test(value), errorMessage: '닉네임은 2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.' },
-	        { id: 'MEM_TELL', label: '* 전화번호', validate: (value) => /^010\d{8}$/.test(value), errorMessage: '전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.' },
-	        { id: 'MEM_EMAIL', label: '* 이메일', validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: '유효한 이메일 주소를 입력해주세요.' },
-	        { id: 'MEM_ZIPCODE', label: '* 우편번호', validate: (value) => /^\d{5}$/.test(value), errorMessage: '우편번호는 5자리 숫자여야 합니다.' },
-	        { id: 'MEM_ADDRESS', label: '* 주소', validate: (value) => value.trim() !== '', errorMessage: '주소를 입력해주세요.' },
-	        { id: 'MEM_ADDRESS_DETAIL', label: '* 상세 주소', validate: (value) => value.trim() !== '', errorMessage: '상세 주소를 입력해주세요.' }
-	    ];
+		// 필수 입력값 검사
+		const requiredFields = [
+			{id: 'MEM_ID', label: '* 아이디', validate: (value) => /^[a-zA-Z0-9_]{5,20}$/.test(value)},
+			{id: 'MEM_PW', label: '* 비밀번호', validate: (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)},
+			{id: 'MEM_PW_CK', label: '* 비밀번호 확인', validate: (value) => value === document.getElementById('MEM_PW').value.trim()},
+			{id: 'MEM_NAME', label: '* 이름', validate: (value) => /^[가-힣a-zA-Z]{2,20}$/.test(value) },
+			{id: 'MEM_NICKNAME', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,20}$/.test(value)},
+			{id: 'MEM_TELL', label: '* 전화번호', validate: (value) => /^010\d{8}$/.test(value)},
+			{id: 'MEM_EMAIL', label: '* 이메일', validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)},
+			{id: 'MEM_ZIPCODE', label: '* 우편번호', validate: (value) => /^\d{5}$/.test(value)},
+			{id: 'MEM_ADDRESS', label: '* 주소', validate: (value) => value.trim() !== ''},
+			{id: 'MEM_ADDRESS_DETAIL', label: '* 상세 주소', validate: (value) => value.trim() !== ''}
+		];
 
-	    for (const field of requiredFields) {
-	        const input = document.getElementById(field.id);
-	        const errorElement = input.nextElementSibling;
-	        const value = input.value.trim();
+		for (const field of requiredFields) {
+			const input = document.getElementById(field.id);
+			const value = input.value.trim();
+			if (!value || (field.validate && !field.validate(value))) {
+				input.focus();
+				return;
+			}
+		}
 
-	        if (!value || (field.validate && !field.validate(value))) {
-	            if (errorElement && errorElement.classList.contains('text-danger')) {
-	                errorElement.style.display = 'block';
-	            }
-	            input.focus();
-	            return;
-	        } else {
-	            if (errorElement && errorElement.classList.contains('text-danger')) {
-	                errorElement.style.display = 'none';
-	            }
-	        }
-	    }
+		// 아이디 중복확인 여부 검사
+		if (!isIdChecked) {
+			alert('아이디 중복확인을 해주세요.');
+			document.getElementById('MEM_ID').focus();
+			return;
+		}
 
-	    // 아이디 중복확인 여부 검사
-	    if (!isIdChecked) {
-	        alert('아이디 중복확인을 해주세요.');
-	        document.getElementById('MEM_ID').focus();
-	        return;
-	    }
-
-	   
-	    
-	    // 유효성 검사가 모두 통과되었으면 폼 제출
-	    alert('회원가입이 완료되었습니다.');
-	    registerForm.submit();
+		// 유효성 검사가 모두 통과되었으면 폼 제출
+		alert('회원가입이 완료되었습니다.');
+		registerForm.submit();
 	});
-
 
 
 

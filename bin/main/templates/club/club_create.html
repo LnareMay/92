@@ -15,7 +15,54 @@
 
     <!-- 공통 js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-   
+    <script>
+    // 선호운동 버튼
+    function selectExercise(button) {
+        document.getElementById('clubExercise').value = button.value;
+
+        const exercisebuttons = document.querySelectorAll('.exercise-selection button');
+        exercisebuttons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+    }
+    
+    // 운동테마 버튼
+	function selectTheme(button) {
+	    const themevalue = document.getElementById('clubTheme'); 
+	    let selectedThemes = themevalue.value ? themevalue.value.split(',') : [];
+
+	    if (button.classList.contains('selected')) {
+	        selectedThemes = selectedThemes.filter(theme => theme !== button.value);
+	        button.classList.remove('selected');
+	    } else {
+	        selectedThemes.push(button.value);
+	        button.classList.add('selected');
+	    }
+	    themevalue.value = selectedThemes.join(',');
+	}
+    
+	// 클럽사진 미리보기
+    function previewImage(event, targetId) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const preview = document.getElementById(targetId);
+            preview.src = reader.result; 
+            preview.classList.remove('default-icon'); 
+
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    
+    // 클럽 공개여부 비밀번호
+    function togglePasswordField() {
+        const isPrivate = document.getElementById('clubIsprivate').checked;
+        const passwordField = document.getElementById('clubPw');
+        if (isPrivate) {
+            passwordField.style.display = 'inline-block'; 
+        } else {
+            passwordField.style.display = 'none'; 
+        }
+    }
+</script>
 </head>
 <body>
     <div th:insert="~{layouts/header :: header}"></div>
@@ -24,12 +71,15 @@
 <!--         <h5><b>어떤 클럽을 만들까요?</b></h5> -->
     
         <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
+           	
+               <!--   <label for="club-code">클럽코드 </label>
+            	<input type="text" name="CLUB_CODE" id="clubCode" placeholder="클럽명"></input> -->
             
             <label for="club-name">클럽명	</label>
-            	<input type="text" name="clubName" id="clubName" placeholder="클럽명" maxlength="10"></input>
+            	<input type="text" name="clubName" id="clubName" placeholder="클럽명"></input>
             	
             <label for="club-name">클럽방장</label>
-            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}" readonly></input>
+            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}"  readonly></input>
 
 		    <label for="club-exercise">선호 운동 코드</label>
 				<div class="exercise-container">
@@ -41,14 +91,15 @@
 				            <button type="button" onclick="selectExercise(this)" value="EXE_CLIMB">암벽등반</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_FOOTBALL">축구</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_FUTSAL">풋살</button>
-				            <button type="button" onclick="selectExercise(this)" value="EXE_FITNESS">헬스</button>
+				            <button type="button" onclick="selectExercise(this)" value="EXE_GYM">헬스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_MOUNT">등산</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_PILATES">필라테스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_TENNIS">테니스</button>
 				            <button type="button" onclick="selectExercise(this)" value="EXE_YOGA">요가</button>
 			        </div>
 			    </div>		    
-			    		    
+			    
+			    
 			<label for="club-theme">클럽 테마</label>
 	           	<div class="theme-container">
 				    <div class="theme-selection">
@@ -105,8 +156,7 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-			    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" onchange="togglePasswordField()"> 공개
-			    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()"> 비공개
+			    <input type="checkbox" id="clubIsprivate" name="clubIsprivate" onchange="togglePasswordField()"> 비공개
 			    <input type="password" id="clubPw" name="clubPw" placeholder="비밀번호 입력" style="display: none; margin-left: 10px;">
 			</div>
 
@@ -115,80 +165,4 @@
         </form>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
-
- <script>
-    // 선호운동 버튼
-    function selectExercise(button) {
-        document.getElementById('clubExercise').value = button.value;
-
-        const exercisebuttons = document.querySelectorAll('.exercise-selection button');
-        exercisebuttons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-    }
-    
-    // 운동테마 버튼
-	function selectTheme(button) {
-	    const themevalue = document.getElementById('clubTheme'); 
-	    let selectedThemes = themevalue.value ? themevalue.value.split(',') : [];
-
-	    if (button.classList.contains('selected')) {
-	        selectedThemes = selectedThemes.filter(theme => theme !== button.value);
-	        button.classList.remove('selected');
-	    } else {
-	        selectedThemes.push(button.value);
-	        button.classList.add('selected');
-	    }
-	    themevalue.value = selectedThemes.join(',');
-	}
-	
-    // 클럽 공개여부 비밀번호
-    function togglePasswordField() {
-        const isPrivate = document.getElementById('clubIsprivateYes').checked;
-        const passwordField = document.getElementById('clubPw');
-        if (isPrivate) {
-            passwordField.style.display = 'inline-block'; 
-        } else {
-            passwordField.style.display = 'none'; 
-            passwordField.value= '';
-        }
-    }
-	
-	// 클럽사진 미리보기
-	    function previewImage(event, targetId) {
-	        const reader = new FileReader();
-	        reader.onload = function () {
-	            const preview = document.getElementById(targetId);
-	            preview.src = reader.result; 
-	            preview.classList.remove('default-icon'); 
-
-	        };
-	        reader.readAsDataURL(event.target.files[0]);
-	    }
-	    
-    
-    // 클럽 이미지
-    const fileInput = document.querySelector("input[name='clubImage1']");
-	
-	fileInput.addEventListener('change', function(e) {
-		const formObj = new FormData;
-		const imagefile = fileInput.imagefile;
-		console.log(fileInput.imagefile);
-		
-		for(let i=0; i<imagefile.length; i++) {
-			formObj.append("imagefile", imagefile[i]);
-		}
-		
-		uploadToServer(formObj)
-			.then(result => {
-				console.log("업로드 성공", result);
-				alert("이미지 업로드 성공");
-			})
-			.catch(e => {
-				console.log("업로드 실패", e);
-				alert("이미지 업로드 실패");
-			});
-	});
-	
-</script>
-
 </html>
