@@ -5,6 +5,10 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import com.lec.packages.domain.Member;
+import com.lec.packages.domain.exercise_code_table;
+
+import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,8 +23,8 @@ public class MemberSecurityDTO extends User {
 	private String MEM_PW;
 	private String MEM_NAME;
 	private String MEM_NICKNAME;
-	private String MEM_EXERCISE;
-	private String MEM_CLUB;
+	private exercise_code_table MEM_EXERCISE;
+	private exercise_code_table MEM_CLUB;
 	private String MEM_PICTURE;
 	private String MEM_INTRODUCTION;
 	private boolean MEM_GENDER;
@@ -37,7 +41,7 @@ public class MemberSecurityDTO extends User {
 
 	// 생성자
 	public MemberSecurityDTO(String username, String password, String MEM_NAME, String MEM_NICKNAME,
-			String MEM_EXERCISE, String MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, boolean MEM_GENDER,
+			exercise_code_table MEM_EXERCISE, exercise_code_table MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, boolean MEM_GENDER,
 			String MEM_TELL, String MEM_EMAIL, String MEM_BIRTHDAY, String MEM_ADDRESS,String MEM_ADDRESS_DETAIL, String MEM_ZIPCODE, String MEM_ADDRESS_SET, 
 			 boolean MEM_ISMANAGER, boolean DELETE_FLAG,boolean MEM_SOCIAL,
 			Collection<? extends GrantedAuthority> authorities) {
@@ -63,4 +67,6 @@ public class MemberSecurityDTO extends User {
 		this.DELETE_FLAG = DELETE_FLAG;
 		this.MEM_SOCIAL = MEM_SOCIAL;
 	}
+
+	
 }

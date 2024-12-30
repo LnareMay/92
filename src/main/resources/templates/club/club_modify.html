@@ -15,17 +15,18 @@
 
     <!-- 공통 js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-    <script>
-    
+    <script> 
+
 	document.addEventListener("DOMContentLoaded", function () {
 		const selectedExercise = document.getElementById('clubExercise').value;
 		const exercisebuttons = document.querySelectorAll('.exercise-selection button');
+		
 		exercisebuttons.forEach(button => {
 			if(button.value === selectedExercise) {
 				button.classList.add('selected');
 			}
 		});
-	});
+	},false)
     
     // 선호운동 버튼
 	function selectExercise(button) {
@@ -64,21 +65,24 @@
     
     // 클럽 공개여부 비밀번호
     function togglePasswordField() {
-        const isPrivate = document.getElementById('clubIsprivate').checked;
+        const isPrivate = document.getElementById('clubIsprivateYes').checked;
         const passwordField = document.getElementById('clubPw');
         if (isPrivate) {
             passwordField.style.display = 'inline-block'; 
         } else {
             passwordField.style.display = 'none'; 
-            passwordField.value = '';
+            passwordField.value= '';
         }
     }
+    
+
+	
 </script>
 </head>
 <body>
     <div th:insert="~{layouts/header :: header}"></div>
     
-    <main class="container main" style="height: 1300px";>
+    <main class="container main" style="height: 650px">
     
         <form id="clubmodify" action="/club/club_modify" method="post" enctype="multipart/form-data">
             <input type="hidden" name="clubCode" id="clubCode" th:value="${clubdto.clubCode}"/>
@@ -173,18 +177,20 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-				<span th:if="${!clubdto.clubIsprivate}">공개</span>
-				<span th:if="${clubdto.clubIsprivate}">
-				    <input type="checkbox" id="clubIsprivate" name="clubIsprivate" onchange="togglePasswordField()" 
+				    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" 
+				    	   th:checked="${!clubdto.clubIsprivate}" onchange="togglePasswordField()" /> 공개
+				    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()" 
 				    	   th:checked="${clubdto.clubIsprivate}" /> 비공개
 				    <input type="password" id="clubPw" name="clubPw" th:value="${clubdto.clubPw}" 
 				    	   th:style="${clubdto.clubIsprivate ? '' : 'display: none;'}" style="margin-left: 10px;">
-				</span>
 			</div>
 
 			<button type="submit" class="btn btn-primary mt-4" style="margin-bottom: 20px;">수정하기</button>	
             <button type="reset" class="btn btn-secondary mt-4" style="margin-bottom: 20px;">새로고침</button>
+            <!-- <button type="button" class="btn btn-warning delete-btn" id="delete-btn">클럽 삭제하기</button> -->
+
         </form>
+        </main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 </html>

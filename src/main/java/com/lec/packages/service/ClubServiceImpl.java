@@ -1,5 +1,6 @@
 package com.lec.packages.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
+import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -33,13 +35,15 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
 	
-	public String create(ClubDTO clubDTO) {
+	// 클럽생성
+	public void create(ClubDTO clubDTO, String storedFileName) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		
-		String saveCode = clubRepository.save(club).getClubCode();
-		return saveCode;		
+		club.setClubImage1(storedFileName);
+
+//		String saveCode = clubRepository.save(club).getClubCode();
+		clubRepository.save(club);		
 	}
 	
 	// 클럽코드생성
@@ -80,9 +84,39 @@ public class ClubServiceImpl implements ClubService {
 		Club club = result.orElseThrow();
 		ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
 		
+		String originthemeName = clubDTO.getClubTheme();
+		if(originthemeName != null && !originthemeName.isEmpty()) {
+			String themeName = mapThemes(originthemeName);
+			clubDTO.setThemeName(themeName);			
+		}
+		
 		return clubDTO;
 	}
 	
+	// 클럽상세보기 테마이름
+	private String mapThemes(String clubTheme) {
+		List<String> themes = Arrays.asList(clubTheme.split(","));
+		return themes.stream()
+					 .map(this::mapTheme)
+					 .collect(Collectors.joining(" "));
+	}
+	
+	private String mapTheme(String clubTheme) {
+		switch (clubTheme.trim()) {
+		case "THM_SPORTCLUB": return "#운동클럽";
+		case "THM_SPORTJOURNAL": return "#운동일지";
+		case "THM_FOOD": return "#영양제/식단";
+		case "THM_FITNESS": return "#헬스";
+		case "THM_DIET": return "#체중감량";
+		case "THM_BODYPROFILE": return "#바디프로필";
+		case "THM_RECOVER": return "#부상/재활";
+		case "THM_CONTEST": return "#대회준비";
+		case "THM_EXAM": return "#입시준비";
+		
+		default: return clubTheme;
+		}
+	}
+
 	// 클럽수정
 	@Override
 	public void modify(ClubDTO clubDTO) {
@@ -90,10 +124,42 @@ public class ClubServiceImpl implements ClubService {
 		Club club = result.orElseThrow();
 		club.change(clubDTO.getClubIntroduction(), clubDTO.getClubAddress()
 				   ,clubDTO.getClubName(), clubDTO.getClubTheme()
-				   ,clubDTO.getClubExercise(), clubDTO.getClubPw());
+				   ,clubDTO.getClubExercise(), clubDTO.getClubPw()
+				   ,clubDTO.isClubIsprivate());
 		clubRepository.save(club);
 	}
+	
+	// 클럽삭제
+//	@Override
+//	public void remove(ClubDTO clubDTO) {
+//		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
+//		Club club = result.orElseThrow();
+//		
+//		club.remove(clubDTO.isDeleteFlag());
+//		clubRepository.save(club);
+//	}
+	
+	// 클럽테마리스트
+	 @Override
+	    public List<ClubDTO> ListByTheme(String clubTheme) {
+	        List<Club> clubs = clubRepository.findByClubThemeContaining(clubTheme);
+	        return clubs.stream()
+	                    .map(club -> modelMapper.map(club, ClubDTO.class))
+	                    .collect(Collectors.toList());
+	    }
+	 
+	 
+	@Override
+	public List<ClubDTO> getAllClubs() {
+		List<Club> clubs = clubRepository.findAll();
 		
+        return clubs.stream()
+                .map(club -> modelMapper.map(club, ClubDTO.class))
+                .collect(Collectors.toList());
+	}
+
+
+
 	// 클럽게시판
 	@Override
 	public ClubDTO board(String clubCode) {
@@ -108,6 +174,7 @@ public class ClubServiceImpl implements ClubService {
 		String code = clubBoardDTO.getCLUB_CODE();
 		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
 
+		log.info(boardNoResult);
 		Club_Board club_Board = boardNoResult.orElseThrow();
 		int boardNo = 0;
 		if (club_Board != null) {
@@ -117,11 +184,37 @@ public class ClubServiceImpl implements ClubService {
 		boardNo += 1;
 		clubBoardDTO.setBOARD_NO(boardNo);
 
-		Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
+		// Club_Board saveClubBoard = modelMapper.map(clubBoardDTO, Club_Board.class);
+		// log.info(saveClubBoard);
+		// saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
+		Club_Board saveClubBoard = dtoToEntity(clubBoardDTO);
+		saveClubBoard.getImages().forEach(image -> log.info(image.getBoardImage()));
 		int resultBoardNo = clubBoardRepository.save(saveClubBoard).getBoardNo();
 		
 		return resultBoardNo;
 	}
+
+	@Override
+	public PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+		
+		String[] types = pageRequestDTO.getTypes();
+		Pageable pageable = pageRequestDTO.getPageable("boardNo");
+
+		Page<ClubBoardAllListDTO> result = clubBoardRepository.searchWithAll(types, pageable);
+
+		return null;
+	}
+
+	@Override
+	public ClubBoardDTO readOne(int boardNo, String clubCode) {
+		Optional<Club_Board> resultBoard = clubBoardRepository.findBoardByImages(clubCode, boardNo);
+		Club_Board club_Board = resultBoard.orElseThrow();
+
+		ClubBoardDTO clubBoardDTO = entityToDTO(club_Board);
+
+		return clubBoardDTO;
+	}
+
 
 
 }

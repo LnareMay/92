@@ -739,6 +739,7 @@ z-index:5;
 /* 마이페이지 */
 #mypage_pg{
 	display:flex;
+	margin-bottom:0;
 }
 #mypage_pg .sidebar {
     width: 250px;
@@ -856,4 +857,8 @@ z-index:5;
 #mypage_pg .btn-submit {
     background-color: #007bff;
     color: #fff;
+}
+
+#mypage_pg #profileImage{
+	width:200px;
 }

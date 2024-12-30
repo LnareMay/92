@@ -1,5 +1,7 @@
 package com.lec.packages.dto;
 
+import com.lec.packages.domain.exercise_code_table;
+
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -9,8 +11,8 @@ public class MemberJoinDTO {
 	private String MEM_PW;
 	private String MEM_NAME;
 	private String MEM_NICKNAME;
-	private String MEM_EXERCISE;
-	private String MEM_CLUB;
+	private exercise_code_table MEM_EXERCISE;
+	private exercise_code_table MEM_CLUB;
 	private String MEM_PICTURE;
 	private String MEM_INTRODUCTION;
 	private boolean MEM_GENDER;
@@ -25,4 +27,9 @@ public class MemberJoinDTO {
 	private boolean DELETE_FLAG;
 	private boolean MEM_SOCIAL;
 
+	
+	
 }
+
+
+

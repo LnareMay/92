@@ -3,11 +3,16 @@ package com.lec.packages.domain;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +28,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EntityListeners(AuditingEntityListener.class)
 public class Facility extends BaseEntity{
     // Id => P.K 명시
     // @Column => 컬럼 정보 셋업
@@ -40,6 +46,9 @@ public class Facility extends BaseEntity{
 
 	    @Column(nullable = false, name = "FACILITY_ADDRESS", length = 100)
 	    private String facilityAddress;
+	    
+	    @Column(name = "FACILITY_ADDRESS_DETAIL", length = 100)
+	    private String facilityAddressDetail;
 
 	    @Column(nullable = false, name = "FACILITY_ZIPCODE", length = 20)
 	    private String facilityZipcode;
@@ -62,9 +71,13 @@ public class Facility extends BaseEntity{
 	    @JoinColumn(name = "EXERCISE_CODE")
 	    @Column(name = "EXERCISE_CODE", length = 20)
 	    private String exerciseCode;
-
+	    
+	    @JoinColumn(name = "EXERCISE_NAME")
+	    @Column(name = "EXERCISE_NAME", length = 50)
+	    private String exerciseName;
+  
 	    @Column(name = "FACILITY_ISONLYCLUB")
-	    private Boolean facilityIsOnlyClub;
+	    private boolean facilityIsOnlyClub;
 
 	    @JoinColumn(name = "MEM_ID")
 	    @Column(name = "MEM_ID", length = 20)
@@ -84,4 +97,19 @@ public class Facility extends BaseEntity{
 
 	    @Column(name = "DELETE_FLAG")
 	    private boolean deleteFlag;
+	    
+	    public void modifyFacility(String facilityName, String facilityDescription
+	    							,boolean facilityIsOnlyClub, BigDecimal price
+	    							,LocalDateTime facilityStartTime, LocalDateTime facilityEndTime) {
+	    	
+	    	this.facilityName = facilityName;
+	    	this.facilityDescription = facilityDescription;
+	    	this.facilityIsOnlyClub = facilityIsOnlyClub;
+	    	this.price = price;
+	    	this.facilityStartTime = facilityStartTime;
+	    	this.facilityEndTime = facilityEndTime;
+	    }
+	    
+	    
+	    
 }
