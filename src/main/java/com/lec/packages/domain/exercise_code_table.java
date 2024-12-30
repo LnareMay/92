@@ -27,4 +27,6 @@ public class exercise_code_table {
 
     @Column(nullable = false, length = 50)
     private String EXERCISE_NAME;
+    
+    
 }
