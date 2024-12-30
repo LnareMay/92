@@ -588,7 +588,7 @@ ul {
 	width: 100%;
 }
 
-#login_pg small.text-danger{
+small.text-danger{
 	display:none;
 }
 
@@ -862,3 +862,5 @@ z-index:5;
 #mypage_pg #profileImage{
 	width:200px;
 }
+
+/* 나의정보 수정페이지 */
