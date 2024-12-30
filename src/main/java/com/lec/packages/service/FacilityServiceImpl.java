@@ -76,19 +76,24 @@ public class FacilityServiceImpl implements FacilityService{
 	public PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO) {
 		
 		String[] types = pageRequestDTO.getTypes();
-		String keyword = pageRequestDTO.getKeyword();
+		String[] keywords = pageRequestDTO.getKeywords();
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
-		Page<Facility> result = facilityRepository.searchAllImpl(types, keyword, pageable);
+				
+		
+		Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
+		
 		List<FacilityDTO> dtoList = result.getContent()
 										  .stream()
+										  .distinct() // 중복 제거
 										  .map(facility -> modelMapper.map(facility, FacilityDTO.class))
 										  .collect(Collectors.toList());
+	
 		
 		return PageResponseDTO.<FacilityDTO>withAll()
 				.pageRequestDTO(pageRequestDTO)
 				.dtoList(dtoList)
-				.total((int)result.getTotalElements())
+				.total(result.getTotalPages())
 				.build();
 	}
 
