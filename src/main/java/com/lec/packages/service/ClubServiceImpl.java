@@ -42,7 +42,7 @@ public class ClubServiceImpl implements ClubService {
 		Club club = modelMapper.map(clubDTO, Club.class);
 		club.setClubImage1(storedFileName);
 
-		String saveCode = clubRepository.save(club).getClubCode();
+//		String saveCode = clubRepository.save(club).getClubCode();
 		clubRepository.save(club);		
 	}
 	
@@ -214,8 +214,6 @@ public class ClubServiceImpl implements ClubService {
 
 		return clubBoardDTO;
 	}
-
-
 
 
 

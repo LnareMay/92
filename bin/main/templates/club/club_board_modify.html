@@ -31,7 +31,7 @@
                       글 작성
                     </div>
                     <div class="card-body">
-                      <form action="/club/board_register" method="post">
+                      <form action="/club/board_modify" method="post">
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-pen-nib"></i></label>
@@ -40,14 +40,14 @@
                             <option selected value="Notice">#공지#</option>
                             <option value="FreeBoard">자유 게시판</option>
                             <option value="Hello">가입 인사</option>
-                            <option value="Reviews">정산&후기</option>
+                            <option value="Reviews">정산$후기</option>
                           </select>
                         </div>
             
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
                           <input type="hidden" name="CLUB_CODE" th:value="${param.clubCode}">
-                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT"></textarea>
+                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT" th:value=""></textarea>
                         </div>
             
                         <div class="input-group mb-3">
