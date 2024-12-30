@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,13 +49,13 @@ public class Member extends BaseEntity{
     @Column(name = "MEM_NICKNAME", length = 10, nullable = false)
     private String MEM_NICKNAME;
 
-    @JoinColumn(name = "EXERCISE_CODE")
-    @Column(name = "MEM_EXERCISE", length = 15)
-    private String MEM_EXERCISE;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MEM_EXERCISE", referencedColumnName = "EXERCISE_CODE")
+    private exercise_code_table MEM_EXERCISE;
     
-    @JoinColumn(name = "EXERCISE_CODE")
-    @Column(name = "MEM_CLUB", length = 15)
-    private String MEM_CLUB;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MEM_CLUB", referencedColumnName = "EXERCISE_CODE")
+    private exercise_code_table MEM_CLUB;
     
 
     @Column(name = "MEM_PICTURE",length = 255)

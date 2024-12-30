@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import com.lec.packages.domain.exercise_code_table;
+
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +25,8 @@ public class memberDTO extends User{
 
     private String MEM_NAME;
     private String MEM_NICKNAME;
-    private String MEM_EXERCISE;
+    private exercise_code_table MEM_EXERCISE;
+    private exercise_code_table MEM_CLUB;
     private long MEM_PICTURE;
     private String MEM_INTRODUCTION;
     private boolean MEM_GENDER;
@@ -38,7 +41,7 @@ public class memberDTO extends User{
 
 
     public memberDTO(String username, String password,
-    String name, String nickname, String exerciseCode,
+    String name, String nickname, exercise_code_table MEM_EXERCISE,exercise_code_table MEM_CLUB,
     String tell, String email,
     Collection<? extends GrantedAuthority> authorities){
         super(username, password, authorities);
