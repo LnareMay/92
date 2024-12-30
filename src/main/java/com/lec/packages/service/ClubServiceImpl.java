@@ -13,11 +13,14 @@ import org.springframework.data.domain.Pageable;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
+import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
+import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.repository.ClubBoardReplyRepository;
 import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubRepository;
 
@@ -34,6 +37,7 @@ public class ClubServiceImpl implements ClubService {
 	private final ModelMapper modelMapper;
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
+	private final ClubBoardReplyRepository clubBoardReplyRepository;
 	
 	// 클럽생성
 	public void create(ClubDTO clubDTO, String storedFileName) {
@@ -175,12 +179,12 @@ public class ClubServiceImpl implements ClubService {
 		Optional<Club_Board> boardNoResult = clubBoardRepository.findByClubCode(code);
 
 		log.info(boardNoResult);
-		Club_Board club_Board = boardNoResult.orElseThrow();
 		int boardNo = 0;
-		if (club_Board != null) {
+		if(boardNoResult.isPresent()){
+			Club_Board club_Board = boardNoResult.orElseThrow();
 			boardNo = club_Board.getBoardNo();
 		}
-
+		
 		boardNo += 1;
 		clubBoardDTO.setBOARD_NO(boardNo);
 
@@ -213,6 +217,24 @@ public class ClubServiceImpl implements ClubService {
 		ClubBoardDTO clubBoardDTO = entityToDTO(club_Board);
 
 		return clubBoardDTO;
+	}
+
+	@Override
+	public int registerReply(ClubBoardReplyDTO clubBoardReplyDTO) {
+		Optional<Club_Board_Reply> lastReply = clubBoardReplyRepository.findReplyNoByKey(clubBoardReplyDTO.getClubCode(), clubBoardReplyDTO.getBoardNo());
+
+		int lastReplyNo = 0;
+		if(lastReply.isPresent()){
+			Club_Board_Reply temp = lastReply.orElseThrow();
+			lastReplyNo = temp.getClubBoard().getBoardNo();
+		}
+
+		lastReplyNo += 1;
+		clubBoardReplyDTO.setBoardNo(lastReplyNo);
+
+		Club_Board_Reply board_Reply = modelMapper.map(clubBoardReplyDTO, Club_Board_Reply.class);
+		int replyNo = clubBoardReplyRepository.save(board_Reply).getReplyNo();
+		return replyNo;
 	}
 
 
