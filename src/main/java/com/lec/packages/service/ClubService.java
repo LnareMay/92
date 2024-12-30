@@ -12,12 +12,14 @@ import com.lec.packages.dto.PageResponseDTO;
 
 public interface ClubService {
 	
-	String create(ClubDTO clubDTO);
+	void create(ClubDTO clubDTO, String storedFileName);
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
-	void delete(String clubCode);
+//	void remove(ClubDTO clubDTO);
 	
+	List<ClubDTO> ListByTheme(String clubTheme);
+	List<ClubDTO> getAllClubs();	
 	ClubDTO board(String clubCode);
 
 	ClubBoardDTO readOne(int boardNo, String clubCode);
