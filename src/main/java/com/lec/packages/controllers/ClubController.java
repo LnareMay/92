@@ -22,6 +22,7 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -47,12 +48,15 @@ public class ClubController {
 			, RedirectAttributes redirectAttributes, HttpServletRequest request, Model model) {
 		
 		String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI);
-        
-		log.info("Create.." + clubDTO);		
-		String code = clubService.create(clubDTO);
-		redirectAttributes.addFlashAttribute("result", code);		
-		return "redirect:/"; 
+		model.addAttribute("currentURI", requestURI);
+		
+		HttpSession session = request.getSession();
+		String storedFileName = (String) session.getAttribute("storedFileName");
+
+		log.info("Create.." + clubDTO);
+		clubService.create(clubDTO, storedFileName);
+
+		return "redirect:/";
 	}
 	
 	@GetMapping({"/club_detail", "/club_modify"})

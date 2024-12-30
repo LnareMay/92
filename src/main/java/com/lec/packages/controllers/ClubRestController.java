@@ -105,11 +105,6 @@ public class ClubRestController {
 		return ResponseEntity.ok().headers(headers).body(resource);
 	}
 
-	@DeleteMapping("/club/{clubCode}")
-	public String clubDelete(@PathVariable String clubCode) {
-		clubService.delete(clubCode);
-		return clubCode;
-	}
 
 	@Operation(summary = "파일삭제", description = "DELETE 방식으로 첨부파일 삭제")
 	@DeleteMapping(value = "/remove/{fileName}")

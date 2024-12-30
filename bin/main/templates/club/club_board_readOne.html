@@ -3,7 +3,7 @@
 <head>
 <!-- meta_tag include -->
 <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title>클럽 게시글 작성</title>
+<title>클럽 게시글</title>
 
 <!-- 공통 css -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -28,7 +28,7 @@
                 <div class="col">
                   <div class="card" style="box-shadow: none; border: none;">
                     <div class="card-header">
-                      글 작성
+                      게시글
                     </div>
                     <div class="card-body">
                       <form action="/club/board_register" method="post">
@@ -36,18 +36,19 @@
                           <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-pen-nib"></i></label>
                           </div>
-                          <select class="custom-select" id="inputGroupSelect01" name="BOARD_TYPE" style="text-align: center;">
-                            <option selected value="Notice">#공지#</option>
-                            <option value="FreeBoard">자유 게시판</option>
-                            <option value="Hello">가입 인사</option>
-                            <option value="Reviews">정산&후기</option>
+                          <select class="custom-select" id="inputGroupSelect01" name="BOARD_TYPE" style="text-align: center;"
+                            onFocus='this.initialSelect = this.selectedIndex;'onChange='this.selectedIndex = this.initialSelect;'>
+                            <option th:selected="${dto.BOARD_TYPE} == 'Notice'" value="Notice">#공지#</option>
+                            <option th:selected="${dto.BOARD_TYPE} == 'FreeBoard'" value="FreeBoard">자유 게시판</option>
+                            <option th:selected="${dto.BOARD_TYPE} == 'Hello'" value="Hello">가입 인사</option>
+                            <option th:selected="${dto.BOARD_TYPE} == 'Reviews'" value="Reviews">정산&후기</option>
                           </select>
                         </div>
             
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
-                          <input type="hidden" name="CLUB_CODE" th:value="${param.clubCode}">
-                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT"></textarea>
+                          <input type="hidden" name="CLUB_CODE" th:value="${dto.CLUB_CODE}">
+                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT" th:text="${dto.BOARD_TEXT}"></textarea>
                         </div>
             
                         <div class="input-group mb-3">
@@ -76,10 +77,9 @@
                 </div><!-- end col-->
               </div><!-- end row-->
               <!-- 첨부 파일 섬네일을 보여줄 부분 -->
-            <div class="row mt-3">
-                <div class="col ">
-                <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap;">
-                </div>
+              <div class="col">
+                <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                    <img class="card-img-top" th:each="fileName : ${dto.fileNames}" th:src="|/club/view/${fileName}|"/>
                 </div>
             </div>
 
