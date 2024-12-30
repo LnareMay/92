@@ -107,27 +107,6 @@
 
 			</div>
 
-			<!-- 인원 -->
-			<div class="search-item">
-				<label>인원</label>
-				<div id="people-select" class="people-placeholder">
-					<span>몇 명이 이용하시나요?</span>
-				</div>
-			</div>
-
-			<!-- 인원 선택 모달 -->
-			<div id="people-modal" class="modal">
-				<div class="modal-content">
-					<div class="counter-container">
-						<button id="decrease-btn" class="counter-btn">-</button>
-						<span>인원</span>
-						<span id="people-count">0</span> 명
-						<button id="increase-btn" class="counter-btn">+</button>
-					</div>
-					<button id="apply-btn" class="apply-btn">인원적용</button>
-				</div>
-			</div>
-
 			<!-- 날짜 -->
 			<div class="search-item">
 				<label>날짜</label>
@@ -175,6 +154,7 @@
 				<h3>시/도 선택</h3>
 				<div class="options">
 					<button>서울</button>
+					<button>경기</button>
 					<button>부산</button>
 					<button>대구</button>
 					<button>인천</button>
@@ -182,7 +162,6 @@
 					<button>대전</button>
 					<button>울산</button>
 					<button>세종</button>
-					<button>경기</button>
 					<button>충북</button>
 					<button>충남</button>
 					<button>전남</button>
@@ -192,91 +171,72 @@
 		</div>
 
 		<!-- Cards Section -->
-		<div class="row">
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-img">
-						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-							class="card-img-top" alt="MJ GYM">
-					</div>
-
-					<!-- 운동코드 START -->
-					<div class="tag">잔디구장</div>
-					<!-- 운동코드 END -->
-					<div class="card-body">
-						<h7 class="card-text"> 서울시 강남구 </h7>
-						<h5 class="card-title">[농구/실내체육]실내체육관 [농구/실내체육]실내체육관
-							[농구/실내체육]실내체육관</h5>
-						<p class="card-text">60,000원~ / 패키지[2시간] 60,000원~ / 패키지[2시간]
-							60,000원~ / 패키지[2시간]</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-img">
-						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-							class="card-img-top" alt="MJ GYM">
-					</div>
-					<!-- 운동코드 START -->
-					<div class="tag">잔디구장</div>
-					<!-- 운동코드 END -->
-					<div class="card-body">
-						<h7 class="card-text"> 서울시 강남구 </h7>
-						<h5 class="card-title">야외시설 테니스장/풋살장</h5>
-						<p class="card-text">49,000원 / 0.5시간 [1시간부터]</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-img">
-						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-							class="card-img-top" alt="MJ GYM">
-					</div>
-					<!-- 운동코드 START -->
-					<div class="tag">잔디구장</div>
-					<!-- 운동코드 END -->
-					<div class="card-body">
-						<h7 class="card-text"> 서울시 강남구 </h7>
-						<h5 class="card-title">비전타워 실내체육관</h5>
-						<p class="card-text">120,000원 / 패키지[2시간]</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-img">
-						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-							class="card-img-top" alt="MJ GYM">
-					</div>
-					<!-- 운동코드 START -->
-					<div class="tag">잔디구장</div>
-					<!-- 운동코드 END -->
-					<div class="card-body">
-						<h7 class="card-text"> 서울시 강남구 </h7>
-						<h5 class="card-title">상업체육관</h5>
-						<p class="card-text">32,500원 / 0.5시간 [1시간부터]</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="card">
-					<div class="card-img">
-						<img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-							class="card-img-top" alt="MJ GYM">
-					</div>
-					<!-- 운동코드 START -->
-					<div class="tag">잔디구장</div>
-					<!-- 운동코드 END -->
-					<div class="card-body">
-						<h7 class="card-text"> 서울시 강남구 </h7>
-						<h5 class="card-title">상업체육관</h5>
-						<p class="card-text">32,500원 / 0.5시간 [1시간부터]</p>
-					</div>
-				</div>
-			</div>
+		<div th:if="${facilities != null and facilities.isEmpty()}">등록된 시설이 없습니다.</div>
+		<div class="container mt-4">
+		    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+		        <div class="col" th:each="facility : ${facilities}">
+		            <div class="card h-100">
+		                <img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
+		                     class="card-img-top" alt="Facility Image">
+		                <div class="card-body">
+		                    <div class="tag">
+			                    <td th:switch="${facility.exerciseCode}">
+				              		<span th:case="'EXE_FOOTBALL'">축구장</span>
+								    <span th:case="'EXE_BASKET'">농구장</span>
+								    <span th:case="'EXE_BADMINTON'">배드민턴장</span>
+								    <span th:case="'EXE_CLIMB'">암벽등반장</span>
+								    <span th:case="'EXE_FUTSAL'">풋살장</span>
+								    <span th:case="'EXE_BASEBALL'">야구장</span>
+								    <span th:case="'EXE_YOGA'">요가</span>
+								    <span th:case="'EXE_TENNIS'">테니스장</span>
+								    <span th:case="'EXE_PILATES'">필라테스</span>
+								    <span th:case="'EXE_FITNESS'">헬스장</span>
+								    <span th:case="*">NULL</span>
+						 		</td>
+							</div>
+		                   
+		                    <h7 th:text="${facility.facilityAddress}" class="card-text"></h7>
+		                    <h5 th:text="${facility.facilityName}" class="card-title"></h5>
+		                    <p th:text="${facility.formattedPrice}" class="card-text"></p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		    
+			<nav aria-label="Page navigation" class="mt-3">
+			    <ul class="pagination justify-content-center">
+			        <!-- 이전 페이지 버튼 -->
+			        <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
+			            <a class="page-link" th:href="@{|/facility/main?page=${pageNumber - 1}&size=${pageSize}|}" aria-label="Previous">
+			                «
+			            </a>
+			        </li>
+			
+			        <!-- 페이지 번호 -->
+			        <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+			            th:classappend="${page == pageNumber} ? 'active'">
+			            <a class="page-link" th:href="@{|/facility/main?page=${page}&size=${pageSize}|}" th:text="${page}"></a>
+			        </li>
+			
+			        <!-- 다음 페이지 버튼 -->
+			        <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
+			            <a class="page-link" th:href="@{|/facility/main?page=${pageNumber + 1}&size=${pageSize}|}" aria-label="Next">
+			                »
+			            </a>
+			        </li>
+			    </ul>
+			</nav>  
+			    
+		
+			    
+			    
+		<!-- END Cards Section -->
 		</div>
+		
+
+		    
+		
+		
 	</main>
 
 	<!-- Footer -->
