@@ -16,11 +16,6 @@ async function removeFileToServer(uuid, fileName){
     return response.data
 }
 
-async function get1(bno) {
-	const result = await axios.get(`/replies/list/${bno}`)
-	return result;
-}
-
 async function getList({boardNo, clubCode, page, size, goLast}) {
 	const result = await axios.get(`/club/replies/list/${boardNo},${clubCode}`, {params: {boardNo, clubCode, page, size}})
 	
@@ -39,17 +34,17 @@ async function addReply(replyObj) {
 }
 
 
-async function getReply(clubCode, boardNo, replyNo) {
-	const response = await axios.get(`club/replies/getReply${clubCode},${boardNo},${replyNo}`)
+async function getReply(boardNo, clubCode, replyNo) {
+	const response = await axios.get(`club/replies/getReply/${clubCode},${boardNo},${replyNo}`)
 	return response.data
 }
 
 async function modifyReply(replyObj) {
-	const response = await axios.post(`/replies/modify${replyObj}`, replyObj)
+	const response = await axios.post(`/club/replies/modify/`, replyObj)
 	return response.data
 }
 
 async function removeReply(clubCode, boardNo, replyNo) {
-	const response = await axios.delete(`/replies/deleteReply${clubCode, boardNo, replyNo}`)
+	const response = await axios.delete(`/club/replies/delete/${clubCode}, ${boardNo}, ${replyNo}`)
 	return response.data
 }
