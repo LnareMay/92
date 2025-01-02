@@ -228,6 +228,15 @@
 	        console.log("파일이 선택되지 않았습니다.");
 	        return;
 	    }
+	    
+
+	    // 파일 확장자 검사
+	    const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+	    const fileExtension = file.name.split('.').pop().toLowerCase();
+	    if (!validExtensions.includes(fileExtension)) {
+	        alert("올바른 이미지 파일을 선택해주세요. (jpg, jpeg, png, gif)");
+	        return;
+	    }
 
 	    console.log(fileInput.files); // 선택된 파일 목록 로그 출력
 
