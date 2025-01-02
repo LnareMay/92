@@ -79,6 +79,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 		
 		Member member = result.get();
 		
+		// DELETE_FLAG가 true(1)인 경우 로그인 차단
+	    if (member.isDELETE_FLAG()) {
+	        throw new UsernameNotFoundException("이 계정은 비활성화 상태입니다. 관리자에게 문의하세요.");
+	    }
+		
 		MemberSecurityDTO memberSecurityDTO =
 				new MemberSecurityDTO(
 						member.getMEM_ID()
