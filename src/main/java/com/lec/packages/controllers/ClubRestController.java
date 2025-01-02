@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -36,14 +37,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardReplyDTO;
+
 import com.lec.packages.dto.ClubDTO;
+
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
+
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -152,10 +156,11 @@ public class ClubRestController {
 	    return ResponseEntity.ok(resultMap);
 	}
 
-	@PostMapping(value = "/replies/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, Integer> register(@Valid @RequestBody ClubBoardReplyDTO clubBoardReplyDTO, BindingResult bindingResult) throws BindException{
+	@PostMapping(value = "/replies/register/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Integer> register(@RequestBody ClubBoardReplyDTO clubBoardReplyDTO, BindingResult bindingResult) throws BindException{
 		
 		log.info("do replyRegister");
+		log.info(clubBoardReplyDTO);
 
 		if(bindingResult.hasErrors()){
 			throw new BindException(bindingResult);
@@ -167,6 +172,7 @@ public class ClubRestController {
 		
 		return resultMap;
 	}
+
 	
 	 
 	
@@ -236,4 +242,16 @@ public class ClubRestController {
 	}
 	*/
 	
+
+
+	@GetMapping(value = "/replies/list/{boardNo},{clubCode}")
+	public PageResponseDTO<ClubBoardReplyDTO> getList(@PathVariable("boardNo") int boardNo, @PathVariable("clubCode") String clubCode, PageRequestDTO pageRequestDTO) {
+
+		log.info("do ReplyList");
+		log.info(pageRequestDTO);
+		PageResponseDTO<ClubBoardReplyDTO> responseDTO = clubService.getReplyListOfBoard(boardNo, clubCode, pageRequestDTO);
+		return responseDTO;
+		
+	}
+
 }

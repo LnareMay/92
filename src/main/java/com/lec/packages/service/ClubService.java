@@ -80,6 +80,7 @@ public interface ClubService {
 		
 		return boardDTO;
 	}
+    PageResponseDTO<ClubBoardReplyDTO> getReplyListOfBoard(int boardNo, String clubCode, PageRequestDTO pageRequestDTO);
 
 
 
