@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
@@ -256,15 +258,34 @@ public class ClubServiceImpl implements ClubService {
 		int lastReplyNo = 0;
 		if(lastReply.isPresent()){
 			Club_Board_Reply temp = lastReply.orElseThrow();
-			lastReplyNo = temp.getClubBoard().getBoardNo();
+			log.info(temp);
+			lastReplyNo = temp.getReplyNo();
+			temp = null;
 		}
 
 		lastReplyNo += 1;
-		clubBoardReplyDTO.setBoardNo(lastReplyNo);
+		clubBoardReplyDTO.setReplyNo(lastReplyNo);
 
 		Club_Board_Reply board_Reply = modelMapper.map(clubBoardReplyDTO, Club_Board_Reply.class);
+		log.info(board_Reply);
 		int replyNo = clubBoardReplyRepository.save(board_Reply).getReplyNo();
 		return replyNo;
+	}
+
+	@Override
+	public PageResponseDTO<ClubBoardReplyDTO> getReplyListOfBoard(int boardNo, String clubCode,
+			PageRequestDTO pageRequestDTO) {
+		Pageable pageable = PageRequest.of(pageRequestDTO.getPage() <= 0 ? 0 : pageRequestDTO.getPage() -1,
+							pageRequestDTO.getSize(), Sort.by("replyNo").ascending());
+		
+		Page<Club_Board_Reply> result = clubBoardReplyRepository.listOfReply(boardNo, clubCode, pageable);
+		List<ClubBoardReplyDTO> dtoList = result.getContent().stream().map(reply -> modelMapper.map(reply, ClubBoardReplyDTO.class)).collect(Collectors.toList());
+
+		return PageResponseDTO.<ClubBoardReplyDTO>withAll()
+				.pageRequestDTO(pageRequestDTO)
+				.dtoList(dtoList)
+				.total((int) result.getTotalElements())
+				.build();
 	}
 
 

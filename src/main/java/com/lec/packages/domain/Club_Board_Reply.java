@@ -41,8 +41,14 @@ public class Club_Board_Reply extends BaseEntity{
     private Boolean deleteFlag;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Club_Board clubBoard;
+    @JoinColumn(name = "CLUB_CODE", table = "Club_Board")
+    @Column(name = "CLUB_CODE", nullable = false, length = 10)
+    private String clubCode;
+
+    @Id
+    @JoinColumn(name = "BOARD_NO", table = "Club_Board")
+    @Column(name = "BOARD_NO", nullable = false)
+    private int boardNo;
 
     public void changeText(String replyText) {
         this.boardText = replyText;
