@@ -48,7 +48,7 @@
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
                           <input type="hidden" name="CLUB_CODE" th:value="${dto.CLUB_CODE}">
-                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT" th:text="${dto.BOARD_TEXT}"></textarea>
+                          <textarea class="form-control col-sm-5  mb-0" rows="5" name="BOARD_TEXT" th:text="${dto.BOARD_TEXT}" readonly></textarea>
                         </div>
             
                         <div class="input-group mb-3">
@@ -57,20 +57,7 @@
                                   th:value="${#authentication.principal.username}"
                                   placeholder="작성자" readonly>
                         </div>
-                        
-                        <div class="input-group mb-3">
-                          <span class="input-group-text"><i class="fas fa-images"></i></span>
-                          <div class="float-end uploadHidden">
-                            <button type="button" class="btn btn-primary uploadFileBtn" style="margin-left: 10px;">파일 추가</button>
-                          </div>
-                        </div>
 
-                        <div class="my-4">
-                          <div class="float-end">
-                             <button type="submit" class="btn btn-primary submitBtn">등록</button>
-                            <button type="reset" class="btn btn-secondary">새로 고침</button>
-                          </div>
-                        </div>
                       </form>
                     </div><!--end card body-->
                   </div><!--end card-->
@@ -81,115 +68,274 @@
                 <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
                     <img class="card-img-top" th:each="fileName : ${dto.fileNames}" th:src="|/club/view/${fileName}|"/>
                 </div>
+              </div>
+              <div class="my-4">
+                <div class="float-end">
+                  <a href="">
+                    <button type="submit" class="btn btn-primary submitBtn">목록</button>
+                  </a>
+                  <a href="">
+                    <button type="reset" class="btn btn-secondary">수정</button>
+                  </a>
+                </div>
+              </div>
+            <div class="row mt-3">
+              <div class="col-md-12">
+                  <div class="my-4 ">
+                      <button class="btn btn-info  addReplyBtn">댓글 달기</button>
+                  </div>
+                  <ul class="list-group replyList">
+                  </ul>
+              </div>
             </div>
-
-            <!-- 첨부파일 추가를 위한 모달창 -->
-            <div class="modal uploadModal" tabindex="-1">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title">Upload File</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <input type="file" name="files" class="form-control" multiple >
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>
-                    <button type="button" class="btn btn-outline-dark closeUploadBtn" >Close</button>
-                    </div>
-                </div>
-                </div>
-            </div><!-- register modal -->    
-            
+          <div class="row mt-3">
+              <div class="col">
+                  <ul class="pagination replyPaging">
+                  </ul>
+              </div>
+          </div>   	
+          
+          <div class="modal registerModal" tabindex="-1">
+               <div class="modal-dialog">
+                   <div class="modal-content">
+                       <div class="modal-header">
+                           <h5 class="modal-title">Register Reply</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                       </div>
+                       <div class="modal-body">
+                           <div class="input-group mb-3">
+                               <span class="input-group-text">Reply Text</span>
+                               <input type="text" class="form-control replyText" >
+                           </div>
+                           <div class="input-group mb-3">
+                               <span class="input-group-text">Replyer</span>
+                               <input type="text" class="form-control replyer" >
+                           </div>
+                       </div>
+                       <div class="modal-footer">
+                           <button type="button" class="btn btn-primary registerBtn">Register</button>
+                           <button type="button" class="btn btn-outline-dark closeRegisterBtn" >Close</button>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <!-- end regist modal -->	
+          
+           <div class="modal modifyModal" tabindex="-1">
+               <div class="modal-dialog">
+                   <div class="modal-content">
+                       <div class="modal-header">
+                           <h5 class="modal-title replyHeader"></h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                       </div>
+                       <div class="modal-body">
+                           <div class="input-group mb-3">
+                               <span class="input-group-text">Reply Text</span>
+                               <input type="text" class="form-control modifyText" >
+                           </div>
+                       </div>
+                       <div class="modal-footer">
+                           <button type="button" class="btn btn-info modifyBtn">Modify</button>
+                           <button type="button" class="btn btn-danger removeBtn">Remove</button>
+                           <button type="button" class="btn btn-outline-dark closeModifyBtn">Close</button>
+                       </div>
+                   </div>
+               </div>
+           </div> <!--modifyModal -->	
         </main>
         <div th:insert="~{layouts/footer :: footer}"></div>
-        <script src="/js/gd.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="/js/gd.js"></script>
 </body>
 <script>
-  const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
-  document.querySelector(".uploadFileBtn").addEventListener("click", function(e){
-    e.stopPropagation()
-    e.preventDefault()
-    uploadModal.show()
-  }, false)
+  const bno = /*[[${dto.boardNo}]]*/''
+	
+	const replyList = document.querySelector('.replyList')  // 댓글목록 DOM
+	const replyPaging = document.querySelector('.replyPaging') // 페이지목록 DOM
 
-  document.querySelector(".uploadBtn").addEventListener("click", function(e){
-    const formObj = new FormData();
-    const fileInput = document.querySelector("input[name='files']")
-    console.log(fileInput.files)
-    const files = fileInput.files
+	// 댓글목록출력
+	function printList(dtoList) {
+		let str = ''
+		if(dtoList && dtoList.length > 0) {
+			for(const dto of dtoList) {
+				str += `<li class="list-group-item d-flex replyItem">
+					<span class="col-2">${dto.rno}</span>
+					<span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
+					<span class="col-2">${dto.replyer}</span>
+					<span class="col-2">${dto.regDate}</span>
+				</li>`
+			}
+		}
+		replyList.innerHTML = str
+	}
+	
+	// 페이지목록출력
+	function printPage(data) {
+		
+		// pagination
+		let pageStr = '';
+		
+		if(data.prev) {
+			 pageStr += `<li class="page-item"><a class="page-link" data-page="${data.start-1}">Prev</a></li>`
+		}
+		
+		for(let i=data.start;i<=data.end;i++) {							
+			pageStr += `<li class="page-item ${i == data.page?"active":""} "><a class="page-link" data-page="${i}">${i}</a></li>`
+		}
+		
+		if(data.next) {
+			 pageStr += `<li class="page-item"><a class="page-link" data-page="${data.end+1}">Next</a></li>`
+		}
+		
+		replyPaging.innerHTML = pageStr
+	}
+	
 
-    for (let i = 0; i < files.length; i++) {
-      formObj.append("files", files[i]);
-    }
+	function printReplies(page, size, goLast) {
+		getList({bno, page, size, goLast})
+		.then(
+			data => {
+				printList(data.dtoList)  // 댓글목록처리
+				printPage(data)          // 페이지처리 
+			}
+		).catch(
+			e => console.log(e)
+		)
+	}
 
-    uploadToServer(formObj).then(result => {
-      for (const uploadResult of result) {
-        showUploadFile(uploadResult)
-      }
-      uploadModal.hide()
-    }).catch(e => {
-      uploadModal.hide()
-    })
+	printReplies(1, 10, true)
 
-  },false)
+	// 댓글등록(모달창)
+	const registerModal = new bootstrap.Modal(document.querySelector('.registerModal'))
+	const registerBtn = document.querySelector('.registerBtn')
+	const replyText = document.querySelector('.replyText')
+	const replyer = document.querySelector('.replyer')
+	const closeRegisterBtn = document.querySelector('.closeRegisterBtn')
+	
+	document.querySelector('.addReplyBtn').addEventListener('click', function(e) {
+		registerModal.show()
+	}, false)
+	
+	document.querySelector('.closeRegisterBtn').addEventListener('click', function(e) {
+		registerModal.hide()
+	}, false)
+	
+	document.querySelector('.registerBtn').addEventListener('click', function(e) {
+		const replyObj = {
+			bno: bno,
+			replyText: replyText.value, 
+			replyer: replyer.value
+		}
+		
+		addReply(replyObj).then(
+			result => {
+				alert(result.rno)
+				registerModal.hide()
+				replyText.value = ''
+				replyer.value = ''
+				printReplies(1, 10, true) // 댓글목록갱신
+			}
+		).catch(
+			e => { alert("에러발생... ")}
+		)
+	}, false)
+	
+	
+	// 페이징처리
+	let page = 1
+	let size = 10
+	
+	replyPaging.addEventListener('click', function(e) {
+		
+		e.preventDefault()
+		e.stopPropagation()
+		
+		const target = e.target
+		
+		if(!target || target.tagName != 'A') {
+			return
+		}
+		
+		const pageNum = target.getAttribute("data-page")
+		page = pageNum
+		printReplies(page, size, false)
+		
+	}, false)
+	
+	// 댓글수정(모달창)
+	const modifyModal = new bootstrap.Modal(document.querySelector('.modifyModal'))
+	const replyHeader = document.querySelector('.replyHeader')
+	const modifyText = document.querySelector('.modifyText')
+	const modifyBtn = document.querySelector('.modifyBtn')
+	const removeBtn = document.querySelector('.removeBtn')
+	const closeModifyBtn = document.querySelector('.closeModifyBtn')
+	
+	replyList.addEventListener('click', function(e) {
+		
+		e.preventDefault()
+		e.stopPropagation()		
+		
+		const target = e.target
 
-  const uploadResult = document.querySelector(".uploadResult")
-  function showUploadFile({uuid, fileName, link}){
-    const str =`<div class="card col-4">
-            <div class="card-header d-flex justify-content-center">
-                ${fileName}
-                <button class="btn-sm btn-danger" onclick="javascript:removeFile('${uuid}', '${fileName}', this)" >X</button>
-            </div>
-            <div class="card-body">
-                 <img src="/club/view/${link}" data-src="${uuid+"_"+fileName}" >
-            </div>
-        </div><!-- card -->`
-
-    uploadResult.innerHTML += str
-  }
-
-  function removeFile(uuid,fileName, obj){
-
-  console.log(uuid)
-  console.log(fileName)
-
-  console.log(obj)
-
-  const targetDiv = obj.closest(".card")
-
-  removeFileToServer(uuid, fileName).then(data => {
-    targetDiv.remove()
-  })
-  }
-  
-  document.querySelector(".submitBtn").addEventListener("click", function(e){
-    e.preventDefault()
-    e.stopPropagation()
-
-    const target = document.querySelector(".uploadHidden")
-    const uploadFiles = uploadResult.querySelectorAll("img")
-
-    let str = ''
-
-    for (let i = 0; i < uploadFiles.length ; i++) {
-    const uploadFile = uploadFiles[i]
-    const imgLink = uploadFile.getAttribute("data-src")
-
-    str += `<input type='hidden' name='fileNames' value="${imgLink}">`
-    }
-
-    target.innerHTML = str;
-
-
-    const formObj = document.querySelector("form");
-    formObj.submit();
-    formObj.reset();
-
-    }, false)
+		if(!target || target.tagName != 'SPAN') {
+			return
+		}	
+		
+		const rno = target.getAttribute("data-rno")
+		
+		if(!rno) {
+			return
+		}
+		
+		getReply(rno).then(reply => {
+			console.log(reply)
+			replyHeader.innerHTML = reply.rno
+			modifyText.value = reply.replyText
+			modifyModal.show()
+		}).catch(e => {
+			alert("에러발생!!!")
+		})	
+		
+	}, false)
+	
+	
+	modifyBtn.addEventListener('click', function(e) {	
+		
+		const replyObj = {
+			bno: bno,
+			rno: replyHeader.innerHTML, 
+			replyText: modifyText.value, 
+		}	
+		
+		modifyReply(replyObj).then(
+			result => {
+				alert(result.rno + " 댓글수정성공!!")
+				replyText.value = ''
+				modifyModal.hide()
+				printReplies(page, size)			
+			}).catch(
+				e => { alert("댓글수정실패!!!")
+		})		
+	}, false)		
+	
+	removeBtn.addEventListener('click', function(e) {	
+		
+		removeReply(replyHeader.innerHTML).then(
+			result => {
+				alert(result.rno + " 댓글삭제성공!!")
+				replyText.value = ''
+				modifyModal.hide()
+				// page = 1
+				printReplies(page, size) // 원래페이지	
+		}).catch(
+			e => {
+				alert("댓글삭제실패!!!")	
+		})
+		
+	}, false)		
+	
+	closeModifyBtn.addEventListener('click', function(e) {
+		modifyModal.hide()	
+	}, false)		
 </script>
 </html>
