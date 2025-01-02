@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,22 +20,30 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardReplyDTO;
+import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -43,10 +52,12 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Log4j2
 @RestController
 @RequestMapping("/club")
+@RequiredArgsConstructor
 public class ClubRestController {
     
     @Value("${com.lec.upload.path}")
     private String uploadPath;
+    
     private ClubService clubService;
 
 
@@ -156,4 +167,73 @@ public class ClubRestController {
 		
 		return resultMap;
 	}
+	
+	 
+	
+	
+	/* 클럽생성(이미지)
+	@PostMapping(value = "/club_create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Void> createClubWithImages(
+			@RequestPart("clubName") String clubName
+			, @RequestPart("memId") String memId
+			, @RequestPart("clubExercise") String clubExercise
+			, @RequestPart("clubIntroduction") String clubIntroduction
+			, @RequestPart("clubTheme") String clubTheme
+			, @RequestPart("clubAddress") String clubAddress
+			, @RequestPart("clubIsprivate") boolean clubIsprivate
+			, @RequestPart("clubPw") String clubPw
+			, @RequestPart(value = "clubImage1", required = false) MultipartFile clubImage1
+			, @RequestPart(value = "clubImage2", required = false) MultipartFile clubImage2
+			, @RequestPart(value = "clubImage3", required = false) MultipartFile clubImage3
+			, @RequestPart(value = "clubImage4", required = false) MultipartFile clubImage4
+			, BindingResult bindingResult
+			, RedirectAttributes redirectAttributes
+			, HttpServletRequest request, Model model) {
+		
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+	    ClubDTO clubDTO = ClubDTO.builder()
+	            .clubName(clubName)
+	            .memId(memId)
+	            .clubIntroduction(clubIntroduction)
+	            .build();
+		
+		String clubCode = clubService.create(clubDTO);
+		clubDTO.setClubCode(clubCode);
+		
+		List<MultipartFile> images = List.of(clubImage1, clubImage2, clubImage3, clubImage4);
+		List<String> uploadedImages = new ArrayList<>();
+		
+		for(int i=0; i<images.size(); i++) {
+			MultipartFile file = images.get(i);
+			if (file != null && !file.isEmpty()) {
+				String uuid = UUID.randomUUID().toString();
+				String fileName = uuid + "_" + file.getOriginalFilename();
+				
+				try {
+					Path savePath = Paths.get(uploadPath, uuid +"_" + fileName);
+					file.transferTo(savePath.toFile());
+					uploadedImages.add(fileName);
+					
+					switch (i) {
+						case 0 -> clubDTO.setClubImage1(fileName);
+						case 1 -> clubDTO.setClubImage2(fileName);
+						case 2 -> clubDTO.setClubImage3(fileName);
+						case 3 -> clubDTO.setClubImage4(fileName);
+					} 
+				} catch (IOException e) {
+					e.printStackTrace();
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();	
+				}
+			}
+		}
+		clubService.updateImages(clubCode, clubDTO);
+		
+		return ResponseEntity.status(HttpStatus.FOUND)
+		            .header("Location", "/")
+		            .build();
+	}
+	*/
+	
 }

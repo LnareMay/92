@@ -44,7 +44,10 @@
 		<span th:if="${clubdto.MemId == principal.MEM_ID}">
      		<a class="btn btn-warning fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
      	</span>
-<!--      	<a href="@{/club_remove(clubCode=${clubdto.clubCode})}">클럽 삭제하기</a> -->
+     		<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽 삭제');" style="display:inline;">
+     			<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" /> 
+	      		<button type="submit" class="btn btn-danger">클럽 삭제하기</button> 
+	      	</form>
 
 		</section>
 				   <hr >

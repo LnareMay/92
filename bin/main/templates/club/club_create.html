@@ -23,7 +23,7 @@
     <main class="container main">
 <!--         <h5><b>어떤 클럽을 만들까요?</b></h5> -->
     
-        <form id="clubcreate" action="/club/club_create" method="post" enctype="multipart/form-data">
+        <form id="clubcreate" action="/club/club_create" method="post">
             
             <label for="club-name">클럽명	</label>
             	<input type="text" name="clubName" id="clubName" placeholder="클럽명" maxlength="10"></input>
@@ -70,7 +70,7 @@
               	  <textarea name="clubIntroduction" id="clubIntroduction" maxlength="500" rows="5" placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
 				</div>
             
-            <!-- 사진 추가 -->
+			<!-- 사진 추가 -->
             <label for="club-image">대표 이미지</label>
 			 <div class="club-image-container">
 			    <div class="club-image-upload">
@@ -91,6 +91,7 @@
 			        </label>
 			        <input id="clubImage3" name="clubImage3" type="file" accept="image/*" onchange="previewImage(event, 'photo-upload-3')" style="display: none;" />
 			    </div>
+			    
 			    <div class="club-image-upload">
 			   	 	<label for="clubImage4">   	
 			           <img id="photo-upload-4" src="/img/plus_icon.png" alt="대표이미지4" class="default-icon">
@@ -98,6 +99,17 @@
 			        <input id="clubImage4" name="clubImage4" type="file" accept="image/*" onchange="previewImage(event, 'photo-upload-4')" style="display: none;" />
 			    </div>
 			</div>
+
+			<!-- 이미지 추가
+			<label for="club-image">대표 이미지</label>
+				<div class="club-image-container">
+				 	<input type="file" id="clubImage1" name="clubImage1" accept="image/*">
+				 	<input type="file" id="clubImage2" name="clubImage2" accept="image/*">
+				 	<input type="file" id="clubImage3" name="clubImage3" accept="image/*">
+				 	<input type="file" id="clubImage4" name="clubImage4" accept="image/*">
+				</div>
+				-->    
+			    
 			<!-- 주활동지역 -->
 			<label for="club-address">주활동지역</label>
             	<input type="text" id="clubAddress" name="clubAddress" placeholder="ex) 서울시 강남구 "></input>
@@ -153,7 +165,71 @@
             passwordField.value= '';
         }
     }
-	
+    
+ // 이미지 업로드
+	 const imageUpload = document.getElementById('clubImageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    const hiddenFileInputs = document.getElementById('hiddenFileInputs');
+
+    imageUpload.addEventListener('change', function () {
+        const files = Array.from(this.files);
+        imagePreview.innerHTML = ''; // 기존 미리보기 초기화
+        hiddenFileInputs.innerHTML = ''; // 기존 숨겨진 input 초기화
+
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // 이미지 미리보기 생성
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.alt = file.name;
+                imgElement.classList.add('img-thumbnail', 'me-2', 'mb-2');
+                imgElement.style.width = '150px';
+                imagePreview.appendChild(imgElement);
+
+                // 숨겨진 input 필드 생성
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `imageFiles[${index}]`;
+                hiddenInput.value = e.target.result.split(',')[1]; // Base64 문자열만 저장
+                hiddenFileInputs.appendChild(hiddenInput);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+    
+    /*
+    function submitClub() {
+    	const formData = new FormData();
+    	
+ 		form.append("clubName", document.getElementById("clubName").value),
+  		form.append("memId", document.getElementById("memId").value),
+  		form.append("clubIntroduction", document.getElementById("clubIntroduction").value)
+			
+    	const imageInputs = ["clubImage1", "clubImage2", "clubImage3", "clubImage4"];
+    	imageInputs.forEach(id => {
+    		const fileInput = document.getElementById(id);
+    		if(fileInput.files.length > 0) {
+    			formData.append("files", fileInput.files[0]);
+    		}
+    	});
+    	
+    	fetch("/club_creat", {
+    		method: "POST",
+			body : formData
+    	})
+		
+		.then(response => {
+			if(!response.ok) throw new Error("클럽 생성 실패");
+			return response.json();
+		})
+		.then(result => {
+			alert("클럽 생성 완료 : 클럽코드 " + result.clubCode);
+		})
+		.catch(error => console.error("오류 발생", error));
+    }
+	*/
+    
 	// 클럽사진 미리보기
 	    function previewImage(event, targetId) {
 	        const reader = new FileReader();
@@ -166,27 +242,30 @@
 	        reader.readAsDataURL(event.target.files[0]);
 	    }
 	    
-    
+		/*
     // 클럽 이미지
-	function uploadFiles() {
-	    const formData = new FormData();
-	    const fileInput = document.querySelectorAll('input[type="file"]');
-	    console.log(fileInput.file)
-	
-	    fileInputs.forEach(input => {
-	        if (input.files[0]) {
-	            formData.append(input.name, input.files[0]); // input의 name 속성 사용
-	        }
-	    });
-	
-	    fetch('/upload', {
-	        method: 'POST',
-	        body: formData,
-	    })
-	        .then(response => response.text())
-	        .then(result => console.log('Upload success:', result))
-	        .catch(error => console.error('Upload error:', error));
-	}
+	function uploadAndPreviewImage(event, index) {
+    const fileInput = event.target;
+    const formData = new FormData();
+    formData.append("files", fileInput.files[0]); // 업로드할 파일 추가
+
+    // 파일 업로드 요청
+    fetch("/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result && result.length > 0) {
+            const previewImage = document.getElementById(`photo-upload-${index}`);
+            const imageUrl = `/club/view/${result[0].uuid}_${result[0].fileName}`;
+            previewImage.src = imageUrl; // 미리보기 이미지 업데이트
+            previewImage.classList.remove("default-icon");
+        }
+    })
+    .catch(error => console.error("업로드 중 오류 발생:", error));
+}
+    */
 		
 </script>
 

@@ -1,6 +1,8 @@
 package com.lec.packages.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardAllListDTO;
@@ -20,12 +22,10 @@ import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
-import com.lec.packages.dto.UploadFileDTO;
-import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/club")
 @RequiredArgsConstructor
 public class ClubController {
+	
 	@Autowired
 	private final ClubService clubService;
 	
@@ -43,28 +44,7 @@ public class ClubController {
 		String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI);
 		return "club/club_create"; 
-	}
-	
-	@PostMapping("/club_create")
-	public String clubCreatePost(@Valid ClubDTO clubDTO
-			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes
-			, @RequestParam("file") MultipartFile file
-			, HttpServletRequest request, Model model) {
-		
-		String requestURI = request.getRequestURI();
-		model.addAttribute("currentURI", requestURI);
-		
-		/*
-		 * if(!file.isEmpty()) { String storedFileName =
-		 * UploadResultDTO.storeFile(file); clubDTO.setClubImage1(storedFileName); }
-		 */	
-
-		log.info("Create.." + clubDTO);
-		clubService.create(clubDTO);
-		
-		return "redirect:/";
-	}
+	}	
 	
 	@GetMapping({"/club_detail", "/club_modify"})
 	public void clubDetail(@RequestParam("clubCode") String clubCode
@@ -99,6 +79,17 @@ public class ClubController {
 		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
 		return "redirect:/club/club_detail"; 
 	}
+	
+	@PostMapping("/club_remove")
+	public String clubRemove(@RequestParam(value = "clubCode", required = false) String clubCode
+			, HttpServletRequest request
+			, RedirectAttributes redirectAttributes) {
+		clubService.remove(clubCode);
+		
+		redirectAttributes.addFlashAttribute("success", "클럽 삭제 성공");
+		return "redirect:/";
+	}
+	
 
 	
 	@GetMapping("/club_board")

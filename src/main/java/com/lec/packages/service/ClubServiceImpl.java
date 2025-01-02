@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -41,16 +42,29 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubBoardReplyRepository clubBoardReplyRepository;
 	
 	// 클럽생성
-	public void create(ClubDTO clubDTO) {
+	public String create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
-		Club club = modelMapper.map(clubDTO, Club.class);
-		club.getClubImage1();
-
-
-//		String saveCode = clubRepository.save(club).getClubCode();
-		clubRepository.save(club);		
+		
+		Club club = modelMapper.map(clubDTO, Club.class);	
+		clubRepository.save(club);	
+		
+		return clubCode;
 	}
+	
+	@Override
+	public void updateImages(String clubCode, ClubDTO clubDTO) {
+		Optional<Club> optionalClub = clubRepository.findById(clubCode);
+		if (optionalClub.isPresent()) {
+			Club club = optionalClub.get();
+			club.setClubImage1(clubDTO.getClubImage1());
+			club.setClubImage2(clubDTO.getClubImage2());
+			club.setClubImage3(clubDTO.getClubImage3());
+			club.setClubImage4(clubDTO.getClubImage4());
+			clubRepository.save(club);
+		}
+	}
+	
 	
 	// 클럽코드생성
 	@Override
@@ -172,14 +186,15 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽삭제
-//	@Override
-//	public void remove(ClubDTO clubDTO) {
-//		Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
-//		Club club = result.orElseThrow();
-//		
-//		club.remove(clubDTO.isDeleteFlag());
-//		clubRepository.save(club);
-//	}
+	@Override
+	public void remove(String clubCode) {
+		Club club = clubRepository.findById(clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
+		
+		club.setDeleteFlag(true);
+		
+		clubRepository.save(club);
+	}
 	
 
 	 
@@ -267,6 +282,9 @@ public class ClubServiceImpl implements ClubService {
 		return replyNo;
 	}
 
+
+	
+	
 
 
 }

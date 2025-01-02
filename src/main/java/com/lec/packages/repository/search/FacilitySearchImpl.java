@@ -90,4 +90,5 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	    
 	    return new PageImpl<>(list, pageable, count);
 	}
+
 }
