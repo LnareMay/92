@@ -74,35 +74,56 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 			return null;
 	}
 	
-	@Override
-	public Page<Facility> searchAllImpl(String[] types, String keyword, Pageable pageable) {
-		
-		QFacility facility = QFacility.facility;
-		JPQLQuery<Facility> query = from(facility);
-		
+	//검색 및 리스트 
+	   @Override
+	   public Page<Facility> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
+	      
+	      QFacility facility = QFacility.facility;
+	      JPQLQuery<Facility> query = from(facility);
+	      
+	      
+	      if (types != null && types.length > 0 && keywords != null && keywords.length > 0) {
+	           BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-		if((types!= null || types.length >0) && keyword != null) {
-			BooleanBuilder booleanBuilder = new BooleanBuilder();
-			for(String type:types) {
-				switch(type) {
-				case "m": 
-					booleanBuilder.or(facility.memId.contains(keyword));
-					break;
-				case "n": 
-					booleanBuilder.or(facility.facilityName.contains(keyword));
-					break;
-				case "a": 
-					booleanBuilder.or(facility.facilityAddress.contains(keyword));
-				}
-		}	
-			query.where(booleanBuilder);
-		}
-		
-		this.getQuerydsl().applyPagination(pageable, query);
-		List<Facility> list = query.fetch();
-		long count=query.fetchCount();
-		
-		return new PageImpl<>(list, pageable, count);
-	}
+	           for (String type : types) {
+	               switch (type) {
+	                   case "a": // 지역 검색
+	                       for (String keyword : keywords) {
+	                           booleanBuilder.or(facility.facilityAddress.contains(keyword));
+	                       }
+	                       break;
+
+	                   case "e": // 운동 유형 검색
+	                       for (String keyword : keywords) {
+	                           booleanBuilder.or(facility.exerciseCode.contains(keyword));
+	                       }
+	                       break;
+
+	                   case "ae": // 지역 + 운동 유형 검색
+	                       if (keywords.length >= 2) { // 최소 두 개의 키워드가 있어야 함
+	                           booleanBuilder.or(
+	                               facility.facilityAddress.contains(keywords[0])
+	                                   .and(facility.exerciseCode.contains(keywords[1]))
+	                           );
+	                       }
+	                       break;
+
+	                   default:
+	                       throw new IllegalArgumentException("Invalid search type: " + type);
+	               }
+	           }
+
+	           query.where(booleanBuilder);
+	       }
+
+	       // 페이징 처리 적용
+	       this.getQuerydsl().applyPagination(pageable, query);
+
+	       List<Facility> list = query.fetch();
+	       long count = query.fetchCount();
+
+	       return new PageImpl<>(list, pageable, count);
+	   }
+
 
 }

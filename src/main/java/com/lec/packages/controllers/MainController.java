@@ -2,6 +2,7 @@ package com.lec.packages.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +30,22 @@ public class MainController {
         String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
         
-    	PageResponseDTO<ClubDTO> responseDTO = clubService.list(pageRequestDTO);
+        if(pageRequestDTO.getPage() < 1) {
+        	pageRequestDTO.setPage(1);
+        }
+        
+    	
+    	if (clubTheme == null || clubTheme.isEmpty()) {
+    		clubTheme = "ALL";
+    	} 
+    	
+    	PageResponseDTO<ClubDTO> responseDTO = "ALL".equals(clubTheme)
+    			? clubService.list(pageRequestDTO)
+    			: clubService.ListByTheme(pageRequestDTO, clubTheme);
+
         model.addAttribute("responseDTO", responseDTO);
-        
-        // 테마가 전달되었을 경우 필터, 그렇지 않으면 전체 클럽 목록 반환
-        List<ClubDTO> clubs = (clubTheme != null) ? clubService.ListByTheme(clubTheme) : clubService.getAllClubs();
-        
-        model.addAttribute("clubs", clubs);
-        model.addAttribute("theme", clubTheme == null ? "" : clubTheme);
+        model.addAttribute("clubs", responseDTO.getDtoList());
+        model.addAttribute("theme", clubTheme);
 
         return "index";
     }   

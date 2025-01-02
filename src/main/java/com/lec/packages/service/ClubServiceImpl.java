@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,11 +37,12 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubBoardRepository clubBoardRepository;
 	
 	// 클럽생성
-	public void create(ClubDTO clubDTO, String storedFileName) {
+	public void create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		Club club = modelMapper.map(clubDTO, Club.class);
-		club.setClubImage1(storedFileName);
+		club.getClubImage1();
+
 
 //		String saveCode = clubRepository.save(club).getClubCode();
 		clubRepository.save(club);		
@@ -60,10 +62,10 @@ public class ClubServiceImpl implements ClubService {
 	@Override
 	public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
 		String[] types = pageRequestDTO.getTypes();
-		String keyword = pageRequestDTO.getKeyword();
+		String[] keywords = pageRequestDTO.getKeywords();
 		Pageable pageable = pageRequestDTO.getPageable("clubCode");
 		
-		Page<Club> result = clubRepository.searchAllImpl(types, keyword, pageable);
+		Page<Club> result = clubRepository.searchAllImpl(types, keywords, pageable);
 		List<ClubDTO> clubList = result.getContent()
 									   .stream()
 									   .map(club -> modelMapper.map(club, ClubDTO.class))
@@ -76,6 +78,42 @@ public class ClubServiceImpl implements ClubService {
                 .total((int)result.getTotalElements())
                 .build();
 	}
+	
+	// 클럽테마리스트
+	 @Override
+		public PageResponseDTO<ClubDTO> ListByTheme(PageRequestDTO pageRequestDTO, String clubTheme) {
+		 	
+		 	List<Club> filteredClubs = clubRepository.findByClubThemeContaining(clubTheme);
+		 	
+		 	int total = filteredClubs.size();
+		 	
+		 	if (total == 0) {
+		 		return PageResponseDTO.<ClubDTO>withAll()
+		 							  .pageRequestDTO(pageRequestDTO)
+		 							  .dtoList(Collections.emptyList())
+		 							  .total(0)
+		 							  .build();
+		 	}
+		 	
+		 	int start = (pageRequestDTO.getPage() - 1) * pageRequestDTO.getSize();
+		 	int end = Math.min(start + pageRequestDTO.getSize(), total);
+		 	
+		 	if (start < 0 || start >= total) {
+		 		start = 0;
+		 	}
+	        
+	        List<ClubDTO> clubList = filteredClubs.subList(start, end)
+	        							   .stream()
+	        							   .map(club -> modelMapper.map(club, ClubDTO.class))
+	        							   .collect(Collectors.toList());
+	        
+	        return PageResponseDTO.<ClubDTO>withAll()
+	                    .pageRequestDTO(pageRequestDTO)
+	                    .dtoList(clubList)
+	                    .total(total)
+	                    .build();
+	    }
+
 	
 	// 클럽상세보기
 	@Override
@@ -139,15 +177,7 @@ public class ClubServiceImpl implements ClubService {
 //		clubRepository.save(club);
 //	}
 	
-	// 클럽테마리스트
-	 @Override
-	    public List<ClubDTO> ListByTheme(String clubTheme) {
-	        List<Club> clubs = clubRepository.findByClubThemeContaining(clubTheme);
-	        return clubs.stream()
-	                    .map(club -> modelMapper.map(club, ClubDTO.class))
-	                    .collect(Collectors.toList());
-	    }
-	 
+
 	 
 	@Override
 	public List<ClubDTO> getAllClubs() {

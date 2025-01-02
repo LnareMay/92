@@ -113,6 +113,7 @@
 			<button type="submit" class="btn btn-primary mt-4" style="margin-bottom: 20px;">만들기</button>	
             <button type="reset" class="btn btn-secondary mt-4" style="margin-bottom: 20px;">새로고침</button>
         </form>
+	</main>
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 
@@ -167,28 +168,26 @@
 	    
     
     // 클럽 이미지
-    const fileInput = document.querySelector("input[name='clubImage1']");
+	function uploadFiles() {
+	    const formData = new FormData();
+	    const fileInput = document.querySelectorAll('input[type="file"]');
+	    console.log(fileInput.file)
 	
-	fileInput.addEventListener('change', function(e) {
-		const formObj = new FormData;
-		const imagefile = fileInput.imagefile;
-		console.log(fileInput.imagefile);
-		
-		for(let i=0; i<imagefile.length; i++) {
-			formObj.append("imagefile", imagefile[i]);
-		}
-		
-		uploadToServer(formObj)
-			.then(result => {
-				console.log("업로드 성공", result);
-				alert("이미지 업로드 성공");
-			})
-			.catch(e => {
-				console.log("업로드 실패", e);
-				alert("이미지 업로드 실패");
-			});
-	});
+	    fileInputs.forEach(input => {
+	        if (input.files[0]) {
+	            formData.append(input.name, input.files[0]); // input의 name 속성 사용
+	        }
+	    });
 	
+	    fetch('/upload', {
+	        method: 'POST',
+	        body: formData,
+	    })
+	        .then(response => response.text())
+	        .then(result => console.log('Upload success:', result))
+	        .catch(error => console.error('Upload error:', error));
+	}
+		
 </script>
 
 </html>

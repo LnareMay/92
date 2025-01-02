@@ -7,7 +7,5 @@ import com.lec.packages.domain.Club;
 
 public interface ClubSearch {
 
-	Page<Club> searchAllImpl(String[] types, String keyword, Pageable pageable);
-
-	
+	Page<Club> searchAllImpl(String[] types, String[] keywords, Pageable pageable);
 }

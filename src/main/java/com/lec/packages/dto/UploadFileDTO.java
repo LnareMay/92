@@ -9,4 +9,5 @@ import lombok.Data;
 @Data
 public class UploadFileDTO {
     private List<MultipartFile> files;
+
 }

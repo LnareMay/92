@@ -1,8 +1,11 @@
 package com.lec.packages.repository;
 
-import java.util.List;
-import java.util.Optional;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +17,7 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
 
 	@Query("SELECT c FROM Club c WHERE c.clubTheme LIKE %:clubTheme%")
 	List<Club> findByClubThemeContaining(@Param("clubTheme") String clubTheme);
+	
 
 	//List<Club> findAllActiveClub();
 	

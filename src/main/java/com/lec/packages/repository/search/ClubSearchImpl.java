@@ -21,28 +21,13 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 	public ClubSearchImpl() {
 		super(Club.class);
 	}
-	
+
 	@Override
-	public Page<Club> searchAllImpl(String[] types, String keyword, Pageable pageable) {
+	public Page<Club> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
 	
 		QClub club = QClub.club;
 		JPQLQuery<Club> query = from(club);
 		
-		if(types != null || types.length > 0 && keyword != null) {
-			BooleanBuilder booleanBuilder = new BooleanBuilder();
-			for(String type:types) {
-				switch(type) {
-				case "n" :
-					booleanBuilder.or(club.clubName.contains(keyword));
-				case "e" :
-					booleanBuilder.or(club.clubExercise.contains(keyword));
-				case "t" :
-					booleanBuilder.or(club.clubTheme.contains(keyword));
-				}
-			}
-			
-			query.where(booleanBuilder);
-		} 
 		
 		this.getQuerydsl().applyPagination(pageable, query);
 		List<Club> list = query.fetch();
@@ -50,4 +35,5 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 		
 		return new PageImpl<>(list, pageable, count);
 	}
+
 }
