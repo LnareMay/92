@@ -171,4 +171,35 @@ public class ClubRestController {
 		return responseDTO;
 		
 	}
+
+	@GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}")
+	public ClubBoardReplyDTO getReplyDTO(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo) {
+		ClubBoardReplyDTO replyDTO = clubService.readReply(clubCode, boardNo, replyNo);
+		return replyDTO;
+	}
+
+	@PostMapping(value = "/replies/modify/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Integer> modifyReply(@RequestBody ClubBoardReplyDTO replyDTO) {
+
+		log.info("do modifyReply");
+		log.info(replyDTO);
+		clubService.modifyReply(replyDTO);
+		
+		Map<String, Integer> resultMap = new HashMap<>();
+		resultMap.put("replyNo", replyDTO.getReplyNo());
+
+		return resultMap;
+	}
+
+	@DeleteMapping("replies/delete/{clubCode},{boardNo},{replyNo}")
+	public Map<String, Integer> deleteReply(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo){
+		log.info("do deleteReply");
+
+		int resultReplyNo = clubService.deleteReply(clubCode, boardNo, replyNo);
+
+		Map<String, Integer> resultMap = new HashMap<>();
+		resultMap.put("replyNo", resultReplyNo);
+
+		return resultMap;
+	}
 }

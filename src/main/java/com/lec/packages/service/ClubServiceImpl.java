@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
+import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
@@ -286,6 +287,49 @@ public class ClubServiceImpl implements ClubService {
 				.dtoList(dtoList)
 				.total((int) result.getTotalElements())
 				.build();
+	}
+
+	@Override
+	public ClubBoardReplyDTO readReply(String clubCode, int boardNo, int replyNo) {
+		ClubBoardReplyKeyClass keyClass = new ClubBoardReplyKeyClass();
+		keyClass.setBoardNo(boardNo);
+		keyClass.setClubCode(clubCode);
+		keyClass.setReplyNo(replyNo);
+
+		Optional<Club_Board_Reply> result = clubBoardReplyRepository.findById(keyClass);
+		Club_Board_Reply reply = result.orElseThrow();
+		return modelMapper.map(reply, ClubBoardReplyDTO.class);
+	}
+
+	@Override
+	public void modifyReply(ClubBoardReplyDTO replyDTO) {
+		ClubBoardReplyKeyClass keyClass = new ClubBoardReplyKeyClass();
+		keyClass.setBoardNo(replyDTO.getBoardNo());
+		keyClass.setClubCode(replyDTO.getClubCode());
+		keyClass.setReplyNo(replyDTO.getReplyNo());
+
+		Optional<Club_Board_Reply> result = clubBoardReplyRepository.findById(keyClass);
+		Club_Board_Reply reply = result.orElseThrow();
+		reply.changeText(replyDTO.getBoardText());
+		log.info(reply);
+		clubBoardReplyRepository.save(reply);
+	}
+
+	@Override
+	public int deleteReply(String clubCode, int boardNo, int replyNo) {
+		ClubBoardReplyKeyClass keyClass = new ClubBoardReplyKeyClass();
+		keyClass.setBoardNo(boardNo);
+		keyClass.setClubCode(clubCode);
+		keyClass.setReplyNo(replyNo);
+
+		Optional<Club_Board_Reply> result = clubBoardReplyRepository.findById(keyClass);
+		Club_Board_Reply reply = result.orElseThrow();
+
+		reply.setDeleteFlag(true);
+		log.info(reply);
+		clubBoardReplyRepository.save(reply);
+
+		return reply.getReplyNo();
 	}
 
 
