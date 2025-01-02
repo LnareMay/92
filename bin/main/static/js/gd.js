@@ -21,26 +21,26 @@ async function get1(bno) {
 	return result;
 }
 
-async function getList({bno, page, size, goLast}) {
-	const result = await axios.get(`/replies/list/${bno}`, {params: {page, size}})
+async function getList({boardNo, clubCode, page, size, goLast}) {
+	const result = await axios.get(`/club/replies/list/${boardNo},${clubCode}`, {params: {boardNo, clubCode, page, size}})
 	
 	if(goLast){
 	    const total = result.data.total
 	    const lastPage = parseInt(Math.ceil(total/size))
-	    return getList({bno:bno, page:lastPage, size:size})
+	    return getList({boardNo:boardNo, clubCode:clubCode, page:lastPage, size:size})
 	}    	
 	
 	return result.data
 }
 
 async function addReply(replyObj) {
-	const response = await axios.post(`club/replies/register`, replyObj)
+	const response = await axios.post(`/club/replies/register/`, replyObj)
 	return response.data
 }
 
 
 async function getReply(clubCode, boardNo, replyNo) {
-	const response = await axios.get(`club/replies/getReply${clubCode}&${boardNo}&${replyNo}`)
+	const response = await axios.get(`club/replies/getReply${clubCode},${boardNo},${replyNo}`)
 	return response.data
 }
 

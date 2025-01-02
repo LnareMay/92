@@ -109,7 +109,9 @@
                            </div>
                            <div class="input-group mb-3">
                                <span class="input-group-text">Replyer</span>
-                               <input type="text" class="form-control replyer" >
+                               <input type="text" name="MEM_ID" class="form-control  mb-0 replyer"
+                                  th:value="${#authentication.principal.username}"
+                                  placeholder="작성자" readonly>
                            </div>
                        </div>
                        <div class="modal-footer">
@@ -147,8 +149,9 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="/js/gd.js"></script>
 </body>
-<script>
-  const bno = /*[[${dto.boardNo}]]*/''
+<script layout:fragment="script" th:inline="javascript">
+  const boardNo = /*[[${dto.BOARD_NO}]]*/''
+  const clubCode = /*[[${dto.CLUB_CODE}]]*/''
 	
 	const replyList = document.querySelector('.replyList')  // 댓글목록 DOM
 	const replyPaging = document.querySelector('.replyPaging') // 페이지목록 DOM
@@ -159,10 +162,9 @@
 		if(dtoList && dtoList.length > 0) {
 			for(const dto of dtoList) {
 				str += `<li class="list-group-item d-flex replyItem">
-					<span class="col-2">${dto.rno}</span>
-					<span class="col-6" data-rno="${dto.rno}">${dto.replyText}</span>
-					<span class="col-2">${dto.replyer}</span>
-					<span class="col-2">${dto.regDate}</span>
+					<span class="col-2">${dto.replyNo}</span>
+					<span class="col-6" data-rno="${dto.replyNo}">${dto.boardText}</span>
+					<span class="col-2">${dto.memId}</span>
 				</li>`
 			}
 		}
@@ -191,10 +193,11 @@
 	}
 	
 
-	function printReplies(page, size, goLast) {
-		getList({bno, page, size, goLast})
+	function printReplies(boardNo, clubCode, page, size, goLast) {
+		getList({boardNo, clubCode, page, size, goLast})
 		.then(
 			data => {
+				console.log(data);
 				printList(data.dtoList)  // 댓글목록처리
 				printPage(data)          // 페이지처리 
 			}
@@ -203,7 +206,7 @@
 		)
 	}
 
-	printReplies(1, 10, true)
+	printReplies(boardNo, clubCode, 1, 10, true)
 
 	// 댓글등록(모달창)
 	const registerModal = new bootstrap.Modal(document.querySelector('.registerModal'))
@@ -222,18 +225,18 @@
 	
 	document.querySelector('.registerBtn').addEventListener('click', function(e) {
 		const replyObj = {
-			bno: bno,
-			replyText: replyText.value, 
-			replyer: replyer.value
+			boardNo: boardNo,
+			clubCode: clubCode,
+			boardText: replyText.value, 
+			memId: replyer.value
 		}
 		
 		addReply(replyObj).then(
 			result => {
-				alert(result.rno)
 				registerModal.hide()
 				replyText.value = ''
 				replyer.value = ''
-				printReplies(1, 10, true) // 댓글목록갱신
+				printReplies(boardNo, clubCode, 1, 10, true) // 댓글목록갱신
 			}
 		).catch(
 			e => { alert("에러발생... ")}
