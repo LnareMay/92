@@ -82,7 +82,7 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	        query.where(booleanBuilder);
 	    }
 		
-
+  // 페이징처리적용
 		this.getQuerydsl().applyPagination(pageable, query);
 		
 	    List<Facility> list = query.fetch();
@@ -90,4 +90,5 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	    
 	    return new PageImpl<>(list, pageable, count);
 	}
+
 }

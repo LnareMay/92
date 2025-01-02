@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardAllListDTO;
@@ -19,6 +20,8 @@ import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.UploadFileDTO;
+import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,17 +48,21 @@ public class ClubController {
 	@PostMapping("/club_create")
 	public String clubCreatePost(@Valid ClubDTO clubDTO
 			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes, HttpServletRequest request, Model model) {
+			, RedirectAttributes redirectAttributes
+			, @RequestParam("file") MultipartFile file
+			, HttpServletRequest request, Model model) {
 		
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
 		
-		HttpSession session = request.getSession();
-		String storedFileName = (String) session.getAttribute("storedFileName");
+		/*
+		 * if(!file.isEmpty()) { String storedFileName =
+		 * UploadResultDTO.storeFile(file); clubDTO.setClubImage1(storedFileName); }
+		 */	
 
 		log.info("Create.." + clubDTO);
-		clubService.create(clubDTO, storedFileName);
-
+		clubService.create(clubDTO);
+		
 		return "redirect:/";
 	}
 	
@@ -92,6 +99,7 @@ public class ClubController {
 		redirectAttributes.addAttribute("clubCode", clubDTO.getClubCode());		
 		return "redirect:/club/club_detail"; 
 	}
+
 	
 	@GetMapping("/club_board")
 	public String clubBoard(@RequestParam("clubCode") String clubCode, PageRequestDTO pageRequestDTO

@@ -76,7 +76,9 @@ public class FacilityServiceImpl implements FacilityService{
 	public PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO) {
 		
 		String[] types = pageRequestDTO.getTypes();
+
 		String[] keywords = pageRequestDTO.getKeywords();
+
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
 				
