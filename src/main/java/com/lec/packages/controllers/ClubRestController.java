@@ -19,7 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,12 +28,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -136,5 +139,21 @@ public class ClubRestController {
 	    }
 	    resultMap.put("result", removed);
 	    return ResponseEntity.ok(resultMap);
+	}
+
+	@PostMapping(value = "/replies/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Integer> register(@Valid @RequestBody ClubBoardReplyDTO clubBoardReplyDTO, BindingResult bindingResult) throws BindException{
+		
+		log.info("do replyRegister");
+
+		if(bindingResult.hasErrors()){
+			throw new BindException(bindingResult);
+		}
+
+		Map<String, Integer> resultMap = new HashMap<>();
+		int replyNo = clubService.registerReply(clubBoardReplyDTO);
+		resultMap.put("replyNo", replyNo);
+		
+		return resultMap;
 	}
 }

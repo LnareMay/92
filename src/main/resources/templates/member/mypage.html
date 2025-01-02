@@ -49,12 +49,18 @@
 					    <img src="/img/profile_img.jpg" alt="프로필 이미지">
 					</th:block>
 
-					<div>
+					<div style="text-align:center">
 
 						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
 						<p th:text="${#authentication.principal.MEM_INTRODUCTION}"></p>
 					</div>
+					<div>
+
+						<p>좋아하는 운동 : #<span th:text="${#authentication.principal.MEM_EXERCISE.EXERCISE_NAME}"></span></p>
+						<p>관심있는 클럽테마 : #<span th:text="${#authentication.principal.MEM_CLUB.EXERCISE_NAME}"></span></p>
+					</div>
 					<div class="flex"style="gap:5px;">
+					
 						<button class="btn btn-primary"
 							onclick="location.href='/member/mypage_modify'">수정하기</button>
 						<button class="btn btn-danger"

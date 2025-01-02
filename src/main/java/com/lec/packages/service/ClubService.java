@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
+import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
@@ -30,6 +31,8 @@ public interface ClubService {
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
 
+	int registerReply(ClubBoardReplyDTO clubBoardReplyDTO);
+
 	default Club_Board dtoToEntity(ClubBoardDTO boardDTO) {
 		
 		Club_Board board = Club_Board.builder()
@@ -42,6 +45,7 @@ public interface ClubService {
 		
 		if(boardDTO.getFileNames() != null) {
 			boardDTO.getFileNames().forEach(fileName -> {
+				System.out.println(fileName);
 				String[] arr = fileName.split("_");
 				board.addImage(arr[0], arr[1]);
 			});
@@ -63,7 +67,7 @@ public interface ClubService {
 				.build();
 		
 		List<String> fileNames = 
-			board.getImages().stream().sorted().map(boardImage -> boardImage.getBoardImage()).collect(Collectors.toList());
+			board.getImages().stream().sorted().map(boardImage -> boardImage.getUuid() + "_" + boardImage.getBoardImage()).collect(Collectors.toList());
 		
 		boardDTO.setFileNames(fileNames);
 		

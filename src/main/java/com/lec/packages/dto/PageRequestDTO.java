@@ -24,7 +24,7 @@ public class PageRequestDTO {
     private int page = 1;
 
     @Builder.Default
-    private int size = 10;
+    private int size = 12;
 
     // 검색 유형
     @Builder.Default
