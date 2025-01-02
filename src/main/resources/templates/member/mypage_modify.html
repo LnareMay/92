@@ -69,13 +69,14 @@
 						<!--<img id="profileImage" th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">-->
 
 
-						<th:block th:if="${#authentication.principal.MEM_PICTURE != ''}">
-							<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|"
-								alt="프로필 이미지" id="profileImage">
-						</th:block>
-						<th:block th:if="${#authentication.principal.MEM_PICTURE == ''}">
-							<img src="/img/profile_img.jpg" alt="프로필 이미지" id="profileImage">
-						</th:block>
+						<th:block th:if="${#authentication.principal.MEM_PICTURE != '' && #authentication.principal.MEM_PICTURE != null}">
+						<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|" id="profileImage" 
+							alt="프로필 이미지">
+					</th:block>
+					<th:block
+						th:if="${#authentication.principal.MEM_PICTURE == null || #authentication.principal.MEM_PICTURE == ''}">
+						<img src="/img/profile_img.jpg" id="profileImage" alt="프로필 이미지">
+					</th:block>
 
 						<input type="file" class="blind" id="MEM_PICTURE"
 							name="MEM_PICTURE" accept="image/*">
@@ -226,10 +227,13 @@
 					<div class="form-actions">
 						<!-- <button type="button" class="btn btn-primary">취소</button> -->
 						<button type="submit" class="btn btn-primary">수정하기</button>
-						<button class="btn btn-danger"
-							onclick="location.href='/member/mypage_delete'">계정 삭제하기</button>
+						
 					</div>
 				</form>
+				
+				<form action="/member/remove" method="post" onsubmit="return confirm('정말로 계정을 삭제하시겠습니까?');" style="display:inline;">
+        <button type="submit" class="btn btn-danger">계정 삭제하기</button>
+    </form>
 			</div>
 		</div>
 
@@ -261,6 +265,15 @@
 				console.log("파일이 선택되지 않았습니다.");
 				return; // 파일이 없으면 작업 중단
 			}
+			
+
+		    // 파일 확장자 검사
+		    const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+		    const fileExtension = file.name.split('.').pop().toLowerCase();
+		    if (!validExtensions.includes(fileExtension)) {
+		        alert("올바른 이미지 파일을 선택해주세요. (jpg, jpeg, png, gif)");
+		        return;
+		    }
 
 			const newFileName = file.name; // 선택된 파일 이름
 

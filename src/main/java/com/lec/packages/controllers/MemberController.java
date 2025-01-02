@@ -154,6 +154,37 @@ public class MemberController {
 	    return "redirect:/member/mypage";
 	}
 
+	
+	// 회원 삭제
+	@PostMapping("/remove")
+	public String removeAccount(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+	    try {
+	        // 현재 인증된 사용자 정보 가져오기
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String username = authentication.getName(); // 현재 사용자 ID
+
+	        // 회원 삭제 처리 (DELETE_FLAG를 1로 설정)
+	        memberService.remove(username);
+
+	        // 세션 무효화
+	        HttpSession session = request.getSession(false);
+	        if (session != null) {
+	            session.invalidate();
+	        }
+
+	        // 보안 컨텍스트 초기화
+	        SecurityContextHolder.clearContext();
+
+	        redirectAttributes.addFlashAttribute("success", "계정이 성공적으로 삭제되었습니다.");
+	        return "redirect:/member/login"; // 로그인 페이지로 이동
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "계정 삭제 중 오류가 발생했습니다.");
+	        return "redirect:/member/mypage";
+	    }
+	}
+
+
+
 
 
 }

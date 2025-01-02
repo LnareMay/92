@@ -3,6 +3,7 @@ package com.lec.packages.service;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -87,6 +88,22 @@ public class MemberServiceImpl implements MemberService{
         
 	}
 
+	@Override
+	public void remove(String username) {
+	    // 사용자 조회
+	    Member member = memberRepository.findById(username)
+	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+	    // DELETE_FLAG를 true(1)로 설정
+	    member.setDELETE_FLAG(true);
+
+	    // 변경된 내용을 저장
+	    memberRepository.save(member);
+	}
+
+
+
+
 
 //	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {
 //		// 업로드된 파일명을 MemberJoinDTO에 설정
@@ -96,4 +113,5 @@ public class MemberServiceImpl implements MemberService{
 //		memberRepository.save(member); // `toEntity`는 필요시 구현
 //	}
 
+	
 }

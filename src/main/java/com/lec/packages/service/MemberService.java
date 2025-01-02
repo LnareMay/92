@@ -1,5 +1,7 @@
 package com.lec.packages.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 
@@ -21,6 +23,8 @@ public interface MemberService {
 	boolean isDuplicateId(String memId);
 
 	void modify(MemberJoinDTO memberJoinDTO, String storedFileName);
+
+	void remove(String username);
 	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
 }
