@@ -170,7 +170,8 @@
     // 클럽 이미지
 	function uploadFiles() {
 	    const formData = new FormData();
-	    const fileInputs = document.querySelectorAll('input[type="file"]');
+	    const fileInput = document.querySelectorAll('input[type="file"]');
+	    console.log(fileInput.file)
 	
 	    fileInputs.forEach(input => {
 	        if (input.files[0]) {

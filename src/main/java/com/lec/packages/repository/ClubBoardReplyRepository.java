@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
+import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 
 public interface ClubBoardReplyRepository extends JpaRepository<Club_Board_Reply, ClubBoardReplyKeyClass>{
     @Query(value = "select * from club_board_reply sbr where sbr.club_code = :clubCode and sbr.board_no = :boardNo order by sbr.reply_no desc limit 1", nativeQuery = true)
