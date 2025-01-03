@@ -40,10 +40,10 @@ server:
 
 #file upload/download
 path:
-  upload: 
+  upload: ./src/main/resources/static/img/upload/
   download: ./src/main/resources/static/img/download/
 
 com:
   lec:
     upload:
-      path: d:/kyj/00.share/98.temp/upload/
+      path: ./src/main/resources/static/img/upload/

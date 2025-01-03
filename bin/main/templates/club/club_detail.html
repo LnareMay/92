@@ -23,7 +23,8 @@
  	<section>
         <!-- 대표이미지 -->
         <div>
-            <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" class="club-headerimg">
+      		<img th:src="|/view/${clubdto.clubImage1}|" id="clubImage1" alt="클럽 대표이미지1" class="club-headerimg">
+            <!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" class="club-headerimg"> -->
         </div>
 
         <!-- 클럽 정보 -->
@@ -42,12 +43,13 @@
         <!-- 가입 버튼 -->
         <button class="btn btn-warning fw-bold join-btn shadow-sm">클럽 가입하기</button>
 		<span th:if="${clubdto.MemId == principal.MEM_ID}">
-     		<a class="btn btn-warning fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
-     	</span>
+     		<a class="btn btn-success fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
+     	
      		<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽 삭제');" style="display:inline;">
      			<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" /> 
 	      		<button type="submit" class="btn btn-danger">클럽 삭제하기</button> 
 	      	</form>
+	    </span>
 
 		</section>
 				   <hr >

@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.lec.packages.domain.Club;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 
 import com.lec.packages.dto.ClubDTO;
@@ -45,9 +47,11 @@ import com.lec.packages.dto.PageResponseDTO;
 
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
+import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -62,8 +66,11 @@ public class ClubRestController {
     @Value("${com.lec.upload.path}")
     private String uploadPath;
     
+    @Autowired
     private ClubService clubService;
-
+    
+    @Autowired
+    private ClubRepository clubRepository;  
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> uploadFile(@RequestBody UploadFileDTO uploadFileDTO){
@@ -172,78 +179,7 @@ public class ClubRestController {
 		
 		return resultMap;
 	}
-
 	
-	 
-	
-	
-	/* 클럽생성(이미지)
-	@PostMapping(value = "/club_create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Void> createClubWithImages(
-			@RequestPart("clubName") String clubName
-			, @RequestPart("memId") String memId
-			, @RequestPart("clubExercise") String clubExercise
-			, @RequestPart("clubIntroduction") String clubIntroduction
-			, @RequestPart("clubTheme") String clubTheme
-			, @RequestPart("clubAddress") String clubAddress
-			, @RequestPart("clubIsprivate") boolean clubIsprivate
-			, @RequestPart("clubPw") String clubPw
-			, @RequestPart(value = "clubImage1", required = false) MultipartFile clubImage1
-			, @RequestPart(value = "clubImage2", required = false) MultipartFile clubImage2
-			, @RequestPart(value = "clubImage3", required = false) MultipartFile clubImage3
-			, @RequestPart(value = "clubImage4", required = false) MultipartFile clubImage4
-			, BindingResult bindingResult
-			, RedirectAttributes redirectAttributes
-			, HttpServletRequest request, Model model) {
-		
-		String requestURI = request.getRequestURI();
-		model.addAttribute("currentURI", requestURI);
-
-	    ClubDTO clubDTO = ClubDTO.builder()
-	            .clubName(clubName)
-	            .memId(memId)
-	            .clubIntroduction(clubIntroduction)
-	            .build();
-		
-		String clubCode = clubService.create(clubDTO);
-		clubDTO.setClubCode(clubCode);
-		
-		List<MultipartFile> images = List.of(clubImage1, clubImage2, clubImage3, clubImage4);
-		List<String> uploadedImages = new ArrayList<>();
-		
-		for(int i=0; i<images.size(); i++) {
-			MultipartFile file = images.get(i);
-			if (file != null && !file.isEmpty()) {
-				String uuid = UUID.randomUUID().toString();
-				String fileName = uuid + "_" + file.getOriginalFilename();
-				
-				try {
-					Path savePath = Paths.get(uploadPath, uuid +"_" + fileName);
-					file.transferTo(savePath.toFile());
-					uploadedImages.add(fileName);
-					
-					switch (i) {
-						case 0 -> clubDTO.setClubImage1(fileName);
-						case 1 -> clubDTO.setClubImage2(fileName);
-						case 2 -> clubDTO.setClubImage3(fileName);
-						case 3 -> clubDTO.setClubImage4(fileName);
-					} 
-				} catch (IOException e) {
-					e.printStackTrace();
-					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();	
-				}
-			}
-		}
-		clubService.updateImages(clubCode, clubDTO);
-		
-		return ResponseEntity.status(HttpStatus.FOUND)
-		            .header("Location", "/")
-		            .build();
-	}
-	*/
-	
-
-
 	@GetMapping(value = "/replies/list/{boardNo},{clubCode}")
 	public PageResponseDTO<ClubBoardReplyDTO> getList(@PathVariable("boardNo") int boardNo, @PathVariable("clubCode") String clubCode, PageRequestDTO pageRequestDTO) {
 
@@ -252,6 +188,145 @@ public class ClubRestController {
 		PageResponseDTO<ClubBoardReplyDTO> responseDTO = clubService.getReplyListOfBoard(boardNo, clubCode, pageRequestDTO);
 		return responseDTO;
 		
+	}
+
+	// 클럽생성(이미지파일 업로드)
+	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Map<String, Object>> createClub(
+	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+	        @RequestParam("clubName") String clubName,
+	        @RequestParam("memId") String memId,
+	        @RequestParam("clubExercise") String clubExercise,
+	        @RequestParam("clubTheme") String clubTheme,
+	        @RequestParam("clubIntroduction") String clubIntroduction,
+	        @RequestParam("clubAddress") String clubAddress,
+	        @RequestParam(value = "clubIsprivate", required = false) Boolean clubIsprivate,
+	        @RequestParam(value = "clubPw", required = false) String clubPw) {
+
+	    Map<String, Object> response = new HashMap<>();
+	    List<String> imagePaths = new ArrayList<>();
+
+	    try {
+	        if (files != null && !files.isEmpty()) {
+	            for (MultipartFile file : files) {
+	                String originalFileName = file.getOriginalFilename();
+	                if (originalFileName == null || originalFileName.isEmpty()) {
+	                    continue;
+	                }
+
+	                String uuid = UUID.randomUUID().toString();
+	                String fileName = uuid + "_" + originalFileName;
+
+	                Path filePath = Paths.get(uploadPath, fileName);
+
+	                file.transferTo(filePath);
+
+	                String contentType = Files.probeContentType(filePath);
+	                if (contentType != null && contentType.startsWith("image")) {
+	                    File thumbnail = new File(uploadPath, "s_" + fileName);
+	                    Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
+	                }
+
+	                imagePaths.add(fileName);
+	            }
+	        }
+
+	        ClubDTO clubDTO = ClubDTO.builder()
+	                .clubName(clubName)
+	                .memId(memId)
+	                .clubExercise(clubExercise)
+	                .clubTheme(clubTheme)
+	                .clubIntroduction(clubIntroduction)
+	                .clubAddress(clubAddress)
+	                .clubIsprivate(clubIsprivate != null && clubIsprivate)
+	                .clubPw(clubIsprivate != null && clubIsprivate ? clubPw : null)
+	                .clubImage1(imagePaths.size() > 0 ? imagePaths.get(0) : null)
+	                .clubImage2(imagePaths.size() > 1 ? imagePaths.get(1) : null)
+	                .clubImage3(imagePaths.size() > 2 ? imagePaths.get(2) : null)
+	                .clubImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null)
+	                .build();
+
+	        clubService.create(clubDTO);
+
+	        // 리다이렉트를 위한 응답 설정
+	        response.put("success", true);
+	        response.put("redirectUrl", "/");
+	        return ResponseEntity.status(HttpStatus.FOUND)
+	                .header(HttpHeaders.LOCATION, "/")
+	                .body(response);
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "클럽 생성 중 오류가 발생했습니다.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	    }
+	}
+	
+	// 클럽수정
+	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> clubModify(
+	        @ModelAttribute ClubDTO clubDTO,
+	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+	        HttpServletRequest request,
+	        Model model,
+	        PageRequestDTO pageRequestDTO,
+	        RedirectAttributes redirectAttributes) {
+
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+	    try {
+	        Optional<Club> optionalClub = clubRepository.findById(clubDTO.getClubCode());
+	        Club club = optionalClub.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
+
+	        // 파일 업로드 처리
+	        if (files != null && !files.isEmpty()) {
+	            for (int i = 0; i < files.size(); i++) {
+	                MultipartFile file = files.get(i);
+	                if (file != null && !file.isEmpty()) {
+	                    String originalFileName = file.getOriginalFilename();
+	                    String uuid = UUID.randomUUID().toString();
+	                    String fileName = uuid + "_" + originalFileName;
+
+	                    Path filePath = Paths.get(uploadPath, fileName);
+	                    file.transferTo(filePath);
+
+	                    // 이미지 파일 확인 및 썸네일 생성
+	                    String contentType = Files.probeContentType(filePath);
+	                    if (contentType != null && contentType.startsWith("image")) {
+	                        File thumbnail = new File(uploadPath, "s_" + fileName);
+	                        Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
+	                    }
+
+	                    // 업로드된 파일에 따라 클럽 DTO에 이미지 설정
+	                    switch (i) {
+	                        case 0 -> clubDTO.setClubImage1(fileName);
+	                        case 1 -> clubDTO.setClubImage2(fileName);
+	                        case 2 -> clubDTO.setClubImage3(fileName);
+	                        case 3 -> clubDTO.setClubImage4(fileName);
+	                    }
+	                }
+	            }
+	        }
+
+	        // 업로드되지 않은 이미지는 기존 값 유지
+	        if (clubDTO.getClubImage1() == null) clubDTO.setClubImage1(club.getClubImage1());
+	        if (clubDTO.getClubImage2() == null) clubDTO.setClubImage2(club.getClubImage2());
+	        if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3());
+	        if (clubDTO.getClubImage4() == null) clubDTO.setClubImage4(club.getClubImage4());
+
+	        clubService.modify(clubDTO);
+	        log.info(clubDTO.getClubAddress());
+
+	        // 수정 후 리다이렉트 URL 설정
+	        String redirectUrl = String.format("./club_detail?clubCode=%s", clubDTO.getClubCode());
+	        return ResponseEntity.status(HttpStatus.FOUND)
+	                .header(HttpHeaders.LOCATION, redirectUrl)
+	                .build();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+	    }
 	}
 
 }

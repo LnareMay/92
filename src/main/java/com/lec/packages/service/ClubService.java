@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 public interface ClubService {
 	
-	String create(ClubDTO clubDTO);
+	void create(ClubDTO clubDTO);
 	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
@@ -26,7 +26,7 @@ public interface ClubService {
 
 	void remove(String clubCode);
 	
-	PageResponseDTO<ClubDTO> ListByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
+	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
 	List<ClubDTO> getAllClubs();	
 	
 
