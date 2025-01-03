@@ -117,7 +117,7 @@
     align-self: flex-end;
 }
 
-#clubcreate {
+#clubcreate #clubmodify {
 	margin-top: 20px;
 }
 
@@ -330,5 +330,18 @@ p.fw-bold {
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
 	overflow: hidden;
+}
+
+/* 클럽생성 주소선택폼 */
+.form-row {
+	width: 700px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 15px;
+}
+
+.form-select {
+	flex: 1;
 }
 
