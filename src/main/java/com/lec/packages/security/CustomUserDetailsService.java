@@ -80,31 +80,31 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Member member = result.get();
 		
 		// DELETE_FLAG가 true(1)인 경우 로그인 차단
-	    if (member.isDELETE_FLAG()) {
+	    if (member.isDeleteFlag()) {
 	        throw new UsernameNotFoundException("이 계정은 비활성화 상태입니다. 관리자에게 문의하세요.");
 	    }
 		
 		MemberSecurityDTO memberSecurityDTO =
 				new MemberSecurityDTO(
-						member.getMEM_ID()
-					  , member.getMEM_PW()
-					  , member.getMEM_NAME()
-					  , member.getMEM_NICKNAME()
-					  , member.getMEM_EXERCISE()
-					  , member.getMEM_CLUB()
-					  , member.getMEM_PICTURE()
-					  , member.getMEM_INTRODUCTION()
-					  , member.isMEM_GENDER()
-					  , member.getMEM_TELL()
-					  , member.getMEM_EMAIL()
-					  , member.getMEM_BIRTHDAY()
-					  , member.getMEM_ADDRESS()
-					  , member.getMEM_ADDRESS_DETAIL()
-					  , member.getMEM_ZIPCODE()
-					  , member.getMEM_ADDRESS_SET()
-					  , member.isMEM_ISMANAGER()
-					  , member.isMEM_SOCIAL()
-					  , member.isDELETE_FLAG()
+						member.getMemId()
+					  , member.getMemPw()
+					  , member.getMemName()
+					  , member.getMemNickname()
+					  , member.getMemExercise()
+					  , member.getMemClub()
+					  , member.getMemPicture()
+					  , member.getMemIntroduction()
+					  , member.isMemGender()
+					  , member.getMemTell()
+					  , member.getMemEmail()
+					  , member.getMemBirthday()
+					  , member.getMemAddress()
+					  , member.getMemAddressDetail()
+					  , member.getMemZipcode()
+					  , member.getMemAddressSet()
+					  , member.isMemIsmanager()
+					  , member.isMemSocial()
+					  , member.isDeleteFlag()
 					  , member.getRoleSet()
 					          .stream()
 					          .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))

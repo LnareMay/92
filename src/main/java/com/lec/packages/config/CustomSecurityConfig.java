@@ -9,16 +9,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.security.handler.Custom403Handler;
 import com.lec.packages.security.handler.CustomAuthenticationSuccessHandler;
+import com.lec.packages.security.handler.CustomSocialLoginSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -42,6 +45,8 @@ public class CustomSecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -99,8 +104,25 @@ public class CustomSecurityConfig {
 	            .anyRequest().authenticated() // 나머지 요청은 인증 필요
 	        );
 		
+		http.oauth2Login(login -> login
+			    .loginPage("/member/login") // 소셜 로그인 진입점 설정
+			    .successHandler(authenticationSuccessHandler()) // 로그인 성공 시 동적 리다이렉트
+			    .defaultSuccessUrl("/")
+			);
+		
+		
+
+
+
+
+		
 		return http.build();
 		
+	}
+
+	@Bean
+	public AuthenticationSuccessHandler authenticationSuccessHandler() {
+		return new CustomSocialLoginSuccessHandler();
 	}
 
 	@Bean

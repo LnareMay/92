@@ -1,14 +1,15 @@
 package com.lec.packages.dto;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.exercise_code_table;
 
-import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,57 +17,70 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MemberSecurityDTO extends User {
+public class MemberSecurityDTO extends User implements OAuth2User {
 
-	// 추가 필드
-	private String MEM_ID;
-	private String MEM_PW;
-	private String MEM_NAME;
-	private String MEM_NICKNAME;
-	private exercise_code_table MEM_EXERCISE;
-	private exercise_code_table MEM_CLUB;
-	private String MEM_PICTURE;
-	private String MEM_INTRODUCTION;
-	private boolean MEM_GENDER;
-	private String MEM_TELL;
-	private String MEM_EMAIL;
-	private String MEM_BIRTHDAY;
-	private String MEM_ADDRESS;
-	private String MEM_ADDRESS_DETAIL;
-	private String MEM_ZIPCODE;
-	private String MEM_ADDRESS_SET;
-	private boolean MEM_ISMANAGER;
-	private boolean DELETE_FLAG;
-	private boolean MEM_SOCIAL;
+    private static final long serialVersionUID = 1L; // 직렬화 경고 해결
 
-	// 생성자
-	public MemberSecurityDTO(String username, String password, String MEM_NAME, String MEM_NICKNAME,
-			exercise_code_table MEM_EXERCISE, exercise_code_table MEM_CLUB, String MEM_PICTURE, String MEM_INTRODUCTION, boolean MEM_GENDER,
-			String MEM_TELL, String MEM_EMAIL, String MEM_BIRTHDAY, String MEM_ADDRESS,String MEM_ADDRESS_DETAIL, String MEM_ZIPCODE, String MEM_ADDRESS_SET, 
-			 boolean MEM_ISMANAGER, boolean DELETE_FLAG,boolean MEM_SOCIAL,
-			Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, authorities);
+    // 추가 필드
+    private String memId;
+    private String memPw;
+    private String memName;
+    private String memNickname;
+    private exercise_code_table memExercise;
+    private exercise_code_table memClub;
+    private String memPicture;
+    private String memIntroduction;
+    private boolean memGender;
+    private String memTell;
+    private String memEmail;
+    private String memBirthday;
+    private String memAddress;
+    private String memAddressDetail;
+    private String memZipcode;
+    private String memAddressSet;
+    private boolean memIsmanager;
+    private boolean deleteFlag;
+    private boolean memSocial;
 
-		this.MEM_ID = username; // username은 MEM_ID로 설정
-		this.MEM_PW = password; // password는 MEM_PW로 설정
-		this.MEM_NAME = MEM_NAME;
-		this.MEM_NICKNAME = MEM_NICKNAME;
-		this.MEM_EXERCISE = MEM_EXERCISE;
-		this.MEM_CLUB = MEM_CLUB;
-		this.MEM_PICTURE = MEM_PICTURE;
-		this.MEM_INTRODUCTION = MEM_INTRODUCTION;
-		this.MEM_GENDER = MEM_GENDER;
-		this.MEM_TELL = MEM_TELL;
-		this.MEM_EMAIL = MEM_EMAIL;
-		this.MEM_BIRTHDAY = MEM_BIRTHDAY;
-		this.MEM_ADDRESS = MEM_ADDRESS;
-		this.MEM_ADDRESS_DETAIL = MEM_ADDRESS_DETAIL;
-		this.MEM_ZIPCODE = MEM_ZIPCODE;
-		this.MEM_ADDRESS_SET = MEM_ADDRESS_SET;
-		this.MEM_ISMANAGER = MEM_ISMANAGER;
-		this.DELETE_FLAG = DELETE_FLAG;
-		this.MEM_SOCIAL = MEM_SOCIAL;
-	}
+    private Map<String, Object> props; // SSN(카카오) 로그인 정보
 
-	
+    // 생성자
+    public MemberSecurityDTO(String username, String password, String memName, String memNickname,
+                             exercise_code_table memExercise, exercise_code_table memClub, String memPicture,
+                             String memIntroduction, boolean memGender, String memTell, String memEmail,
+                             String memBirthday, String memAddress, String memAddressDetail, String memZipcode,
+                             String memAddressSet, boolean memIsmanager, boolean deleteFlag, boolean memSocial,
+                             Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
+
+        this.memId = username; // username은 MEM_ID로 설정
+        this.memPw = password; // password는 MEM_PW로 설정
+        this.memName = memName;
+        this.memNickname = memNickname;
+        this.memExercise = memExercise;
+        this.memClub = memClub;
+        this.memPicture = memPicture;
+        this.memIntroduction = memIntroduction;
+        this.memGender = memGender;
+        this.memTell = memTell;
+        this.memEmail = memEmail;
+        this.memBirthday = memBirthday;
+        this.memAddress = memAddress;
+        this.memAddressDetail = memAddressDetail;
+        this.memZipcode = memZipcode;
+        this.memAddressSet = memAddressSet;
+        this.memIsmanager = memIsmanager;
+        this.deleteFlag = deleteFlag;
+        this.memSocial = memSocial;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.props;
+    }
+
+    @Override
+    public String getName() {
+        return this.memId;
+    }
 }
