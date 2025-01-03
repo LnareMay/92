@@ -154,28 +154,5 @@ public class UpDownController {
 	     return ResponseEntity.ok(resultMap);
 	 }
 
-	/* 
-	 @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	 public ResponseEntity<String> uploadFile(
-			 @RequestParam("clubImage1") MultipartFile file1
-		   , @RequestParam(value = "clubImage2", required = false) MultipartFile file2
-		   , @RequestParam(value = "clubImage3", required = false) MultipartFile file3
-		   , @RequestParam(value = "clubImage4", required = false) MultipartFile file4
-			) {
-		 if(file1 != null && file1.isEmpty()) {
-			 log.info("file1 :" + file1.getOriginalFilename());
-		 }
-		 if(file2 != null && file2.isEmpty()) {
-			 log.info("file1 :" + file2.getOriginalFilename());
-		 }
-		 if(file3 != null && file3.isEmpty()) {
-			 log.info("file1 :" + file3.getOriginalFilename());
-		 }
-		 if(file4 != null && file4.isEmpty()) {
-			 log.info("file1 :" + file4.getOriginalFilename());
-		 }
-		 
-		 return ResponseEntity.ok("파일업로드 성공");
-	 }
-	 */
+	
 }

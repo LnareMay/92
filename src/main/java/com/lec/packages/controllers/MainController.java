@@ -41,7 +41,7 @@ public class MainController {
     	
     	PageResponseDTO<ClubDTO> responseDTO = "ALL".equals(clubTheme)
     			? clubService.list(pageRequestDTO)
-    			: clubService.ListByTheme(pageRequestDTO, clubTheme);
+    			: clubService.listByTheme(pageRequestDTO, clubTheme);
 
         model.addAttribute("responseDTO", responseDTO);
         model.addAttribute("clubs", responseDTO.getDtoList());

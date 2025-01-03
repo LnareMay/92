@@ -27,7 +27,7 @@ public class ClubDTO {
 
     private String clubTheme;
 
-//    @NotEmpty
+    @NotEmpty
     private String clubImage1;
 
     private String clubImage2;

@@ -3,6 +3,8 @@ package com.lec.packages.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
@@ -16,12 +18,15 @@ import jakarta.validation.Valid;
 public interface ClubService {
 	
 	void create(ClubDTO clubDTO);
+	void updateImages(String clubCode, ClubDTO clubDTO);
+	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
-//	void remove(ClubDTO clubDTO);
+
+	void remove(String clubCode);
 	
-	PageResponseDTO<ClubDTO> ListByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
+	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
 	List<ClubDTO> getAllClubs();	
 	
 
