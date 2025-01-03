@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
+import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
@@ -242,14 +243,18 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Override
-	public PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO) {
+	public PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO, String clubCode) {
 		
 		String[] types = pageRequestDTO.getTypes();
 		Pageable pageable = pageRequestDTO.getPageable("boardNo");
 
-		Page<ClubBoardAllListDTO> result = clubBoardRepository.searchWithAll(types, pageable);
+		Page<ClubBoardAllListDTO> result = clubBoardRepository.searchWithAll(types, pageable, clubCode);
 
-		return null;
+		return PageResponseDTO.<ClubBoardAllListDTO>withAll()
+				.pageRequestDTO(pageRequestDTO)
+				.dtoList(result.getContent())
+				.total((int)result.getTotalElements())
+				.build();
 	}
 
 	@Override
@@ -340,6 +345,45 @@ public class ClubServiceImpl implements ClubService {
 		clubBoardReplyRepository.save(reply);
 
 		return reply.getReplyNo();
+	}
+
+	@Override
+	public ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO) {
+		ClubBoardKeyClass keyClass = new ClubBoardKeyClass();
+		keyClass.setBoardNo(clubBoardDTO.getBOARD_NO());
+		keyClass.setClubCode(clubBoardDTO.getCLUB_CODE());
+
+		Optional<Club_Board> result = clubBoardRepository.findById(keyClass);
+		Club_Board club_Board = result.orElseThrow();
+		club_Board.change(clubBoardDTO.getBOARD_TYPE(), clubBoardDTO.getBOARD_TEXT());
+
+		club_Board.clearImage();
+		
+		if(clubBoardDTO.getFileNames() != null) {
+			for(String fileName:clubBoardDTO.getFileNames()) {
+				String[] arr = fileName.split("_");
+				club_Board.addImage(arr[0], arr[1]);
+			}
+		}
+
+		clubBoardRepository.save(club_Board);
+		
+		return clubBoardDTO;
+	}
+
+	@Override
+	public String removeClubBoard(ClubBoardDTO clubBoardDTO) {
+		ClubBoardKeyClass keyClass = new ClubBoardKeyClass();
+		keyClass.setBoardNo(clubBoardDTO.getBOARD_NO());
+		keyClass.setClubCode(clubBoardDTO.getCLUB_CODE());
+
+		Optional<Club_Board> result = clubBoardRepository.findById(keyClass);
+		Club_Board club_Board = result.orElseThrow();
+		club_Board.setDELETE_FLAG(true);
+		log.info(club_Board);
+		String clubCode = clubBoardRepository.save(club_Board).getClubCode();
+
+		return clubCode;
 	}
 
 

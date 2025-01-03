@@ -33,7 +33,7 @@ public interface ClubService {
 	ClubDTO board(String clubCode);
 	ClubBoardDTO readOne(int boardNo, String clubCode);
 	
-	PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO, String clubCode);
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
@@ -86,4 +86,6 @@ public interface ClubService {
     void modifyReply(ClubBoardReplyDTO replyDTO);
     int deleteReply(String clubCode, int boardNo, int replyNo);
 
+    ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO);
+    String removeClubBoard(ClubBoardDTO clubBoardDTO);
 }

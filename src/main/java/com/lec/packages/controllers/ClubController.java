@@ -38,7 +38,6 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -104,11 +103,14 @@ public class ClubController {
 		String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI);
         
+		log.info("do clubBoardList");
 		ClubDTO clubDTO = clubService.detail(clubCode);
         model.addAttribute("clubdto", clubDTO);
 
-		PageResponseDTO<ClubBoardAllListDTO> boardDTO = clubService.listWithAll(pageRequestDTO);
-        
+		PageResponseDTO<ClubBoardAllListDTO> boardDTO = clubService.listWithAll(pageRequestDTO, clubCode);
+        log.info(boardDTO);
+		model.addAttribute("responseDTO", boardDTO);
+
 		return "club/club_board"; 
 	}
 
@@ -149,7 +151,7 @@ public class ClubController {
 	}
 
 	@PreAuthorize("hasRole('USER')")
-	@GetMapping("/club_board_read")
+	@GetMapping({"/club_board_read"})
 	public String clubBoardRead(HttpServletRequest request, Model model, @RequestParam("boardNo") int boardNo, @RequestParam("clubCode") String clubCode) {
 		String requestURI = request.getRequestURI();
 		log.info("do clubBoardRead");
@@ -159,5 +161,44 @@ public class ClubController {
 		log.info(clubBoardDTO);
 
 		return "club/club_board_readOne";
+	}
+
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping({"/club_board_modify"})
+	public String callClubBoardModify(HttpServletRequest request, Model model, @RequestParam("boardNo") int boardNo, @RequestParam("clubCode") String clubCode) {
+		String requestURI = request.getRequestURI();
+		log.info("do clubBoardRead");
+		ClubBoardDTO clubBoardDTO = clubService.readOne(boardNo, clubCode);
+		model.addAttribute("currentURI", requestURI);
+		model.addAttribute("dto", clubBoardDTO);
+		log.info(clubBoardDTO);
+
+		return "club/club_board_modify";
+	}
+
+	@PreAuthorize("hasRole('USER')")
+	@PostMapping("/modify_Board")
+	public String clubBoardModify(HttpServletRequest request, Model model, @RequestParam(name = "memId", defaultValue = "") String memId,
+								@RequestParam(name = "boardNo", defaultValue = "") String boardNo,
+								@Valid ClubBoardDTO clubBoardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+		log.info("do boardModify");
+		clubBoardDTO.setBOARD_NO(Integer.parseInt(boardNo));
+		ClubBoardDTO resultClubBoardDTO = clubService.modifyClubBoard(clubBoardDTO);
+
+		model.addAttribute("currentURI", request.getRequestURI());
+		model.addAttribute("dto", resultClubBoardDTO);
+
+		return "club/club_board_readOne";
+	}
+
+	@PreAuthorize("hasRole('USER')")
+	@PostMapping("/board_remove")
+	public String clubBoardRemove(HttpServletRequest request, Model model, @RequestParam(name = "boardNo", defaultValue = "") String boardNo,
+								@Valid ClubBoardDTO clubBoardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+		log.info("do boardRemove");
+		clubBoardDTO.setBOARD_NO(Integer.parseInt(boardNo));
+		String clubCode = clubService.removeClubBoard(clubBoardDTO);
+
+		return "redirect:/club/club_board?clubCode="+clubCode;
 	}
 }

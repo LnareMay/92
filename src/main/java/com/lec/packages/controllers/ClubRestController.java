@@ -73,7 +73,7 @@ public class ClubRestController {
     private ClubRepository clubRepository;  
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<UploadResultDTO> uploadFile(@RequestBody UploadFileDTO uploadFileDTO){
+    public List<UploadResultDTO> uploadFile(@ModelAttribute UploadFileDTO uploadFileDTO){
         log.info("do upLoadFileController");
         
         if(uploadFileDTO.getFiles() != null){

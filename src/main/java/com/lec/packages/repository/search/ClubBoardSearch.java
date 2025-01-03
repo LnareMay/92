@@ -7,5 +7,5 @@ import com.lec.packages.dto.ClubBoardAllListDTO;
 
 public interface ClubBoardSearch {
 
-    Page<ClubBoardAllListDTO> searchWithAll(String[] types, Pageable pageable);
+    Page<ClubBoardAllListDTO> searchWithAll(String[] types, Pageable pageable, String clubCode);
 }
