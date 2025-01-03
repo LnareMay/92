@@ -28,24 +28,24 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public void join(MemberJoinDTO memberJoinDTO, String storedFileName) /*throws MidExistException*/ {
-		String mid = memberJoinDTO.getMEM_ID();
+		String mid = memberJoinDTO.getMemId();
 //		boolean exist = memberRepository.existsById(mid);
 //		if(exist) {
 //			throw new MidExistException("동일한 아이디가 존재합니다.");
 //		}
 		
 		Member member = modelMapper.map(memberJoinDTO, Member.class);
-		member.changePassword(passwordEncoder.encode(memberJoinDTO.getMEM_PW()));
+		member.changePassword(passwordEncoder.encode(memberJoinDTO.getMemPw()));
 		
 		 // MEM_ISMANAGER 값이 true(1)인 경우 ROLE_ADMIN 추가
-	    if (memberJoinDTO.isMEM_ISMANAGER()) {
+	    if (memberJoinDTO.isMemIsmanager()) {
 	        member.addRole(MemberRole.ADMIN);
 	    } else {
 	        member.addRole(MemberRole.USER);
 	    }
 
 		
-	    member.setMEM_PICTURE(storedFileName);
+	    member.setMemPicture(storedFileName);
 	    
 		// log.info("========>" + member + "[" + member.getRoleSet() + "]");
 		
@@ -60,29 +60,29 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void modify(MemberJoinDTO memberJoinDTO, String storedFileName) {
 		// 1. 기존 회원 정보 가져오기
-        Optional<Member> existingMember = memberRepository.findById(memberJoinDTO.getMEM_ID());
+        Optional<Member> existingMember = memberRepository.findById(memberJoinDTO.getMemId());
         
         if (existingMember.isPresent()) {
             // 2. 회원 정보 수정
             Member member =  modelMapper.map(memberJoinDTO, Member.class);
-            member.setMEM_ID(memberJoinDTO.getMEM_ID());
-            member.setMEM_NAME(memberJoinDTO.getMEM_NAME());
-            member.setMEM_NICKNAME(memberJoinDTO.getMEM_NICKNAME());
-            member.setMEM_EXERCISE(memberJoinDTO.getMEM_EXERCISE());
-            member.setMEM_CLUB(memberJoinDTO.getMEM_CLUB());
-            member.setMEM_PICTURE(storedFileName);
-            member.setMEM_INTRODUCTION(memberJoinDTO.getMEM_INTRODUCTION());
-            member.setMEM_TELL(memberJoinDTO.getMEM_TELL());
-            member.setMEM_EMAIL(memberJoinDTO.getMEM_EMAIL());
-            member.setMEM_ADDRESS(memberJoinDTO.getMEM_ADDRESS());
-            member.setMEM_ADDRESS_DETAIL(memberJoinDTO.getMEM_ADDRESS_DETAIL());
-            member.setMEM_ZIPCODE(memberJoinDTO.getMEM_ZIPCODE());
+            member.setMemId(memberJoinDTO.getMemId());
+            member.setMemName(memberJoinDTO.getMemName());
+            member.setMemNickname(memberJoinDTO.getMemNickname());
+            member.setMemExercise(memberJoinDTO.getMemExercise());
+            member.setMemClub(memberJoinDTO.getMemClub());
+            member.setMemPicture(storedFileName);
+            member.setMemIntroduction(memberJoinDTO.getMemIntroduction());
+            member.setMemTell(memberJoinDTO.getMemTell());
+            member.setMemEmail(memberJoinDTO.getMemEmail());
+            member.setMemAddress(memberJoinDTO.getMemAddress());
+            member.setMemAddressDetail(memberJoinDTO.getMemAddressDetail());
+            member.setMemZipcode(memberJoinDTO.getMemZipcode());
        
             
             // 3. 수정된 정보 저장
             memberRepository.save(member);
         } else {
-            throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMEM_ID());
+            throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMemId());
         }
 		
         
@@ -95,7 +95,7 @@ public class MemberServiceImpl implements MemberService{
 	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
 	    // DELETE_FLAG를 true(1)로 설정
-	    member.setDELETE_FLAG(true);
+	    member.setDeleteFlag(true);
 
 	    // 변경된 내용을 저장
 	    memberRepository.save(member);

@@ -25,7 +25,7 @@ public class exercise_code_table {
     @Column(name = "EXERCISE_CODE", length = 20)
     private String EXERCISE_CODE;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String EXERCISE_NAME;
     
     
