@@ -29,7 +29,7 @@
             	<input type="text" name="clubName" id="clubName" th:value="${clubdto.clubName}" ></input>
             	
             <label for="club-name">클럽방장</label>
-            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.MEM_ID}" readonly></input>
+            	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.memId}" readonly></input>
 
 		    <label for="club-exercise">선호 운동 코드</label>
 				<div class="exercise-container">
@@ -87,7 +87,7 @@
 					   <img id="photo-upload-1" th:src="${clubdto.clubImage1 != null ? '/view/' + clubdto.clubImage1 : '/img/plus_icon.png'}"
 					   							th:classappend="${clubdto.clubImage1 == null ? 'default-icon' : ''}"alt="대표이미지1">
 			        </label>
-			       <button type="button" class="delete-btn" onclick="removeImage('clubImage1', 'photo-upload-1')">X</button>
+			      <!-- <button type="button" class="delete-btn" onclick="removeImage('clubImage1', 'photo-upload-1')">X</button> -->
 			       <input id="clubImage1" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-1')" style="display: none;">
 			    </div>
 			    <div class="club-image-upload">
@@ -273,7 +273,7 @@
 	        .catch(error => console.error("파일 업로드 실패:", error));
 	}
 	
-	// 클럽이미지제거
+	/* 클럽이미지제거
 	function removeImage(inputId, imgId) {
 		const fileInput = document.getElementById(inputId);
 		const image = document.getElementById(imgId);
@@ -282,7 +282,7 @@
 		image.classList.add("default-icon");
 		
 		fileInput.value = "";
-	}
+	} */
     
     // 지역선택
 	function selectAddress() {

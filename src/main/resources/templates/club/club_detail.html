@@ -42,7 +42,7 @@
  
         <!-- 가입 버튼 -->
         <button class="btn btn-warning fw-bold join-btn shadow-sm">클럽 가입하기</button>
-		<span th:if="${clubdto.MemId == principal.MEM_ID}">
+		<span th:if="${clubdto.MemId == principal.memId}">
      		<a class="btn btn-success fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
      	
      		<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display:inline;">
