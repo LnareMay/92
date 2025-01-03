@@ -12,11 +12,11 @@ import com.lec.packages.domain.Member;
 public interface MemberRepository extends JpaRepository<Member, String>{
 	// 카카오등 social서비스를 통해서 회원가입된 회원들은 제외하고 일반회원들만
 	// 가져오도록 social속성이 false인 사용자만 대상으로 한다.
-	@EntityGraph(attributePaths = "roleSet")
+	@EntityGraph(attributePaths = {"roleSet", "memExercise", "memClub"})
 	@Query("SELECT m FROM Member m " +
 		       "LEFT JOIN FETCH m.memExercise e " +
 		       "LEFT JOIN FETCH m.memClub c " +
-		       "WHERE m.memId = :memId AND m.memSocial = false")
+		       "WHERE m.memId = :memId")
 	Optional<Member> getWithRoles(@Param("memId") String mid);
 
 	/*
@@ -27,6 +27,10 @@ public interface MemberRepository extends JpaRepository<Member, String>{
 	  대신에 소셜서비스를 통해서 로그인한 사용자의 경우 일반 로그인을 하기 위해서는 일반회원
 	  으로 전환할 수 있는 기능(화면)이 제공되어야 한다.
 	*/
-	@EntityGraph(attributePaths = "roleSet")
+	@EntityGraph(attributePaths = {"roleSet", "memExercise", "memClub"})
+	@Query("SELECT m FROM Member m " +
+		       "LEFT JOIN FETCH m.memExercise e " +
+		       "LEFT JOIN FETCH m.memClub c " +
+		       "WHERE m.memEmail = :memEmail")
 	Optional<Member> findByMemEmail(@Param("memEmail") String memEmail);
 }
