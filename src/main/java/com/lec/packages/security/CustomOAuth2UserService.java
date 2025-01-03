@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
@@ -118,7 +119,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 	}
 
 
-	
+	@Transactional
 	private MemberSecurityDTO generateDTO(String email, String nickname, String picture, Map<String, Object> paramMap) {
 	    Optional<Member> result = memberRepository.findByMemEmail(email);
 
@@ -166,7 +167,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 	 * MemberSecurityDTO 생성 메서드
 	 */
 	private MemberSecurityDTO createMemberSecurityDTO(Member member, Map<String, Object> paramMap) {
-	    return new MemberSecurityDTO(
+		// memSocial을 true로 설정
+	    member.setMemSocial(true);
+		
+		return new MemberSecurityDTO(
 	    		member.getMemId()
 				  , member.getMemPw()
 				  , member.getMemName()
