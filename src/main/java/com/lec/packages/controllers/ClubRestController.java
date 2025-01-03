@@ -190,7 +190,6 @@ public class ClubRestController {
 		
 	}
 
-	// 클럽생성(이미지파일 업로드)
 	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> createClub(
 	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
@@ -248,7 +247,6 @@ public class ClubRestController {
 
 	        clubService.create(clubDTO);
 
-	        // 리다이렉트를 위한 응답 설정
 	        response.put("success", true);
 	        response.put("redirectUrl", "/");
 	        return ResponseEntity.status(HttpStatus.FOUND)
@@ -278,7 +276,6 @@ public class ClubRestController {
 	        Optional<Club> optionalClub = clubRepository.findById(clubDTO.getClubCode());
 	        Club club = optionalClub.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
 
-	        // 파일 업로드 처리
 	        if (files != null && !files.isEmpty()) {
 	            for (int i = 0; i < files.size(); i++) {
 	                MultipartFile file = files.get(i);
@@ -290,14 +287,12 @@ public class ClubRestController {
 	                    Path filePath = Paths.get(uploadPath, fileName);
 	                    file.transferTo(filePath);
 
-	                    // 이미지 파일 확인 및 썸네일 생성
 	                    String contentType = Files.probeContentType(filePath);
 	                    if (contentType != null && contentType.startsWith("image")) {
 	                        File thumbnail = new File(uploadPath, "s_" + fileName);
 	                        Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
 	                    }
 
-	                    // 업로드된 파일에 따라 클럽 DTO에 이미지 설정
 	                    switch (i) {
 	                        case 0 -> clubDTO.setClubImage1(fileName);
 	                        case 1 -> clubDTO.setClubImage2(fileName);
@@ -308,7 +303,6 @@ public class ClubRestController {
 	            }
 	        }
 
-	        // 업로드되지 않은 이미지는 기존 값 유지
 	        if (clubDTO.getClubImage1() == null) clubDTO.setClubImage1(club.getClubImage1());
 	        if (clubDTO.getClubImage2() == null) clubDTO.setClubImage2(club.getClubImage2());
 	        if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3());
@@ -317,7 +311,6 @@ public class ClubRestController {
 	        clubService.modify(clubDTO);
 	        log.info(clubDTO.getClubAddress());
 
-	        // 수정 후 리다이렉트 URL 설정
 	        String redirectUrl = String.format("./club_detail?clubCode=%s", clubDTO.getClubCode());
 	        return ResponseEntity.status(HttpStatus.FOUND)
 	                .header(HttpHeaders.LOCATION, redirectUrl)
@@ -327,6 +320,37 @@ public class ClubRestController {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
 	    }
+	}
+
+	@GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}")
+	public ClubBoardReplyDTO getReplyDTO(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo) {
+		ClubBoardReplyDTO replyDTO = clubService.readReply(clubCode, boardNo, replyNo);
+		return replyDTO;
+	}
+
+	@PostMapping(value = "/replies/modify/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, Integer> modifyReply(@RequestBody ClubBoardReplyDTO replyDTO) {
+
+		log.info("do modifyReply");
+		log.info(replyDTO);
+		clubService.modifyReply(replyDTO);
+		
+		Map<String, Integer> resultMap = new HashMap<>();
+		resultMap.put("replyNo", replyDTO.getReplyNo());
+
+		return resultMap;
+	}
+
+	@DeleteMapping("replies/delete/{clubCode},{boardNo},{replyNo}")
+	public Map<String, Integer> deleteReply(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo){
+		log.info("do deleteReply");
+
+		int resultReplyNo = clubService.deleteReply(clubCode, boardNo, replyNo);
+
+		Map<String, Integer> resultMap = new HashMap<>();
+		resultMap.put("replyNo", resultReplyNo);
+
+		return resultMap;
 	}
 
 }

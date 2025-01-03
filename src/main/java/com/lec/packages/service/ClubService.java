@@ -81,7 +81,9 @@ public interface ClubService {
 		return boardDTO;
 	}
     PageResponseDTO<ClubBoardReplyDTO> getReplyListOfBoard(int boardNo, String clubCode, PageRequestDTO pageRequestDTO);
-
-
+	
+    ClubBoardReplyDTO readReply(String clubCode, int boardNo, int replyNo);
+    void modifyReply(ClubBoardReplyDTO replyDTO);
+    int deleteReply(String clubCode, int boardNo, int replyNo);
 
 }
