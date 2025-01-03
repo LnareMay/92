@@ -54,7 +54,7 @@
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-user"></i></span>
                           <input type="text" name="MEM_ID" class="form-control  mb-0"
-                                  th:value="${#authentication.principal.username}"
+                                  th:value="${dto.MEM_ID}"
                                   placeholder="작성자" readonly>
                         </div>
 
@@ -71,11 +71,11 @@
               </div>
               <div class="my-4">
                 <div class="float-end">
-                  <a href="">
-                    <button type="submit" class="btn btn-primary submitBtn">목록</button>
+                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE})}" class="text-decoration-none">
+                    <button class="btn btn-primary submitBtn">목록</button>
                   </a>
-                  <a href="">
-                    <button type="reset" class="btn btn-secondary">수정</button>
+                  <a th:href="@{/club/club_board_modify(clubCode=${dto.CLUB_CODE},boardNo=${dto.BOARD_NO})}" class="text-decoration-none">
+                    <button th:if="${#authentication.principal.username == dto.MEM_ID}" class="btn btn-secondary">수정</button>
                   </a>
                 </div>
               </div>

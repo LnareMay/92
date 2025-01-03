@@ -73,4 +73,9 @@ public class Club_Board extends BaseEntity{
         images.add(image);
     }
 
+    public void clearImage() {
+        images.forEach(boardImage -> boardImage.changeImgae(null));
+        this.images.clear();
+    }
+
 }
