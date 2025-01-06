@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.lec.packages.domain.Member;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.MemberService;
 
@@ -45,6 +47,7 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	private final CustomUserDetailsService customUserDetailsService;
+	private final MemberRepository memberRepository;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
@@ -112,6 +115,18 @@ public class MemberController {
 	public String mypageGet(HttpServletRequest request, Model model) {
         String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI); 
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+            MemberSecurityDTO dto = (MemberSecurityDTO) authentication.getPrincipal();
+
+            
+			// Member 객체를 가져오는 로직 추가
+            Optional<Member> memberOptional = memberRepository.findByMemEmail(dto.getMemEmail());
+            if (memberOptional.isPresent()) {
+                model.addAttribute("member", memberOptional.get());
+            }
+        }
         return "member/mypage"; 
     }
 	
@@ -119,6 +134,17 @@ public class MemberController {
 	public String mypageModifyGet(HttpServletRequest request, Model model) {
 	    String requestURI = request.getRequestURI();
 	    model.addAttribute("currentURI", requestURI); // 템플릿에서 사용된다면 유지
+	    
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+            MemberSecurityDTO dto = (MemberSecurityDTO) authentication.getPrincipal();
+
+            // Member 객체를 가져오는 로직 추가
+            Optional<Member> memberOptional = memberRepository.findByMemEmail(dto.getMemEmail());
+            if (memberOptional.isPresent()) {
+                model.addAttribute("member", memberOptional.get());
+            }
+        }
 	    return "member/mypage_modify";
 	}
 

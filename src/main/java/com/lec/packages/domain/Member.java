@@ -65,7 +65,7 @@ public class Member extends BaseEntity{
     @Column(name = "MEM_INTRODUCTION", columnDefinition = "TEXT")
     private String memIntroduction;
 
-    @Column(name = "MEM_GENDER")
+    @Column(name = "MEM_GENDER", columnDefinition = "TINYINT(1)")
     private boolean memGender;
 
     @Column(name = "MEM_TELL", length = 11)
@@ -89,13 +89,13 @@ public class Member extends BaseEntity{
     @Column(name = "MEM_ADDRESS_SET", length = 100)
     private String memAddressSet;
 
-    @Column(name = "MEM_ISMANAGER")
+    @Column(name = "MEM_ISMANAGER", columnDefinition = "TINYINT(1)")
     private boolean memIsmanager;
 
-    @Column(name = "MEM_SOCIAL")
+    @Column(name = "MEM_SOCIAL", columnDefinition = "TINYINT(1)")
     private boolean memSocial;
     
-    @Column(name = "DELETE_FLAG")
+    @Column(name = "DELETE_FLAG", columnDefinition = "TINYINT(1)")
     private boolean deleteFlag;
 
     @ElementCollection(fetch = FetchType.LAZY)
