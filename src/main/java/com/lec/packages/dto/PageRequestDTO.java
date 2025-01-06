@@ -36,7 +36,7 @@ public class PageRequestDTO {
     public String[] getTypes() {
         if(type == null || type.isEmpty()) return null;
 
-        return type.split("");
+        return type.split("/");
     }
 
     //Pageable 객체 생성 수정된사항 

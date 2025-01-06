@@ -1,20 +1,7 @@
 package com.lec.packages.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.dto.ClubBoardAllListDTO;
@@ -41,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.coobird.thumbnailator.Thumbnailator;
+
 
 @Log4j2
 @Controller
@@ -98,7 +83,7 @@ public class ClubController {
 
 	
 	@GetMapping("/club_board")
-	public String clubBoard(@RequestParam("clubCode") String clubCode, PageRequestDTO pageRequestDTO
+	public String clubBoard(@RequestParam("clubCode") String clubCode, PageRequestDTO pageRequestDTO, @RequestParam(value = "type", required = false) String type
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI);
@@ -106,6 +91,8 @@ public class ClubController {
 		log.info("do clubBoardList");
 		ClubDTO clubDTO = clubService.detail(clubCode);
         model.addAttribute("clubdto", clubDTO);
+
+		pageRequestDTO.setType(type);
 
 		PageResponseDTO<ClubBoardAllListDTO> boardDTO = clubService.listWithAll(pageRequestDTO, clubCode);
         log.info(boardDTO);
