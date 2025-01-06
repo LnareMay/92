@@ -44,14 +44,14 @@
 
 					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial}">
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
 						<img th:src="${#authentication.principal.memPicture}"
 							alt="프로필 이미지">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial==false}">
+						th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
 						<img th:src="|/view/${#authentication.principal.memPicture}|"
 							alt="프로필 이미지">
 					</th:block>
