@@ -809,6 +809,50 @@ z-index:5;
     height: 80px;
     border-radius: 50%;
 }
+#mypage_pg .myinfo_wrap{
+	justify-content:space-between;
+	width:100%;
+	gap:8px;
+	max-width:700px;
+}
+#mypage_pg .myinfo_wrap div{
+	width:50%;
+}
+#mypage_pg .myinfo_wrap div p:last-of-type{
+	border: 1px solid #ddd;
+    border-radius: 50px;
+    padding: 10px 20px;
+    background-color:#f6f6f6;
+    margin-top:10px;
+}
+
+#mypage_pg .feed-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+#mypage_pg .feed-item {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* Keeps items square */
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#mypage_pg .feed-item img {
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 
 #mypage_pg .settings-navigation {
     margin-top: 20px;

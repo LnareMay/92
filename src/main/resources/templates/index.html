@@ -30,46 +30,50 @@
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
 		<div class="container">
-			<div th:if="${#authentication.principal != 'anonymousUser'}" class="top_wrap">
+			<div th:if="${#authentication.principal != 'anonymousUser'}"
+				class="top_wrap">
 				<div class="profile-section">
 					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
+						<img th:src="${#authentication.principal.memPicture}"
+							alt="프로필 이미지">
 					</th:block>
-	
+
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
 						<img th:src="|/view/${#authentication.principal.memPicture}|"
 							alt="프로필 이미지">
 					</th:block>
-	
+
 					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
 					<th:block
 						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-						<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지">
+						<img
+							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
+							alt="프로필 이미지">
 					</th:block>
 				</div>
-				<div onclick="location.href='/member/mypage'" style="cursor: pointer">
-				안녕하세요! <span th:text="${#authentication.principal.memNickname}"
-					 ></span>님.
-				오늘도 건강한 하루 보내세요.
+				<div onclick="location.href='/member/mypage'"
+					style="cursor: pointer">
+					안녕하세요! <span th:text="${#authentication.principal.memNickname}"></span>님.
+					오늘도 건강한 하루 보내세요.
 				</div>
 				<a class="btn btn-danger"
 					th:if="${#authentication.principal != 'anonymousUser'}"
 					href="/member/logout">로그아웃</a>
 			</div>
-			
-			<div th:if="${#authentication.principal == 'anonymousUser'}" class="top_wrap">
-				<p th:if="${#authentication.principal == 'anonymousUser'}">
-					우리 동네에서 운동메이트를 찾아보세요! 
-				</p>
+
+			<div th:if="${#authentication.principal == 'anonymousUser'}"
+				class="top_wrap">
+				<p th:if="${#authentication.principal == 'anonymousUser'}">우리
+					동네에서 운동메이트를 찾아보세요!</p>
 				<a class="btn btn-primary"
-						th:if="${#authentication.principal == 'anonymousUser'}"
-						href="/member/login">로그인</a>
+					th:if="${#authentication.principal == 'anonymousUser'}"
+					href="/member/login">로그인</a>
 			</div>
-			
+
 
 		</div>
 
@@ -121,11 +125,22 @@
 		<!-- 상단 클럽 생성 / 나의 클럽 END -->
 
 		<!-- 클럽 테마 탭메뉴 START -->
-		<section id="club_theme" class="container">
-			<h2 class="club-location">
-				역삼동 소모임
+		<section id="club_theme" class="container" style="text-align: center">
+			<h2 onclick="location.href='/member/mypage_modify?executeSearch=true'" class="club-location"
+				th:if="${#authentication.principal.memAddress != null}" style="cursor:pointer">
+				<span th:text="${#authentication.principal.memAddress}"></span>
 				<button type="button" class="region_btn">지역 선택</button>
 			</h2>
+
+			<h2 onclick="location.href='/member/mypage_modify?executeSearch=true'" class="club-location"
+				th:if="${#authentication.principal.memAddress == null}" style="cursor:pointer">
+				<span>지역을 선택해주세요.</span>
+				<button type="button" class="region_btn">지역 선택</button>
+			</h2>
+
+
+
+
 			<!-- 전체 -->
 			<button type="button" class="btn"
 				th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
