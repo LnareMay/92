@@ -85,7 +85,9 @@
 						<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
 						<th:block
 							th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-							<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지" id="profileImage">
+							<img
+								src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
+								alt="프로필 이미지" id="profileImage">
 						</th:block>
 
 						<input type="file" class="blind" id="memPicture" name="memPicture"
@@ -263,6 +265,14 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="/js/upload.js"></script>
 	<script>
+	
+		document.addEventListener("DOMContentLoaded", function () {
+		  const urlParams = new URLSearchParams(window.location.search);
+		  if (urlParams.has('executeSearch') && urlParams.get('executeSearch') === 'true') {
+		    searchPostCode();
+		  }
+		});
+	
 		// 프로필 이미지 클릭 시 파일 선택 창 열기
 		const profileImage = document.getElementById('profileImage');
 		const fileInput = document.getElementById('memPicture');
