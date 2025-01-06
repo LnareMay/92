@@ -18,7 +18,7 @@ public class ClubBoardAllListDTO {
     private String type;
     private String memId;
     private String boardText;
-    private LocalDateTime modDate;
+    private long modDate;
     private int replyCount;
     private List<ClubBoardImageDTO> boardImages;
 }

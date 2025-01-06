@@ -174,7 +174,10 @@
 	
 	// 페이지목록출력
 	function printPage(data) {
-		
+		if(data.total == 0){
+			return
+		}
+
 		// pagination
 		let pageStr = '';
 		

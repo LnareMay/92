@@ -25,12 +25,12 @@
 	    <main class="container my-5">
 
 	    	<section>
-	    		<a href="/club/club_detail" class="more-link"> < 클럽 </a>
+	    		<a th:href="|@{/club/club_detail(clubCode=${param.clubCode})}|" class="more-link"> < 클럽 </a>
 				<div class="d-flex align-items-center">
 				  <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="rounded-circle me-3" alt="프로필 이미지">
 				     <div>
-				       <h6> 🤍김포 라이프🤍</h6>
-				       	<p class="text-muted mb-0"> 게시글 139 </p>
+				       <h6 th:text="${clubdto.clubName}"></h6>
+					   <small class="text-muted mb-0">현재 게시글 </small><small class="text-muted mb-0" th:text="${responseDTO.total}"></small>
 				 	</div>
 				 </div>		       	
 			</section>
@@ -39,55 +39,106 @@
 			<section>
 				
 				    <!-- 게시글 상단 필터 -->
-					 <div class="row justify-content-between">
+					<div class="row justify-content-between">
 						 <div class="mb-3 col-5">
-							 <button class="btn btn-dark btn-sm">전체</button>
-							 <button class="btn btn-outline-secondary btn-sm" th:value = "Notice">#공지#</button>
-							 <button class="btn btn-outline-secondary btn-sm" th:value = "FreeBoard">자유 게시판</button>
-							 <button class="btn btn-outline-secondary btn-sm" th:value = "Hello">가입인사</button>
-							 <button class="btn btn-outline-secondary btn-sm" th:value = "Reviews">정산&후기</button>
+							 <button class="btn btn-sm"
+							 th:classappend="${param.type == null || param.type[0] == 'ALL'} ? 'btn-dark' : 'btn-outline-secondary'" onclick="typeClick('ALL', this)">전체</button>
+							 <button class="btn btn-sm" th:value = "Notice"
+							 th:classappend="${param.type != null && param.type[0] == 'Notice'} ? 'btn-dark' : 'btn-outline-secondary'" onclick="typeClick('Notice', this)">#공지#</button>
+							 <button class="btn btn-sm" th:value = "FreeBoard"
+							 th:classappend="${param.type != null && param.type[0] == 'FreeBoard'} ? 'btn-dark' : 'btn-outline-secondary'" onclick="typeClick('FreeBoard', this)">자유 게시판</button>
+							 <button class="btn btn-sm" th:value = "Hello"
+							 th:classappend="${param.type != null && param.type[0] == 'Hello'} ? 'btn-dark' : 'btn-outline-secondary'" onclick="typeClick('Hello', this)">가입인사</button>
+							 <button class="btn btn-sm" th:value = "Reviews"
+							 th:classappend="${param.type != null && param.type[0] == 'Reviews'} ? 'btn-dark' : 'btn-outline-secondary'" onclick="typeClick('Reviews', this)">정산&후기</button>
 						 </div>
+					
 	 
 						 <div class="mb-3 col-1">
-							<a class="btn" th:href="|@{/club/club_board_write(clubCode = ${param.clubCode})}|"><!-- 클럽 코드 추가 예정 --><i class="fas fa-plus"></i></a>
+							<a class="btn" th:href="|@{/club/club_board_write(clubCode = ${param.clubCode})}|"><i class="fas fa-plus"></i></a>
 						 </div>
-					 </div>
+					</div>
+					
 				
 				    <!-- 첫 번째 게시글 -->
-				    <div class="d-flex mb-4">
-				        <div class="me-3" style="flex: 1;">
-				            <p class="board-text text-muted">모임에만 공개된 게시글이에요.</p>
-				            <small class="text-muted">감자 · 6일 전 · 전체<span class="ms-3">💬 3</span></small>
-				        </div>
-				    </div>
-				
-				    <!-- 두 번째 게시글 -->
-				    <div class="d-flex mb-4">
-				        <div class="me-3" style="flex: 1;">
-				            <p class="board-text">
-				                첫병 축하축하~ 몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹어라 쫌!! 🔥🔥🔥🔥
-				                몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹
-				            </p>
-				            <small class="text-muted">권근 · 13일 전 · 전체  <span class="ms-3">💬 9</span></small>
-				        </div>
-				        <!-- 게시글 이미지 -->
-				        <div>
-				            <img src="https://via.placeholder.com/80" alt="게시글 이미지" class="rounded">
-				        </div>
-				    </div>
-				    
-				    <!-- 세번째 게시글 -->
-				    <div class="d-flex mb-4">
-				        <div class="me-3" style="flex: 1;">
-				            <p class="board-text">
-				                4년정도 치다가 1년 쉬고 최근에 다시 레슨 시작 했습니다. 잘 부탁드려요!
-				            </p>
-				            <small class="text-muted">우찰스 · 13일 전 · 전체 <span class="ms-3">💬 9</span></small>
-				        </div>   
-				    </div>
-			</section>
+					<div th:each="clubBoard : ${responseDTO.dtoList}">
+						<div class="d-flex mb-4">
+							<div class="me-3" style="flex: 1;" th:clubBoardDto="${clubBoard.boardNo}" th:onclick="readClubBoard(this.getAttribute('clubBoardDto'))">
+								<p class="board-text text-muted" th:text="${clubBoard.boardText}"></p>
+								<small class="text-muted" th:text="${clubBoard.memId}"></small><small class="text-muted"> . </small>
+								<small class="text-muted modDate" th:text="${clubBoard.modDate}"></small><small class="text-muted"> 일 전 ·</small> 
+								<small class="text-muted" th:text="${clubBoard.type}"></small><span class="ms-3 text-muted">💬</span>
+								<span class="text-muted" th:text="${clubBoard.replyCount}"></span></small>
+							</div>
+							<div>
+								<img th:if="${clubBoard.boardImages.size()} > 0" th:src="|/view/s_${clubBoard.boardImages.get(0).uuid}_${clubBoard.boardImages.get(0).boardImage}|" 
+								onerror="this.src='https://via.placeholder.com/80'" class="rounded">
+							</div>
+						</div>
+					</div>
+					<nav th:if="${!responseDTO.dtoList.isEmpty()}" aria-label="Page navigation" class="mt-3">
+						<ul class="pagination justify-content-center">
+							<li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'">
+								<a class="page-link" 
+								   th:href="@{'/club/club_board'(clubCode=${param.clubCode}, page=${responseDTO.page - 1}, type=${param.type})}" 
+								   aria-label="Previous">«</a>
+							</li>
+							<th:block th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+								<li class="page-item" th:classappend="${responseDTO.page == i} ? 'active'">
+									<a class="page-link" 
+									   th:href="@{'/club/club_board'(clubCode=${param.clubCode},page=${i}, type=${param.type})}">[[${i}]]</a>
+								</li>
+							</th:block>
+							 <li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
+								<a class="page-link" 
+									   th:href="@{'/club/club_board'(clubCode=${param.clubCode}, page=${responseDTO.page + 1}, type=${param.type})}" 
+									aria-label="Next">»</a>
+							</li>
+						</ul>
+					</nav>
+				</section>
     </main>
   
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script layout:fragment="script" th:inline="javascript">
+	const clubCode = /*[[${param.clubCode}]]*/'';
+	const boardType = /*[[${param.type}]]*/'';
+
+	function buttonLoad(){
+		console.log("buttonLoad")
+		if(boardType.length < 1){
+			return;
+		}
+
+		const btn = document.getElementsByClassName('btn-sm');
+		btn.forEach(element => {
+			console.log(element.classList)
+			element.classList.replace('btn-dark', 'btn-outline-secondary');
+			const className = element.classList;
+
+			className.forEach(classString => {
+				console.log(classString)
+				if(classString == boardType) {
+					classList.add('btn-dark')
+				}
+			});
+		});
+	}
+	
+	function typeClick(type, e){
+		const darkBtn = document.getElementsByClassName("btn-dark")
+		darkBtn[0].classList.replace('btn-dark', 'btn-outline-secondary');
+
+		e.classList.remove('btn-outline-secondary');
+		e.classList.add('btn-dark')
+	
+		location.href=`/club/club_board?clubCode=${clubCode}&type=${type}`
+	}
+
+	function readClubBoard(dto) {
+		location.href=`/club/club_board_read?clubCode=${clubCode}&boardNo=${dto}`
+	}
+
+</script>
 </html>
