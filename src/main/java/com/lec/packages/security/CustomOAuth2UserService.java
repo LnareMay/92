@@ -104,28 +104,55 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 	    String email = null;
 	    String nickname = null;
 	    String picture = null;
+	    String phone = null;
+	    boolean gender = true; // 변경
+	    String birthday = null;
+	    String name = null;
 
 	    if ("kakao".equalsIgnoreCase(clientName)) {
 	        email = extractKakaoAttribute(paramMap, "email");
 	        nickname = extractKakaoAttribute(paramMap, "nickname");
 	        picture = extractKakaoAttribute(paramMap, "profile_image_url");
+	    } else if ("naver".equalsIgnoreCase(clientName)) {
+	        Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+	        email = (String) response.get("email");
+	        nickname = (String) response.get("nickname");
+	        picture = (String) response.get("profile_image");
+	        phone = processPhoneNumber((String) response.get("mobile"));
+	        gender = "M".equalsIgnoreCase((String) response.get("gender")); // 'M' -> true, 'F' -> false 
+	        birthday = (String) response.get("birthday");
+	        name = (String) response.get("name");
 	    }
 
 	    log.info("Extracted Email: {}", email);
 	    log.info("Extracted Nickname: {}", nickname);
 	    log.info("Extracted Picture: {}", picture);
+	    log.info("Extracted Phone: {}", phone);
+	    log.info("Extracted Gender: {}", gender);
+	    log.info("Extracted Birthday: {}", birthday);
+	    log.info("Extracted Name: {}", name);
 
-	    return generateDTO(email, nickname, picture, paramMap);
+
+	    return generateDTO(email, nickname, picture, phone, gender, birthday, name, paramMap);
 	}
 
+	 /**
+     * 전화번호 처리 메서드: "-"를 제거
+     */
+    private String processPhoneNumber(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return null;
+        }
+        return phone.replaceAll("-", ""); // "-" 제거
+    }
 
 	@Transactional
-	private MemberSecurityDTO generateDTO(String email, String nickname, String picture, Map<String, Object> paramMap) {
+	private MemberSecurityDTO generateDTO(String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, Map<String, Object> paramMap) {
 	    Optional<Member> result = memberRepository.findByMemEmail(email);
 
 	    if (result.isEmpty()) {
 	        // 신규 사용자 생성
-	        Member newMember = createNewMember(email, nickname, picture);
+	        Member newMember = createNewMember(email, nickname, picture, phone, gender, birthday, name);
 	        memberRepository.save(newMember);
 
 	        MemberSecurityDTO memberSecurityDTO = createMemberSecurityDTO(newMember, paramMap);
@@ -139,14 +166,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
 	/**
 	 * 신규 사용자 생성 메서드
+	 * @param name 
+	 * @param birthday 
+	 * @param gender 
+	 * @param phone 
 	 */
-	private Member createNewMember(String email, String nickname, String picture) {
+	private Member createNewMember(String email, String nickname, String picture, String phone, boolean gender, String birthday, String name) {
 	    Member member = Member.builder()
 	            .memId(email) // 소셜 로그인에서는 email을 ID로 사용
 	            .memPw(passwordEncoder.encode(UUID.randomUUID().toString())) // 랜덤 비밀번호 생성
 	            .memEmail(email) // 이메일 설정
 	            .memNickname(nickname) // 닉네임 설정
 	            .memPicture(picture) // 프로필 사진 설정
+	            .memTell(phone)
+	            .memName(name)
+	            .memGender(gender)
+	            .memBirthday(birthday)
 	            .memSocial(true) // 소셜 로그인 여부
 	            .memIsmanager(false) // 기본값: 관리자 아님
 	            .deleteFlag(false) // 기본값: 삭제되지 않음
@@ -220,12 +255,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
 
 	
+
 	
-	
-	private String getNaver(Map<String, Object> paramMap) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private String getFacebook(Map<String, Object> paramMap) {
 		// TODO Auto-generated method stub

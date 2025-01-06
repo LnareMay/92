@@ -42,15 +42,27 @@
 				<div class="profile-section">
 					<!-- <img src="https://via.placeholder.com/80" alt="Profile Picture"> -->
 
+					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture != '' && #authentication.principal.memPicture != null}">
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and #authentication.principal.memSocial}">
+						<img th:src="${#authentication.principal.memPicture}"
+							alt="프로필 이미지">
+					</th:block>
+
+					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
+					<th:block
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and #authentication.principal.memSocial==false}">
 						<img th:src="|/view/${#authentication.principal.memPicture}|"
 							alt="프로필 이미지">
 					</th:block>
+
+					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
 					<th:block
-						th:if="${#authentication.principal.memPicture == null || #authentication.principal.memPicture == ''}">
+						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
 						<img src="/img/profile_img.jpg" alt="프로필 이미지">
 					</th:block>
+
+<p th:text="${#authentication.principal.memSocial}">memSocial 값</p>
 
 
 					<div style="text-align: center">
@@ -67,8 +79,8 @@
 					<div
 						th:if="${#authentication.principal.memExercise == null or #authentication.principal.memExercise.EXERCISE_NAME == null}">
 						좋아하는 운동을 설정해주세요^^*</div>
-						
-						<div
+
+					<div
 						th:if="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_NAME != null}">
 						관심있는 클럽: #<span
 							th:text="${#authentication.principal.memClub.EXERCISE_NAME}"></span>
