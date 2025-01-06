@@ -59,7 +59,7 @@ public class Club extends BaseEntity{
     private String clubAddress;
 
     @JoinColumn(name = "MEM_ID")
-    @Column(nullable = false, length = 20, name = "MEM_ID")
+    @Column(nullable = false, length = 100, name = "MEM_ID")
     private String memId;
 
     @Column(name = "CLUB_ISPRIVATE")

@@ -9,6 +9,24 @@ ul {
 	font-size: 10px;
 }
 
+#club_main_pg .top_wrap{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	gap: 10px;
+    padding: 10px 0;
+}
+
+#club_main_pg .profile-section {
+	
+}
+
+#club_main_pg .profile-section img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
 /* 내 클럽 상단 카드 */
 #club_main_pg #my_club {
 	background-color: #f5f5f5;

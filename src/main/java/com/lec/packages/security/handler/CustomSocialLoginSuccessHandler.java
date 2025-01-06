@@ -38,8 +38,8 @@ public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHan
 	    log.info("Authenticated User: {}", memberSecurityDTO);
 
 	    // 소셜 로그인 이메일 가져오기
-	    String email = memberSecurityDTO.getMemEmail();
-	    log.info("소셜 로그인 이메일: {}", email);
+	    String id = memberSecurityDTO.getMemId();
+	    log.info("소셜 로그인 이메일: {}", id);
 
 	    // 이메일 기반 리다이렉트 URL 생성
 	    String redirectUrl = "/";
