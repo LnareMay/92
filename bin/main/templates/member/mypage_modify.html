@@ -70,13 +70,22 @@
 
 
 						<th:block
-							th:if="${#authentication.principal.memPicture != '' && #authentication.principal.memPicture != null}">
-							<img th:src="|/view/${#authentication.principal.memPicture}|"
-								id="profileImage" alt="프로필 이미지">
+							th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial}">
+							<img th:src="${#authentication.principal.memPicture}"
+								alt="프로필 이미지" id="profileImage">
 						</th:block>
+
+						<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 						<th:block
-							th:if="${#authentication.principal.memPicture == null || #authentication.principal.memPicture == ''}">
-							<img src="/img/profile_img.jpg" id="profileImage" alt="프로필 이미지">
+							th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial==false}">
+							<img th:src="|/view/${#authentication.principal.memPicture}|"
+								alt="프로필 이미지" id="profileImage">
+						</th:block>
+
+						<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
+						<th:block
+							th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
+							<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지" id="profileImage">
 						</th:block>
 
 						<input type="file" class="blind" id="memPicture" name="memPicture"
@@ -88,11 +97,10 @@
 							name="memId" th:value="${#authentication.principal.memId}"
 							class="form-control" disabled>
 					</div>
-					
-					<input type="hidden" id="memId" name="memId" th:value="${#authentication.principal.memId}">
-					
 
-					<input type="text" id="memPw" name="memPw"
+					<input type="hidden" id="memId" name="memId"
+						th:value="${#authentication.principal.memId}"> <input
+						type="text" id="memPw" name="memPw"
 						th:value="${#authentication.principal.memPw}"
 						class="form-control blind">
 

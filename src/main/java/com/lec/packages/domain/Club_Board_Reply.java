@@ -34,7 +34,7 @@ public class Club_Board_Reply extends BaseEntity{
     private String boardText;
 
     @JoinColumn(name = "MEM_ID", nullable = false)
-    @Column(name = "MEM_ID", length = 10)
+    @Column(name = "MEM_ID", length = 100)
     private String memId;
 
     @Column(name = "DELETE_FLAG")

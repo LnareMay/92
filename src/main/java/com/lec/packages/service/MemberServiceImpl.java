@@ -68,6 +68,9 @@ public class MemberServiceImpl implements MemberService{
 	    if (existingMember.isPresent()) {
 	        Member member = existingMember.get(); // 기존 회원 정보 가져오기
 	        
+	        // 기존 memSocial 값 유지
+	        boolean existingMemSocial = member.isMemSocial();
+
 	        // `memExercise` 영속 상태 설정
 	        if (memberJoinDTO.getMemExercise() != null) {
 	            exercise_code_table exercise = exerciseRepository.findById(memberJoinDTO.getMemExercise().getEXERCISE_CODE())
@@ -97,12 +100,16 @@ public class MemberServiceImpl implements MemberService{
 	        member.setMemAddressDetail(memberJoinDTO.getMemAddressDetail());
 	        member.setMemZipcode(memberJoinDTO.getMemZipcode());
 
+	        // 기존 memSocial 값 유지
+	        member.setMemSocial(existingMemSocial);
+
 	        // 저장
 	        memberRepository.save(member);
 	    } else {
 	        throw new IllegalArgumentException("Member not found with ID: " + memberJoinDTO.getMemId());
 	    }
 	}
+
 
 
 
