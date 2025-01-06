@@ -29,44 +29,47 @@
 	<button onclick="location.href='/member/login'">로그인</button> -->
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
-		<div class="container top_wrap">
-			<div th:if="${#authentication.principal != 'anonymousUser'}">
-			<div class="profile-section">
-				<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
-				<th:block
-					th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial}">
-					<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
-				</th:block>
-
-				<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
-				<th:block
-					th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial==false}">
-					<img th:src="|/view/${#authentication.principal.memPicture}|"
-						alt="프로필 이미지">
-				</th:block>
-
-				<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
-				<th:block
-					th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-					<img src="/img/profile_img.jpg" alt="프로필 이미지">
-				</th:block>
+		<div class="container">
+			<div th:if="${#authentication.principal != 'anonymousUser'}" class="top_wrap">
+				<div class="profile-section">
+					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
+					<th:block
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial}">
+						<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
+					</th:block>
+	
+					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
+					<th:block
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture != null and member.memSocial==false}">
+						<img th:src="|/view/${#authentication.principal.memPicture}|"
+							alt="프로필 이미지">
+					</th:block>
+	
+					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
+					<th:block
+						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
+						<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지">
+					</th:block>
+				</div>
+				<div onclick="location.href='/member/mypage'" style="cursor: pointer">
+				안녕하세요! <span th:text="${#authentication.principal.memNickname}"
+					 ></span>님.
+				오늘도 건강한 하루 보내세요.
+				</div>
+				<a class="btn btn-danger"
+					th:if="${#authentication.principal != 'anonymousUser'}"
+					href="/member/logout">로그아웃</a>
 			</div>
-			</div>
-			<div onclick="location.href='/member/mypage'" style="cursor: pointer">
-			안녕하세요! <span th:text="${#authentication.principal.memNickname}"
-				 ></span>님.
-			오늘도 건강한 하루 보내세요.
-			</div>
-			<a class="btn btn-danger"
-				th:if="${#authentication.principal != 'anonymousUser'}"
-				href="/member/logout">로그아웃</a>
 			
-			<p th:if="${#authentication.principal == 'anonymousUser'}">
-				우리 동네에서 운동메이트를 찾아보세요! 
-			</p>
-			<a class="btn btn-primary"
-					th:if="${#authentication.principal == 'anonymousUser'}"
-					href="/member/login">로그인</a>
+			<div th:if="${#authentication.principal == 'anonymousUser'}" class="top_wrap">
+				<p th:if="${#authentication.principal == 'anonymousUser'}">
+					우리 동네에서 운동메이트를 찾아보세요! 
+				</p>
+				<a class="btn btn-primary"
+						th:if="${#authentication.principal == 'anonymousUser'}"
+						href="/member/login">로그인</a>
+			</div>
+			
 
 		</div>
 

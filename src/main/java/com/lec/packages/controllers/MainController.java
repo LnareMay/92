@@ -38,7 +38,14 @@ public class MainController {
     public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model
     					 , @RequestParam(value = "theme", required = false) String clubTheme) {
     	
-        String requestURI = request.getRequestURI();
+    	// 현재 사용자 가져오기
+        Member member = getAuthenticatedMember();
+        if (member != null) {
+            model.addAttribute("member", member); // Member 객체를 모델에 추가
+        }
+    	
+    	
+    	String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
         
         
@@ -60,11 +67,7 @@ public class MainController {
         model.addAttribute("responseDTO", responseDTO);
         model.addAttribute("clubs", responseDTO.getDtoList());
         model.addAttribute("theme", clubTheme);
-     // 현재 사용자 가져오기
-        Member member = getAuthenticatedMember();
-        if (member != null) {
-            model.addAttribute("member", member); // Member 객체를 모델에 추가
-        }
+     
 
         return "index";
     }   
@@ -81,7 +84,7 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
             MemberSecurityDTO memberDTO = (MemberSecurityDTO) authentication.getPrincipal();
-            Optional<Member> memberOptional = memberRepository.findByMemEmail(memberDTO.getMemId());
+            Optional<Member> memberOptional = memberRepository.findById(memberDTO.getMemId());
             return memberOptional.orElse(null); // DB에서 Member 객체 조회
         }
         return null; // 인증되지 않은 사용자일 경우 null 반환

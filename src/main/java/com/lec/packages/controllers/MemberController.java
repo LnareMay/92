@@ -122,7 +122,7 @@ public class MemberController {
 
             
 			// Member 객체를 가져오는 로직 추가
-            Optional<Member> memberOptional = memberRepository.findByMemEmail(dto.getMemEmail());
+            Optional<Member> memberOptional = memberRepository.findById(dto.getMemId());
             if (memberOptional.isPresent()) {
                 model.addAttribute("member", memberOptional.get());
             }
@@ -140,7 +140,7 @@ public class MemberController {
             MemberSecurityDTO dto = (MemberSecurityDTO) authentication.getPrincipal();
 
             // Member 객체를 가져오는 로직 추가
-            Optional<Member> memberOptional = memberRepository.findByMemEmail(dto.getMemEmail());
+            Optional<Member> memberOptional = memberRepository.findById(dto.getMemId());
             if (memberOptional.isPresent()) {
                 model.addAttribute("member", memberOptional.get());
             }
