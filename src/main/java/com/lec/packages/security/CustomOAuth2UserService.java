@@ -44,6 +44,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> paramMap = oAuth2User.getAttributes();
 
+        // 무작위로 고유한 memId 생성
+        String uniqueMemId = UUID.randomUUID().toString(); // UUID로 고유값 생성
         String email = null;
         String nickname = null;
         String picture = null;
@@ -63,8 +65,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             picture = (String) response.get("profile_image");
             phone = processPhoneNumber((String) response.get("mobile"));
             gender = "M".equalsIgnoreCase((String) response.get("gender"));
-            birthday = (String) response.get("birthday");
+            String birthDay = (String) response.get("birthday");
+            String birthYear = (String) response.get("birthyear");
+            birthday = birthYear + "-" + birthDay; 
             name = (String) response.get("name");
+        }else if ("google".equalsIgnoreCase(clientName)) {
+            email = (String) paramMap.get("email");
+            nickname = (String) paramMap.get("name");
+            picture = (String) paramMap.get("picture");
         }
 
         log.info("Extracted Email: {}", email);
@@ -75,7 +83,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("Extracted Birthday: {}", birthday);
         log.info("Extracted Name: {}", name);
 
-        MemberSecurityDTO memberSecurityDTO = generateDTO(email, nickname, picture, phone, gender, birthday, name, true, false, false);
+        MemberSecurityDTO memberSecurityDTO = generateDTO(uniqueMemId, email, nickname, picture, phone, gender, birthday, name, true, false, false);
         log.info("Generated MemberSecurityDTO: {}", memberSecurityDTO);
 
         return memberSecurityDTO;
@@ -92,12 +100,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    private MemberSecurityDTO generateDTO(String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
-        Optional<Member> result = memberRepository.findByMemEmail(email);
+    private MemberSecurityDTO generateDTO(String uniqueMemId, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+        Optional<Member> result = memberRepository.findById(uniqueMemId);
 
         if (result.isEmpty()) {
             // 신규 사용자 생성
-            Member newMember = createNewMember(email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
+            Member newMember = createNewMember(uniqueMemId, email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
             memberRepository.save(newMember);
             return createMemberSecurityDTO(newMember);
         } else {
@@ -110,9 +118,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     /**
      * 신규 사용자 생성
      */
-    private Member createNewMember(String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
-        Member member = Member.builder()
-                .memId(email) // 소셜 로그인에서는 email을 ID로 사용
+    private Member createNewMember(String uniqueMemId, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+    	
+    	Member member = Member.builder()
+                .memId(uniqueMemId) // 소셜 로그인에서는 email을 ID로 사용
                 .memPw(passwordEncoder.encode(UUID.randomUUID().toString())) // 랜덤 비밀번호 생성
                 .memEmail(email)
                 .memNickname(nickname)
