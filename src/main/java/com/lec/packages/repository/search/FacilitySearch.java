@@ -11,6 +11,7 @@ import com.lec.packages.domain.Facility;
 public interface FacilitySearch {
 	
 	Page<Facility> searchByUser(String userId, Pageable pageable);
+
 	Page<Facility> searchAllImpl(String[] types,String[] keywords,Pageable pageable);
 
 	

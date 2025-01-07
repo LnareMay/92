@@ -3,31 +3,40 @@ package com.lec.packages.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 
+import jakarta.validation.Valid;
+
 public interface ClubService {
 	
-	void create(ClubDTO clubDTO);
+	String create(ClubDTO clubDTO);
+	void updateImages(String clubCode, ClubDTO clubDTO);
+	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
 	void modify(ClubDTO clubDTO);
-//	void remove(ClubDTO clubDTO);
+	void remove(String clubCode);
 	
-	PageResponseDTO<ClubDTO> ListByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
-	List<ClubDTO> getAllClubs();	
+	void join(String memId, String clubCode);
+	int membercount(String clubCode);
 	
+	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
+	List<ClubDTO> getAllClubs();		
 
 	ClubDTO board(String clubCode);
 	ClubBoardDTO readOne(int boardNo, String clubCode);
 	
-	PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO);
-	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO, String clubCode);
 
 	int registerClubBoard(ClubBoardDTO clubBoardDTO);
 
@@ -74,5 +83,16 @@ public interface ClubService {
 		return boardDTO;
 	}
     PageResponseDTO<ClubBoardReplyDTO> getReplyListOfBoard(int boardNo, String clubCode, PageRequestDTO pageRequestDTO);
+	
+    ClubBoardReplyDTO readReply(String clubCode, int boardNo, int replyNo);
+    void modifyReply(ClubBoardReplyDTO replyDTO);
+    int deleteReply(String clubCode, int boardNo, int replyNo);
+
+    ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO);
+    String removeClubBoard(ClubBoardDTO clubBoardDTO);
+
+	PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO);
+
+    
 
 }

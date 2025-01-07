@@ -117,7 +117,7 @@
     align-self: flex-end;
 }
 
-#clubcreate {
+#clubcreate #clubmodify {
 	margin-top: 20px;
 }
 
@@ -331,4 +331,47 @@ p.fw-bold {
 	-webkit-line-clamp: 1;
 	overflow: hidden;
 }
+
+/* 클럽생성 주소선택폼 */
+.form-row {
+	width: 700px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 15px;
+}
+
+.form-select {
+	flex: 1;
+}
+
+/* 클럽 멤버목록
+
+.clubmember {
+	 background-color: #ffffff;
+    /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+    border-right: 1px solid #eee;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+.clubmember a {
+    text-decoration: none;
+    color: #333;
+    margin: 10px 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.clubmember h2 {
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+ */ 
 

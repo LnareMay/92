@@ -27,7 +27,7 @@ public class ClubDTO {
 
     private String clubTheme;
 
-//    @NotEmpty
+    @NotEmpty
     private String clubImage1;
 
     private String clubImage2;
@@ -51,5 +51,7 @@ public class ClubDTO {
     private LocalDateTime MODIFYDATE;
     
     private String themeName;
+    
+    private int memberCount;
 
 }

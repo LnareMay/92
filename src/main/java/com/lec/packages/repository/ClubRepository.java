@@ -14,15 +14,16 @@ import com.lec.packages.domain.Club;
 import com.lec.packages.repository.search.ClubSearch;
 
 public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch {
-
-	@Query("SELECT c FROM Club c WHERE c.clubTheme LIKE %:clubTheme%")
-	List<Club> findByClubThemeContaining(@Param("clubTheme") String clubTheme);
 	
+    // deleteFlag가 1이 아닌 클럽만 가져오는 기본 메서드
+    List<Club> findByDeleteFlagFalse();
+    
+    // 페이지네이션을 적용한 목록 조회
+    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false order by CREATEDATE")
+    Page<Club> findAllActiveClubs(Pageable pageable);
 
-	//List<Club> findAllActiveClub();
-	
-	// @Query("SELECT c FROM Club c WHERE c.deleteFlag = false")
-	// Optional<Club> findByClubCodeAndDeleteFlagFalse(String clubCode); // 삭제되지않는 클럽만 조회
+    // 테마별로 deleteFlag가 1이 아닌 클럽만 조회
+    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false AND c.clubTheme LIKE %:clubTheme% order by CREATEDATE")
+    Page<Club> findByClubThemeContaining(@Param("clubTheme") String clubTheme, Pageable pageable);
 
-	
 }

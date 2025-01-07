@@ -43,4 +43,8 @@ public class Club_Board_Image extends BaseEntity implements Comparable<Club_Boar
             return -1;
         }
     }
+
+    public void changeImgae(Club_Board club_Board) {
+        this.clubBoard = club_Board;
+    }
 }

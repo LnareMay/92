@@ -7,6 +7,7 @@ import java.util.Set;
 import com.lec.packages.domain.MemberRole;
 import com.lec.packages.dto.MemberJoinDTO;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -14,6 +15,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,81 +40,81 @@ public class Member extends BaseEntity{
     // @JoinColumn => 외래키 명시
     
     @Id
-    @Column(name = "MEM_ID", length = 20)
-    private String MEM_ID;
+    @Column(name = "MEM_ID", length = 100)
+    private String memId;
 
-    @Column(name = "MEM_PW", length = 255, nullable = false)
-    private String MEM_PW;
+    @Column(name = "MEM_PW", length = 255)
+    private String memPw;
 
-    @Column(name = "MEM_NAME", length = 5, nullable = false)
-    private String MEM_NAME;
+    @Column(name = "MEM_NAME", length = 5)
+    private String memName;
 
     @Column(name = "MEM_NICKNAME", length = 10, nullable = false)
-    private String MEM_NICKNAME;
+    private String memNickname;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEM_EXERCISE", referencedColumnName = "EXERCISE_CODE")
-    private exercise_code_table MEM_EXERCISE;
+    private exercise_code_table memExercise;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEM_CLUB", referencedColumnName = "EXERCISE_CODE")
-    private exercise_code_table MEM_CLUB;
+    private exercise_code_table memClub;
     
 
     @Column(name = "MEM_PICTURE",length = 255)
-    private String MEM_PICTURE;
+    private String memPicture;
 
     @Column(name = "MEM_INTRODUCTION", columnDefinition = "TEXT")
-    private String MEM_INTRODUCTION;
+    private String memIntroduction;
 
-    @Column(name = "MEM_GENDER")
-    private boolean MEM_GENDER;
+    @Column(name = "MEM_GENDER", columnDefinition = "TINYINT(1)")
+    private boolean memGender;
 
-    @Column(name = "MEM_TELL", length = 11, nullable = false)
-    private String MEM_TELL;
+    @Column(name = "MEM_TELL", length = 11)
+    private String memTell;
  
     @Column(name = "MEM_EMAIL", length = 30, nullable = false)
-    private String MEM_EMAIL;
+    private String memEmail;
 
     @Column(name = "MEM_BIRTHDAY", length = 30)
-    private String MEM_BIRTHDAY;
+    private String memBirthday;
 
-    @Column(name = "MEM_ADDRESS", length = 100, nullable = false)
-    private String MEM_ADDRESS;
+    @Column(name = "MEM_ADDRESS", length = 100)
+    private String memAddress;
     
-    @Column(name = "MEM_ADDRESS_DETAIL", length = 100, nullable = false)
-    private String MEM_ADDRESS_DETAIL;
+    @Column(name = "MEM_ADDRESS_DETAIL", length = 100)
+    private String memAddressDetail;
 
-    @Column(name = "MEM_ZIPCODE", length = 10, nullable = false)
-    private String MEM_ZIPCODE;
+    @Column(name = "MEM_ZIPCODE", length = 10)
+    private String memZipcode;
 
     @Column(name = "MEM_ADDRESS_SET", length = 100)
-    private String MEM_ADDRESS_SET;
+    private String memAddressSet;
 
-    @Column(name = "MEM_ISMANAGER")
-    private boolean MEM_ISMANAGER;
+    @Column(name = "MEM_ISMANAGER", columnDefinition = "TINYINT(1)")
+    private boolean memIsmanager;
 
-    @Column(name = "MEM_SOCIAL")
-    private boolean MEM_SOCIAL;
+    @Column(name = "MEM_SOCIAL", columnDefinition = "TINYINT(1)")
+    private boolean memSocial;
     
-    @Column(name = "DELETE_FLAG")
-    private boolean DELETE_FLAG;
+    @Column(name = "DELETE_FLAG", columnDefinition = "TINYINT(1)")
+    private boolean deleteFlag;
 
     @ElementCollection(fetch = FetchType.LAZY)
 	private Set<MemberRole> roleSet = new HashSet<>();
 	
-    @Builder
-	public void changePassword(String MEM_PW) {
-		this.MEM_PW = MEM_PW;
+    public void changePassword(String memPw) {
+		this.memPw = memPw;
 	}
 	
-	public void changeEmail(String MEM_EMAIL) {
-		this.MEM_EMAIL = MEM_EMAIL;
+	public void changeEmail(String memEmail) {
+		this.memEmail = memEmail;
 	}
 	
-	public void changeDel(boolean DELETE_FLAG) {
-		this.DELETE_FLAG = DELETE_FLAG;
+	public void changeDel(boolean deleteFlag) {
+		this.deleteFlag = deleteFlag;
 	}
+	
 	
 	public void addRole(MemberRole memberRole) {
 		this.roleSet.add(memberRole);
@@ -121,13 +124,17 @@ public class Member extends BaseEntity{
 		this.roleSet.clear();
 	}
 	
-	public void changeSocial(boolean MEM_SOCIAL) {
-		this.MEM_SOCIAL = MEM_SOCIAL;
+	public void changeSocial(boolean memSocial) {
+		this.memSocial = memSocial;
 	}
 	
-	 public void setMEM_PICTURE(String MEM_PICTURE) {
-	        this.MEM_PICTURE = MEM_PICTURE;
+	 public void setMEM_PICTURE(String memPicture) {
+	        this.memPicture = memPicture;
 	    }
+
+	
+	
+
 	
 	
 	

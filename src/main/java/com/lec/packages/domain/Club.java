@@ -59,7 +59,7 @@ public class Club extends BaseEntity{
     private String clubAddress;
 
     @JoinColumn(name = "MEM_ID")
-    @Column(nullable = false, length = 20, name = "MEM_ID")
+    @Column(nullable = false, length = 100, name = "MEM_ID")
     private String memId;
 
     @Column(name = "CLUB_ISPRIVATE")
@@ -73,7 +73,8 @@ public class Club extends BaseEntity{
 
 	public void change(String clubIntroduction, String clubAddress, String clubName
 					 , String clubTheme, String clubExercise, String clubPw
-					 , boolean clubIsprivate) {
+					 , boolean clubIsprivate, String clubImage1, String clubImage2
+					 , String clubImage3, String clubImage4) {
 		this.clubIntroduction = clubIntroduction;
 		this.clubAddress = clubAddress;
 		this.clubName = clubName;
@@ -81,6 +82,10 @@ public class Club extends BaseEntity{
 		this.clubExercise = clubExercise;		
 		this.clubPw = clubPw;
 		this.clubIsprivate = clubIsprivate;
+		this.clubImage1 = clubImage1;
+	    this.clubImage2 = clubImage2; 
+	    this.clubImage3 = clubImage3; 
+	    this.clubImage4 = clubImage4; 
 	}
 
 	public void remove(boolean deleteFlag) {

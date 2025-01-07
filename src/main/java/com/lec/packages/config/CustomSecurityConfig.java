@@ -9,16 +9,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.security.handler.Custom403Handler;
 import com.lec.packages.security.handler.CustomAuthenticationSuccessHandler;
+import com.lec.packages.security.handler.CustomSocialLoginSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -46,6 +49,9 @@ public class CustomSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		log.info("---------------- filterChain -------------------");
+		
+		
+		 log.info("CustomSecurityConfig 초기화 중...");
 
 		// 인증처리로직
 		// http.formLogin(); 스프링시큐티에서 기본제공하는 로그인 화면
@@ -84,10 +90,21 @@ public class CustomSecurityConfig {
 		// .tokenValiditySeconds(60*60*24*30)); // 유효기간 30일
 
 		// 로그아웃 설정 추가
-		http.logout(logout -> logout.logoutUrl("/member/logout") // 로그아웃 URL
-				.logoutSuccessUrl("/") // 로그아웃 후 이동할 URL
-				.invalidateHttpSession(true) // 세션 무효화
-				.deleteCookies("JSESSIONID")); // 쿠키 삭제
+		http.logout(logout -> logout
+			    .logoutUrl("/member/logout") // 로그아웃 URL
+			    .invalidateHttpSession(true) // 세션 무효화
+			    .clearAuthentication(true) // 인증 정보 초기화
+			    .deleteCookies("JSESSIONID") // 쿠키 삭제
+				.logoutSuccessUrl("/")); // 로그아웃 후 이동할 URL
+
+		
+		http.oauth2Login(login -> login
+			    .loginPage("/member/login") // 소셜 로그인 진입점 설정
+			    .successHandler(new CustomSocialLoginSuccessHandler()) // 로그인 성공 시 동적 리다이렉트
+			    // .defaultSuccessUrl("/")
+			    .failureUrl("/member/login?error")
+			);
+		
 
 		// 403에러 핸들링
 		http.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()));
@@ -99,8 +116,21 @@ public class CustomSecurityConfig {
 	            .anyRequest().authenticated() // 나머지 요청은 인증 필요
 	        );
 		
+		
+		
+
+
+
+
+		
 		return http.build();
 		
+	}
+
+	@Bean
+	public AuthenticationSuccessHandler authenticationSuccessHandler() {
+		log.info("CustomSocialLoginSuccessHandler 등록");
+		return new CustomSocialLoginSuccessHandler();
 	}
 
 	@Bean
@@ -126,7 +156,5 @@ public class CustomSecurityConfig {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-	
-	
 
 }

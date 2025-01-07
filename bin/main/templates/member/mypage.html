@@ -33,8 +33,10 @@
 				<!-- <button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button> -->
 			</div>
 
-			<a href="/member/mypage" class="active">나의정보</a> <a href="#">나의시설예약</a>
-			<a href="#">나의클럽</a> <a href="#">운동캘린더</a>
+			<div class="btn_wrap">
+				<a href="/member/mypage" class="active">나의정보</a> <a href="#">나의시설예약</a>
+				 <a href="#">운동캘린더</a>
+			</div>
 		</div>
 
 		<div class="main">
@@ -42,42 +44,103 @@
 				<div class="profile-section">
 					<!-- <img src="https://via.placeholder.com/80" alt="Profile Picture"> -->
 
-					<th:block th:if="${#authentication.principal.MEM_PICTURE != '' && #authentication.principal.MEM_PICTURE != null}">
-						<img th:src="|/view/${#authentication.principal.MEM_PICTURE}|"
+					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
+					<th:block
+						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
+						<img th:src="${#authentication.principal.memPicture}"
 							alt="프로필 이미지">
 					</th:block>
+
+					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.MEM_PICTURE == null || #authentication.principal.MEM_PICTURE == ''}">
-						<img src="/img/profile_img.jpg" alt="프로필 이미지">
+						th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
+						<img th:src="|/view/${#authentication.principal.memPicture}|"
+							alt="프로필 이미지">
 					</th:block>
 
+					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
+					<th:block
+						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
+						<img
+							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
+							alt="프로필 이미지">
+					</th:block>
 
 					<div style="text-align: center">
 
-						<h3 th:text="${#authentication.principal.MEM_NICKNAME}"></h3>
-						<p th:text="${#authentication.principal.MEM_INTRODUCTION}"></p>
+						<h3 th:text="${#authentication.principal.memNickname}"></h3>
+						<p th:text="${#authentication.principal.memIntroduction}"
+							style="font-size: 13px; color: #999;"></p>
 					</div>
-					<div>
 
-						<p>
-							좋아하는 운동 : #<span
-								th:text="${#authentication.principal.MEM_EXERCISE.EXERCISE_NAME}"></span>
-						</p>
-						<p>
-							관심있는 클럽테마 : #<span
-								th:text="${#authentication.principal.MEM_CLUB.EXERCISE_NAME}"></span>
-						</p>
-					</div>
-					<div class="flex" style="gap: 5px;">
+					<div class="flex" style="gap: 5px; margin-bottom:20px;">
 
 						<button class="btn btn-primary"
-							onclick="location.href='/member/mypage_modify'">수정하기</button>
+							onclick="location.href='/member/mypage_modify'"
+							style="font-size: 11px;">수정하기</button>
 						<button class="btn btn-danger"
-							onclick="location.href='/member/logout'">로그아웃</button>
+							onclick="location.href='/member/logout'" style="font-size: 11px;">로그아웃</button>
 					</div>
+
+
+					<div class="flex myinfo_wrap" style="margin-bottom:30px;">
+						<div
+							th:if="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_NAME != null}">
+							<p>⚽ 좋아하는 운동</p>
+							<p
+								th:text="${#authentication.principal.memExercise.EXERCISE_NAME}"></p>
+						</div>
+						<div
+							th:if="${#authentication.principal.memExercise == null or #authentication.principal.memExercise.EXERCISE_NAME == null}">
+							<p>⚽ 좋아하는 운동</p>
+							<p>-선택필요-</p>
+						</div>
+
+						<div
+							th:if="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_NAME != null}">
+							<p>💖 관심있는 클럽</p>
+							<p th:text="${#authentication.principal.memClub.EXERCISE_NAME}"></p>
+						</div>
+						<div
+							th:if="${#authentication.principal.memClub == null or #authentication.principal.memClub.EXERCISE_NAME == null}">
+							<p>💖 관심있는 클럽</p>
+							<p>-선택필요-</p>
+						</div>
+						
+						<div
+							th:if="${#authentication.principal.memBirthday != null}">
+							<p>🎂 생일</p>
+							<p th:text="${#authentication.principal.memBirthday}"></p>
+						</div>
+						<div
+							th:if="${#authentication.principal.memBirthday == null}">
+							<p>🎂 생일</p>
+							<p>-선택필요-</p>
+						</div>
+
+						<div>
+							<p>📧 이메일</p>
+							<p th:text="${#authentication.principal.memEmail}"></p>
+						</div>
+					</div>
+
 
 				</div>
 
+			</div>
+
+			<div class="feed-container" style="margin-top:30px;">
+				<!-- Repeat this block 30 times for a 3x10 grid -->
+				<div class="feed-item">
+					<img src="" alt="Placeholder Image">
+				</div>
+				<div class="feed-item">
+					<img src="" alt="Placeholder Image">
+				</div>
+				<div class="feed-item">
+					<img src="" alt="Placeholder Image">
+				</div>
+				<!-- Repeat ends here -->
 			</div>
 		</div>
 	</main>

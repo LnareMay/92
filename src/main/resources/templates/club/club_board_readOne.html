@@ -54,7 +54,7 @@
                         <div class="input-group mb-3">
                           <span class="input-group-text"><i class="fas fa-user"></i></span>
                           <input type="text" name="MEM_ID" class="form-control  mb-0"
-                                  th:value="${#authentication.principal.username}"
+                                  th:value="${dto.MEM_ID}"
                                   placeholder="작성자" readonly>
                         </div>
 
@@ -71,11 +71,11 @@
               </div>
               <div class="my-4">
                 <div class="float-end">
-                  <a href="">
-                    <button type="submit" class="btn btn-primary submitBtn">목록</button>
+                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE})}" class="text-decoration-none">
+                    <button class="btn btn-primary submitBtn">목록</button>
                   </a>
-                  <a href="">
-                    <button type="reset" class="btn btn-secondary">수정</button>
+                  <a th:href="@{/club/club_board_modify(clubCode=${dto.CLUB_CODE},boardNo=${dto.BOARD_NO})}" class="text-decoration-none">
+                    <button th:if="${#authentication.principal.username == dto.MEM_ID}" class="btn btn-secondary">수정</button>
                   </a>
                 </div>
               </div>
@@ -99,24 +99,24 @@
                <div class="modal-dialog">
                    <div class="modal-content">
                        <div class="modal-header">
-                           <h5 class="modal-title">Register Reply</h5>
+                           <h5 class="modal-title">댓글 등록</h5>
                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                        </div>
                        <div class="modal-body">
                            <div class="input-group mb-3">
-                               <span class="input-group-text">Reply Text</span>
-                               <input type="text" class="form-control replyText" >
+                               <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
+                               <input type="text" class="form-control replyText mb-0" >
                            </div>
                            <div class="input-group mb-3">
-                               <span class="input-group-text">Replyer</span>
+                               <span class="input-group-text"><i class="fas fa-user"></i></span>
                                <input type="text" name="MEM_ID" class="form-control  mb-0 replyer"
                                   th:value="${#authentication.principal.username}"
                                   placeholder="작성자" readonly>
                            </div>
                        </div>
                        <div class="modal-footer">
-                           <button type="button" class="btn btn-primary registerBtn">Register</button>
-                           <button type="button" class="btn btn-outline-dark closeRegisterBtn" >Close</button>
+                           <button type="button" class="btn btn-primary registerBtn">등록</button>
+                           <button type="button" class="btn btn-outline-dark closeRegisterBtn" >닫기</button>
                        </div>
                    </div>
                </div>
@@ -132,14 +132,14 @@
                        </div>
                        <div class="modal-body">
                            <div class="input-group mb-3">
-                               <span class="input-group-text">Reply Text</span>
-                               <input type="text" class="form-control modifyText" >
+                               <span class="input-group-text"><i class="fas fa-keyboard"></i></span>
+                               <input type="text" class="form-control modifyText mb-0" >
                            </div>
                        </div>
                        <div class="modal-footer">
-                           <button type="button" class="btn btn-info modifyBtn">Modify</button>
-                           <button type="button" class="btn btn-danger removeBtn">Remove</button>
-                           <button type="button" class="btn btn-outline-dark closeModifyBtn">Close</button>
+                           <button type="button" class="btn btn-primary modifyBtn">수정</button>
+                           <button type="button" class="btn btn-danger removeBtn">삭제</button>
+                           <button type="button" class="btn btn-outline-dark closeModifyBtn">닫기</button>
                        </div>
                    </div>
                </div>
@@ -150,9 +150,10 @@
         <script src="/js/gd.js"></script>
 </body>
 <script layout:fragment="script" th:inline="javascript">
-  const boardNo = /*[[${dto.BOARD_NO}]]*/''
-  const clubCode = /*[[${dto.CLUB_CODE}]]*/''
-	
+	const boardNo = /*[[${dto.BOARD_NO}]]*/''
+	const clubCode = /*[[${dto.CLUB_CODE}]]*/''
+	const currentUser = /*[[${#authentication.principal.username}]]*/'';
+
 	const replyList = document.querySelector('.replyList')  // 댓글목록 DOM
 	const replyPaging = document.querySelector('.replyPaging') // 페이지목록 DOM
 
@@ -173,7 +174,10 @@
 	
 	// 페이지목록출력
 	function printPage(data) {
-		
+		if(data.total == 0){
+			return
+		}
+
 		// pagination
 		let pageStr = '';
 		
@@ -206,7 +210,7 @@
 		)
 	}
 
-	printReplies(boardNo, clubCode, 1, 10, true)
+	printReplies(boardNo, clubCode, 1, 3, true)
 
 	// 댓글등록(모달창)
 	const registerModal = new bootstrap.Modal(document.querySelector('.registerModal'))
@@ -236,7 +240,7 @@
 				registerModal.hide()
 				replyText.value = ''
 				replyer.value = ''
-				printReplies(boardNo, clubCode, 1, 10, true) // 댓글목록갱신
+				printReplies(boardNo, clubCode, 1, 3, true) // 댓글목록갱신
 			}
 		).catch(
 			e => { alert("에러발생... ")}
@@ -246,7 +250,7 @@
 	
 	// 페이징처리
 	let page = 1
-	let size = 10
+	let size = 3
 	
 	replyPaging.addEventListener('click', function(e) {
 		
@@ -261,7 +265,7 @@
 		
 		const pageNum = target.getAttribute("data-page")
 		page = pageNum
-		printReplies(page, size, false)
+		printReplies(boardNo, clubCode, page, size, false)
 		
 	}, false)
 	
@@ -272,6 +276,8 @@
 	const modifyBtn = document.querySelector('.modifyBtn')
 	const removeBtn = document.querySelector('.removeBtn')
 	const closeModifyBtn = document.querySelector('.closeModifyBtn')
+
+	let hasAuth = false; // 댓글작성자와 currentUser 인지 여부
 	
 	replyList.addEventListener('click', function(e) {
 		
@@ -284,17 +290,28 @@
 			return
 		}	
 		
-		const rno = target.getAttribute("data-rno")
+		const replyNo = target.getAttribute("data-rno")
 		
-		if(!rno) {
+		if(!replyNo) {
 			return
 		}
 		
-		getReply(rno).then(reply => {
-			console.log(reply)
-			replyHeader.innerHTML = reply.rno
-			modifyText.value = reply.replyText
+		getReply(boardNo, clubCode, replyNo).then(reply => {
+			replyHeader.innerHTML = reply.replyNo
+			modifyText.value = reply.boardText
 			modifyModal.show()
+
+			hasAuth = currentUser === reply.memId;
+			if(!hasAuth){
+				modifyBtn.hidden = true;
+				modifyText.readOnly = true;
+				removeBtn.hidden = true;
+			} else{
+				modifyBtn.hidden = false;
+				modifyText.readOnly = false;
+				removeBtn.hidden = false;
+			}
+
 		}).catch(e => {
 			alert("에러발생!!!")
 		})	
@@ -305,31 +322,31 @@
 	modifyBtn.addEventListener('click', function(e) {	
 		
 		const replyObj = {
-			bno: bno,
-			rno: replyHeader.innerHTML, 
-			replyText: modifyText.value, 
+			boardNo: boardNo,
+			clubCode: clubCode,
+			replyNo: replyHeader.innerHTML, 
+			boardText: modifyText.value, 
 		}	
 		
 		modifyReply(replyObj).then(
 			result => {
-				alert(result.rno + " 댓글수정성공!!")
 				replyText.value = ''
 				modifyModal.hide()
-				printReplies(page, size)			
+				printReplies(boardNo, clubCode, page, size, false)		
 			}).catch(
 				e => { alert("댓글수정실패!!!")
 		})		
 	}, false)		
 	
-	removeBtn.addEventListener('click', function(e) {	
+	removeBtn.addEventListener('click', function(e) {
 		
-		removeReply(replyHeader.innerHTML).then(
+		removeReply(clubCode, boardNo, replyHeader.innerHTML).then(
 			result => {
-				alert(result.rno + " 댓글삭제성공!!")
+				alert(result.replyNo + " 댓글삭제성공!!")
 				replyText.value = ''
 				modifyModal.hide()
 				// page = 1
-				printReplies(page, size) // 원래페이지	
+				printReplies(boardNo, clubCode, page, size) // 원래페이지	
 		}).catch(
 			e => {
 				alert("댓글삭제실패!!!")	
