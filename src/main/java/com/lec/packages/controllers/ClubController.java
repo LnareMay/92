@@ -21,6 +21,7 @@ import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.MemberService;
 
@@ -41,6 +42,8 @@ public class ClubController {
 	
 	@Autowired
 	private final ClubService clubService;
+
+	private final ClubMemberRepository clubMemberRepository;
 	
 	@GetMapping("/club_create")
 	public String clubCreateGet(HttpServletRequest request, Model model) {
@@ -95,7 +98,7 @@ public class ClubController {
 		
 		clubService.join(memId, clubCode);
 		
-		return "redirect:/";
+		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
 	
 	@GetMapping("/club_member")
@@ -110,6 +113,9 @@ public class ClubController {
 
         PageResponseDTO<ClubMemberDTO> responseDTO = clubService.clubMemberList(clubCode, pageRequestDTO);
         model.addAttribute("responseDTO", responseDTO);
+        
+        int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);
+        model.addAttribute("memberCount", memberCount);
         
 		return "club/club_member"; 
 	}

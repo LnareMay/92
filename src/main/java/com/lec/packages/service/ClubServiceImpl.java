@@ -93,7 +93,7 @@ public class ClubServiceImpl implements ClubService {
         List<ClubDTO> dtoList = result.getContent().stream()
                                       .map(club -> {
                                     	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
-                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode());
+                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode()).orElse(0);
                                     	clubDTO.setMemberCount(memberCount);
                                     	return clubDTO;
                                       })
@@ -118,7 +118,7 @@ public class ClubServiceImpl implements ClubService {
 							                .stream()
 							                .map(club -> {
 							                	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
-							                	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode());
+		                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode()).orElse(0);
 							                	clubDTO.setMemberCount(memberCount);
 							                	return clubDTO;
 							                  })
@@ -234,7 +234,7 @@ public class ClubServiceImpl implements ClubService {
         List<ClubMemberDTO> dtoList = result.getContent().stream()
                                       .map(clubMember -> modelMapper.map(clubMember, ClubMemberDTO.class))
                                       .collect(Collectors.toList());      
-
+        
         return PageResponseDTO.<ClubMemberDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(dtoList)
@@ -434,7 +434,7 @@ public class ClubServiceImpl implements ClubService {
 	// 클럽가입한 회원수 구하기
 	@Override
 	public int membercount(String clubCode) {
-		return clubMemberRepository.countByClubCode(clubCode);
+		return clubMemberRepository.countByClubCode(clubCode).orElse(0);
 	}
 
 
