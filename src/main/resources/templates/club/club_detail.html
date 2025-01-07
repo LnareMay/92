@@ -31,7 +31,7 @@
         <div class="club-header-content mt-3">
             <div>
                 <h5 class="fw-bold mb-1" id="clubName" th:text="${clubdto.clubName}"></h5>
-                <p class="text-muted mb-0">회원 [[${memberCount}]] · 게시글 139</p>
+                <p class="text-muted mb-0 boardInfo">회원 [[${memberCount}]] · </p>
             </div>
         </div>
 
@@ -130,8 +130,10 @@
 <script layout:fragment="script" th:inline="javascript">
 	const clubCode = /*[[${clubdto.clubCode}]]*/''
 	const boardList = document.querySelector("#divBoard");
+	const boardInfo = document.querySelector(".boardInfo")
 
 	function printBoardList(data) {
+		boardInfo.innerHTML += `게시글 ${data.total}`
 		let str = ''
 		str += `<div class="section-header mb-3">
 				    <h6>게시글 ${data.total}</h6>
@@ -148,7 +150,7 @@
 				if(dto.boardImages.length > 0) {
 					for(const boardImage of dto.boardImages) {
 						str += `<div>
-									<img src="/view/s_${boardImage.uuid}_${boardImage.boardImage}" 
+									<img src="/club/view/s_${boardImage.uuid}_${boardImage.boardImage}" 
 									onerror="this.src='https://via.placeholder.com/80'" class="rounded">
 								</div>`
 					}
