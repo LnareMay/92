@@ -190,6 +190,7 @@ public class ClubRestController {
 		
 	}
 
+	// 클럽생성
 	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> createClub(
 	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
@@ -245,7 +246,9 @@ public class ClubRestController {
 	                .clubImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null)
 	                .build();
 
-	        clubService.create(clubDTO);
+	        String clubCode = clubService.create(clubDTO);
+
+	        clubService.join(memId, clubCode);
 
 	        response.put("success", true);
 	        response.put("redirectUrl", "/");

@@ -18,16 +18,19 @@ import org.springframework.data.domain.Sort;
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
+import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.ClubBoardReplyRepository;
 import com.lec.packages.repository.ClubBoardRepository;
+import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.repository.ClubRepository;
 
 import jakarta.transaction.Transactional;
@@ -44,15 +47,18 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubRepository clubRepository;
 	private final ClubBoardRepository clubBoardRepository;
 	private final ClubBoardReplyRepository clubBoardReplyRepository;
+	private final ClubMemberRepository clubMemberRepository;
+	
 	
 	// 클럽생성
-	public void create(ClubDTO clubDTO) {
+	public String create(ClubDTO clubDTO) {
 		String clubCode = generateClubCode();
 		clubDTO.setClubCode(clubCode);
 		
 		Club club = modelMapper.map(clubDTO, Club.class);	
 		clubRepository.save(club);	
 
+		return clubCode;
 	}
 
 	@Override
@@ -82,10 +88,15 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
-        Page<Club> result = clubRepository.findAllActiveClubs(pageable);
+        Page<Club> result = clubRepository.findAllActiveClubs(pageable);        
 
         List<ClubDTO> dtoList = result.getContent().stream()
-                                      .map(club -> modelMapper.map(club, ClubDTO.class))
+                                      .map(club -> {
+                                    	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode());
+                                    	clubDTO.setMemberCount(memberCount);
+                                    	return clubDTO;
+                                      })
                                       .collect(Collectors.toList());
 
         return PageResponseDTO.<ClubDTO>withAll()
@@ -104,9 +115,15 @@ public class ClubServiceImpl implements ClubService {
 
 
         List<ClubDTO> clubList = filteredClubs.getContent()
-                .stream()
-                .map(club -> modelMapper.map(club, ClubDTO.class))
-                .collect(Collectors.toList());
+							                .stream()
+							                .map(club -> {
+							                	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+							                	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode());
+							                	clubDTO.setMemberCount(memberCount);
+							                	return clubDTO;
+							                  })
+							                .collect(Collectors.toList());
+							   
         int total = (int) filteredClubs.getTotalElements();
 
         return PageResponseDTO.<ClubDTO>withAll()
@@ -169,7 +186,6 @@ public class ClubServiceImpl implements ClubService {
 	    if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3());
 	    if (clubDTO.getClubImage4() == null) clubDTO.setClubImage4(club.getClubImage4());
 
-	    // 클럽 데이터 변경
 	    club.change(
 	            clubDTO.getClubIntroduction(),
 	            clubDTO.getClubAddress(),
@@ -197,7 +213,36 @@ public class ClubServiceImpl implements ClubService {
 		
 		clubRepository.save(club);
 	}
-	 
+	
+	// 클럽가입하기
+	@Override
+	public void join(String memId, String clubCode) {
+		Club_Member_List clubMember = new Club_Member_List();
+		clubMember.setMemId(memId);
+		clubMember.setClubCode(clubCode);
+		
+	    clubMemberRepository.save(clubMember);		
+	}
+	
+
+    // 삭제되지 않은 클럽멤버 목록조회
+    @Override
+    public PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable("clubCode");
+        Page<Club_Member_List> result = clubMemberRepository.findActiveClubMember(clubCode, pageable);
+
+        List<ClubMemberDTO> dtoList = result.getContent().stream()
+                                      .map(clubMember -> modelMapper.map(clubMember, ClubMemberDTO.class))
+                                      .collect(Collectors.toList());      
+
+        return PageResponseDTO.<ClubMemberDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total((int) result.getTotalElements())
+                .build();
+    }
+        
+    
 	@Override
 	public List<ClubDTO> getAllClubs() {
 		List<Club> clubs = clubRepository.findAll();
@@ -384,6 +429,12 @@ public class ClubServiceImpl implements ClubService {
 		String clubCode = clubBoardRepository.save(club_Board).getClubCode();
 
 		return clubCode;
+	}
+
+	// 클럽가입한 회원수 구하기
+	@Override
+	public int membercount(String clubCode) {
+		return clubMemberRepository.countByClubCode(clubCode);
 	}
 
 

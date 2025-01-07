@@ -51,5 +51,6 @@ public class ClubDTO {
     private LocalDateTime MODIFYDATE;
     
     private String themeName;
+    private int memberCount;
 
 }
