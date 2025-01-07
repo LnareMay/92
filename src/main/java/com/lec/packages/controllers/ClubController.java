@@ -1,5 +1,6 @@
 package com.lec.packages.controllers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +71,12 @@ public class ClubController {
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
 		
 		PageResponseDTO<ClubMemberDTO> clubMemberdto = clubService.clubMemberList(clubCode, pageRequestDTO);
-        model.addAttribute("clubMemberdto", clubMemberdto);
+		model.addAttribute("clubMemberdto", clubMemberdto);
+		
+		// 클럽상세보기에서 3명만보여주기 제한
+		List<ClubMemberDTO> limitmember = clubMemberdto.getDtoList().stream().limit(3).toList();
+        model.addAttribute("limitmember", limitmember);
         
-		// int memberCount = clubService.membercount(clubCode);
         Map<String, Integer> memberCount = clubService.membercount();
 		model.addAttribute("memberCount", memberCount);
 		
