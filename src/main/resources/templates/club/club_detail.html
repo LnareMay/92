@@ -6,126 +6,166 @@
 <title>클럽 상세</title>
 
 <!-- 공통 css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" th:href="@{/css/common.css}">
 <!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
 <!-- Linking CSS files -->
-<link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
+<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
 <link rel="stylesheet" th:href="@{/css/detail_yj.css}">
 
 <!-- 공통 js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+	crossorigin="anonymous"></script>
 
 </head>
 <body>
 	<div th:insert="~{/layouts/header :: header}"></div>
- 	<main class="container my-4">
- 	<section>
-        <!-- 대표이미지 -->
-        <div>
-      		<img th:src="|/view/${clubdto.clubImage1}|" id="clubImage1" alt="클럽 대표이미지1" class="club-headerimg">
-            <!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" class="club-headerimg"> -->
-        </div>
+	<main class="container my-4">
+		<section>
+			<!-- 대표이미지 -->
+			<div>
+				<img th:src="|/view/${clubdto.clubImage1}|" id="clubImage1"
+					alt="클럽 대표이미지1" class="club-headerimg">
+				<!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="클럽 이미지" class="club-headerimg"> -->
+			</div>
 
-        <!-- 클럽 정보 -->
-        <div class="club-header-content mt-3">
-            <div>
-                <h5 class="fw-bold mb-1" id="clubName" th:text="${clubdto.clubName}"></h5>
+			<!-- 클럽 정보 -->
+			<div class="club-header-content mt-3">
+				<div>
+					<h5 class="fw-bold mb-1" id="clubName"
+						th:text="${clubdto.clubName}"></h5>
 
-                <p class="text-muted mb-0 boardInfo">회원 [[${memberCount}]] · </p>
+					<p class="text-muted mb-0 boardInfo">회원 [[${memberCount}]] ·</p>
 
-            </div>
-        </div>
+				</div>
+			</div>
 
-        <!-- 클럽 소개 -->
-        <p class="mt-3 club-description"  th:text="${clubdto.clubIntroduction}" style="margin-bottom: 10px"></p>
-        <!-- 클럽 테마 -->
-        <p class="text-muted" th:text="${clubdto.themeName}" style="margin-bottom: 10px"></p>
- 
-        <!-- 가입 버튼 -->
-        <form action="/club/club_join" method="post" onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display:inline;">
-     		<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" /> 
-	      	<button type="submit" class="btn btn-warning ">클럽 가입하기</button> 
-	    </form>
-		<span th:if="${clubdto.MemId == principal.memId}">
-     		<a class="btn btn-success fw-bold modify-btn shadow-sm" th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽 수정하기 </a>
-     	
-     	<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display:inline;">
-     		<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" /> 
-	      	<button type="submit" class="btn btn-danger">클럽 삭제하기</button> 
-	    </form>
-	    </span>
+			<!-- 클럽 소개 -->
+			<p class="mt-3 club-description"
+				th:text="${clubdto.clubIntroduction}" style="margin-bottom: 10px"></p>
+			<!-- 클럽 테마 -->
+			<p class="text-muted" th:text="${clubdto.themeName}"
+				style="margin-bottom: 10px"></p>
+
+			<!-- 가입 버튼 -->
+			<form action="/club/club_join" method="post"
+				onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
+				<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+				<button type="submit" class="btn btn-warning ">클럽 가입하기</button>
+			</form>
+			<span th:if="${clubdto.MemId == principal.memId}"> <a
+				class="btn btn-success fw-bold modify-btn shadow-sm"
+				th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽
+					수정하기 </a>
+
+				<form action="/club/club_remove" method="post"
+					onsubmit="return confirm('클럽을 삭제하시겠습니까?');"
+					style="display: inline;">
+					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+					<button type="submit" class="btn btn-danger">클럽 삭제하기</button>
+				</form>
+			</span>
 
 		</section>
-				   <hr >
-				
-               <!-- 멤버 섹션 -->
-			   <div class="row">
-			       <div class="col-md-6">
-			               <section>
-			                   <div class="section-header mb-3">
-			                       <h6>멤버 [[${memberCount}]]  </h6>
-			                       <a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}" class="more-link">더보기</a>
-			                   </div>
-			                   <div class="d-flex flex-column">
-			                       <div class="d-flex align-items-center mb-3" th:each="clubmember : ${clubMemberdto.dtoList}">
-										<img src="https://via.placeholder.com/50" alt="프로필 이미지" class="rounded-circle me-3">
-			                           <div>
-			                               <p class="mb-1 fw-bold">[[${clubmember.memId}]] 
-											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span></p>
-			                               <small class="text-muted">성산제2동</small>
-			                           </div>
-			                       </div>
-			                   </div>
-			               </section>
-			           </div>
+		<hr>
 
-			           <!-- 일정 섹션 -->
-			           <div class="col-md-6">
-			               <section>
-			                   <div class="section-header mb-3">
-			                       <h6>일정 3</h6>
-			                       <a href="/club/club_calendar" class="more-link">더보기 ></a>
-			                   </div>
-			                   <div>
-			                       <!-- 첫 번째 일정 -->
-			                       <div class="d-flex align-items-center mb-3">
-			                           <div class="me-3 text-center">
-			                               <div class="bg-light p-2 rounded">
-			                                   <strong>12월<br>16</strong>
-			                               </div>
-			                           </div>
-			                           <div>
-			                               <p class="mb-1 fw-bold">독서가 곁들여진 일상 글쓰기 모임</p>
-			                               <span class="text-danger small">모집중</span><br>
-			                               <small class="text-muted">오후 3:30 · 2/4명</small>
-			                           </div>
-			                       </div>
-			                       <!-- 두 번째 일정 -->
-			                       <div class="d-flex align-items-center mb-3">
-			                           <div class="me-3 text-center">
-			                               <div class="bg-light p-2 rounded">
-			                                   <strong>12월<br>16</strong>
-			                               </div>
-			                           </div>
-			                           <div>
-			                               <p class="mb-1 fw-bold">유종의 미 거두는 연말독서 같이해요</p>
-			                               <span class="text-muted small">종료</span><br>
-			                               <small class="text-muted">오후 5:00 · 1/4명</small>
-			                           </div>
-			                       </div>
-			                   </div>
-			               </section>
-			           </div>
+		<!-- 멤버 섹션 -->
+		<div class="row">
+			<div class="col-md-6">
+				<section>
+					<div class="section-header mb-3">
+						<h6>멤버 [[${memberCount}]]</h6>
+						<a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}"
+							class="more-link">더보기</a>
 					</div>
-				<hr >
-                <!-- 게시글 섹션 -->
-				<section id="divBoard">
-				    
+					<div class="d-flex flex-column">
+						<div class="d-flex align-items-center mb-3"
+							th:each="clubmember : ${clubMemberdto.dtoList}">
+							<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
+							<th:block
+								th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http')}">
+								<img th:src="${#authentication.principal.memPicture}"
+									alt="프로필 이미지">
+							</th:block>
+
+							<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
+							<th:block
+								th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
+								<img th:src="|/view/${#authentication.principal.memPicture}|"
+									alt="프로필 이미지">
+							</th:block>
+
+							<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
+							<th:block
+								th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
+								<img
+									src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
+									alt="프로필 이미지">
+							</th:block>
+							<div>
+								<p class="mb-1 fw-bold">
+									[[${clubmember.memId}]] <span
+										th:if="${clubmember.memId == clubdto.memId}"
+										class="text-warning small">⭐</span>
+								</p>
+								<small class="text-muted" th:text="${clubdto.clubAddress}"></small>
+							</div>
+						</div>
+					</div>
 				</section>
-    </main>
-  
-    <div th:insert="~{layouts/footer :: footer}"></div>
+			</div>
+
+			<!-- 일정 섹션 -->
+			<div class="col-md-6">
+				<section>
+					<div class="section-header mb-3">
+						<h6>일정 3</h6>
+						<a href="/club/club_calendar" class="more-link">더보기 ></a>
+					</div>
+					<div>
+						<!-- 첫 번째 일정 -->
+						<div class="d-flex align-items-center mb-3">
+							<div class="me-3 text-center">
+								<div class="bg-light p-2 rounded">
+									<strong>12월<br>16
+									</strong>
+								</div>
+							</div>
+							<div>
+								<p class="mb-1 fw-bold">독서가 곁들여진 일상 글쓰기 모임</p>
+								<span class="text-danger small">모집중</span><br> <small
+									class="text-muted">오후 3:30 · 2/4명</small>
+							</div>
+						</div>
+						<!-- 두 번째 일정 -->
+						<div class="d-flex align-items-center mb-3">
+							<div class="me-3 text-center">
+								<div class="bg-light p-2 rounded">
+									<strong>12월<br>16
+									</strong>
+								</div>
+							</div>
+							<div>
+								<p class="mb-1 fw-bold">유종의 미 거두는 연말독서 같이해요</p>
+								<span class="text-muted small">종료</span><br> <small
+									class="text-muted">오후 5:00 · 1/4명</small>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+		<hr>
+		<!-- 게시글 섹션 -->
+		<section id="divBoard"></section>
+	</main>
+
+	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/gd.js"></script>

@@ -82,7 +82,33 @@ public class KakaoApiService {
 
                 if (documents.length() > 0) {
                     JSONObject address = documents.getJSONObject(0).getJSONObject("address");
-                    result = address.optString("region_3depth_name", "구/동/면 정보 없음");
+
+                    // 시, 구, 동 정보 추출 및 조합
+                    String region1 = address.optString("region_1depth_name", "시 정보 없음");
+                    String region2 = address.optString("region_2depth_name", "구/군 정보 없음");
+                    String region3 = address.optString("region_3depth_name", "동/면 정보 없음");
+
+                    // 특별시, 광역시, 도 등의 이름 변환
+                    if ("서울".equals(region1)) {
+                        region1 = "서울특별시";
+                    } else if ("부산".equals(region1)) {
+                        region1 = "부산광역시";
+                    } else if ("대구".equals(region1)) {
+                        region1 = "대구광역시";
+                    } else if ("인천".equals(region1)) {
+                        region1 = "인천광역시";
+                    } else if ("광주".equals(region1)) {
+                        region1 = "광주광역시";
+                    } else if ("대전".equals(region1)) {
+                        region1 = "대전광역시";
+                    } else if ("울산".equals(region1)) {
+                        region1 = "울산광역시";
+                    } else if ("세종".equals(region1)) {
+                        region1 = "세종특별자치시";
+                    }
+                    
+                    // 결과 조합
+                    result = String.format("%s %s %s", region1, region2, region3);
                 }
             } else {
                 System.err.println("Error: HTTP response code " + responseCode);
