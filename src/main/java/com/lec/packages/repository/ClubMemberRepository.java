@@ -16,8 +16,8 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
 
     @Query("SELECT cm FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode order by CREATEDATE")
     Page<Club_Member_List> findActiveClubMember(@Param("clubCode") String clubCode,  Pageable pageable);
-	
-    @Query("SELECT COALESCE(COUNT(cm), 0) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode HAVING cm.clubCode = :clubCode")
+   
+    @Query("SELECT COALESCE(COUNT(cm), 0) FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode")
     Optional<Integer> countByClubCode(@Param("clubCode") String clubCode);
     
 }
