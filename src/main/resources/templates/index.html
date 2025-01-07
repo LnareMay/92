@@ -216,7 +216,9 @@
 
 					<!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="Club Thumbnail"> -->
 					<img th:src="|/view/${club.clubImage1}|" id="clubImage1"
+
 					onerror="this.src='https://via.placeholder.com/80?text=ImgNone'">
+
 					<div class="club-content">
 						<div class="club-title" id="clubName" th:text="${club.clubName}"></div>
 						<div class="club-description" th:text="${club.clubIntroduction}"></div>
