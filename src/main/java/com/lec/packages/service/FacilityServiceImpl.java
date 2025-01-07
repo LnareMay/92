@@ -2,16 +2,19 @@ package com.lec.packages.service;
 
 
 
+
 import java.util.List;
 import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import com.lec.packages.domain.Facility;
 import com.lec.packages.dto.FacilityDTO;
@@ -34,23 +37,30 @@ public class FacilityServiceImpl implements FacilityService{
 
 	private final FacilityRepository facilityRepository;
 	
-	
+
 	//시설 등록
 	@Transactional
 	@Override
 	public String register(FacilityDTO facilityDTO) {
 		
 		Facility facility = modelMapper.map(facilityDTO, Facility.class);
-		
 		//고유한 FacilityCode 생성
         String uniqueFacilityCode = RandomStringGenerator.generateRandomString(8,facilityRepository); // 8자리 랜덤 문자열
         facility.setFacilityCode("FACIL_"+uniqueFacilityCode);
-        
+		
+        // 파일 경로 설정 (DTO에서 이미 설정된 경로를 사용)
+        facility.setFacilityImage1(facilityDTO.getFacilityImage1());
+        facility.setFacilityImage2(facilityDTO.getFacilityImage2());
+        facility.setFacilityImage3(facilityDTO.getFacilityImage3());
+        facility.setFacilityImage4(facilityDTO.getFacilityImage4());
+
         //엔티티를 데이터베이스에 저장
         facilityRepository.save(facility);
-		
-		return facility.getFacilityCode();
+        
+        return facility.getFacilityCode();
+
 	}
+
 	
 	//유저별 시설 목록 보기
 	@Override
@@ -76,9 +86,7 @@ public class FacilityServiceImpl implements FacilityService{
 	public PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO) {
 		
 		String[] types = pageRequestDTO.getTypes();
-
 		String[] keywords = pageRequestDTO.getKeywords();
-
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
 				
@@ -128,5 +136,9 @@ public class FacilityServiceImpl implements FacilityService{
 		
 		
 	}
+
+
+
+
 
 }
