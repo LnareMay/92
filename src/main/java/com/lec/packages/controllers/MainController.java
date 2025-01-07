@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.MemberRepository;
@@ -43,17 +44,10 @@ public class MainController {
         if (member != null) {
             model.addAttribute("member", member); // Member 객체를 모델에 추가
         }
-    	
-    	
+	
     	String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
-        
-        
-        if(pageRequestDTO.getPage() < 1) {
-        	pageRequestDTO.setPage(1);
-        }
-        
-    	
+
     	if (clubTheme == null || clubTheme.isEmpty()) {
     		clubTheme = "ALL";
     	} 
@@ -61,13 +55,9 @@ public class MainController {
     	PageResponseDTO<ClubDTO> responseDTO = "ALL".equals(clubTheme)
     			? clubService.list(pageRequestDTO)
     			: clubService.listByTheme(pageRequestDTO, clubTheme);
-    	
-
 
         model.addAttribute("responseDTO", responseDTO);
-        model.addAttribute("clubs", responseDTO.getDtoList());
         model.addAttribute("theme", clubTheme);
-     
 
         return "index";
     }   

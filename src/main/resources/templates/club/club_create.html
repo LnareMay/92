@@ -98,7 +98,7 @@
 			    </div>
 			</div>
 			               	
-<!-- 주활동지역 -->
+			<!-- 주활동지역 -->
 			<label class="form-label">주활동지역</label>
 				<input type="hidden" id="clubAddress" name="clubAddress" readonly></input>
 			
@@ -134,7 +134,7 @@
 			<div class="club-isprivate">
 			    <input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" onchange="togglePasswordField()"> 공개
 			    <input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()"> 비공개
-			    <input type="password" id="clubPw" name="clubPw" placeholder="비밀번호 입력" style="display: none; margin-left: 10px;">
+			    <input type="password" id="clubPw" name="clubPw" placeholder="비밀번호 입력" maxlength="15" style="display: none; margin-left: 10px;">
 			</div>
 
 			<button type="submit" class="btn btn-primary mt-4" style="margin-bottom: 20px;">만들기</button>	
@@ -163,6 +163,11 @@
 	        selectedThemes = selectedThemes.filter(theme => theme !== button.value);
 	        button.classList.remove('selected');
 	    } else {
+			// 테마 4개까지만 선택가능 
+	    	if (selectedThemes.length >= 4) {
+				alert('최대 4개의 테마만 선택할 수 있습니다');
+				return;
+			}
 	        selectedThemes.push(button.value);
 	        button.classList.add('selected');
 	    }
