@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Club;
+import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 
 import com.lec.packages.dto.ClubDTO;
@@ -351,6 +352,23 @@ public class ClubRestController {
 		resultMap.put("replyNo", resultReplyNo);
 
 		return resultMap;
+	}
+
+	@GetMapping("/club_board_rest")
+	public PageResponseDTO<ClubBoardAllListDTO> clubBoard(@RequestParam("clubCode") String clubCode, PageRequestDTO pageRequestDTO
+			, @RequestParam("page") int page, @RequestParam("size") int size
+			, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+        
+		log.info("do clubBoardListRest");
+		pageRequestDTO.setSize(size);
+		pageRequestDTO.setPage(page);
+		pageRequestDTO.setType("ALL");
+		PageResponseDTO<ClubBoardAllListDTO> boardDTO = clubService.listWithAll(pageRequestDTO, clubCode);
+        log.info(boardDTO);
+
+		return boardDTO;
 	}
 
 }

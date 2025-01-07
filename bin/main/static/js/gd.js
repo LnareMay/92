@@ -48,3 +48,8 @@ async function removeReply(clubCode, boardNo, replyNo) {
 	const response = await axios.delete(`/club/replies/delete/${clubCode}, ${boardNo}, ${replyNo}`)
 	return response.data
 }
+
+async function getBoardList({clubCode, page, size}) {
+	const result = await axios.get(`/club/club_board_rest`, {params: {clubCode, page, size}})
+	return result.data
+}
