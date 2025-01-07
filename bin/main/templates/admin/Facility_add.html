@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -131,8 +134,7 @@
 
     <!-- Main content -->
     <section class="content">
-   <form id="facilityAdd" action="/admin/Facility_add" method="post"> 
-   
+   <form id="facilityAdd" action="/admin/Facility_add" method="post" enctype="multipart/form-data" >
       <div class="row">
         <div class="col-md-6">
           <div class="card card-primary">
@@ -175,65 +177,81 @@
             <!-- /.card-body -->
           </div>
           <!-- /.card -->
-          <div class="card card-secondary">
-            <div class="card-header">
-              <h3 class="card-title">Budget</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fas fa-minus"></i></button>
-              </div>
-            </div>
-            <div class="card-body">
-              
-              <div class=" form-group">
-              	<label for="facilityStartTime">Facility Start Time</label>
-               <input type="datetime-local" id="facilityStartTime" name="facilityStartTime" class="form-control" required>
-              </div> 
-       		 <div class=" form-group">
-              	<label for="facilityEndTime">Facility End Time</label>
-                 <input type="datetime-local" id="facilityEndTime" name="facilityEndTime" class="form-control" required>
-             </div>
-              
-              <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" id="price" name="price" value="${facilityDTO.price}" >
-              </div>
-              
-            </div>
-            <!-- /.card-body -->
-          </div>    
+		<div class="card card-secondary">
+		  <div class="card-header">
+		    <h3 class="card-title">Budget</h3>
+		    <div class="card-tools">
+		      <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+		        <i class="fas fa-minus"></i>
+		      </button>
+		    </div>
+		  </div>
+		  <div class="card-body">
+		
+		    <!-- Row for Facility Start and End Time -->
+		    <div class="form-group row">
+		      <!-- Facility Start Time -->
+		      <div class="col-md-6">
+		        <label for="facilityStartTime">시설 개장시간</label>
+		        <div class="input-group">
+		          <input type="time" id="facilityStartTime" name="facilityStartTime" class="form-control timepicker" placeholder="Select start time">
+		        </div>
+		      </div>
+		
+		      <!-- Facility End Time -->
+		      <div class="col-md-6">
+		        <label for="facilityEndTime">시설 마감시간</label>
+		        <div class="input-group">
+		        <input type="time" id="facilityEndTime" name="facilityEndTime" class="form-control timepicker" placeholder="Select end time">
+		        </div>
+		      </div>
+		    </div>
+		        <div id="timeErrorMessage" style="color: red; display: none;">
+      					<p>* 시설 개장 시간이 시설 마감 시간보다 크거나 같을 수 없습니다. </p>
+      					<p>* 잘못된 시간 설정이므로 다시 선택해주세요.</p>
+   				</div>
+		
+		    <!-- Price Input -->
+		    <div class="form-group">
+		      <label for="price">시간 당 가격</label>
+		      <input type="number" id="price" name="price" value="${facilityDTO.price}" class="form-control">
+		    </div>
+		
+		  </div>
+		  <!-- /.card-body -->
+		</div>
         </div>
         <div class="col-md-6">
  
-    	 <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Files</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fas fa-minus"></i></button>
-              </div>
-            </div>
-            <div class="card-body p-0">
-              <table class="table">
-
-                <tbody>
-              
-                  <tr>
-                    <td><input type="file"></td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  </tr>
-                 
-                </tbody>
-              </table>
-            </div>
-            <!-- /.card-body -->
-          </div> 
+			<div class="card card-primary">
+			  <div class="card-header">
+			    <h3 class="card-title">Files</h3>
+			    <div class="card-tools">
+			      <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+			        <i class="fas fa-minus"></i>
+			      </button>
+			    </div>
+			  </div>
+			  <div class="card-body p-0">
+			    <table class="table">
+			      <thead>
+			        <tr>
+			          <th>File Name</th>
+			          <th class="text-right">Actions</th>
+			        </tr>
+			      </thead>
+			      <tbody id="fileList">
+			        <!-- Dynamically added file rows will appear here -->
+			      </tbody>
+			    </table>
+			
+			    <!-- Hidden File Input Section -->
+			    <input type="file" id="fileInput" name="files" multiple accept="image/*" style="display: none;">
+			    <div class="p-3">
+			      <button type="button" id="addFilesBtn" class="btn btn-primary">Add Files</button>
+			    </div>
+			  </div>
+			</div>
           
            <div class="card card-secondary">
             <div class="card-header">
@@ -272,16 +290,15 @@
               </div>       
               
             </div>
-              
-           
+
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <a href="/admin/main" class="btn btn-secondary">Cancel</a>
-          <input type="submit" value="Create new Facility" class="btn btn-success float-right">
-        </div>
-      </div>
+      
+		<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+		  <a href="/admin/main" class="btn btn-secondary">Cancel</a>
+		  <input type="submit" value="Create new Facility" class="btn btn-success" style="margin-left: auto;">
+		</div>
+      
    </form>
     </section>
     <!-- /.content -->
@@ -307,6 +324,52 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/admin.js"></script>
+
+<script src="/js/file_upload.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+	flatpickr(".timepicker", {
+	    enableTime: true,          // Enable time selection
+	    noCalendar: true,          // Disable calendar
+	    dateFormat: "H:i",         // Format: Hours:Minutes (24-hour format)
+	    time_24hr: true,           // Use 24-hour clock
+	    minuteIncrement: 10        // Set minute intervals to 10 minutes
+	  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const startTimeInput = document.getElementById('facilityStartTime');
+    const endTimeInput = document.getElementById('facilityEndTime');
+    const errorMessage = document.getElementById('timeErrorMessage');
+
+    function validateTime() {
+      const startTime = startTimeInput.value;
+      const endTime = endTimeInput.value;
+
+      if (startTime && endTime) {
+        if (startTime >= endTime) {
+          // Display error message
+          errorMessage.style.display = 'block';
+          
+          // Reset inputs
+          startTimeInput.value = '';
+          endTimeInput.value = '';
+        } else {
+          // Hide error message
+          errorMessage.style.display = 'none';
+        }
+      }
+    }
+
+    // Add event listeners to validate on input change
+    startTimeInput.addEventListener('change', validateTime);
+    endTimeInput.addEventListener('change', validateTime);
+  });
+</script>
+
 
 <!-- 도로명 주소 노출 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -359,6 +422,7 @@
         }).open();
     }
 </script>
+
 
 </body>
 </html>

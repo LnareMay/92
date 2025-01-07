@@ -1,19 +1,19 @@
 package com.lec.packages.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import java.time.LocalTime;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
+
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
+
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -80,7 +80,7 @@ public class Facility extends BaseEntity{
 	    private boolean facilityIsOnlyClub;
 
 	    @JoinColumn(name = "MEM_ID")
-	    @Column(name = "MEM_ID", length = 100)
+	    @Column(name = "MEM_ID", length = 20)
 	    private String memId;
 
 	    // DECIMAL TYPE 선언
@@ -90,17 +90,17 @@ public class Facility extends BaseEntity{
 	    private BigDecimal price;
 
 	    @Column(name = "FACILITY_START_TIME")
-	    private LocalDateTime facilityStartTime;
+	    private LocalTime  facilityStartTime;
 
 	    @Column(name = "FACILITY_END_TIME")
-	    private LocalDateTime facilityEndTime;
+	    private LocalTime  facilityEndTime;
 
 	    @Column(name = "DELETE_FLAG")
 	    private boolean deleteFlag;
 	    
 	    public void modifyFacility(String facilityName, String facilityDescription
 	    							,boolean facilityIsOnlyClub, BigDecimal price
-	    							,LocalDateTime facilityStartTime, LocalDateTime facilityEndTime) {
+	    							,LocalTime  facilityStartTime, LocalTime  facilityEndTime) {
 	    	
 	    	this.facilityName = facilityName;
 	    	this.facilityDescription = facilityDescription;

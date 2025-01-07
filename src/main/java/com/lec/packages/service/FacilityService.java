@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -14,6 +15,7 @@ public interface FacilityService {
 	PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO);
 	FacilityDTO getFacilityByCode(String facilityCode);
 	void modify(FacilityDTO facilityDTO);
-
+	
+	
 
 }

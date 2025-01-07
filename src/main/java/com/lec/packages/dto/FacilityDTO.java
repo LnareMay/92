@@ -1,13 +1,15 @@
 package com.lec.packages.dto;
 
 import java.math.BigDecimal;
+
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,11 +40,11 @@ public class FacilityDTO {
 
     private String facilityImage1;
     
-    private String facilityImage2;
+    private String  facilityImage2;
     
-    private String facilityImage3;
+    private String  facilityImage3;
     
-    private String facilityImage4;
+    private String  facilityImage4;
 
     private String exerciseCode;
     
@@ -57,10 +59,10 @@ public class FacilityDTO {
     private BigDecimal price;
 
     @NotNull(message = "시설 시작 시간은 필수 입력 항목입니다.")
-    private LocalDateTime facilityStartTime;
+    private LocalTime facilityStartTime;
 
     @NotNull(message = "시설 종료 시간은 필수 입력 항목입니다.")
-    private LocalDateTime facilityEndTime;
+    private LocalTime facilityEndTime;
     
     
     private LocalDateTime createDate;

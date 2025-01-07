@@ -133,14 +133,13 @@
           <div class="row">
             <div class="col-12 col-sm-6">
               <div class="col-12">
-                <img src="../../dist/img/prod-1.jpg" class="product-image" alt="Product Image">
+              <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image" class="product-image">
               </div>
               <div class="col-12 product-image-thumbs">
-                <div class="product-image-thumb active"><img src="../../dist/img/prod-1.jpg" alt="Product Image"></div>
-                <div class="product-image-thumb" ><img src="../../dist/img/prod-2.jpg" alt="Product Image"></div>
-                <div class="product-image-thumb" ><img src="../../dist/img/prod-3.jpg" alt="Product Image"></div>
-                <div class="product-image-thumb" ><img src="../../dist/img/prod-4.jpg" alt="Product Image"></div>
-                <div class="product-image-thumb" ><img src="../../dist/img/prod-5.jpg" alt="Product Image"></div>
+                <div class="product-image-thumb active"> <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"></div>
+                <div class="product-image-thumb">  <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2" alt="Product Image"></div>
+                <div class="product-image-thumb" > <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3" alt="Product Image" ></div>
+                <div class="product-image-thumb" > <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" alt="Product Image" ></div>
               </div>
             </div>
             <div class="col-12 col-sm-6">
@@ -152,13 +151,23 @@
               
               <table class="table table-striped projects">
 	              <tr>
+	              	<td>Facility Address</td>
+	              	<td th:text="${facility.facilityAddress}"></td>
+	              </tr>
+	              
+	              <tr>
 	              	<td>Facility Description</td>
-	              	<td th:text="${facility.facilityDescription}"/>
+	              	<td th:text="${facility.facilityDescription}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Open Time ~ EndTime</td>
+ 					<td th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></td>
 	              </tr>
 	              
 	              <tr>
 	              	<td>Facility Create Date</td>
-	              	<td th:text="${facility.formattedCreateDate}"/>
+	              	<td th:text="${facility.formattedCreateDate}"></td>
 	              </tr>
 	              
 	              <tr>
@@ -179,12 +188,12 @@
               
 	              <tr>
 	              	<td>Reservation Only Club</td>
-	              	<td th:text="${facility.facilityIsOnlyClub}"/>
+	              	<td th:text="${facility.facilityIsOnlyClub}"></td>
 	              </tr>
 	              
 	              <tr>
 	              	<td>Facility price</td>
-	              	<td th:text="${facility.formattedPrice}" />
+	              	<td th:text="${facility.formattedPrice}" ></td>
 	              </tr>
               
               
@@ -225,5 +234,23 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/admin.js"></script>
+<script>
+//이미지선택
+document.querySelectorAll('.product-image-thumb').forEach((thumb) => {
+    thumb.addEventListener('click', (event) => {
+        // 현재 클릭된 썸네일의 이미지를 가져옴
+        const clickedImageSrc = event.currentTarget.querySelector('img').src;
+
+        // 상단 메인 이미지를 클릭된 이미지로 변경
+        document.querySelector('.product-image').src = clickedImageSrc;
+
+        // 썸네일 활성화 상태 업데이트
+        document.querySelectorAll('.product-image-thumb').forEach((thumb) => {
+            thumb.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+    });
+});
+</script>
 </body>
 </html>
