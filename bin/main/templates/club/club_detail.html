@@ -118,39 +118,59 @@
 					</div>
 				<hr >
                 <!-- 게시글 섹션 -->
-				<section>
-				    <div class="section-header mb-3">
-				        <h6>게시글 139</h6>
-				        <a th:href="@{/club/club_board(clubCode=${clubdto.clubCode}, type=${'ALL'})}" class="more-link">더보기</a>
-				    </div>
-				
-				    <!-- 첫 번째 게시글 -->
-				    <div class="d-flex mb-4">
-				        <!-- 게시글 본문 -->
-				        <div class="me-3" style="flex: 1;">
-				            <p class="board-text text-muted">모임에만 공개된 게시글이에요.</p>
-				            <small class="text-muted">감자 · 6일 전 · 전체<span class="ms-3">💬 3</span></small>
-				        </div>
-				    </div>
-				
-				    <!-- 두 번째 게시글 -->
-				    <div class="d-flex mb-4">
-				        <!-- 게시글 본문 -->
-				        <div class="me-3" style="flex: 1;">
-				            <p class="board-text">
-				                첫병 축하축하~ 몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹어라 쫌!! 🔥🔥🔥🔥 
-				                몸도 안 좋은데 고생 많았어~ 뿌링!... 루딕... 84... 냠냠: 꼭 다음엔 1차부터 마시자!! 당근: 많이 좀 먹
-				            </p>
-				            <small class="text-muted">권근 · 13일 전 · 전체<span class="ms-3">💬 9</span></small>
-				        </div>
-				        <!-- 게시글 이미지 -->
-				        <div>
-				            <img src="https://via.placeholder.com/80" alt="게시글 이미지" class="rounded">
-				        </div>
-				    </div>
+				<section id="divBoard">
+				    
 				</section>
     </main>
   
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/gd.js"></script>
+<script layout:fragment="script" th:inline="javascript">
+	const clubCode = /*[[${clubdto.clubCode}]]*/''
+	const boardList = document.querySelector("#divBoard");
+
+	function printBoardList(data) {
+		let str = ''
+		str += `<div class="section-header mb-3">
+				    <h6>게시글 ${data.total}</h6>
+				    <a href="/club/club_board?clubCode=${clubCode}&type=ALL" class="more-link">더보기</a>
+				</div>`
+		if(data.dtoList && data.dtoList.length > 0) {
+			for(const dto of data.dtoList) {
+				str += `<div>
+						<div class="d-flex mb-4">
+							<div class="me-3" style="flex: 1;">
+								<p class="board-text text-muted">${dto.boardText}</p>
+								<small class="text-muted">${dto.memId} . ${dto.modDate} 일 전 . ${dto.type} <span class="ms-3 text-muted">💬${dto.replyCount}</span></small>
+							</div>`
+				if(dto.boardImages.length > 0) {
+					for(const boardImage of dto.boardImages) {
+						str += `<div>
+									<img src="/view/s_${boardImage.uuid}_${boardImage.boardImage}" 
+									onerror="this.src='https://via.placeholder.com/80'" class="rounded">
+								</div>`
+					}
+				}
+				str += `</div>
+					</div>`
+			}
+		}
+		boardList.innerHTML = str
+	}
+
+	function getBoard(clubCode, page, size) {
+		getBoardList({clubCode, page, size})
+		.then(
+			data => {
+				printBoardList(data)  // 댓글목록처리
+			}
+		).catch(
+			e => console.log(e)
+		)
+	}
+
+	getBoard(clubCode, 1, 3)
+</script>
 </html>
