@@ -24,52 +24,52 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
+import com.lec.packages.service.KakaoApiService;
 import com.lec.packages.service.MemberService;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
-	
-	@Autowired
-	private ClubService clubService;
-	private final MemberRepository memberRepository;
 
+    private final ClubService clubService;
+    private final MemberRepository memberRepository;
+    private final KakaoApiService kakaoApiService;
 
     @GetMapping("/")
-    public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model
-    					 , @RequestParam(value = "theme", required = false) String clubTheme) {
-    	
-    	// 현재 사용자 가져오기
+    public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model,
+                           @RequestParam(value = "theme", required = false) String clubTheme) {
+
+        // 현재 사용자 가져오기
         Member member = getAuthenticatedMember();
         if (member != null) {
             model.addAttribute("member", member); // Member 객체를 모델에 추가
         }
-	
-    	String requestURI = request.getRequestURI();
+
+        // 지역 정보 추가
+        try {
+            String region = kakaoApiService.extractRegionFromAuthenticatedMember();
+            model.addAttribute("region", region); // 구/동/면 값을 모델에 추가
+        } catch (Exception e) {
+            model.addAttribute("region", "지역 정보를 가져올 수 없습니다."); // 예외 처리
+            e.printStackTrace();
+        }
+
+        String requestURI = request.getRequestURI();
         model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
 
-    	if (clubTheme == null || clubTheme.isEmpty()) {
-    		clubTheme = "ALL";
-    	} 
-    	
-    	PageResponseDTO<ClubDTO> responseDTO = "ALL".equals(clubTheme)
-    			? clubService.list(pageRequestDTO)
-    			: clubService.listByTheme(pageRequestDTO, clubTheme);
+        if (clubTheme == null || clubTheme.isEmpty()) {
+            clubTheme = "ALL";
+        }
+
+        PageResponseDTO<ClubDTO> responseDTO = "ALL".equals(clubTheme) ? clubService.list(pageRequestDTO)
+                : clubService.listByTheme(pageRequestDTO, clubTheme);
 
         model.addAttribute("responseDTO", responseDTO);
         model.addAttribute("theme", clubTheme);
 
         return "index";
-    }   
-
-    /*
-    @GetMapping("/facility/facility_main")
-    public String mainFacility(HttpServletRequest request, Model model) {
-        String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
-        return "/facility/facility_main"; // Thymeleaf 템플릿 파일 (facility_main.html)
     }
-     */
+
     private Member getAuthenticatedMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
@@ -79,5 +79,4 @@ public class MainController {
         }
         return null; // 인증되지 않은 사용자일 경우 null 반환
     }
-   
 }

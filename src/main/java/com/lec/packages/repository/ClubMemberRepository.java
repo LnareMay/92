@@ -25,5 +25,6 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
     
     @Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
     List<Object[]> countByClubCode();
+
     
 }
