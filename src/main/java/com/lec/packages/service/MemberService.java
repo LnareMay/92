@@ -26,5 +26,9 @@ public interface MemberService {
 
 	void remove(String username);
 	
+	void updateMemAddressSet(String memberId, String memAddressSet);
+	
+	
+	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
 }

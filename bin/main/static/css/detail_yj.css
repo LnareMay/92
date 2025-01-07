@@ -322,6 +322,8 @@ p.fw-bold {
     object-fit: cover;
     width: 80px;
     height: 80px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
 .board-text {
