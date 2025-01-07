@@ -2,6 +2,7 @@ package com.lec.packages.security;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("======> User Request: {}", userRequest);
@@ -44,85 +46,72 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> paramMap = oAuth2User.getAttributes();
 
-        // 무작위로 고유한 memId 생성
-        String uniqueMemId = UUID.randomUUID().toString(); // UUID로 고유값 생성
-        String email = null;
-        String nickname = null;
-        String picture = null;
-        String phone = null;
-        boolean gender = true;
-        String birthday = null;
-        String name = null;
+        // Extract user details
+        String email = extractEmail(clientName, paramMap);
+        String id = clientName + "_" + email;
+        String nickname = extractNickname(clientName, paramMap);
+        String picture = extractProfilePicture(clientName, paramMap);
+        String phone = extractPhoneNumber(clientName, paramMap);
+        boolean gender = extractGender(clientName, paramMap);
+        String birthday = extractBirthday(clientName, paramMap);
+        String name = extractName(clientName, paramMap);
 
-        if ("kakao".equalsIgnoreCase(clientName)) {
-            email = extractKakaoAttribute(paramMap, "email");
-            nickname = extractKakaoAttribute(paramMap, "nickname");
-            picture = extractKakaoAttribute(paramMap, "profile_image_url");
-        } else if ("naver".equalsIgnoreCase(clientName)) {
-            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
-            email = (String) response.get("email");
-            nickname = (String) response.get("nickname");
-            picture = (String) response.get("profile_image");
-            phone = processPhoneNumber((String) response.get("mobile"));
-            gender = "M".equalsIgnoreCase((String) response.get("gender"));
-            String birthDay = (String) response.get("birthday");
-            String birthYear = (String) response.get("birthyear");
-            birthday = birthYear + "-" + birthDay; 
-            name = (String) response.get("name");
-        }else if ("google".equalsIgnoreCase(clientName)) {
-            email = (String) paramMap.get("email");
-            nickname = (String) paramMap.get("name");
-            picture = (String) paramMap.get("picture");
-        }
-
-        log.info("Extracted Email: {}", email);
-        log.info("Extracted Nickname: {}", nickname);
-        log.info("Extracted Picture: {}", picture);
-        log.info("Extracted Phone: {}", phone);
-        log.info("Extracted Gender: {}", gender);
-        log.info("Extracted Birthday: {}", birthday);
-        log.info("Extracted Name: {}", name);
-
-        MemberSecurityDTO memberSecurityDTO = generateDTO(uniqueMemId, email, nickname, picture, phone, gender, birthday, name, true, false, false);
+        MemberSecurityDTO memberSecurityDTO = generateDTO(id, email, nickname, picture, phone, gender, birthday, name, true, false, false);
         log.info("Generated MemberSecurityDTO: {}", memberSecurityDTO);
 
         return memberSecurityDTO;
     }
 
-    /**
-     * 전화번호에서 "-"를 제거
-     */
-    private String processPhoneNumber(String phone) {
-        if (phone == null || phone.isEmpty()) {
-            return null;
-        }
-        return phone.replaceAll("-", "");
-    }
-
     @Transactional
-    private MemberSecurityDTO generateDTO(String uniqueMemId, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
-        Optional<Member> result = memberRepository.findById(uniqueMemId);
+    private MemberSecurityDTO generateDTO(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+        Optional<Member> result = memberRepository.findById(id);
 
         if (result.isEmpty()) {
             // 신규 사용자 생성
-            Member newMember = createNewMember(uniqueMemId, email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
+            Member newMember = createNewMember(id, email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
             memberRepository.save(newMember);
             return createMemberSecurityDTO(newMember);
         } else {
-            // 기존 사용자 처리
+        	
+            // 기존 사용자 정보 업데이트
             Member existingMember = result.get();
+            boolean updated = false;
+
+            if (!Objects.equals(existingMember.getMemNickname(), nickname)) {
+                existingMember.setMemNickname(nickname);
+                updated = true;
+            }
+            if (!Objects.equals(existingMember.getMemPicture(), picture)) {
+                existingMember.setMemPicture(picture);
+                updated = true;
+            }
+            if (!Objects.equals(existingMember.getMemTell(), phone)) {
+                existingMember.setMemTell(phone);
+                updated = true;
+            }
+            if (!Objects.equals(existingMember.getMemEmail(), email)) {
+                existingMember.setMemEmail(email);
+                updated = true;
+            }
+          
+            
+            
+            if (updated) {
+                memberRepository.save(existingMember);
+            }
+
+            existingMember.getRoleSet().size(); // 강제 초기화
+         
+
             return createMemberSecurityDTO(existingMember);
         }
     }
 
-    /**
-     * 신규 사용자 생성
-     */
-    private Member createNewMember(String uniqueMemId, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
-    	
-    	Member member = Member.builder()
-                .memId(uniqueMemId) // 소셜 로그인에서는 email을 ID로 사용
-                .memPw(passwordEncoder.encode(UUID.randomUUID().toString())) // 랜덤 비밀번호 생성
+
+    private Member createNewMember(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+        Member member = Member.builder()
+                .memId(id)
+                .memPw(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .memEmail(email)
                 .memNickname(nickname)
                 .memPicture(picture)
@@ -130,12 +119,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .memName(name)
                 .memGender(gender)
                 .memBirthday(birthday)
-                .memSocial(social) // 소셜 로그인 여부
-                .memIsmanager(manager) // 기본값: 관리자 아님
-                .deleteFlag(delete) // 기본값: 삭제되지 않음
+                .memSocial(social)
+                .memIsmanager(manager)
+                .deleteFlag(delete)
                 .build();
 
-        // 기본 역할 추가
         if (member.getRoleSet() == null) {
             member.setRoleSet(new HashSet<>());
         }
@@ -144,9 +132,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return member;
     }
 
-    /**
-     * MemberSecurityDTO 생성
-     */
     private MemberSecurityDTO createMemberSecurityDTO(Member member) {
         log.info("Creating DTO: memSocial={}, deleteFlag={}", member.isMemSocial(), member.isDeleteFlag());
         return new MemberSecurityDTO(
@@ -174,6 +159,79 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                         .collect(Collectors.toList())
         );
+    }
+
+    private String extractEmail(String clientName, Map<String, Object> paramMap) {
+        if ("kakao".equalsIgnoreCase(clientName)) {
+            return extractKakaoAttribute(paramMap, "email");
+        } else if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            return (String) response.get("email");
+        } else if ("google".equalsIgnoreCase(clientName)) {
+            return (String) paramMap.get("email");
+        }
+        return null;
+    }
+
+    private String extractNickname(String clientName, Map<String, Object> paramMap) {
+        if ("kakao".equalsIgnoreCase(clientName)) {
+            return extractKakaoAttribute(paramMap, "nickname");
+        } else if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            return (String) response.get("nickname");
+        } else if ("google".equalsIgnoreCase(clientName)) {
+            return (String) paramMap.get("name");
+        }
+        return null;
+    }
+
+    private String extractProfilePicture(String clientName, Map<String, Object> paramMap) {
+        if ("kakao".equalsIgnoreCase(clientName)) {
+            return extractKakaoAttribute(paramMap, "profile_image_url");
+        } else if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            return (String) response.get("profile_image");
+        } else if ("google".equalsIgnoreCase(clientName)) {
+            return (String) paramMap.get("picture");
+        }
+        return null;
+    }
+
+    private String extractPhoneNumber(String clientName, Map<String, Object> paramMap) {
+        if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            String phone = (String) response.get("mobile");
+            return phone != null ? phone.replaceAll("-", "") : null;
+        }
+        return null;
+    }
+
+    private boolean extractGender(String clientName, Map<String, Object> paramMap) {
+        if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            return "M".equalsIgnoreCase((String) response.get("gender"));
+        }
+        return true; // 기본값: 남성
+    }
+
+    private String extractBirthday(String clientName, Map<String, Object> paramMap) {
+        if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            String birthDay = (String) response.get("birthday");
+            String birthYear = (String) response.get("birthyear");
+            return birthYear + "-" + birthDay;
+        }
+        return null;
+    }
+
+    private String extractName(String clientName, Map<String, Object> paramMap) {
+        if ("naver".equalsIgnoreCase(clientName)) {
+            Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
+            return (String) response.get("name");
+        } else if ("google".equalsIgnoreCase(clientName)) {
+            return (String) paramMap.get("name");
+        }
+        return null;
     }
 
     private String extractKakaoAttribute(Map<String, Object> paramMap, String attributeKey) {
