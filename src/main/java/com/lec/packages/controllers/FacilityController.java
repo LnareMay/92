@@ -26,7 +26,7 @@ public class FacilityController {
 	
     private final FacilityService facilityService;
 	 
-	    @GetMapping("/main")
+	    @GetMapping("/facility_main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
 	    	 
 	    	 String requestURI = request.getRequestURI();  	 

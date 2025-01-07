@@ -17,10 +17,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.service.ClubService;
+import com.lec.packages.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -39,6 +42,8 @@ public class ClubController {
 	
 	@Autowired
 	private final ClubService clubService;
+
+	private final ClubMemberRepository clubMemberRepository;
 	
 	@GetMapping("/club_create")
 	public String clubCreateGet(HttpServletRequest request, Model model) {
@@ -46,10 +51,10 @@ public class ClubController {
         model.addAttribute("currentURI", requestURI);
 		return "club/club_create"; 
 	}
-
 	
 	@GetMapping({"/club_detail", "/club_modify"})
 	public void clubDetail(@RequestParam("clubCode") String clubCode
+			, PageRequestDTO pageRequestDTO
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
@@ -62,12 +67,16 @@ public class ClubController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
 		
+		PageResponseDTO<ClubMemberDTO> clubMemberdto = clubService.clubMemberList(clubCode, pageRequestDTO);
+        model.addAttribute("clubMemberdto", clubMemberdto);
+        
+		int memberCount = clubService.membercount(clubCode);
+		model.addAttribute("memberCount", memberCount);
+		
 		log.info(clubDTO);
 		
 		model.addAttribute("principal", principal);
         model.addAttribute("clubdto", clubDTO);
-        
-
 	}
 		
 	@PostMapping("/club_remove")
@@ -80,8 +89,37 @@ public class ClubController {
 		return "redirect:/";
 	}
 	
-
+	@PostMapping("/club_join")
+	public String clubJoin(@RequestParam(value = "clubCode", required = false) String clubCode
+			, Authentication authentication
+			, HttpServletRequest request
+			, RedirectAttributes redirectAttributes) {
+		String memId = authentication.getName();
+		
+		clubService.join(memId, clubCode);
+		
+		return "redirect:/club/club_detail?clubCode=" + clubCode;
+	}
 	
+	@GetMapping("/club_member")
+	public String clubMember(@RequestParam("clubCode") String clubCode
+			, PageRequestDTO pageRequestDTO
+			, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+        model.addAttribute("currentURI", requestURI);
+
+        ClubDTO clubDTO = clubService.detail(clubCode);
+        model.addAttribute("clubdto", clubDTO);
+
+        PageResponseDTO<ClubMemberDTO> responseDTO = clubService.clubMemberList(clubCode, pageRequestDTO);
+        model.addAttribute("responseDTO", responseDTO);
+        
+        int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);
+        model.addAttribute("memberCount", memberCount);
+        
+		return "club/club_member"; 
+	}
+
 	@GetMapping("/club_board")
 	public String clubBoard(@RequestParam("clubCode") String clubCode, PageRequestDTO pageRequestDTO, @RequestParam(value = "type", required = false) String type
 			, HttpServletRequest request, Model model) {

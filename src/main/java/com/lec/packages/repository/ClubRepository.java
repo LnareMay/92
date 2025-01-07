@@ -19,11 +19,11 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
     List<Club> findByDeleteFlagFalse();
     
     // 페이지네이션을 적용한 목록 조회
-    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false")
+    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false order by CREATEDATE")
     Page<Club> findAllActiveClubs(Pageable pageable);
 
     // 테마별로 deleteFlag가 1이 아닌 클럽만 조회
-    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false AND c.clubTheme LIKE %:clubTheme%")
+    @Query("SELECT c FROM Club c WHERE c.deleteFlag = false AND c.clubTheme LIKE %:clubTheme% order by CREATEDATE")
     Page<Club> findByClubThemeContaining(@Param("clubTheme") String clubTheme, Pageable pageable);
 
 }
