@@ -3,6 +3,7 @@ package com.lec.packages.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -90,11 +92,11 @@ public class ClubServiceImpl implements ClubService {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
         Page<Club> result = clubRepository.findAllActiveClubs(pageable);        
 
+        Map<String, Integer> membercountmap = membercount();        
         List<ClubDTO> dtoList = result.getContent().stream()
                                       .map(club -> {
                                     	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
-                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode()).orElse(0);
-                                    	clubDTO.setMemberCount(memberCount);
+                                    	clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
                                     	return clubDTO;
                                       })
                                       .collect(Collectors.toList());
@@ -113,13 +115,12 @@ public class ClubServiceImpl implements ClubService {
     	Pageable pageable = pageRequestDTO.getPageable("clubCode");
         Page<Club> filteredClubs = clubRepository.findByClubThemeContaining(clubTheme, pageable);
 
-
+        Map<String, Integer> membercountmap = membercount();
         List<ClubDTO> clubList = filteredClubs.getContent()
 							                .stream()
 							                .map(club -> {
 							                	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
-		                                    	int memberCount = clubMemberRepository.countByClubCode(club.getClubCode()).orElse(0);
-							                	clubDTO.setMemberCount(memberCount);
+							                	clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
 							                	return clubDTO;
 							                  })
 							                .collect(Collectors.toList());
@@ -137,8 +138,8 @@ public class ClubServiceImpl implements ClubService {
 	// 클럽상세보기
 	@Override
 	public ClubDTO detail(String clubCode) {
-		Optional<Club> result = clubRepository.findById(clubCode);
-		Club club = result.orElseThrow();
+		Club club = clubRepository.findById(clubCode).orElseThrow();
+
 		ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
 		
 		String originthemeName = clubDTO.getClubTheme();
@@ -146,6 +147,10 @@ public class ClubServiceImpl implements ClubService {
 			String themeName = mapThemes(originthemeName);
 			clubDTO.setThemeName(themeName);			
 		}
+		
+		Map<String, Integer> memberCountmap = membercount();
+		int memberCount = memberCountmap.getOrDefault(clubCode, 0);
+		clubDTO.setMemberCount(memberCount);
 		
 		return clubDTO;
 	}
@@ -231,9 +236,14 @@ public class ClubServiceImpl implements ClubService {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
         Page<Club_Member_List> result = clubMemberRepository.findActiveClubMember(clubCode, pageable);
 
+        Map<String, Integer> memberCountMap = membercount();       
         List<ClubMemberDTO> dtoList = result.getContent().stream()
-                                      .map(clubMember -> modelMapper.map(clubMember, ClubMemberDTO.class))
-                                      .collect(Collectors.toList());      
+										        	     .map(clubMember -> {
+										                    ClubMemberDTO clubMemberDTO = modelMapper.map(clubMember, ClubMemberDTO.class);
+										                    clubMemberDTO.setMemberCount(memberCountMap.getOrDefault(clubCode, 0));
+										                    return clubMemberDTO;
+										                })
+										                .collect(Collectors.toList());    
         
         return PageResponseDTO.<ClubMemberDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -241,7 +251,6 @@ public class ClubServiceImpl implements ClubService {
                 .total((int) result.getTotalElements())
                 .build();
     }
-        
     
 	@Override
 	public List<ClubDTO> getAllClubs() {
@@ -433,8 +442,16 @@ public class ClubServiceImpl implements ClubService {
 
 	// 클럽가입한 회원수 구하기
 	@Override
-	public int membercount(String clubCode) {
-		return clubMemberRepository.countByClubCode(clubCode).orElse(0);
+	public Map<String, Integer> membercount() {
+        List<Object[]> results = clubMemberRepository.countByClubCode();
+        
+        return results.stream()
+            .collect(Collectors.toMap(
+                r -> (String) r[0],  // 클럽코드
+                r -> ((Long) r[1]).intValue()  // 회원수
+            ));
+		
+		/* return clubMemberRepository.countByClubCode(clubCode).orElse(0); */
 	}
 
 

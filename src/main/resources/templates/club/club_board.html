@@ -27,7 +27,7 @@
 	    	<section>
 	    		<a th:href="|@{/club/club_detail(clubCode=${param.clubCode})}|" class="more-link"> < 클럽 </a>
 				<div class="d-flex align-items-center">
-				  <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" class="rounded-circle me-3" alt="프로필 이미지">
+				  <img th:src="|/view/${clubdto.clubImage1}|" class="rounded-circle me-3" alt="대표이미지1">
 				     <div>
 				       <h6 th:text="${clubdto.clubName}"></h6>
 					   <small class="text-muted mb-0">현재 게시글 </small><small class="text-muted mb-0" th:text="${responseDTO.total}"></small>

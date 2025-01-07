@@ -1,5 +1,7 @@
 package com.lec.packages.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,7 +72,8 @@ public class ClubController {
 		PageResponseDTO<ClubMemberDTO> clubMemberdto = clubService.clubMemberList(clubCode, pageRequestDTO);
         model.addAttribute("clubMemberdto", clubMemberdto);
         
-		int memberCount = clubService.membercount(clubCode);
+		// int memberCount = clubService.membercount(clubCode);
+        Map<String, Integer> memberCount = clubService.membercount();
 		model.addAttribute("memberCount", memberCount);
 		
 		log.info(clubDTO);
@@ -114,7 +117,8 @@ public class ClubController {
         PageResponseDTO<ClubMemberDTO> responseDTO = clubService.clubMemberList(clubCode, pageRequestDTO);
         model.addAttribute("responseDTO", responseDTO);
         
-        int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);
+        // int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);
+        Map<String, Integer> memberCount = clubService.membercount();
         model.addAttribute("memberCount", memberCount);
         
 		return "club/club_member"; 

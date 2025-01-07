@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,8 @@ public interface ClubService {
 	void remove(String clubCode);
 	
 	void join(String memId, String clubCode);
-	int membercount(String clubCode);
+	// int membercount(String clubCode);
+	Map<String, Integer> membercount();
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
