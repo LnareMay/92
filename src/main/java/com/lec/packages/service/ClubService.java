@@ -30,7 +30,8 @@ public interface ClubService {
 	void join(String memId, String clubCode);
 	// int membercount(String clubCode);
 	Map<String, Integer> membercount();
-	Map<String, String> memberPicture(String clubCode); 
+//	List<String> findMemberPicture(String clubCode);
+	List<String> findMemberPicture(String memId);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);

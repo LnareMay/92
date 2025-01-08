@@ -29,5 +29,6 @@ public class ClubMemberDTO {
     private LocalDateTime MODIFYDATE;
     
     private int memberCount;
+    private String memberPicture;
 
 }

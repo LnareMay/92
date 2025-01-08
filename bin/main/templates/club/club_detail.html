@@ -43,7 +43,6 @@
 			    </div>
 			    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
 			    <button class="next" onclick="changeSlide(1)">&#10095;</button>
-
 			</div>
 
 			<!-- 클럽 정보 -->
@@ -51,8 +50,8 @@
 				<div>
 					<h5 class="fw-bold mb-1" id="clubName"
 						th:text="${clubdto.clubName}"></h5>
-                <p class="text-muted mb-0 boardInfo">회원 [[${clubdto.memberCount}]] · </p>
 
+                <p class="text-muted mb-0 boardInfo">회원 [[${clubdto.memberCount}]] · </p>
 
 				</div>
 			</div>
@@ -84,51 +83,35 @@
 			</span>
 
 		</section>
-                 <!-- 멤버 섹션 -->
-		<div class="row">
-			<div class="col-md-6">
-				<section>
-					<div class="section-header mb-3">
-						<h6>멤버 [[${clubdto.memberCount}]]</h6>
-						<a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}"
-							class="more-link">더보기</a>
-					</div>
-					<div class="d-flex flex-column">
-						<div class="d-flex align-items-center mb-3"
-							th:each="clubmember : ${limitmember}">
-							<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
-							<th:block
-								th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http')}">
-								<img th:src="${#authentication.principal.memPicture}"
-									alt="프로필 이미지">
-							</th:block>
+				   <hr >
+				
+               <!-- 멤버 섹션 -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <section class="clubsection">
+                      <div class="section-header mb-3">
+                        <h6>멤버 [[${clubdto.memberCount}]]</h6>
+                        <a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}"
+                          class="more-link">더보기</a>
+                      </div>
+                      <div class="d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3"
+                          th:each="clubmember : ${limitmember}">
+                           <img th:src="|/view/${clubmember.memberPicture}|" alt="프로필이미지">
+                         <!--  <img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지"> -->
 
-							<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
-							<th:block
-								th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
-								<img th:src="|/view/${#authentication.principal.memPicture}|"
-									alt="프로필 이미지">
-							</th:block>
-
-							<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
-							<th:block
-								th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-								<img
-									src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-									alt="프로필 이미지">
-							</th:block>
-							<div>
-								<p class="mb-1 fw-bold">
-									[[${clubmember.memId}]] <span
-										th:if="${clubmember.memId == clubdto.memId}"
-										class="text-warning small">⭐</span>
-								</p>
-								<small class="text-muted" th:text="${clubdto.clubAddress}"></small>
-							</div>
-						</div>
-					</div>
-        </section>
-      </div>
+                          <div>
+                            <p class="mb-1 fw-bold">
+                              [[${clubmember.memId}]] <span
+                                th:if="${clubmember.memId == clubdto.memId}"
+                                class="text-warning small">⭐</span>
+                            </p>
+                            <small class="text-muted" th:text="${clubdto.clubAddress}"></small>
+                          </div>
+                        </div>
+                      </div>
+			               </section>
+			           </div>
 
 			           <!-- 일정 섹션 -->
 			           <div class="col-md-6">
@@ -168,11 +151,9 @@
 			                   </div>
 			               </section>
 			           </div> 
-
 				</div>
-				   		
-				<hr >
 
+		<hr>
 		<!-- 게시글 섹션 -->
 		<section id="divBoard"></section>
 	</main>

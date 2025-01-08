@@ -88,7 +88,7 @@
                <!-- 멤버 섹션 -->
                 <div class="row">
                   <div class="col-md-6">
-                    <section>
+                    <section class="clubsection">
                       <div class="section-header mb-3">
                         <h6>멤버 [[${clubdto.memberCount}]]</h6>
                         <a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}"
@@ -97,27 +97,9 @@
                       <div class="d-flex flex-column">
                         <div class="d-flex align-items-center mb-3"
                           th:each="clubmember : ${limitmember}">
-                          <!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
-                          <th:block
-                            th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http')}">
-                            <img th:src="${#authentication.principal.memPicture}"
-                              alt="프로필 이미지">
-                          </th:block>
+                           <img th:src="|/view/${clubmember.memberPicture}|" alt="프로필이미지">
+                         <!--  <img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지"> -->
 
-                          <!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
-                          <th:block
-                            th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
-                            <img th:src="|/view/${#authentication.principal.memPicture}|"
-                              alt="프로필 이미지">
-                          </th:block>
-
-                          <!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
-                          <th:block
-                            th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-                            <img
-                              src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-                              alt="프로필 이미지">
-                          </th:block>
                           <div>
                             <p class="mb-1 fw-bold">
                               [[${clubmember.memId}]] <span
@@ -130,8 +112,6 @@
                       </div>
 			               </section>
 			           </div>
-
-
 
 			           <!-- 일정 섹션 -->
 			           <div class="col-md-6">
@@ -171,12 +151,11 @@
 			                   </div>
 			               </section>
 			           </div> 
-
 				</div>
 
 		<hr>
 		<!-- 게시글 섹션 -->
-		<section id="divBoard"></section>
+		<section id="divBoard" ></section>
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>

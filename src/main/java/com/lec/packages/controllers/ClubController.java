@@ -70,20 +70,29 @@ public class ClubController {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
+		model.addAttribute("principal", principal);
 		
 		PageResponseDTO<ClubMemberDTO> clubMemberdto = clubService.clubMemberList(clubCode, pageRequestDTO);
 		model.addAttribute("clubMemberdto", clubMemberdto);
 		
 		// 클럽상세보기에서 3명만보여주기 제한
-		List<ClubMemberDTO> limitmember = clubMemberdto.getDtoList().stream().limit(3).toList();
+		List<ClubMemberDTO> limitmember = clubMemberdto.getDtoList()
+													   .stream()
+													   .limit(3)
+													   .peek(dto -> {
+													       String picture = clubService.findMemberPicture(dto.getMemId())
+													    		   					 .stream()
+													                                 .filter(p -> p != null && !p.isEmpty())
+													                                 .findFirst()
+													                                 .orElse("fitlink.png");
+													        dto.setMemberPicture(picture);
+													    })
+													   .toList();
         model.addAttribute("limitmember", limitmember);
         
         Map<String, Integer> memberCount = clubService.membercount();
 		model.addAttribute("memberCount", memberCount);
-		
-		log.info(clubDTO);
-		
-		model.addAttribute("principal", principal);
+
         model.addAttribute("clubdto", clubDTO);
 	}
 		
@@ -121,6 +130,15 @@ public class ClubController {
         model.addAttribute("clubdto", clubDTO);
 
         PageResponseDTO<ClubMemberDTO> responseDTO = clubService.clubMemberList(clubCode, pageRequestDTO);
+        responseDTO.getDtoList().forEach(dto -> {
+										String picture = clubService.findMemberPicture(dto.getMemId())
+																	.stream()
+											                       .filter(p -> p != null && !p.isEmpty())
+											                       .findFirst()
+											                       .orElse("fitlink.png");
+											dto.setMemberPicture(picture);
+											});
+        
         model.addAttribute("responseDTO", responseDTO);
         
         // int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);

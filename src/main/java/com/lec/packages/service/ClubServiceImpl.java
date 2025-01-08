@@ -21,6 +21,7 @@ import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
+import com.lec.packages.domain.Member;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
@@ -252,6 +253,23 @@ public class ClubServiceImpl implements ClubService {
                 .build();
     }
     
+	// 클럽가입한 회원 이미지가져오기
+    /*
+	@Override
+	public List<String> findMemberPicture(String clubCode) {
+		List<String> pictures =  clubMemberRepository.findMemberPicture(clubCode);
+
+		return pictures.stream()
+				.map(picture -> picture != null ? picture : "/static/images/arrow_down_circle.png" )
+				.collect(Collectors.toList());
+	}*/
+    @Override
+    public List<String> findMemberPicture(String memId) {
+        // 멤버 ID를 기준으로 이미지를 반환하도록 수정
+        return clubMemberRepository.findPicturesByMemberId(memId);
+    }
+
+    
 	@Override
 	public List<ClubDTO> getAllClubs() {
 		List<Club> clubs = clubRepository.findAll();
@@ -454,11 +472,6 @@ public class ClubServiceImpl implements ClubService {
 		/* return clubMemberRepository.countByClubCode(clubCode).orElse(0); */
 	}
 	
-	@Override
-	public Map<String, String> memberPicture(String clubCode) {
-		List<Club_Member_List> result = clubMemberRepository.findMemberPicture(clubCode);
-		return null;
-	}
 
 
 
