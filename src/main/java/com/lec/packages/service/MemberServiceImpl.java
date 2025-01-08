@@ -128,7 +128,16 @@ public class MemberServiceImpl implements MemberService{
 
 
 
+	@Override
+    public void updateMemAddressSet(String memberId, String memAddressSet) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        member.setMemAddressSet(memAddressSet);
+        memberRepository.save(member);
+    }
 
+	
+	
 
 //	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {
 //		// 업로드된 파일명을 MemberJoinDTO에 설정

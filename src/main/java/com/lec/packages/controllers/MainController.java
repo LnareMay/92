@@ -5,15 +5,21 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubDTO;
@@ -34,6 +40,7 @@ public class MainController {
     private final ClubService clubService;
     private final MemberRepository memberRepository;
     private final KakaoApiService kakaoApiService;
+    private final MemberService memberService;
 
     @GetMapping("/")
     public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model,
@@ -79,4 +86,25 @@ public class MainController {
         }
         return null; // 인증되지 않은 사용자일 경우 null 반환
     }
+    
+    @PostMapping("/update-mem-address")
+    @ResponseBody
+    public ResponseEntity<?> updateMemAddressSet(@RequestBody Map<String, String> payload) {
+        String memAddressSet = payload.get("memAddressSet");
+
+        // 현재 로그인 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof MemberSecurityDTO)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+        member.setMemAddressSet(memAddressSet); // memSocial 업데이트
+
+        // 실제 데이터베이스 업데이트 로직 호출
+        memberService.updateMemAddressSet(member.getMemId(), memAddressSet);
+
+        return ResponseEntity.ok("memSocial 업데이트 성공");
+    }
+
 }
