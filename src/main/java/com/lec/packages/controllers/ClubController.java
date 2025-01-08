@@ -48,6 +48,7 @@ public class ClubController {
 
 	private final ClubMemberRepository clubMemberRepository;
 	
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_create")
 	public String clubCreateGet(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
@@ -96,6 +97,7 @@ public class ClubController {
 		return "redirect:/";
 	}
 	
+	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_join")
 	public String clubJoin(@RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication

@@ -16,15 +16,18 @@ import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 public interface ClubMemberRepository extends JpaRepository<Club_Member_List, ClubMemberKeyClass> {
 
     @Query("SELECT cm FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode order by CREATEDATE")
-    Page<Club_Member_List> findActiveClubMember(@Param("clubCode") String clubCode,  Pageable pageable);
-	
-	/*
-	@Query("SELECT COALESCE(COUNT(cm), 0) FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode"
-	) Optional<Integer> countByClubCode(@Param("clubCode") String clubCode);
-	 */
+    Page<Club_Member_List> findActiveClubMember(@Param("clubCode") String clubCode,  Pageable pageable);	
     
     @Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
     List<Object[]> countByClubCode();
+    
+    @Query("SELECT m.mem_picture FROM Member m LEFT JOIN Club_Member_List cm ON m.mem_id = cm.mem_id")
+    List<Club_Member_List> findMemberPicture(@Param("clubCode") String clubCode);
+    
 
+    /*
+	@Query("SELECT COALESCE(COUNT(cm), 0) FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode"
+	) Optional<Integer> countByClubCode(@Param("clubCode") String clubCode);
+     */
     
 }

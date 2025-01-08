@@ -453,6 +453,12 @@ public class ClubServiceImpl implements ClubService {
 		
 		/* return clubMemberRepository.countByClubCode(clubCode).orElse(0); */
 	}
+	
+	@Override
+	public Map<String, String> memberPicture(String clubCode) {
+		List<Club_Member_List> result = clubMemberRepository.findMemberPicture(clubCode);
+		return null;
+	}
 
 
 
