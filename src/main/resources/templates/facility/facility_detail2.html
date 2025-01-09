@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<head>
+ 	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<head  th:insert="~{layouts/meta_tag :: headMeta}"></head>
+    <title>체육관 예약 시스템</title>
+    <!-- 공통 css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="stylesheet" th:href="@{/css/common.css}">
+		<!-- Linking CSS files -->
+		<link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
+		<link rel="stylesheet" th:href="@{/css/detail_yj.css}"/>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- 공통 js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+	crossorigin="anonymous"></script>
+	
+	<style>
+	  /* 전체 화면 중앙 정렬 */
+	  body {
+	    display: flex;
+	    justify-content: center; /* 수평 중앙 정렬 */
+	    align-items: center; /* 수직 중앙 정렬 */
+	    min-height: 100vh; /* 화면 전체 높이 */
+	    margin: 0;
+	    background-color: #f4f4f4; /* 배경색 */
+	  }
+	
+	  /* 폼 스타일 */
+	  .booking-form {
+	    max-width: 600px; /* 폼의 최대 너비 */
+	    width: 100%; /* 반응형 너비 */
+	    padding: 20px; /* 내부 여백 */
+	    background-color: #f8f9fa; /* 연한 회색 배경 */
+	    border-radius: 10px; /* 모서리 둥글게 */
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+	  }
+	
+	  .form-group {
+	    margin-bottom: 15px;
+	  }
+	
+	  .form-group label {
+	    font-weight: bold;
+	    display: inline-block;
+	    width: 150px; /* 라벨의 고정 너비 */
+	    vertical-align: top;
+	  }
+	
+	  .form-group span {
+	    display: inline-block;
+	    color: #333;
+	    font-size: 14px;
+	    line-height: 1.5;
+	    white-space: pre-line; /* 줄바꿈 유지 */
+	  }
+	
+	  hr {
+	    border: none;
+	    border-top: 1px solid #ddd;
+	    margin: 20px 0;
+	  }
+	
+	  .booking-form button {
+	    background-color: #007bff; /* 파란색 배경 */
+	    color: white;
+	    padding: 10px 20px;
+	    border: none;
+	    border-radius: 5px; /* 버튼 둥글게 */
+	    cursor: pointer;
+	  }
+	
+	  .booking-form button:hover {
+	    background-color: #0056b3; /* 어두운 파란색 배경 */
+	  }
+	</style>
+</head>
+	<!-- Header -->
+	<div th:insert="~{layouts/header :: header}"></div>
+<body>
+<div>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+	  <div class="carousel-indicators">
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+	  </div>
+	  <div class="carousel-inner">
+	    <div class="carousel-item active">
+	      <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" class="d-block w-100" alt="Product Image">
+	    </div>
+	    <div class="carousel-item">
+	       <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2" class="d-block w-100" alt="Product Image">
+	    </div>
+	    <div class="carousel-item">
+	       <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3" class="d-block w-100" alt="Product Image">
+	    </div>
+	    <div class="carousel-item">
+	       <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" class="d-block w-100" alt="Product Image">
+	    </div>
+	  </div>
+	  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+	    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	    <span class="visually-hidden">Previous</span>
+	  </button>
+	  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+	    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	    <span class="visually-hidden">Next</span>
+	  </button>
+	</div>
+	
+	<!-- 예약 form start  -->
+    <form class="booking-form" action="/submit-booking" method="POST">
+        <div class="form-group">
+           <label for="facilityName">시설명:</label>
+           <span th:text="${facility.facilityName}"></span>
+		</div>
+		<div class="form-group">
+	        <label for="facilityAddress">시설 주소: </label>
+	        <span th:text="${facility.facilityAddress}"></span>
+         </div>
+		<div class="form-group">
+	        <label for="facilityDescription">이용안내: </label>
+	        <span style="white-space: pre-line;" th:text="${facility.facilityDescription}"></span>
+         </div>
+         <hr />
+         <div class="form-group">
+	         <label for="facilityTime">Open Time ~ EndTime</label>
+         	 <span th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
+         </div>
+         <label for="price">1hour per price</label>
+         <span th:text="${facility.formattedPrice}"></span>
+         
+         <hr />
+		
+        <label for="date">예약 날짜</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="time">예약 시간</label>
+        <select id="time" name="time" required>
+            <option value="">시간을 선택하세요</option>
+            <option value="09:00-11:00">09:00 - 11:00</option>
+            <option value="11:00-13:00">11:00 - 13:00</option>
+            <option value="13:00-15:00">13:00 - 15:00</option>
+            <option value="15:00-17:00">15:00 - 17:00</option>
+        </select>
+
+        <label for="phone">연락처</label>
+        <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" required>
+
+        <button type="submit">예약하기</button>
+    </form>
+</div>
+</body>
+	<!-- Footer -->
+	<div th:insert="~{layouts/footer :: footer}"></div>
+
+</html>
