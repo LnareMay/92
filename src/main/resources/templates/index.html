@@ -157,55 +157,42 @@
 					</div>
 				</div>
 			</div>
-
-
-
-
-			<!-- 전체 -->
+			
 			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=ALL&page=1'|">전체</button>
 
-			<!-- 운동클럽 -->
 			<button type="button" class="btn" value="THM_SPORTCLUB"
 				th:classappend="${theme == 'THM_SPORTCLUB'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_SPORTCLUB&page=1'|">운동클럽</button>
 
-			<!-- 운동일지 -->
 			<button type="button" class="btn" value="THM_SPORTJOURNAL"
 				th:classappend="${theme == 'THM_SPORTJOURNAL'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_SPORTJOURNAL&page=1'|">운동일지</button>
 
-			<!-- 영양제/식단 -->
 			<button type="button" class="btn" value="THM_FOOD"
 				th:classappend="${theme == 'THM_FOOD'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_FOOD&page=1'|">영양제/식단</button>
 
-			<!-- 헬스 -->
 			<button type="button" class="btn" value="THM_FITNESS"
 				th:classappend="${theme == 'THM_FITNESS'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_FITNESS&page=1'|">헬스</button>
 
-			<!-- 체중감량 -->
 			<button type="button" class="btn" value="THM_DIET"
 				th:classappend="${theme == 'THM_DIET'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_DIET&page=1'|">체중감량</button>
 
-			<!-- 바디프로필 -->
 			<button type="button" class="btn" value="THM_BODYPROFILE"
 				th:classappend="${theme == 'THM_BODYPROFILE'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_BODYPROFILE&page=1'|">바디프로필</button>
 
-			<!-- 부상/재활 -->
 			<button type="button" class="btn" value="THM_RECOVER"
 				th:classappend="${theme == 'THM_RECOVER'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_RECOVER&page=1'|">부상/재활</button>
 
-			<!-- 대회준비 -->
 			<button type="button" class="btn" value="THM_CONTEST"
 				th:classappend="${theme == 'THM_CONTEST'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_CONTEST&page=1'|">대회준비</button>
 
-			<!-- 입시준비 -->
 			<button type="button" class="btn" value="THM_EXAM"
 				th:classappend="${theme == 'THM_EXAM'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=THM_EXAM&page=1'|">입시준비</button>

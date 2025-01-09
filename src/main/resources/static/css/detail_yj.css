@@ -121,6 +121,12 @@
 	margin-top: 20px;
 }
 
+.club-description {
+	margin-top: 1rem;
+	margin-bottom: 10px;
+	min-height: 150px;	
+}
+
 /* 시설예약메인페이지 */
 .filter-bar select,
 .filter-bar button {

@@ -18,7 +18,7 @@ public class ClubDTO {
     @NotEmpty
     private String clubCode;
 
-    @NotEmpty
+    @NotEmpty(message = "클럽 이름은 필수 입력 항목입니다.")
     private String clubName;
 
     private String clubExercise;
@@ -27,7 +27,7 @@ public class ClubDTO {
 
     private String clubTheme;
 
-    @NotEmpty
+    @NotEmpty(message = "대표 이미지 추가해주세요.")
     private String clubImage1;
 
     private String clubImage2;

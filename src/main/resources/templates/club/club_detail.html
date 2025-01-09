@@ -27,6 +27,9 @@
 	<div th:insert="~{/layouts/header :: header}"></div>
 
  	<main class="container my-4">
+ 		<div id="flashMessage" th:if="${message != null}" th:data-message="${message}" style="display: none;">
+		</div>
+		</th:if>
  	<section>
         <!-- 대표이미지 -->
         	<div>
@@ -36,7 +39,8 @@
 			<div id="imageModal" class="modal">
 			    <span class="close" onclick="closeModal()">&times;</span>
 			    <div class="modal-content">
-			        <img th:src="|/view/${clubdto.clubImage1}|" class="modal-image">
+			        <img th:src="|/view/${clubdto.clubImage1}|" class="modal-image"
+			        	 onerror="this.src='https://via.placeholder.com/80?text=ImgNone'">
 			        <img th:if="${clubdto.clubImage2 != null}" th:src="|/view/${clubdto.clubImage2}|" class="modal-image">
 			        <img th:if="${clubdto.clubImage3 != null}" th:src="|/view/${clubdto.clubImage3}|" class="modal-image">
 			        <img th:if="${clubdto.clubImage4 != null}" th:src="|/view/${clubdto.clubImage4}|" class="modal-image">
@@ -50,33 +54,31 @@
 				<div>
 					<h5 class="fw-bold mb-1" id="clubName"
 						th:text="${clubdto.clubName}"></h5>
-
                 <p class="text-muted mb-0 boardInfo">회원 [[${clubdto.memberCount}]] · </p>
 
 				</div>
 			</div>
 
 			<!-- 클럽 소개 -->
-			<p class="mt-3 club-description"
-				th:text="${clubdto.clubIntroduction}" style="margin-bottom: 10px"></p>
+			<p class="club-description" th:text="${clubdto.clubIntroduction}"></p>
+			
 			<!-- 클럽 테마 -->
 			<p class="text-muted" th:text="${clubdto.themeName}"
 				style="margin-bottom: 10px"></p>
 
 			<!-- 가입 버튼 -->
 			<form action="/club/club_join" method="post"
-				onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
+				  onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
 				<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 				<button type="submit" class="btn btn-warning ">클럽 가입하기</button>
 			</form>
+
 			<span th:if="${clubdto.MemId == principal.memId}"> <a
 				class="btn btn-success fw-bold modify-btn shadow-sm"
-				th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽
-					수정하기 </a>
+				th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽수정하기 </a>
 
 				<form action="/club/club_remove" method="post"
-					onsubmit="return confirm('클럽을 삭제하시겠습니까?');"
-					style="display: inline;">
+					onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-danger">클럽 삭제하기</button>
 				</form>
@@ -96,17 +98,17 @@
                       </div>
                       <div class="d-flex flex-column">
                         <div class="d-flex align-items-center mb-3"
-                          th:each="clubmember : ${limitmember}">
-                           <img th:src="|/view/${clubmember.memberPicture}|" alt="프로필이미지">
-                         <!--  <img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지"> -->
+                          th:each="clubmember : ${clubmembers}">
+                           <img th:src="|/view/${clubmember.memPicture}|" alt="프로필이미지" 
+                           	 	onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 
                           <div>
                             <p class="mb-1 fw-bold">
-                              [[${clubmember.memId}]] <span
+                              [[${clubmember.memNickname}]] <span
                                 th:if="${clubmember.memId == clubdto.memId}"
                                 class="text-warning small">⭐</span>
                             </p>
-                            <small class="text-muted" th:text="${clubdto.clubAddress}"></small>
+                            <!-- <small class="text-muted" th:text="${clubdto.clubAddress}"></small> -->
                           </div>
                         </div>
                       </div>
@@ -117,8 +119,8 @@
 			           <div class="col-md-6">
 			               <section class="clubsection">
 			                   <div class="section-header mb-3">
-			                       <h6>일정 3</h6>
-			                       <a href="/club/club_calendar" class="more-link">더보기 ></a>
+			                       <h6>일정 </h6>
+			                       <a href="/club/club_calendar" class="more-link">더보기</a>
 			                   </div>
 			                   <div>
 			                       <!-- 기능구현아직... 
@@ -237,6 +239,14 @@
 		});
 	}
 	
+	/* 이미 가입된 회원확인 */
+	 const flashMessage = document.getElementById("flashMessage");
+	 if (flashMessage) {
+		const message = flashMessage.getAttribute("data-message");
+		if (message) {
+			alert(message);
+		}
+	}
 
 </script>
 </html>

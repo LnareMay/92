@@ -1,7 +1,6 @@
 package com.lec.packages.service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,8 +9,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +25,6 @@ import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
-import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.ClubBoardReplyRepository;
@@ -135,6 +131,32 @@ public class ClubServiceImpl implements ClubService {
                 .build();
     }
 
+    // 주소기반 클럽리스트
+	@Override
+	public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, 
+			String memberAddress, String clubTheme) {
+		Pageable pageable = pageRequestDTO.getPageable("clubCode");
+        Page<Club> result = clubRepository.findByClubAddressAndTheme(memberAddress, clubTheme, pageable);
+
+        Map<String, Integer> membercountmap = membercount();
+        List<ClubDTO> clubList = result.getContent()
+							                .stream()
+							                .map(club -> {
+							                	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+							                	clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
+							                	return clubDTO;
+							                  })
+							                .collect(Collectors.toList());
+							   
+        int total = (int) result.getTotalElements();
+
+        return PageResponseDTO.<ClubDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(clubList)
+                .total(total)
+                .build();
+	}
+	
 	
 	// 클럽상세보기
 	@Override
@@ -230,46 +252,30 @@ public class ClubServiceImpl implements ClubService {
 	    clubMemberRepository.save(clubMember);		
 	}
 	
+	// 클럽가입시 이미가입되어있는 회원인지 확인
+	@Override
+	public boolean isJoinMember(String memId, String clubCode) {
+		return clubMemberRepository.existsByMemIdAndClubCode(memId, clubCode);
+	}
 
-    // 삭제되지 않은 클럽멤버 목록조회
-    @Override
-    public PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO) {
-        Pageable pageable = pageRequestDTO.getPageable("clubCode");
-        Page<Club_Member_List> result = clubMemberRepository.findActiveClubMember(clubCode, pageable);
-
-        Map<String, Integer> memberCountMap = membercount();       
-        List<ClubMemberDTO> dtoList = result.getContent().stream()
-										        	     .map(clubMember -> {
-										                    ClubMemberDTO clubMemberDTO = modelMapper.map(clubMember, ClubMemberDTO.class);
-										                    clubMemberDTO.setMemberCount(memberCountMap.getOrDefault(clubCode, 0));
-										                    return clubMemberDTO;
-										                })
-										                .collect(Collectors.toList());    
-        
-        return PageResponseDTO.<ClubMemberDTO>withAll()
+    // 클럽멤버 목록조회 
+	@Override
+	public PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO) {
+		Pageable pageable = pageRequestDTO.getPageable("clubCode");
+		Page<Member> result = clubRepository.findMemberAll(clubCode, pageable);
+		
+		return PageResponseDTO.<Member>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .dtoList(dtoList)
+                .dtoList(result.getContent())
                 .total((int) result.getTotalElements())
                 .build();
-    }
-    
-	// 클럽가입한 회원 이미지가져오기
-    /*
+	}
+
 	@Override
-	public List<String> findMemberPicture(String clubCode) {
-		List<String> pictures =  clubMemberRepository.findMemberPicture(clubCode);
+	public List<Member> findMemberDetails(String clubCode) {
+		return clubRepository.findMemberDetails(clubCode); 
+	}
 
-		return pictures.stream()
-				.map(picture -> picture != null ? picture : "/static/images/arrow_down_circle.png" )
-				.collect(Collectors.toList());
-	}*/
-    @Override
-    public List<String> findMemberPicture(String memId) {
-        // 멤버 ID를 기준으로 이미지를 반환하도록 수정
-        return clubMemberRepository.findPicturesByMemberId(memId);
-    }
-
-    
 	@Override
 	public List<ClubDTO> getAllClubs() {
 		List<Club> clubs = clubRepository.findAll();
@@ -471,7 +477,13 @@ public class ClubServiceImpl implements ClubService {
 		
 		/* return clubMemberRepository.countByClubCode(clubCode).orElse(0); */
 	}
-	
+
+
+
+
+
+
+
 
 
 

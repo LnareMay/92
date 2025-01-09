@@ -30,5 +30,6 @@ public class ClubMemberDTO {
     
     private int memberCount;
     private String memberPicture;
+    private String memberNickname;
 
 }
