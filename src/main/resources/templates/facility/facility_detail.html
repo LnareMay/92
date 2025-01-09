@@ -73,14 +73,15 @@
 	  .carousel-inner {
 	    max-height: 500px; /* 원하는 고정 높이 */
 	    overflow: hidden; /* 초과 이미지를 숨김 */ 
+	    display: flex
 	  }
 	
 	  /* Carousel 이미지 스타일 */
 	  .carousel-item img {
 	    width: 100%; /* 컨테이너 너비에 맞춤 */
 	    height: 100%; /* 컨테이너 높이에 맞춤 */
-	    object-fit: contain; /* 이미지 비율을 유지하며 컨테이너 내에 맞춤 */
-	   /* object-position: center;  이미지를 중앙에 위치 */
+	  	/* 이미지 비율을 유지하며 컨테이너 내에 맞춤 */
+	   /*  object-position: center; */  /* 이미지를 중앙에 위치  */
 	  }
 	  
 
@@ -101,7 +102,7 @@
 	  </div>
 	  <div class="carousel-inner">
 	    <div class="carousel-item active" data-bs-interval="5000">
-	      <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" style="object-fit: contain;" alt="Product Image">
+	      <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1"  alt="Product Image">
 	    </div>
 	    <div class="carousel-item" data-bs-interval="5000">
 	       <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2"  alt="Product Image">

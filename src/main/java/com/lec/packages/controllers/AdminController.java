@@ -92,46 +92,46 @@ public class AdminController {
 	 }
 	 
 	 
-	 //시설 수정하기 Post
-	 @PostMapping("/Facility_edit/{facilityCode}")
-	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
-									 	,@PathVariable("facilityCode") String facilityCode
-										,BindingResult bindingResult
-										,RedirectAttributes redirectAttributes
-										,Model model
-										,@AuthenticationPrincipal UserDetails userDetails
-										,@RequestParam("exerciseCode") String exerciseCode) {
-		 
-		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
-		 if (exerciseCode == null || exerciseCode.isEmpty()) {
-		        exerciseCode = null;
-		    }
-
-	    if (bindingResult.hasErrors()) {
-	  
-	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
-	       
-	        String userId = userDetails.getUsername();
-	        
-	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
-	        model.addAttribute("facilityDTO", facilityDTO);
-    	    model.addAttribute("userId", userId);
-    	    
-	        model.addAttribute("errors", bindingResult.getFieldErrors());
-
-
-	        // 입력 페이지로 다시 이동
-	        return "admin/Facility_add";
-	    }
-
-	    log.info("등록 요청: {}", facilityDTO);
-
-	    // 시설 등록 및 결과 처리
-	    facilityService.modify(facilityDTO);
-	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
-		 
-		 return "admin/Facility_list";
-	 }
+//	 //시설 수정하기 Post
+//	 @PostMapping("/Facility_edit/{facilityCode}")
+//	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
+//									 	,@PathVariable("facilityCode") String facilityCode
+//										,BindingResult bindingResult
+//										,RedirectAttributes redirectAttributes
+//										,Model model
+//										,@AuthenticationPrincipal UserDetails userDetails
+//										,@RequestParam("exerciseCode") String exerciseCode) {
+//		 
+//		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
+//		 if (exerciseCode == null || exerciseCode.isEmpty()) {
+//		        exerciseCode = null;
+//		    }
+//
+//	    if (bindingResult.hasErrors()) {
+//	  
+//	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
+//	       
+//	        String userId = userDetails.getUsername();
+//	        
+//	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
+//	        model.addAttribute("facilityDTO", facilityDTO);
+//    	    model.addAttribute("userId", userId);
+//    	    
+//	        model.addAttribute("errors", bindingResult.getFieldErrors());
+//
+//
+//	        // 입력 페이지로 다시 이동
+//	        return "admin/Facility_add";
+//	    }
+//
+//	    log.info("등록 요청: {}", facilityDTO);
+//
+//	    // 시설 등록 및 결과 처리
+//	    facilityService.modify(facilityDTO);
+//	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
+//		 
+//		 return "admin/Facility_list";
+//	 }
 	 
 	 //시설 상세보기
 	 @GetMapping("/Facility_detail/{facilityCode}")

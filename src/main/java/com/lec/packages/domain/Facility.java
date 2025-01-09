@@ -100,7 +100,9 @@ public class Facility extends BaseEntity{
 	    
 	    public void modifyFacility(String facilityName, String facilityDescription
 	    							,boolean facilityIsOnlyClub, BigDecimal price
-	    							,LocalTime  facilityStartTime, LocalTime  facilityEndTime) {
+	    							,LocalTime  facilityStartTime, LocalTime  facilityEndTime
+	    							,String facilityImage1 ,String facilityImage2
+	    							,String facilityImage3 ,String facilityImage4) {
 	    	
 	    	this.facilityName = facilityName;
 	    	this.facilityDescription = facilityDescription;
@@ -108,6 +110,10 @@ public class Facility extends BaseEntity{
 	    	this.price = price;
 	    	this.facilityStartTime = facilityStartTime;
 	    	this.facilityEndTime = facilityEndTime;
+	    	this.facilityImage1 = facilityImage1;
+	    	this.facilityImage2 = facilityImage2;
+	    	this.facilityImage3 = facilityImage3;
+	    	this.facilityImage4 = facilityImage4;
 	    }
 	    
 	    
