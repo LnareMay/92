@@ -35,12 +35,12 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
     
     // 클럽가입 회원 상세조회
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
-    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode")
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode ORDER BY cm.CREATEDATE")
     List<Member> findMemberDetails(@Param("clubCode") String clubCode);
     
     // 클럽가입 회원 목록조회 페이징
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
-    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false")
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false ORDER BY cm.CREATEDATE")
     Page<Member> findMemberAll(@Param("clubCode") String clubCode, Pageable pageable);
 
 }
