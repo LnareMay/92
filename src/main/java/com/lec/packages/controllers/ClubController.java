@@ -1,5 +1,9 @@
 package com.lec.packages.controllers;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,16 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;
-import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
-import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.service.ClubService;
-import com.lec.packages.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -42,9 +44,8 @@ public class ClubController {
 	
 	@Autowired
 	private final ClubService clubService;
-
-	private final ClubMemberRepository clubMemberRepository;
 	
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_create")
 	public String clubCreateGet(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
@@ -66,16 +67,22 @@ public class ClubController {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
-		
-		PageResponseDTO<ClubMemberDTO> clubMemberdto = clubService.clubMemberList(clubCode, pageRequestDTO);
-        model.addAttribute("clubMemberdto", clubMemberdto);
-        
-		int memberCount = clubService.membercount(clubCode);
-		model.addAttribute("memberCount", memberCount);
-		
-		log.info(clubDTO);
-		
 		model.addAttribute("principal", principal);
+		
+		// 클럽상세보기에서 회원3명만 보여지기 제한
+		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
+											  .stream()
+											  .limit(3)
+/*											  .peek(m -> {
+												  if (m.getMemPicture() == null || m.getMemPicture().isEmpty())
+													  m.setMemPicture("/img/upload/img_profile.png");
+											  }) */
+											  .collect(Collectors.toList());
+        model.addAttribute("clubmembers", clubmembers);
+        
+        Map<String, Integer> memberCount = clubService.membercount();
+		model.addAttribute("memberCount", memberCount);
+
         model.addAttribute("clubdto", clubDTO);
 	}
 		
@@ -89,6 +96,7 @@ public class ClubController {
 		return "redirect:/";
 	}
 	
+	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_join")
 	public String clubJoin(@RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication
@@ -96,11 +104,17 @@ public class ClubController {
 			, RedirectAttributes redirectAttributes) {
 		String memId = authentication.getName();
 		
-		clubService.join(memId, clubCode);
+		boolean isJoinMember = clubService.isJoinMember(memId, clubCode);
+		if (isJoinMember) {
+			redirectAttributes.addFlashAttribute("message", "이미 가입된 회원입니다.");
+			return "redirect:/club/club_detail?clubCode=" + clubCode;
+		}
 		
+		clubService.join(memId, clubCode);
+		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 가입되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
-	
+		
 	@GetMapping("/club_member")
 	public String clubMember(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
@@ -111,10 +125,10 @@ public class ClubController {
         ClubDTO clubDTO = clubService.detail(clubCode);
         model.addAttribute("clubdto", clubDTO);
 
-        PageResponseDTO<ClubMemberDTO> responseDTO = clubService.clubMemberList(clubCode, pageRequestDTO);
+        PageResponseDTO<Member> responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
         model.addAttribute("responseDTO", responseDTO);
         
-        int memberCount = clubMemberRepository.countByClubCode(clubCode).orElse(0);
+        Map<String, Integer> memberCount = clubService.membercount();
         model.addAttribute("memberCount", memberCount);
         
 		return "club/club_member"; 
