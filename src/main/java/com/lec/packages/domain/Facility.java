@@ -80,7 +80,7 @@ public class Facility extends BaseEntity{
 	    private boolean facilityIsOnlyClub;
 
 	    @JoinColumn(name = "MEM_ID")
-	    @Column(name = "MEM_ID", length = 20)
+	    @Column(name = "MEM_ID", length = 100)
 	    private String memId;
 
 	    // DECIMAL TYPE 선언

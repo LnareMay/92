@@ -220,27 +220,23 @@ public class AdminRestController {
 								        		  .facilityDescription(facilityDescription)
 								        		  .facilityStartTime(facilityStartTime) 
 								        		  .facilityEndTime(facilityEndTime)
-								        		  .price(price) .exerciseCode(exerciseCode)
+								        		  .price(price) 
+								        		  .exerciseCode(exerciseCode)
 								        		  .facilityIsOnlyClub(facilityIsOnlyClub) 
 								        		  .facilityImage1(imagePaths.size() > 0 ? imagePaths.get(0) : null) 
 								        		  .facilityImage2(imagePaths.size() > 1 ? imagePaths.get(1) : null) 
 								        		  .facilityImage3(imagePaths.size() > 2 ? imagePaths.get(2) : null) 
-								        		  .facilityImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null) .build();
+								        		  .facilityImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null) 
+								        		  .build();
 
 	  
-	        String facilityCode = facilityService.register(facilityDTO);
+	        facilityService.register(facilityDTO);
 
 	        //성공 시 리다이렉트 설정
 	        HttpHeaders headers =new HttpHeaders();
 	        headers.setLocation(URI.create("/admin/Facility_list"));
 	        return new ResponseEntity<>(headers,HttpStatus.FOUND);
-	        
-//	        response.put("success", true);
-//	        response.put("redirectUrl", "/");
-//	        return ResponseEntity.status(HttpStatus.FOUND)
-//	                .header(HttpHeaders.LOCATION, "/")
-//	                .body(response);
-//	        
+	        	        
 	    } catch (Exception e) {
 	        response.put("success", false);
 	        response.put("message", "시설 등록 중 오류가 발생했습니다.");
