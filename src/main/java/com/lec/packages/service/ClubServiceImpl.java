@@ -21,6 +21,7 @@ import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
+import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
@@ -83,7 +84,7 @@ public class ClubServiceImpl implements ClubService {
 		return clubCode;
 	}
 
-    // 삭제되지 않은 모든 클럽 리스트 조회
+    // 클럽리스트
     @Override
     public PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
@@ -93,6 +94,9 @@ public class ClubServiceImpl implements ClubService {
         List<ClubDTO> dtoList = result.getContent().stream()
                                       .map(club -> {
                                     	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+                                    	if (clubDTO.getClubTheme() == null) {
+                                            clubDTO.setClubTheme("ALL");
+                                        }
                                     	clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
                                     	return clubDTO;
                                       })
@@ -104,8 +108,8 @@ public class ClubServiceImpl implements ClubService {
                 .total((int) result.getTotalElements())
                 .build();
     }
-	
-	// 클럽테마리스트
+    
+	// 클럽리스트 : 테마별
     @Override
     public PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme) {
 
@@ -121,43 +125,45 @@ public class ClubServiceImpl implements ClubService {
 							                	return clubDTO;
 							                  })
 							                .collect(Collectors.toList());
-							   
-        int total = (int) filteredClubs.getTotalElements();
 
         return PageResponseDTO.<ClubDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(clubList)
-                .total(total)
+                .total((int)filteredClubs.getTotalElements())
                 .build();
     }
 
-    // 주소기반 클럽리스트
-	@Override
-	public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, 
-			String memberAddress, String clubTheme) {
-		Pageable pageable = pageRequestDTO.getPageable("clubCode");
-        Page<Club> result = clubRepository.findByClubAddressAndTheme(memberAddress, clubTheme, pageable);
+    // 클럽리스트 : 주소&테마별
+    @Override
+    public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memAddressSet, String clubTheme) {
+        Pageable pageable = pageRequestDTO.getPageable("clubCode");
+
+        // 검색 필터링
+        String[] types = {"address", "theme"};
+        String[] keywords = {memAddressSet, clubTheme};
+
+        Page<Club> result = clubRepository.searchAllImpl(types, keywords, pageable);
 
         Map<String, Integer> membercountmap = membercount();
-        List<ClubDTO> clubList = result.getContent()
-							                .stream()
-							                .map(club -> {
-							                	ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
-							                	clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
-							                	return clubDTO;
-							                  })
-							                .collect(Collectors.toList());
-							   
-        int total = (int) result.getTotalElements();
+        List<ClubDTO> dtoList = result.getContent().stream()
+                                      .map(club -> {
+                                          ClubDTO clubDTO = modelMapper.map(club, ClubDTO.class);
+                                          clubDTO.setMemberCount(membercountmap.getOrDefault(club.getClubCode(), 0));
+                                          
+                                          if (clubDTO.getClubTheme() == null) {
+                                              clubDTO.setClubTheme("ALL");
+                                      }
+                                          return clubDTO;
+                                      })
+                                      .collect(Collectors.toList());
+        log.info("=== Keywords==== : {}, {}", keywords[0], keywords[1]);        
 
         return PageResponseDTO.<ClubDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
-                .dtoList(clubList)
-                .total(total)
+                .dtoList(dtoList)
+                .total((int) result.getTotalElements())
                 .build();
-	}
-	
-	
+    }
 	// 클럽상세보기
 	@Override
 	public ClubDTO detail(String clubCode) {
@@ -253,16 +259,42 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽가입시 이미가입되어있는 회원인지 확인
-	@Override
-	public boolean isJoinMember(String memId, String clubCode) {
-		return clubMemberRepository.existsByMemIdAndClubCode(memId, clubCode);
-	}
+		@Override
+		public boolean isJoinMember(String memId, String clubCode) {
+			
+			List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
 
+		    return joinMembers.stream()
+		            .anyMatch(member -> member.getMemId().equals(memId));			
+		}
+	
+	// 클럽탈퇴
+		@Override
+		public void joindelete(String memId, String clubCode) {
+
+		    ClubMemberKeyClass keyClass = new ClubMemberKeyClass(memId, clubCode);		    
+		    Club_Member_List clubMember = clubMemberRepository.findById(keyClass)
+		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+		    
+		    clubMember.setDeleteFlag(true);
+		    clubMemberRepository.save(clubMember);
+		}
+
+	// 클럽탈퇴시 이미탈퇴되어있는 회원인지 확인
+		@Override
+		public boolean isJoinDeleteMember(String memId, String clubCode) {
+
+		    List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
+
+		    return deletedMembers.stream()
+		            .anyMatch(member -> member.getMemId().equals(memId));
+		}	
+		
     // 클럽멤버 목록조회 
 	@Override
 	public PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO) {
 		Pageable pageable = pageRequestDTO.getPageable("clubCode");
-		Page<Member> result = clubRepository.findMemberAll(clubCode, pageable);
+		Page<Member> result = clubMemberRepository.findMemberAll(clubCode, pageable);
 		
 		return PageResponseDTO.<Member>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -273,7 +305,7 @@ public class ClubServiceImpl implements ClubService {
 
 	@Override
 	public List<Member> findMemberDetails(String clubCode) {
-		return clubRepository.findMemberDetails(clubCode); 
+		return clubMemberRepository.findMemberDetails(clubCode); 
 	}
 
 	@Override

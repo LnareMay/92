@@ -32,7 +32,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-
 @Log4j2
 @Controller
 @RequestMapping("/club")
@@ -92,26 +91,44 @@ public class ClubController {
 			, RedirectAttributes redirectAttributes) {
 		clubService.remove(clubCode);
 		
-		redirectAttributes.addFlashAttribute("success", "클럽 삭제 성공");
+		redirectAttributes.addFlashAttribute("message", "클럽 삭제 성공");
 		return "redirect:/";
 	}
 	
 	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_join")
 	public String clubJoin(@RequestParam(value = "clubCode", required = false) String clubCode
+						 , Authentication authentication
+						 , HttpServletRequest request
+						 , RedirectAttributes redirectAttributes) {
+		
+		String memId = authentication.getName();
+		
+		if (clubService.isJoinMember(memId, clubCode)) {
+			redirectAttributes.addFlashAttribute("message", "이미 가입된 회원입니다.");
+			return "redirect:/club/club_detail?clubCode=" + clubCode;
+		} 
+		
+		clubService.join(memId, clubCode);
+		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 가입되었습니다.");
+		return "redirect:/club/club_detail?clubCode=" + clubCode;
+	}
+	
+	@PreAuthorize("hasRole('USER')")	
+	@PostMapping("/club_joindelete")
+	public String clubJoinDelete(@RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication
 			, HttpServletRequest request
 			, RedirectAttributes redirectAttributes) {
 		String memId = authentication.getName();
-		
-		boolean isJoinMember = clubService.isJoinMember(memId, clubCode);
-		if (isJoinMember) {
-			redirectAttributes.addFlashAttribute("message", "이미 가입된 회원입니다.");
+
+		if(clubService.isJoinDeleteMember(memId, clubCode)) {
+			redirectAttributes.addFlashAttribute("message", "이미 탈퇴된 회원입니다.");
 			return "redirect:/club/club_detail?clubCode=" + clubCode;
 		}
 		
-		clubService.join(memId, clubCode);
-		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 가입되었습니다.");
+		clubService.joindelete(memId, clubCode);		
+		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 탈퇴되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
 		
