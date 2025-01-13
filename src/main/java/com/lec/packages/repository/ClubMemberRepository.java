@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Club_Member_List;
+import com.lec.packages.domain.Member;
 import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 import com.lec.packages.dto.ClubDTO;
 
@@ -18,7 +19,20 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
 	@Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
 	List<Object[]> countByClubCode();
     
-    boolean existsByMemIdAndClubCode(String memId, String clubCode);
+    // 탈퇴된 회원 조회
+    @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
+            + "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = true")
+    List<Member> findDeleteMember(@Param("clubCode") String clubCode);
+    
+    // 클럽가입 회원 상세조회
+    @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false ORDER BY cm.CREATEDATE")
+    List<Member> findMemberDetails(@Param("clubCode") String clubCode);
+    
+    // 클럽가입 회원 목록조회 페이징
+    @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false ORDER BY cm.CREATEDATE")
+    Page<Member> findMemberAll(@Param("clubCode") String clubCode, Pageable pageable);
     
     /*
     @Query("SELECT cm FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode order by CREATEDATE")
@@ -26,9 +40,7 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
      
     @Query("SELECT m.memPicture FROM Member m WHERE m.memId = :memId")
 	List<String> findPicturesByMemberId(@Param("memId") String memId);
-    
-    @Query("SELECT m.memNickname FROM Member m WHERE m.memId = :memId")
-    List<String> findNicknameByMemberId(@Param("memId") String memId);
+
      */
     
     /*

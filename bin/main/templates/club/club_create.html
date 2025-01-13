@@ -71,7 +71,7 @@
 
 			<label for="club-description">클럽 소개</label>
 			<div class="club-intro-container">
-				<textarea name="clubIntroduction" id="clubIntroduction" maxlength="500" rows="5"
+				<textarea name="clubIntroduction" id="clubIntroduction" maxlength="1000" rows="10"
 					placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
 			</div>
 
@@ -106,8 +106,7 @@
 			</div>
 
 			<!-- 주활동지역 -->
-			<label class="form-label">주활동지역</label> <input type="hidden" id="clubAddress" name="clubAddress"
-				readonly></input>
+			<label class="form-label">주활동지역</label> <input type="hidden" id="clubAddress" name="clubAddress" readonly></input>
 			<button type="button" onclick="getLocation()">위치 찾기</button>
 			<p id="status">위치를 찾지 못했습니다</p>
 			<div id="map" style="width: 500px; height: 400px;"></div>

@@ -1,5 +1,6 @@
 package com.lec.packages.repository.search;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -24,16 +25,41 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 
 	@Override
 	public Page<Club> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
-	
-		QClub club = QClub.club;
-		JPQLQuery<Club> query = from(club);
-		
-		
-		this.getQuerydsl().applyPagination(pageable, query);
-		List<Club> list = query.fetch();
-		long count = query.fetchCount();
-		
-		return new PageImpl<>(list, pageable, count);
-	}
+	    QClub club = QClub.club;
+	    JPQLQuery<Club> query = from(club);
+	    BooleanBuilder builder = new BooleanBuilder();
+	    
+	    builder.and(club.deleteFlag.eq(false)); // deleteflag가 0인것만 조회
 
+	    // 주소 필터 추가
+	    if (types != null && Arrays.asList(types).contains("address")) {
+	        String addressKeyword = Arrays.stream(keywords)
+	                                      .filter(keyword -> keyword != null && !keyword.isBlank())
+	                                      .findFirst()
+	                                      .orElse("");
+	        if (!addressKeyword.isEmpty()) {
+	            builder.and(club.clubAddress.containsIgnoreCase(addressKeyword));
+	        }
+	    }
+
+	    // 테마 필터 추가
+	    if (types != null && Arrays.asList(types).contains("theme")) {
+	        String themeKeyword = keywords[1] != null ? keywords[1].trim().toLowerCase() : "";
+	        log.info("Theme Keyword: {}", themeKeyword);
+	        if (!themeKeyword.isEmpty() && !"all".equalsIgnoreCase(themeKeyword)) {
+	            builder.and(club.clubTheme.containsIgnoreCase(themeKeyword));
+	        }
+	    }
+
+	    query.where(builder);
+	    query.orderBy(club.CREATEDATE.asc());
+	    getQuerydsl().applyPagination(pageable, query);
+
+	    List<Club> clubs = query.fetch();
+	    long total = query.fetchCount();
+	    
+	    log.info("========Clubtheme Query: {}", query.toString());
+
+	    return new PageImpl<>(clubs, pageable, total);
+	}
 }
