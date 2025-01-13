@@ -74,7 +74,7 @@
 
 		<!-- 상단 클럽 생성 / 나의 클럽 START -->
 		<section id="my_club">
-			<div class="container">
+			<div class="container my_club_container">
 				<!-- Create Card -->
 				<div class="card create">
 					<a href="/club/club_create"><img src="/img/plus_icon.png" alt=""></a>만들기
@@ -200,7 +200,7 @@
 
 					<!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="Club Thumbnail"> -->
 					<img th:src="|/view/${club.clubImage1}|" id="clubImage1"
-						onerror="this.src='https://via.placeholder.com/80?text=ImgNone'">
+						onerror="this.src='https://placehold.co/80'">
 
 					<div class="club-content">
 						<div class="club-title" id="clubName" th:text="${club.clubName}"></div>
@@ -363,7 +363,7 @@
 							str += `<div class="card"
 									onclick="location.href='/club/club_detail?clubCode=${club.clubCode}'">
 										<img src="/view/${club.clubImage1}"
-											alt="ClubImage">
+											onerror="this.src='https://placehold.co/200x140'">
 										<div class="card-content">
 											<h3>${club.clubName}</h3>
 											<p>멤버 ${club.memberCount}</p>
@@ -371,7 +371,7 @@
 									</div>`
 						}
 					}
-					const myClub = document.querySelector("#my_club")
+					const myClub = document.querySelector(".my_club_container")
 					myClub.innerHTML += str;
 				})
 			}

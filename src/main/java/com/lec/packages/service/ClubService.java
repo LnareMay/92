@@ -101,9 +101,6 @@ public interface ClubService {
 
     ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO);
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
-
-
-	  PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO);
 	
     List<ClubDTO> clubListWithMemID(String username);
 
