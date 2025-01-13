@@ -510,6 +510,13 @@ public class ClubServiceImpl implements ClubService {
 		/* return clubMemberRepository.countByClubCode(clubCode).orElse(0); */
 	}
 
+	@Override
+	public List<ClubDTO> clubListWithMemID(String username) {
+		List<Club> myClubList = clubRepository.getClubListWithMemID(username);
+
+		return null;
+	}
+
 
 
 

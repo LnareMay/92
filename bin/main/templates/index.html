@@ -81,7 +81,7 @@
 				</div>
 
 				<!-- First Card -->
-				<div class="card">
+				<div th:if="${#authentication.principal == 'anonymousUser'}" class="card">
 					<img src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264"
 						alt="Group Image">
 					<div class="card-content">
@@ -90,26 +90,7 @@
 					</div>
 				</div>
 
-				<!-- Second Card -->
-				<div class="card ad">
-					<img src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264"
-						alt="Ad Image">
-					<div class="card-content">
-						<h3>할머니 입맛저격 재주문 갑니다</h3>
-						<p class="ad-label">AD · 밴드 미리보기</p>
-					</div>
-				</div>
-
-				<!-- Third Card -->
-				<div class="card">
-					<img src="https://coresos-phinf.pstatic.net/a/34g070/j_da1Ud018admpvjf5sy5gkho_5ksoqj.png?type=cover_a264"
-						alt="Content Image">
-					<div class="card-content">
-						<h3>방문이 뜸한 밴드</h3>
-						<p>밴드 4</p>
-						<div class="dot"></div>
-					</div>
-				</div>
+				
 			</div>
 		</section>
 		<!-- 상단 클럽 생성 / 나의 클럽 END -->
@@ -277,12 +258,15 @@
 		</section>
 		<!-- 클럽 목록 END -->
 	</main>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  	<script src="/js/gd.js"></script>
 	<div th:insert="~{layouts/footer :: footer}"></div>
-	<script>
+	<script layout:fragment="script" th:inline="javascript">
 		let map;
 		let geocoder;
 		let selectedAddress = "";
 		let marker; // 마커 객체
+		const memRole = /*[[${#authentication.principal}]]*/'';
 
 		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
 		    
@@ -367,6 +351,34 @@
 				});
 		}
 
+
+		function printClubList(memRole) {
+			if(memRole == 'anonymousUser'){
+				return;
+			}
+			else {
+				getClubList().then(data => {
+					let str = "";
+					if(data && data.length > 0) {
+						for(const club of data){
+							str += `<div class="card"
+									onclick="location.href='/club/club_detail?clubCode=${club.clubCode}'">
+										<img src="/view/${club.clubImage1}"
+											alt="ClubImage">
+										<div class="card-content">
+											<h3>${club.clubName}</h3>
+											<p>멤버 ${club.memberCount}</p>
+										</div>
+									</div>`
+						}
+					}
+					const myClub = document.querySelector("#my_club")
+					myClub.innerHTML += str;
+				})
+			}
+		}
+
+		printClubList(memRole)
 	</script>
 
 
