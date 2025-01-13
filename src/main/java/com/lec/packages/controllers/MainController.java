@@ -44,20 +44,29 @@ public class MainController {
     private final KakaoApiService kakaoApiService;
     private final MemberService memberService;
 
-    /*
+   
     @GetMapping("/")
     public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model,
                            @RequestParam(value = "theme", required = false, defaultValue = "ALL") String clubTheme,
                            @RequestParam(value = "address", required = false, defaultValue = "ALL") String address) {
-
+    	
+    	// 현재 URI 추가
+        String currentURI = request.getRequestURI();
+        model.addAttribute("currentURI", currentURI != null ? currentURI : "");
+    	
     	 // 현재 사용자 가져오기
         Member member = getAuthenticatedMember();
         if (member != null) {
             model.addAttribute("member", member); // Member 객체를 모델에 추가
 
-            // address가 "ALL"이고 사용자의 주소가 설정된 경우, 사용자의 주소를 기본값으로 사용
+            /* address가 "ALL"이고 사용자의 주소가 설정된 경우, 사용자의 주소를 기본값으로 사용
             if ("ALL".equalsIgnoreCase(address) && member.getMemAddressSet() != null) {
                 address = member.getMemAddressSet();
+            } */
+            if ("ALL".equalsIgnoreCase(address)) {
+                if (member.getMemAddressSet() != null && !member.getMemAddressSet().isEmpty()) {
+                    address = member.getMemAddressSet();
+                }
             }
         }
 
@@ -70,9 +79,6 @@ public class MainController {
             e.printStackTrace();
         }
 
-        // 현재 URI 추가
-        String requestURI = request.getRequestURI();
-        model.addAttribute("currentURI", requestURI != null ? requestURI : "");
 
         // 클럽 목록 필터링
         PageResponseDTO<ClubDTO> responseDTO;
@@ -91,8 +97,8 @@ public class MainController {
 
         return "index";
     }
-    */
-   
+    
+    /*
     @GetMapping("/")
     public String mainClub(PageRequestDTO pageRequestDTO, HttpServletRequest request, Model model,
                            @RequestParam(value = "theme", required = false) String clubTheme,
@@ -172,8 +178,8 @@ public class MainController {
 
         return "index";
     } 
+     */
     
-
     private Member getAuthenticatedMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
