@@ -53,3 +53,8 @@ async function getBoardList({clubCode, page, size}) {
 	const result = await axios.get(`/club/club_board_rest`, {params: {clubCode, page, size}})
 	return result.data
 }
+
+async function getClubList() {
+	const result = await axios.get('/club/myClubList')
+	return result.data
+}
