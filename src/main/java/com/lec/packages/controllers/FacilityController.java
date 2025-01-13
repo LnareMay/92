@@ -7,15 +7,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lec.packages.dto.FacilityDTO;
+import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.service.FacilityService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -66,6 +71,23 @@ public class FacilityController {
 			
 	    	return "facility/facility_detail";		 
 	    }
+	    
+	    @PostMapping("/submit-booking")
+		public String facilityBookByMemberPost(ReservationDTO reservationDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		    log.info("시설예약 POST방식.....");
+		    log.info(reservationDTO);
+
+	        facilityService.bookByMember(reservationDTO);
+	        redirectAttributes.addFlashAttribute("result", "시설예약 성공");
+		    
+
+	        String redirectUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/member/reservation")
+                    .toUriString();
+
+	        return "redirect:" + redirectUrl;
+		    
+		}
 
 }
 	
