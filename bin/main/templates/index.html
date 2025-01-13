@@ -138,58 +138,54 @@
 					</div>
 				</div>
 			</div>
-
-
-
-
-			<!-- 전체 -->
-			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
+			
+<!-- 			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=ALL&page=1'|">전체</button>
 
-			<!-- 운동클럽 -->
 			<button type="button" class="btn" value="THM_SPORTCLUB"
 				th:classappend="${theme == 'THM_SPORTCLUB'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_SPORTCLUB&page=1'|">운동클럽</button>
+				th:onclick="|location.href='@{/}?theme=THM_SPORTCLUB&page=1'|">운동클럽</button> -->
+				
+			<!-- 클럽 테마 필터링 버튼 -->
+			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
+			    th:onclick="|location.href='@{/clubByaddress(theme=ALL, address=${address == null ? 'ALL' : address}, page=1)}'|">전체</button>
+			
+			<button type="button" class="btn" value="THM_SPORTCLUB"
+				th:classappend="${theme == 'THM_SPORTCLUB'} ? 'btn-primary' : 'btn-secondary'"
+			    th:onclick="|location.href='@{/clubByaddress(theme=THM_SPORTCLUB, address=${address == null ? 'ALL' : address}, page=1)}'|">운동클럽</button>
 
-			<!-- 운동일지 -->
 			<button type="button" class="btn" value="THM_SPORTJOURNAL"
 				th:classappend="${theme == 'THM_SPORTJOURNAL'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_SPORTJOURNAL&page=1'|">운동일지</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_SPORTJOURNAL, address=${address == null ? 'ALL' : address}, page=1)}'|">운동일지</button>
 
-			<!-- 영양제/식단 -->
 			<button type="button" class="btn" value="THM_FOOD"
 				th:classappend="${theme == 'THM_FOOD'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_FOOD&page=1'|">영양제/식단</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_FOOD, address=${address}, page=1)}'|">영양제/식단</button>
 
-			<!-- 헬스 -->
 			<button type="button" class="btn" value="THM_FITNESS"
 				th:classappend="${theme == 'THM_FITNESS'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_FITNESS&page=1'|">헬스</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_FITNESS, address=${address}, page=1)}'|">헬스</button>
 
-			<!-- 체중감량 -->
 			<button type="button" class="btn" value="THM_DIET"
 				th:classappend="${theme == 'THM_DIET'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_DIET&page=1'|">체중감량</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_DIET, address=${address}, page=1)}'|">체중감량</button>
 
-			<!-- 바디프로필 -->
 			<button type="button" class="btn" value="THM_BODYPROFILE"
 				th:classappend="${theme == 'THM_BODYPROFILE'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_BODYPROFILE&page=1'|">바디프로필</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_BODYPROFILE, address=${address}, page=1)}'|">바디프로필</button>
 
-			<!-- 부상/재활 -->
 			<button type="button" class="btn" value="THM_RECOVER"
 				th:classappend="${theme == 'THM_RECOVER'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_RECOVER&page=1'|">부상/재활</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_RECOVER, address=${address}, page=1)}'|">부상/재활</button>
 
-			<!-- 대회준비 -->
 			<button type="button" class="btn" value="THM_CONTEST"
 				th:classappend="${theme == 'THM_CONTEST'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_CONTEST&page=1'|">대회준비</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_CONTEST, address=${address}, page=1)}'|">대회준비</button>
 
-			<!-- 입시준비 -->
 			<button type="button" class="btn" value="THM_EXAM"
 				th:classappend="${theme == 'THM_EXAM'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=THM_EXAM&page=1'|">입시준비</button>
+				th:onclick="|location.href='@{/clubByaddress(theme=THM_EXAM, address=${address}, page=1)}'|">입시준비</button>
+
 		</section>
 		<!-- 클럽 테마 탭메뉴 END -->
 
@@ -232,18 +228,30 @@
 
 			<nav th:if="${!responseDTO.dtoList.isEmpty()}" aria-label="Page navigation" class="mt-3">
 				<ul class="pagination justify-content-center">
-					<li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'"><a class="page-link"
-							th:href="@{'/'(theme=${theme}, page=${responseDTO.page - 1})}" aria-label="Previous">«</a>
-					</li>
-					<th:block th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
-						<li class="page-item" th:classappend="${responseDTO.page == i} ? 'active'"><a class="page-link"
-								th:href="@{'/'(theme=${theme},page=${i})}">[[${i}]]</a>
-						</li>
-					</th:block>
-					<li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
-						<a class="page-link" th:href="@{'/'(theme=${theme}, page=${responseDTO.page + 1})}"
-							aria-label="Next">»</a>
-					</li>
+					 <!-- 이전 페이지 -->
+			        <li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'">
+			            <a class="page-link" 
+			               th:href="@{'/clubByaddress'(theme=${theme}, address=${address}, page=${responseDTO.page - 1})}" 
+			               aria-label="Previous">«</a>
+			        </li>
+			
+			        <!-- 페이지 번호 -->
+			        <th:block th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+			            <li class="page-item" th:classappend="${responseDTO.page == i} ? 'active'">
+			                <a class="page-link" 
+			                   th:href="@{'/clubByaddress'(theme=${theme}, address=${address}, page=${i})}">
+			                   [[${i}]]
+			                </a>
+			            </li>
+			        </th:block>
+			
+			        <!-- 다음 페이지 -->
+			        <li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
+			            <a class="page-link" 
+			               th:href="@{'/clubByaddress'(theme=${theme}, address=${address}, page=${responseDTO.page + 1})}" 
+			               aria-label="Next">»</a>
+			        </li>
+								      
 				</ul>
 			</nav>
 
@@ -261,6 +269,7 @@
 		const memRole = /*[[${#authentication.principal}]]*/'';
 
 		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
+		    
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(
 					(position) => {
@@ -317,6 +326,7 @@
 			if (selectedAddress) {
 				document.getElementById("status").textContent = selectedAddress;
 				updateMemAddress(selectedAddress);
+				
 			}
 
 			// 모달 닫기
@@ -340,6 +350,7 @@
 					console.error("Update Error:", error);
 				});
 		}
+
 
 		function printClubList(memRole) {
 			if(memRole == 'anonymousUser'){

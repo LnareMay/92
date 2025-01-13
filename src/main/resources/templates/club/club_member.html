@@ -29,7 +29,7 @@
 				  <img th:src="|/view/${clubdto.clubImage1}|" class="rounded-circle me-3" alt="대표이미지1">
 				     <div>
 				       <h6 th:text="${clubdto.clubName}"></h6>
-				       	<p class="text-muted mb-0">멤버수 [[${memberCount}]]  </p>
+				       	<p class="text-muted mb-0">멤버수 [[${clubdto.memberCount}]]  </p>
 				 	</div>
 				 </div>		       	
 			</section>
@@ -41,11 +41,12 @@
 			               <section>
 			                   <div class="d-flex flex-column">
 			                       <div class="d-flex align-items-center mb-3" th:each="clubmember : ${responseDTO.dtoList}">
-										<img src="https://via.placeholder.com/50" alt="프로필 이미지" class="rounded-circle me-3">
+										<img th:src="|/view/${clubmember.memPicture}|" alt="프로필이미지" class="rounded-circle me-3"
+                           	 				 onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 			                           <div>
-			                               <p class="mb-1 fw-bold">[[${clubmember.memId}]] 
+			                               <p class="mb-1 fw-bold"> [[${clubmember.memNickname}]]
 											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span></p>
-			                               <small class="text-muted">성산제2동</small>
+			                               <small class="text-muted" th:text="${clubmember.memAddress}"></small>
 			                           </div>
 			                       </div>
 							
@@ -69,8 +70,8 @@
 									</li>
 								</ul>
 							</nav>
-					</div>
-			   </section>
+							</div>
+					   </section>
 		</div>
     </main>
   

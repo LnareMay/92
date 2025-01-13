@@ -429,9 +429,11 @@ ul {
 	border-color: #fff;
 	overflow: hidden;
 }
-
+#facility_main_pg .card>div.img_wrap{
+	height:200px;
+	overflow:hidden;
+}
 #facility_main_pg .card .card-img {
-	height: 200px;
 	overflow: hidden;
 }
 
@@ -456,6 +458,16 @@ ul {
 	top: 10px;
 	left: 10px;
 	background-color: #ffaa00;
+	color: #fff;
+	border-radius: 3px;
+	padding: 2px 7px;
+}
+
+#facility_main_pg .card .ReservationOnlyClubtag {
+	position: absolute;
+	top: 10px;
+	left: 70px;
+	background-color: #408080;
 	color: #fff;
 	border-radius: 3px;
 	padding: 2px 7px;

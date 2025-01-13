@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -26,7 +27,7 @@ public class FacilityController {
 	
     private final FacilityService facilityService;
 	 
-	    @GetMapping("/facility_main")
+	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
 	    	 
 	    	 String requestURI = request.getRequestURI();  	 
@@ -44,6 +45,27 @@ public class FacilityController {
 			 
 			 return "facility/facility_main";		 
 		 }
+	    
+	    @GetMapping("/detail/{facilityCode}")
+	    public String FaciltyDetailPage( @PathVariable("facilityCode") String facilityCode
+	    								,HttpServletRequest request
+	    								,PageRequestDTO pageRequestDTO 
+	    								, Model model
+	    								,@AuthenticationPrincipal UserDetails userDetails) {
+	    	
+	    	//시설 정보를 가져오기 위해 서비스 호출
+			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
+			//log.info("FacilityDTO: {}", facilityDTO);
+			String userId = userDetails.getUsername();
+			//모델에 로그인 정보를 추가하여 뷰로 전달
+			
+			model.addAttribute("userId",userId);
+			//모델에 시설 정보를 추가하여 뷰로 전달
+			model.addAttribute("facility",facilityDTO);
+			model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
+			
+	    	return "facility/facility_detail";		 
+	    }
 
 }
 	

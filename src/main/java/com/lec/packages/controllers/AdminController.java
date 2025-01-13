@@ -71,51 +71,7 @@ public class AdminController {
 	     model.addAttribute("facilityDTO", new FacilityDTO()); // 빈 DTO 객체 전달
 	     return "admin/Facility_add"; // 입력 페이지로 이동
 	 }
-	 
-	 //Post 시설 등록 
-//	 @PostMapping("/Facility_add")
-//	 public String addFaciltyPagePost(@Valid FacilityDTO facilityDTO
-//			 							, BindingResult bindingResult
-//			 							, RedirectAttributes redirectAttributes
-//			 							, Model model
-//			 							, @AuthenticationPrincipal UserDetails userDetails
-//			 							, @RequestParam("exerciseCode") String exerciseCode
-//			 							, @RequestParam(value = "files", required = false) MultipartFile[] files) {
-//		 
-//		    // 유효성 검사 실패 처리
-//		    if (bindingResult.hasErrors()) {
-//		        model.addAttribute("facilityDTO", facilityDTO);
-//		        model.addAttribute("errors", bindingResult.getFieldErrors());
-//		        return "admin/Facility_add";
-//		    }
-//
-//		    try {
-//		        // 파일 저장 처리
-//		        if (files != null && files.length > 0) {
-//		            String[] savedFilePaths = new String[files.length];
-//		            for (int i = 0; i < files.length; i++) {
-//		                if (!files[i].isEmpty()) {
-//		                    savedFilePaths[i] = fileService.saveFile(files[i]);
-//		                }
-//		            }
-//
-//		            // DTO에 파일 경로 설정
-//		            if (savedFilePaths.length > 0) facilityDTO.setFacilityImage1(savedFilePaths[0]);
-//		            if (savedFilePaths.length > 1) facilityDTO.setFacilityImage2(savedFilePaths[1]);
-//		            if (savedFilePaths.length > 2) facilityDTO.setFacilityImage3(savedFilePaths[2]);
-//		            if (savedFilePaths.length > 3) facilityDTO.setFacilityImage4(savedFilePaths[3]);
-//		        }
-//
-//		        // 시설 등록 서비스 호출
-//		        String facilityCode = facilityService.register(facilityDTO);
-//		        redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다: " + facilityCode);
-//		        return "redirect:/admin/Facility_list";
-//		    } catch (Exception e) {
-//		        redirectAttributes.addFlashAttribute("error", "파일 업로드 중 오류가 발생했습니다.");
-//		        return "redirect:/admin/Facility_add";
-//		    }
-//	 }
-	 
+ 
 	 //시설 수정하기 Get
 	 @GetMapping("/Facility_edit/{facilityCode}")
 	 public String EditFaciltyPage( @PathVariable("facilityCode") String facilityCode, 
@@ -136,46 +92,46 @@ public class AdminController {
 	 }
 	 
 	 
-	 //시설 수정하기 Post
-	 @PostMapping("/Facility_edit/{facilityCode}")
-	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
-									 	,@PathVariable("facilityCode") String facilityCode
-										,BindingResult bindingResult
-										,RedirectAttributes redirectAttributes
-										,Model model
-										,@AuthenticationPrincipal UserDetails userDetails
-										,@RequestParam("exerciseCode") String exerciseCode) {
-		 
-		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
-		 if (exerciseCode == null || exerciseCode.isEmpty()) {
-		        exerciseCode = null;
-		    }
-
-	    if (bindingResult.hasErrors()) {
-	  
-	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
-	       
-	        String userId = userDetails.getUsername();
-	        
-	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
-	        model.addAttribute("facilityDTO", facilityDTO);
-    	    model.addAttribute("userId", userId);
-    	    
-	        model.addAttribute("errors", bindingResult.getFieldErrors());
-
-
-	        // 입력 페이지로 다시 이동
-	        return "admin/Facility_add";
-	    }
-
-	    log.info("등록 요청: {}", facilityDTO);
-
-	    // 시설 등록 및 결과 처리
-	    facilityService.modify(facilityDTO);
-	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
-		 
-		 return "admin/Facility_list";
-	 }
+//	 //시설 수정하기 Post
+//	 @PostMapping("/Facility_edit/{facilityCode}")
+//	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
+//									 	,@PathVariable("facilityCode") String facilityCode
+//										,BindingResult bindingResult
+//										,RedirectAttributes redirectAttributes
+//										,Model model
+//										,@AuthenticationPrincipal UserDetails userDetails
+//										,@RequestParam("exerciseCode") String exerciseCode) {
+//		 
+//		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
+//		 if (exerciseCode == null || exerciseCode.isEmpty()) {
+//		        exerciseCode = null;
+//		    }
+//
+//	    if (bindingResult.hasErrors()) {
+//	  
+//	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
+//	       
+//	        String userId = userDetails.getUsername();
+//	        
+//	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
+//	        model.addAttribute("facilityDTO", facilityDTO);
+//    	    model.addAttribute("userId", userId);
+//    	    
+//	        model.addAttribute("errors", bindingResult.getFieldErrors());
+//
+//
+//	        // 입력 페이지로 다시 이동
+//	        return "admin/Facility_add";
+//	    }
+//
+//	    log.info("등록 요청: {}", facilityDTO);
+//
+//	    // 시설 등록 및 결과 처리
+//	    facilityService.modify(facilityDTO);
+//	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
+//		 
+//		 return "admin/Facility_list";
+//	 }
 	 
 	 //시설 상세보기
 	 @GetMapping("/Facility_detail/{facilityCode}")

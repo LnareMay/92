@@ -40,9 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-
-
+import com.lec.packages.domain.Facility;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
@@ -220,27 +218,23 @@ public class AdminRestController {
 								        		  .facilityDescription(facilityDescription)
 								        		  .facilityStartTime(facilityStartTime) 
 								        		  .facilityEndTime(facilityEndTime)
-								        		  .price(price) .exerciseCode(exerciseCode)
+								        		  .price(price) 
+								        		  .exerciseCode(exerciseCode)
 								        		  .facilityIsOnlyClub(facilityIsOnlyClub) 
 								        		  .facilityImage1(imagePaths.size() > 0 ? imagePaths.get(0) : null) 
 								        		  .facilityImage2(imagePaths.size() > 1 ? imagePaths.get(1) : null) 
 								        		  .facilityImage3(imagePaths.size() > 2 ? imagePaths.get(2) : null) 
-								        		  .facilityImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null) .build();
+								        		  .facilityImage4(imagePaths.size() > 3 ? imagePaths.get(3) : null) 
+								        		  .build();
 
 	  
-	        String facilityCode = facilityService.register(facilityDTO);
+	        facilityService.register(facilityDTO);
 
 	        //성공 시 리다이렉트 설정
 	        HttpHeaders headers =new HttpHeaders();
 	        headers.setLocation(URI.create("/admin/Facility_list"));
 	        return new ResponseEntity<>(headers,HttpStatus.FOUND);
-	        
-//	        response.put("success", true);
-//	        response.put("redirectUrl", "/");
-//	        return ResponseEntity.status(HttpStatus.FOUND)
-//	                .header(HttpHeaders.LOCATION, "/")
-//	                .body(response);
-//	        
+	        	        
 	    } catch (Exception e) {
 	        response.put("success", false);
 	        response.put("message", "시설 등록 중 오류가 발생했습니다.");
@@ -248,68 +242,69 @@ public class AdminRestController {
 	    }
 	}
 	
-	// 클럽수정
-//	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//	public ResponseEntity<?> clubModify(
-//	        @ModelAttribute ClubDTO clubDTO,
-//	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-//	        HttpServletRequest request,
-//	        Model model,
-//	        PageRequestDTO pageRequestDTO,
-//	        RedirectAttributes redirectAttributes) {
-//
-//	    String requestURI = request.getRequestURI();
-//	    model.addAttribute("currentURI", requestURI);
-//
-//	    try {
-//	        Optional<Club> optionalClub = clubRepository.findById(clubDTO.getClubCode());
-//	        Club club = optionalClub.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
-//
-//	        if (files != null && !files.isEmpty()) {
-//	            for (int i = 0; i < files.size(); i++) {
-//	                MultipartFile file = files.get(i);
-//	                if (file != null && !file.isEmpty()) {
-//	                    String originalFileName = file.getOriginalFilename();
-//	                    String uuid = UUID.randomUUID().toString();
-//	                    String fileName = uuid + "_" + originalFileName;
-//
-//	                    Path filePath = Paths.get(uploadPath, fileName);
-//	                    file.transferTo(filePath);
-//
-//	                    String contentType = Files.probeContentType(filePath);
-//	                    if (contentType != null && contentType.startsWith("image")) {
-//	                        File thumbnail = new File(uploadPath, "s_" + fileName);
-//	                        Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
-//	                    }
-//
-//	                    switch (i) {
-//	                        case 0 -> clubDTO.setClubImage1(fileName);
-//	                        case 1 -> clubDTO.setClubImage2(fileName);
-//	                        case 2 -> clubDTO.setClubImage3(fileName);
-//	                        case 3 -> clubDTO.setClubImage4(fileName);
-//	                    }
-//	                }
-//	            }
-//	        }
-//
-//	        if (clubDTO.getClubImage1() == null) clubDTO.setClubImage1(club.getClubImage1());
-//	        if (clubDTO.getClubImage2() == null) clubDTO.setClubImage2(club.getClubImage2());
-//	        if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3());
-//	        if (clubDTO.getClubImage4() == null) clubDTO.setClubImage4(club.getClubImage4());
-//
-//	        clubService.modify(clubDTO);
-//	        log.info(clubDTO.getClubAddress());
-//
-//	        String redirectUrl = String.format("./club_detail?clubCode=%s", clubDTO.getClubCode());
-//	        return ResponseEntity.status(HttpStatus.FOUND)
-//	                .header(HttpHeaders.LOCATION, redirectUrl)
-//	                .build();
-//
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
-//	    }
-//	}
+	// 시설 정보 수정
+	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> facilityModify(
+	        @ModelAttribute FacilityDTO facilityDTO,
+	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+	        HttpServletRequest request,
+	        Model model,
+	        PageRequestDTO pageRequestDTO,
+	        RedirectAttributes redirectAttributes) {
+
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+	    try {
+	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
+	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
+
+	        if (files != null && !files.isEmpty()) {
+	            for (int i = 0; i < files.size(); i++) {
+	                MultipartFile file = files.get(i);
+	                if (file != null && !file.isEmpty()) {
+	                    String originalFileName = file.getOriginalFilename();
+	                    String uuid = UUID.randomUUID().toString();
+	                    String fileName = uuid + "_" + originalFileName;
+
+	                    Path filePath = Paths.get(uploadPath, fileName);
+	                    file.transferTo(filePath);
+
+	                    String contentType = Files.probeContentType(filePath);
+	                    if (contentType != null && contentType.startsWith("image")) {
+	                        File thumbnail = new File(uploadPath, "s_" + fileName);
+	                        Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
+	                    }
+
+	                    switch (i) {
+	                        case 0 -> facilityDTO.setFacilityImage1(fileName);
+	                        case 1 -> facilityDTO.setFacilityImage1(fileName);
+	                        case 2 -> facilityDTO.setFacilityImage1(fileName);
+	                        case 3 -> facilityDTO.setFacilityImage1(fileName);
+	                    }
+	                }
+	            }
+	        }
+
+	        if (facilityDTO.getFacilityImage1() == null) facilityDTO.setFacilityImage1(facility.getFacilityImage1());
+	        if (facilityDTO.getFacilityImage2() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage2());
+	        if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage3());
+	        if (facilityDTO.getFacilityImage4() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage4());
+
+
+	        facilityService.modify(facilityDTO);
+	      
+
+	        String redirectUrl = String.format("./Facility_detail?facilityCode=%s", facilityDTO.getFacilityCode());
+	        return ResponseEntity.status(HttpStatus.FOUND)
+	                .header(HttpHeaders.LOCATION, redirectUrl)
+	                .build();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+	    }
+	}
 
 	/*
 	 * @GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}") public

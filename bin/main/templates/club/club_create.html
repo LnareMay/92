@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
-
 <head>
 	<!-- meta_tag include -->
-
 	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
 	<title>클럽 가입</title>
 
@@ -73,7 +71,7 @@
 
 			<label for="club-description">클럽 소개</label>
 			<div class="club-intro-container">
-				<textarea name="clubIntroduction" id="clubIntroduction" maxlength="500" rows="5"
+				<textarea name="clubIntroduction" id="clubIntroduction" maxlength="1000" rows="10"
 					placeholder="활동 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요."></textarea>
 			</div>
 
@@ -108,8 +106,7 @@
 			</div>
 
 			<!-- 주활동지역 -->
-			<label class="form-label">주활동지역</label> <input type="hidden" id="clubAddress" name="clubAddress"
-				readonly></input>
+			<label class="form-label">주활동지역</label> <input type="hidden" id="clubAddress" name="clubAddress" readonly></input>
 			<button type="button" onclick="getLocation()">위치 찾기</button>
 			<p id="status">위치를 찾지 못했습니다</p>
 			<div id="map" style="width: 500px; height: 400px;"></div>
@@ -143,10 +140,9 @@
 			<!-- 클럽 공개여부 / 비밀번호 -->
 			<label for="club-isprivate">클럽 공개여부</label>
 			<div class="club-isprivate">
-				<input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false"
-					onchange="togglePasswordField()"> 공개 <input type="radio" id="clubIsprivateYes" name="clubIsprivate"
-					th:value="true" onchange="togglePasswordField()"> 비공개 <input type="password" id="clubPw"
-					name="clubPw" placeholder="비밀번호 입력" maxlength="15" style="display: none; margin-left: 10px;">
+				<input type="radio" id="clubIsprivateNo" name="clubIsprivate" th:value="false" onchange="togglePasswordField()"> 공개 
+				<input type="radio" id="clubIsprivateYes" name="clubIsprivate" th:value="true" onchange="togglePasswordField()"> 비공개 
+				<input type="password" id="clubPw" name="clubPw" placeholder="비밀번호 입력" maxlength="15" style="display: none; margin-left: 10px;">
 			</div>
 
 			<button type="submit" class="btn btn-primary mt-4" style="margin-bottom: 20px;">만들기</button>
@@ -266,7 +262,7 @@
 		  , '광주광역시': ['동구', '서구', '중구', '북구', '광산구']
 		  , '대전광역시': ['중구', '서구', '동구', '유성구', '대덕구']
 		  , '울산광역시': ['중구', '남구', '동구', '북구', '울주군']
-		  , '세종특별자치시': ['조치원읍', '연기면', '연동면', '부강면', '금남면', '장군면', '연서면', '전의면', '전동면', '소정면', '한솔동', '새롬동', '', '', '', '', '', '']			
+		  , '세종특별자치시': ['조치원읍', '연기면', '연동면', '부강면', '금남면', '장군면', '연서면', '전의면', '전동면', '소정면', '한솔동', '새롬동']			
 		  , '제주특별자치도': ['제주시', '서귀포시']			
 		};		
 		const citySelect = document.getElementById("city");
@@ -291,64 +287,6 @@
 	let map;
 	let ps;
 
-	/*function getLocation() {
-	  const status = document.getElementById("status");
-	  
-	  if ("geolocation" in navigator) {
-		navigator.geolocation.getCurrentPosition(
-		  (position) => {
-			const { latitude, longitude } = position.coords;
-			status.textContent = `위도: ${latitude}, 경도: ${longitude}`;
-		    
-			// 지도를 해당 위치로 이동
-			const mapContainer = document.getElementById('map');
-			const mapOption = {
-			  center: new kakao.maps.LatLng(latitude, longitude),
-			  level: 4
-			};
-			map = new kakao.maps.Map(mapContainer, mapOption);
-		    
-			// 마커 표시
-			const marker = new kakao.maps.Marker({
-			  position: new kakao.maps.LatLng(latitude, longitude)
-			});
-			marker.setMap(map);
-
-			// 장소 검색 객체 생성
-			ps = new kakao.maps.services.Places();
-		    
-			// 주변 나들이 장소 검색
-		   const placesList = document.getElementById("places");
-			ps.keywordSearch("체육관", (data, status, pagination) => {
-			  if (status === kakao.maps.services.Status.OK) {
-				placesList.innerHTML = "";
-				data.forEach((place) => {
-				  const listItem = document.createElement("li");
-				  listItem.textContent = `${place.place_name} (${place.address_name})`;
-				  placesList.appendChild(listItem);
-				  
-				  // 지도에 마커 추가
-				  const placeMarker = new kakao.maps.Marker({
-					position: new kakao.maps.LatLng(place.y, place.x),
-					map: map
-				  });
-				});
-			  } else {
-				placesList.textContent = "주변 관광지를 찾을 수 없습니다.";
-			  } 
-			}, {
-			  location: new kakao.maps.LatLng(latitude, longitude),
-			  radius: 5000 // 5km 내에서 검색
-			});
-		  },
-		  (error) => {
-			status.textContent = `위치 정보를 가져올 수 없습니다: ${error.message}`;
-		  }
-		);
-	  } else {
-		status.textContent = "브라우저가 위치 서비스를 지원하지 않습니다.";
-	  }
-	}*/
 	function getLocation() {
 	    const status = document.getElementById("status");
 	    const clubAddressInput = document.getElementById("clubAddress");

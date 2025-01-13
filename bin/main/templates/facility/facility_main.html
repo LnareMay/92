@@ -94,7 +94,6 @@
 					<div class="modal-content">
 						<h3>운동 종목 선택</h3>
 						<div id="province-buttons-sport" class="button-grid">
-							<!-- 시/도 버튼 -->
 							<button data-province="잔디구장">축구장</button>
 							<button data-province="야구장">야구장</button>
 							<button data-province="테니스장">테니스장</button>
@@ -175,9 +174,11 @@
 		<div class="container mt-4">
 		    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
 		        <div class="col" th:each="facility : ${facilities}">
-		            <div class="card h-100">
-		                <img src="https://share.siheung.go.kr/space/image.do?store_file=ebe0ae679f0a4d86b793c2aa49e9eea9.jpg&file_nm=희망B.jpg"
-		                     class="card-img-top" alt="Facility Image">
+		            <div class="card h-100"  th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${facility.facilityCode})}'|">
+			            <div class="img_wrap">
+			            	<img class="card-img-top" th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image">
+			            </div>
+		            
 		                <div class="card-body">
 		                    <div class="tag">
 			                    <td th:switch="${facility.exerciseCode}">
@@ -194,6 +195,9 @@
 								    <span th:case="*">NULL</span>
 						 		</td>
 							</div>
+							 <div class="ReservationOnlyClubtag" th:if="${facility.facilityIsOnlyClub}">
+								 <span>클럽전용</span>
+							 </div>
 		                   
 		                    <h7 th:text="${facility.facilityAddress}" class="card-text"></h7>
 		                    <h5 th:text="${facility.facilityName}" class="card-title"></h5>
@@ -249,6 +253,7 @@
 	const cityModal = document.getElementById("city-modal");
 	const cityTitle = document.getElementById("city-title");
 	const cityButtons = document.getElementById("city-buttons");
+	
 	// 운동유형
 	const sportSelect = document.getElementById("sport-select");
 	const sportModal = document.getElementById("sport-modal");
@@ -317,49 +322,6 @@
 			});
 		});
 	});
-
-
-
-	// 인원 모달
-	const peopleSelect = document.getElementById("people-select");
-	const peopleModal = document.getElementById("people-modal");
-	const decreaseBtn = document.getElementById("decrease-btn");
-	const increaseBtn = document.getElementById("increase-btn");
-	const peopleCount = document.getElementById("people-count");
-	const applyBtn = document.getElementById("apply-btn");
-
-	// 초기값 설정
-	let count = 0;
-
-	// "몇 명이 이용하시나요?" 클릭 시 모달 열기
-	peopleSelect.addEventListener("click", () => {
-		peopleModal.style.display = "block";
-		overlay.style.display = "block";
-	});
-
-	// 숫자 감소 버튼
-	decreaseBtn.addEventListener("click", () => {
-		if (count > 0) {
-			count--;
-			peopleCount.textContent = count;
-		}
-	});
-
-	// 숫자 증가 버튼
-	increaseBtn.addEventListener("click", () => {
-		count++;
-		peopleCount.textContent = count;
-	});
-
-	// 인원적용 버튼 클릭 시
-	applyBtn.addEventListener("click", () => {
-		const placeholder = document.querySelector(".people-placeholder");
-		placeholder.textContent = `${count} 명`;
-		peopleSelect.style.color = "#1669c7";
-		peopleSelect.style.fontWeight = "bold";
-		closeModals();
-	});
-
 
 
 

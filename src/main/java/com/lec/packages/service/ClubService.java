@@ -1,11 +1,14 @@
 package com.lec.packages.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
+import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
@@ -27,10 +30,18 @@ public interface ClubService {
 	void remove(String clubCode);
 	
 	void join(String memId, String clubCode);
-	int membercount(String clubCode);
+	boolean isJoinMember(String memId, String clubCode); 
+	void joindelete(String memId, String clubCode);
+	boolean isJoinDeleteMember(String memId, String clubCode);
+
+	Map<String, Integer> membercount();
+	List<Member> findMemberDetails(String clubCode);
+	PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
+	PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memberAddress, String clubTheme);
+	
 	List<ClubDTO> getAllClubs();		
 
 	ClubDTO board(String clubCode);
@@ -91,9 +102,10 @@ public interface ClubService {
     ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO);
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
 
-	PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO);
+
+	  PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO);
 	
     List<ClubDTO> clubListWithMemID(String username);
-    
+
 
 }
