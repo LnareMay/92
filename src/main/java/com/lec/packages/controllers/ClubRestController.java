@@ -21,6 +21,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -372,6 +374,17 @@ public class ClubRestController {
         log.info(boardDTO);
 
 		return boardDTO;
+	}
+
+	@GetMapping("/myClubList")
+	public List<ClubDTO> getMyClubList(HttpServletRequest request, Model model, @AuthenticationPrincipal User user) {
+		String requestURI = request.getRequestURI();
+		log.info("do myClubList");
+        model.addAttribute("currentURI", requestURI);
+		
+		List<ClubDTO> myClubList = clubService.clubListWithMemID(user.getUsername());
+
+		return myClubList;
 	}
 
 }

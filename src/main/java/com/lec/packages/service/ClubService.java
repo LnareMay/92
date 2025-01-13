@@ -92,7 +92,8 @@ public interface ClubService {
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
 
 	PageResponseDTO<ClubMemberDTO> clubMemberList(String clubCode, PageRequestDTO pageRequestDTO);
-
+	
+    List<ClubDTO> clubListWithMemID(String username);
     
 
 }

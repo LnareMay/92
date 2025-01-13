@@ -8,8 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import com.lec.packages.domain.Club;
+import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.QClub;
+import com.lec.packages.domain.QClub_Member_List;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPQLQuery;
 
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +37,25 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 		long count = query.fetchCount();
 		
 		return new PageImpl<>(list, pageable, count);
+	}
+
+	@Override
+	public List<Club> getClubListWithMemID(String memId) {
+		
+		QClub club = QClub.club;
+		QClub_Member_List club_Member_List = QClub_Member_List.club_Member_List;
+		
+		JPQLQuery<Club> query = from(club);
+
+		query.where(club_Member_List.memId.eq(memId), club.deleteFlag.isNull());
+		
+		query.innerJoin(club_Member_List).on(club.clubCode.eq(club_Member_List.clubCode));
+
+		List<Club> clubList = query.fetch();
+		
+
+
+		throw new UnsupportedOperationException("Unimplemented method 'getClubListWithMemID'");
 	}
 
 }
