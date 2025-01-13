@@ -937,4 +937,64 @@ z-index:5;
 	width:200px;
 }
 
-/* 나의정보 수정페이지 */
+/* 나의 시설 예약페이지 */
+/* 리스트 스타일 */
+#mypage_pg div.main li {
+    list-style: none;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd; /* 테두리 */
+    border-radius: 10px; /* 모서리 둥글게 */
+    background-color: #f9f9f9; /* 배경색 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+/* 텍스트 강조 */
+/* 리스트 스타일 */
+.reservation_pg div.main li p {
+    font-size: 16px; /* 기본 글자 크기 */
+    line-height: 1.6; /* 줄 간격 */
+    margin: 5px 0;
+}
+
+.reservation_pg div.main li p strong {
+    font-weight: bold; /* 제목 강조 */
+    color: #333;
+}
+
+/* 시설명에 커서와 링크 스타일 추가 */
+.reservation_pg div.main li p span[style*="cursor: pointer;"] {
+    color: #007bff; /* 링크 색상 */
+    cursor: pointer; /* 손가락 모양 */
+    text-decoration: underline; /* 밑줄 */
+}
+
+.reservation_pg div.main li p span[style*="cursor: pointer;"]:hover {
+    color: #0056b3; /* 호버 시 색상 */
+}
+
+/* 예약 상태 색상 지정 (예: 상태별로 다르게) */
+.reservation_pg li p:last-child span {
+    font-weight: bold;
+    color: #ff6f61; /* 기본 예약 상태 색 */
+}
+
+/* 예약 완료 */
+.reservation_pg .status-예약완료 {
+    color: #28a745; /* 초록색 */
+    font-weight: bold;
+}
+
+/* 결제 대기 */
+.reservation_pg .status-결제대기 {
+    color: #ffc107; /* 노란색 */
+    font-weight: bold;
+}
+
+/* 취소 상태 */
+.reservation_pg .status-예약취소 {
+    color: #dc3545; /* 빨간색 */
+    font-weight: bold;
+}
+
+
