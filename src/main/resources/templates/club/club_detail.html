@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
-<head>
+
 <!-- meta_tag include -->
 <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
 <title>클럽 상세</title>
@@ -22,7 +22,6 @@
 	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 	crossorigin="anonymous"></script>
 
-</head>
 <body>
 	<div th:insert="~{/layouts/header :: header}"></div>
 
@@ -31,22 +30,36 @@
 		</div>
 		</th:if>
  	<section>
-        <!-- 대표이미지 -->
-        	<div>
-      			<img th:src="|/view/${clubdto.clubImage1}|" id="clubImage1" alt="클럽 대표이미지1" class="club-headerimg" onclick="openModal(0)">
-        	</div>
-
-			<div id="imageModal" class="modal">
-			    <span class="close" onclick="closeModal()">&times;</span>
-			    <div class="modal-content">
-			        <img th:src="|/view/${clubdto.clubImage1}|" class="modal-image"
-			        	 onerror="this.src='https://via.placeholder.com/80?text=ImgNone'">
-			        <img th:if="${clubdto.clubImage2 != null}" th:src="|/view/${clubdto.clubImage2}|" class="modal-image">
-			        <img th:if="${clubdto.clubImage3 != null}" th:src="|/view/${clubdto.clubImage3}|" class="modal-image">
-			        <img th:if="${clubdto.clubImage4 != null}" th:src="|/view/${clubdto.clubImage4}|" class="modal-image">
+        <!-- 대표이미지 -->		
+			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+			  <div class="carousel-indicators">
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2" th:if="${clubdto.clubImage2 != null}"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3" th:if="${clubdto.clubImage2 != null}"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4" th:if="${clubdto.clubImage2 != null}"></button>
+			  </div>
+			  <div class="carousel-inner-club">
+			    <div class="carousel-item active" data-bs-interval="5000">
+			      <img th:src="|/view/${clubdto.clubImage1}|" id="clubImage1" alt="Product Image">
 			    </div>
-			    <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
-			    <button class="next" onclick="changeSlide(1)">&#10095;</button>
+			    <div class="carousel-item" th:if="${clubdto.clubImage2 != null}" data-bs-interval="5000">
+			       <img th:src="|/view/${clubdto.clubImage2}|" id="clubImage2"  alt="Product Image">
+			    </div>
+			    <div class="carousel-item" th:if="${clubdto.clubImage3 != null}" data-bs-interval="5000">
+			       <img th:src="|/view/${clubdto.clubImage3}|" id="clubImage3"  alt="Product Image">
+			    </div>
+			    <div class="carousel-item" th:if="${clubdto.clubImage4 != null}" data-bs-interval="5000">
+			       <img th:src="|/view/${clubdto.clubImage4}|" id="clubImage4" alt="Product Image">
+			    </div>
+			  </div>
+			  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+			    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			    <span class="visually-hidden">Previous</span>
+			  </button>
+			  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+			    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+			    <span class="visually-hidden">Next</span>
+			  </button>
 			</div>
 
 			<!-- 클럽 정보 -->
@@ -60,35 +73,39 @@
 			</div>
 
 			<!-- 클럽 소개 -->
-			<p class="club-description" th:text="${clubdto.clubIntroduction}"></p>
+			<p style="white-space: pre-line" class="club-description" th:text="${clubdto.clubIntroduction}"></p>
 			
 			<!-- 클럽 테마 -->
 			<p class="text-muted" th:text="${clubdto.themeName}"
 				style="margin-bottom: 10px"></p>
 
-			<!-- 가입 버튼 -->
-			<form action="/club/club_join" method="post"
-				  onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
-				<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
-				<button type="submit" class="btn btn-warning ">클럽 가입하기</button>
-			</form>
-
-			<span th:if="${clubdto.MemId == principal.memId}"> <a
-				class="btn btn-success fw-bold modify-btn shadow-sm"
-				th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}"> 클럽수정하기 </a>
-
-				<form action="/club/club_remove" method="post"
-					onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
+			<!-- 가입/탈퇴 버튼 -->
+			<span th:if="${clubdto.MemId != principal.memId}">
+				<form action="/club/club_join" method="post" onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
-					<button type="submit" class="btn btn-danger">클럽 삭제하기</button>
+					<button type="submit" class="btn btn-warning">클럽 가입</button>
+				</form>
+				<form action="/club/club_joindelete" method="post" onsubmit="return confirm('클럽을 탈퇴하시겠습니까?');" style="display: inline;">
+					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+					<button type="submit" class="btn btn-danger">클럽 탈퇴</button>
 				</form>
 			</span>
-
+	
+			<!-- 수정/삭제 버튼 -->
+			<span th:if="${clubdto.MemId == principal.memId}">
+				<a th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}" class="btn btn-success" style="display: inline;">클럽 수정</a>
+	
+	
+				<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
+					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+					<button type="submit" class="btn btn-danger">클럽 삭제</button>
+				</form>
+			</span>
 		</section>
 				   <hr >
 				
-               <!-- 멤버 섹션 -->
-                <div class="row">
+                <div class="row" style="height: 310px">
+                  <!-- 멤버 섹션 -->
                   <div class="col-md-6">
                     <section class="clubsection">
                       <div class="section-header mb-3">
@@ -108,6 +125,7 @@
                                 th:if="${clubmember.memId == clubdto.memId}"
                                 class="text-warning small">⭐</span>
                             </p>
+                            <small class="text-muted" th:text="${clubmember.memAddress}"></small>
                             <!-- <small class="text-muted" th:text="${clubdto.clubAddress}"></small> -->
                           </div>
                         </div>
@@ -191,7 +209,7 @@
 						str += `<div>
 									<img src="/club/view/s_${boardImage.uuid}_${boardImage.boardImage}" 
 
-									onerror="this.src='https://via.placeholder.com/80'" class="rounded">
+									onerror="this.src='https://placehold.co/80'" class="rounded">
 								</div>`
 					}
 				}
@@ -247,6 +265,19 @@
 			alert(message);
 		}
 	}
+	 
+	 // carousel 이미지
+	 const carousel = document.querySelector("#carouselExampleIndicators");
+	 
+	 carousel.addEventListener("slide.bs.carousel", function (event) {
+		const nextSlide = carousel.querySelectorAll(".carousel-item")[event.to];
+		
+			if(!nextSlide || !nextSlide.querySelector("img") 
+				|| !nextSlide.querySelector("img").getAttribute("src")) {
+			event.preventDefault();
+		}
+	 });
+	 
 
 </script>
 </html>

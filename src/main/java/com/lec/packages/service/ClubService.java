@@ -31,6 +31,8 @@ public interface ClubService {
 	
 	void join(String memId, String clubCode);
 	boolean isJoinMember(String memId, String clubCode); 
+	void joindelete(String memId, String clubCode);
+	boolean isJoinDeleteMember(String memId, String clubCode);
 
 	Map<String, Integer> membercount();
 	List<Member> findMemberDetails(String clubCode);
@@ -39,6 +41,7 @@ public interface ClubService {
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
 	PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memberAddress, String clubTheme);
+	
 	List<ClubDTO> getAllClubs();		
 
 	ClubDTO board(String clubCode);
@@ -98,7 +101,8 @@ public interface ClubService {
 
     ClubBoardDTO modifyClubBoard(ClubBoardDTO clubBoardDTO);
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
+	
+    List<ClubDTO> clubListWithMemID(String username);
 
-  
 
 }

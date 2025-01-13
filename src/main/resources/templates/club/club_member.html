@@ -46,7 +46,7 @@
 			                           <div>
 			                               <p class="mb-1 fw-bold"> [[${clubmember.memNickname}]]
 											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span></p>
-			                               <small class="text-muted">성산제2동</small>
+			                               <small class="text-muted" th:text="${clubmember.memAddress}"></small>
 			                           </div>
 			                       </div>
 							
