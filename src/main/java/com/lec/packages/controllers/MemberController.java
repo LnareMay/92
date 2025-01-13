@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.repository.MemberRepository;
+import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.MemberService;
 
@@ -48,6 +51,7 @@ public class MemberController {
 	private final MemberService memberService;
 	private final CustomUserDetailsService customUserDetailsService;
 	private final MemberRepository memberRepository;
+	private final ReservationRepository reservationRepository;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
@@ -213,6 +217,33 @@ public class MemberController {
 	    }
 	}
 
+	@GetMapping("/reservation")
+	public String reservationGet(HttpServletRequest request, Model model) {
+	    // 현재 요청 URI를 모델에 추가
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+	    // 인증 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+	        String memId = member.getMemId(); // 현재 로그인된 사용자의 ID
+
+	        // Reservation 객체를 memId로 조회
+	     // Reservation 객체를 memId로 조회
+	        List<Reservation> reservations = reservationRepository.findByMemId(memId);
+
+	        if (!reservations.isEmpty()) {
+	            model.addAttribute("reservations", reservations); // 예약 목록 전달
+	        } else {
+	            model.addAttribute("noReservations", "예약이 없습니다.");
+	        }
+	    } else {
+	        model.addAttribute("error", "로그인 정보가 필요합니다.");
+	    }
+
+	    return "member/reservation"; // 뷰 이름 반환
+	}
 
 
 

@@ -3,24 +3,32 @@ package com.lec.packages.service;
 
 
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import com.lec.packages.domain.Facility;
+import com.lec.packages.domain.Member;
+import com.lec.packages.domain.MemberRole;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
+import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.repository.FacilityRepository;
+import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.util.RandomStringGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +44,8 @@ public class FacilityServiceImpl implements FacilityService{
 	private final ModelMapper modelMapper;
 
 	private final FacilityRepository facilityRepository;
+	
+	private final ReservationRepository reservationRepository;
 	
 
 	//시설 등록
@@ -149,6 +159,48 @@ public class FacilityServiceImpl implements FacilityService{
 		
 	}
 
+	@Override
+	public void bookByMember(ReservationDTO reservationDTO) {
+	    // Step 1: 예약 정보를 검증
+	    if (reservationDTO.getReservationStartTime().isAfter(reservationDTO.getReservationEndTime())) {
+	        throw new IllegalArgumentException("예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
+	    }
+
+	    // Step 2: 예약 시간 차이를 계산하여 총 가격 설정
+	    long hours = java.time.Duration.between(
+	            reservationDTO.getReservationStartTime(),
+	            reservationDTO.getReservationEndTime()
+	    ).toHours();
+
+
+	    BigDecimal totalPrice = BigDecimal.valueOf(hours).multiply(reservationDTO.getPrice());
+
+	    // Step 3: ReservationCode 생성
+	    String reservationCode = ""+System.currentTimeMillis();
+	    reservationDTO.setReservationCode(reservationCode);
+
+
+	    // Step 4: ReservationDTO를 Reservation 엔티티로 변환
+	    Reservation reservation = Reservation.builder()
+	            .reservationCode(reservationCode) // 고유 예약 코드 설정
+	            .facilityCode(reservationDTO.getFacilityCode())
+	            .facilityName(reservationDTO.getFacilityName())
+	            .memId(reservationDTO.getMemId())
+	            .reservationStartTime(reservationDTO.getReservationStartTime())
+	            .reservationEndTime(reservationDTO.getReservationEndTime())
+	            .reservationDate(reservationDTO.getReservationDate())
+	            .count(reservationDTO.getCount())
+	            .price(totalPrice)
+	            .reservationProgress("결제대기") // 초기 상태 설정
+	            .deleteFlag(false) // 초기 상태 설정
+	            .build();
+
+	    // Step 5: 데이터베이스에 저장
+	    reservationRepository.save(reservation);
+
+	    // 로그 출력 (선택 사항)
+	    log.info("시설 예약이 완료되었습니다: {}", reservation);
+	}
 
 
 

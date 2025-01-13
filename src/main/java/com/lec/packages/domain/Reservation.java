@@ -54,8 +54,11 @@ public class Reservation extends BaseEntity{
 	    @Column(name = "MEM_ID", length = 100)
 	 	private String memId;
 
-	    @Column(name = "RESERVATION_TIME", nullable = false)
-	    private LocalTime reservationTime;
+	    @Column(name = "RESERVATION_START_TIME", nullable = false)
+	    private LocalTime reservationStartTime;
+	    
+	    @Column(name = "RESERVATION_END_TIME", nullable = false)
+	    private LocalTime reservationEndTime;
 	    
 	    @Column(name = "RESERVATION_DATE" , nullable = false)
 	    private Date reservationDate;
