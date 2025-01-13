@@ -78,6 +78,12 @@ public class Reservation extends BaseEntity{
 
 	    @Column(name = "DELETE_FLAG")
 	    private boolean deleteFlag;
+
+		public void setFormattedCreateDate(String format) {
+			// TODO Auto-generated method stub
+			
+		}
+
 	    
 	    
 	    

@@ -26,7 +26,7 @@
 </head>
 <body>
 	<div th:insert="~{layouts/header :: header}"></div>
-	<main class="main container" id="mypage_pg">
+	<main class="main container reservation_pg" id="mypage_pg">
 		<div class="sidebar">
 			<div class="header">
 				<h2 style="font-size: 20px;">마이페이지</h2>
@@ -41,31 +41,49 @@
 
 		<div class="main">
 			<ul>
-				<li th:each="reservation : ${reservations}">
+				<li th:each="reservation : ${reservations}"
+					style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
 					<p>
-						예약 코드: <span th:text="${reservation.reservationCode}"></span>
+						<strong>시설명:</strong> <span th:text="${reservation.facilityName}"
+							style="text-decoration: underline; cursor: pointer;"
+							th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${reservation.facilityCode})}'|"></span>
 					</p>
 					<p>
-						시설명: <span th:text="${reservation.facilityName}"></span>
+						<strong>예약 코드:</strong> <span
+							th:text="${reservation.reservationCode}"></span>
 					</p>
 					<p>
-						예약 날짜: <span th:text="${reservation.reservationDate}"></span>
+						<strong>이용 날짜:</strong> <span
+							th:text="${reservation.reservationDate}"></span>
 					</p>
 					<p>
-						예약 시간: <span th:text="${reservation.reservationStartTime}"></span>
-						- <span th:text="${reservation.reservationEndTime}"></span>
+						<strong>예약 시간:</strong> <span
+							th:text="${reservation.reservationStartTime}"></span> - <span
+							th:text="${reservation.reservationEndTime}"></span>
 					</p>
 					<p>
-						인원: <span th:text="${reservation.count}"></span>
+						<strong>예약 요청일:</strong> <span id="formatted-date"></span>
+						<script>
+							const createDate = /*[[${reservation.CREATEDATE}]]*/"2025-01-13T16:30:24";
+							const formattedDate = createDate.replace("T", " "); // T를 공백으로 변경
+							document.querySelector('#formatted-date').innerText = formattedDate;
+						</script>
+					</p>
+
+					<p>
+						<strong>인원:</strong> <span th:text="${reservation.count}"></span>명
 					</p>
 					<p>
-						금액: <span th:text="${reservation.price}"></span>
+						<strong>금액:</strong> <span th:text="${reservation.price}"></span>원
 					</p>
 					<p>
-						예약상태: <span th:text="${reservation.reservationProgress}"></span>
+						<strong>예약 상태:</strong>  <span th:text="${reservation.reservationProgress}" 
+          th:classappend="'status-' + reservation.reservationProgress"></span>
 					</p>
-					<hr />
+					
 				</li>
+
+
 			</ul>
 
 
