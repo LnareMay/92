@@ -1,6 +1,8 @@
 package com.lec.packages.controllers;
 
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -60,6 +62,8 @@ public class FacilityController {
 	    	
 	    	//시설 정보를 가져오기 위해 서비스 호출
 			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
+			List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
+
 			//log.info("FacilityDTO: {}", facilityDTO);
 			String userId = userDetails.getUsername();
 			//모델에 로그인 정보를 추가하여 뷰로 전달
@@ -67,6 +71,7 @@ public class FacilityController {
 			model.addAttribute("userId",userId);
 			//모델에 시설 정보를 추가하여 뷰로 전달
 			model.addAttribute("facility",facilityDTO);
+			model.addAttribute("reservations", reservations);
 			model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
 			
 	    	return "facility/facility_detail";		 
