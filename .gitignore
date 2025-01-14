@@ -16,3 +16,6 @@
 /img/upload/*
 /img/download/*
 bin/main/static/img/upload/0a2bd431-7c22-47b0-8873-4c78fbfe0186_캡처.JPG3.JPG
+.gradle/buildOutputCleanup/cache.properties
+.gradle/8.11.1/executionHistory/executionHistory.lock
+.gradle/buildOutputCleanup/cache.properties
