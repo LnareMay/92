@@ -73,15 +73,13 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 		
 		JPQLQuery<Club> query = from(club);
 
-		query.where(club_Member_List.memId.eq(memId), club.deleteFlag.isNull());
-		
 		query.innerJoin(club_Member_List).on(club.clubCode.eq(club_Member_List.clubCode));
+		query.where(club_Member_List.memId.eq(memId), club.deleteFlag.isNull().or(club.deleteFlag.isFalse()));
+		
 
 		List<Club> clubList = query.fetch();
-		
-
-
-		throw new UnsupportedOperationException("Unimplemented method 'getClubListWithMemID'");
+	
+		return clubList;
 	}
 
 }

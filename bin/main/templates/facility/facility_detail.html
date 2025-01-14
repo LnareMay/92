@@ -126,38 +126,45 @@
 
 	<div style="padding-top:10px;">
 		<!-- 예약 form start  -->
-	    <form class="booking-form" action="/submit-booking" method="POST">
+	    <form class="booking-form" action="/facility/submit-booking" method="POST">
 		
 		<div th:if="${facility.facilityIsOnlyClub}" style="color: red; font-weight: bold;"><span>✅ 해당 시설은 클럽장만 예약할 수 있는 시설입니다</span></div></br>
 	    
 	    <div class="form-group">
 		    <label for="memId">예약자ID: </label>
 		    <span id="memId" name="memId" th:text="${userId}"></span>
+		    <input type="hidden" id="memId" name="memId" th:value="${userId}">
+		    
 	     </div>
 	     
  		<div class="form-group">
     	 <label for="reservationDate">예약 날짜</label>
-    	 <input id="reservationDate" type="date" placeholder="날짜를 선택하세요" required>
+    	 <input id="reservationDate" name="reservationDate" type="date" placeholder="날짜를 선택하세요" required>
 		</div>
 		
 		<div class="form-group">
 	      <label for="reservationTime">예약 시간</label>
-		  <select id="reservationTime" name="reservationTime" type="time" required></select>
+		  <select id="reservationStartTime" name="reservationStartTime" type="time" required></select>
+		  <select id="reservationEndTime" name="reservationEndTime" type="time" required></select>
     	  <!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
     	  
 	      <label for="count">예약 인원</label>
 	      <input type="number" id="count" name="count" placeholder="예약 인원을 입력해주세요." required>
 		</div>
 		
+		
 	      <div class="form-group">
 	      	<label for="price">시간 당 이용 요금(1hour):</label>
 	      	<span th:text="${facility.formattedPrice}"></span>원
+	      	<input type="hidden" id="price" name="price" th:value="${facility.price}">
 	      </div>
 	       <hr />
 	       <!-- 시설명  -->
 	        <div class="form-group">
 	           <label for="facilityName">시설명:</label>
 	           <span th:text="${facility.facilityName}"></span>
+	           <input type="hidden" id="facilityName" name="facilityName" th:value="${facility.facilityName}">
+	            <input type="hidden" id="facilityCode" name="facilityCode" th:value="${facility.facilityCode}">
 			</div>
 			<!-- 시설 주소  -->
 			<div class="form-group">
@@ -169,9 +176,9 @@
 		        <span style="white-space: pre-line;" th:text="${facility.facilityDescription}"></span>
 	         </div>
 	         <!-- 시설 운영 시간 -->
-	       	<div class="form-group">
+	        	<div class="form-group">
 		         <label for="facilityTime">운영 시간:</label>
-	         	 <span th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
+	          	 <span th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
 	        </div>
 	    
 
@@ -201,30 +208,57 @@
     const facilityStartTime =  /*[[${facility.facilityStartTime}]]*/"9:00";	//서버에서 받지 못했을 때 기본 값 9:00
     const facilityEndTime =  /*[[${facility.facilityEndTime}]]*/"22:00"; //서버에서 받지 못했을 때 기본 값 22:00
     
-    // 운영 시간 기반으로 예약 가능한 시간 생성
-    function generateReservationTimes(startTime, endTime) {
-        const selectElement = document.getElementById("reservationTime");
+ // 운영 시간 기반으로 예약 가능한 시간 생성 <예약 시작 시간>
+    function generateReservationStartTimes(startTime, endTime) {
+        const startSelect = document.getElementById("reservationStartTime");
         const start = new Date(`1970-01-01T${startTime}`);
         const end = new Date(`1970-01-01T${endTime}`);
         const interval = 60; // 60분 간격
 
-        // 기존 옵션 제거
-        selectElement.innerHTML = "";
+        startSelect.innerHTML = ""; // 기존 옵션 제거
 
         while (start < end) {
             const timeString = start.toTimeString().slice(0, 5); // HH:MM 형식
             const option = document.createElement("option");
             option.value = timeString;
             option.textContent = timeString;
-            selectElement.appendChild(option);
-
-            // 60분 간격으로 증가
-            start.setMinutes(start.getMinutes() + interval);
+            startSelect.appendChild(option);
+            start.setMinutes(start.getMinutes() + interval); // 60분 간격으로 증가
         }
     }
 
-    // 예약 가능한 시간 목록 생성
-    generateReservationTimes(facilityStartTime, facilityEndTime);
+    // 운영 시간 기반으로 예약 가능한 시간 생성 <예약 종료 시간>
+    function generateReservationEndTimes(selectedStartTime, endTime) {
+        const endSelect = document.getElementById("reservationEndTime");
+        const start = new Date(`1970-01-01T${selectedStartTime}`);
+        const end = new Date(`1970-01-01T${endTime}`);
+        const interval = 60; // 60분 간격
+
+        endSelect.innerHTML = ""; // 기존 옵션 제거
+
+        while (start < end) {
+            start.setMinutes(start.getMinutes() + interval); // 60분 추가
+            // if (start >= end) break; // 종료 시간이 운영 시간을 초과하면 중지
+
+            const timeString = start.toTimeString().slice(0, 5); // HH:MM 형식
+            const option = document.createElement("option");
+            option.value = timeString;
+            option.textContent = timeString;
+            endSelect.appendChild(option);
+        }
+    }
+
+    // 이벤트 연결
+    document.getElementById("reservationStartTime").addEventListener("change", function () {
+        const selectedStartTime = this.value; // 선택된 시작 시간
+        generateReservationEndTimes(selectedStartTime, facilityEndTime); // 종료 시간 생성
+    });
+
+    // 초기 시간 목록 생성
+    generateReservationStartTimes(facilityStartTime, facilityEndTime);
+    document.getElementById("reservationStartTime").dispatchEvent(new Event("change"));
+
+    
     
 </script>
 	

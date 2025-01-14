@@ -1,6 +1,8 @@
 package com.lec.packages.controllers;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.repository.MemberRepository;
+import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.MemberService;
 
@@ -48,6 +52,7 @@ public class MemberController {
 	private final MemberService memberService;
 	private final CustomUserDetailsService customUserDetailsService;
 	private final MemberRepository memberRepository;
+	private final ReservationRepository reservationRepository;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
@@ -213,6 +218,33 @@ public class MemberController {
 	    }
 	}
 
+	@GetMapping("/reservation")
+	public String reservationGet(HttpServletRequest request, Model model) {
+	    // Add current URI to the model
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+	    // Get authentication details
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+	        String memId = member.getMemId(); // Current logged-in user's ID
+
+	        // Fetch reservations by memId
+	        List<Reservation> reservations = reservationRepository.findByMemId(memId);
+
+
+	        if (!reservations.isEmpty()) {
+	            model.addAttribute("reservations", reservations); // Pass reservation list to the model
+	        } else {
+	            model.addAttribute("noReservations", "예약이 없습니다.");
+	        }
+	    } else {
+	        model.addAttribute("error", "로그인 정보가 필요합니다.");
+	    }
+
+	    return "member/reservation"; // Return the view name
+	}
 
 
 

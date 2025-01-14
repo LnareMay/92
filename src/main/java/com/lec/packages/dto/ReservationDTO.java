@@ -33,7 +33,11 @@ public class ReservationDTO {
 
 
     @NotNull(message = "시설 예약 시간은 필수 입력 항목입니다.")
-    private LocalTime reservationTime;
+    private LocalTime reservationStartTime;
+
+
+    @NotNull(message = "시설 예약 시간은 필수 입력 항목입니다.")
+    private LocalTime reservationEndTime;
 
     @NotNull(message = "시설 예약일은 필수 입력 항목입니다.")
     private Date reservationDate;

@@ -1,5 +1,6 @@
 package com.lec.packages.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -514,7 +515,14 @@ public class ClubServiceImpl implements ClubService {
 	public List<ClubDTO> clubListWithMemID(String username) {
 		List<Club> myClubList = clubRepository.getClubListWithMemID(username);
 
-		return null;
+		List<ClubDTO> dtoClub = new ArrayList<>();
+		myClubList.forEach(club -> {
+			ClubDTO dto = ClubDTO.builder().clubCode(club.getClubCode()).clubIntroduction(club.getClubIntroduction()).clubName(club.getClubName())
+						.clubImage1(club.getClubImage1()).memberCount(club.getMembers().size()).build();
+			dtoClub.add(dto);
+		});
+
+		return dtoClub;
 	}
 
 
