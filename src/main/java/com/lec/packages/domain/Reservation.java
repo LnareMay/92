@@ -29,7 +29,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EntityListeners(AuditingEntityListener.class)
 public class Reservation extends BaseEntity{
     // Id => P.K 명시
     // @Column => 컬럼 정보 셋업

@@ -9,4 +9,6 @@ import com.lec.packages.domain.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 	 List<Reservation> findByMemId(String memId);
+
+	List<Reservation> findByFacilityCode(String facilityCode);
 }

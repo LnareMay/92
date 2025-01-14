@@ -203,6 +203,20 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 
+	@Override
+	public List<ReservationDTO> getReservationsByFacilityCode(String facilityCode) {
+	    // 1. facilityCode에 해당하는 Reservation 엔티티 목록 조회
+	    List<Reservation> reservations = reservationRepository.findByFacilityCode(facilityCode);
+
+	    // 2. ModelMapper를 사용해 변환
+	    return reservations.stream()
+	            .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+	            .collect(Collectors.toList());
+	}
+
+
+
+
 
 
 }
