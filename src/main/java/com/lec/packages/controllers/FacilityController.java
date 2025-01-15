@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.service.ClubService;
 import com.lec.packages.service.FacilityService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +37,7 @@ import lombok.extern.log4j.Log4j2;
 public class FacilityController {
 	
     private final FacilityService facilityService;
+	private final ClubService clubService;
 	 
 	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
@@ -65,12 +68,15 @@ public class FacilityController {
 	    	//시설 정보를 가져오기 위해 서비스 호출
 			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
 			List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
+			//클럽장 체크
+			boolean isClubOwner = clubService.checkClubOwner(userDetails.getUsername());
 
 			//log.info("FacilityDTO: {}", facilityDTO);
 			String userId = userDetails.getUsername();
 			//모델에 로그인 정보를 추가하여 뷰로 전달
-			
 			model.addAttribute("userId",userId);
+			//클럽장 체크 결과 전달
+			model.addAttribute("isClubOwner", isClubOwner);
 			//모델에 시설 정보를 추가하여 뷰로 전달
 			model.addAttribute("facility",facilityDTO);
 			model.addAttribute("reservations", reservations);
