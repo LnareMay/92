@@ -1,198 +1,282 @@
 <!DOCTYPE html>
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
 <head>
- 	<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<head  th:insert="~{layouts/meta_tag :: headMeta}"></head>
-    <title>체육관 예약 시스템</title>
-    <!-- 공통 css -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-		<link rel="stylesheet" th:href="@{/css/common.css}">
-		<!-- Linking CSS files -->
-		<link rel="stylesheet" th:href="@{/css/detail_hj.css}"/>
-		<link rel="stylesheet" th:href="@{/css/detail_yj.css}"/>
-		
-	<!--flatpickr -->
- 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
-    <!-- 공통 js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+<title>체육관 예약 시스템</title>
+<!-- 공통 css -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<!-- Linking CSS files -->
+<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+<link rel="stylesheet" th:href="@{/css/detail_yj.css}" />
+
+<!--flatpickr -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- 공통 js -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 	crossorigin="anonymous"></script>
-	
-	<!--flatpickr -->
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-	<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
-	
-	<style>	
-	  /* 폼 스타일 */
-	  .booking-form {
-	    width: 100%; /* 반응형 너비 */
-	    padding: 20px; /* 내부 여백 */
-	    background-color: #f8f9fa; /* 연한 회색 배경 */
-	    border-radius: 10px; /* 모서리 둥글게 */
-	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-	  }
-	
-	  .form-group {
-	    margin-bottom: 15px;
-	  }
-	
-	  .form-group label {
-	    font-weight: bold;
-	    display: inline-block;
-	    vertical-align: top;
-	  }
-	
-	  .form-group span {
-	    display: inline-block;
-	    color: #333;
-	    font-size: 14px;
-	    line-height: 1.5;
-	    white-space: pre-line; /* 줄바꿈 유지 */
-	  }
-	
-	
-	  .booking-form button {
-	    background-color: #007bff; /* 파란색 배경 */
-	    color: white;
-	    padding: 10px 20px;
-	    border: none;
-	    border-radius: 5px; /* 버튼 둥글게 */
-	    cursor: pointer;
-	  }
-	
-	  .booking-form button:hover {
-	    background-color: #0056b3; /* 어두운 파란색 배경 */
-	  }
 
+<!--flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
 
-	  /* Carousel 컨테이너 높이 설정 */
-	  .carousel-inner {
-	    max-height: 500px; /* 원하는 고정 높이 */
-	    overflow: hidden; /* 초과 이미지를 숨김 */ 
-	    display: flex
-	  }
-	
-	  /* Carousel 이미지 스타일 */
-	  .carousel-item img {
-	    width: 100%; /* 컨테이너 너비에 맞춤 */
-	    height: 100%; /* 컨테이너 높이에 맞춤 */
-	  	/* 이미지 비율을 유지하며 컨테이너 내에 맞춤 */
-	   /*  object-position: center; */  /* 이미지를 중앙에 위치  */
-	  }
-	  
+<style>
+/* 폼 스타일 */
+.booking-form {
+	width: 100%; /* 반응형 너비 */
+	padding: 20px; /* 내부 여백 */
+	background-color: #f8f9fa; /* 연한 회색 배경 */
+	border-radius: 10px; /* 모서리 둥글게 */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
 
-	  
-	</style>
+.form-group {
+	margin-bottom: 15px;
+}
+
+.form-group label {
+	font-weight: bold;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.form-group span {
+	display: inline-block;
+	color: #333;
+	font-size: 14px;
+	line-height: 1.5;
+	white-space: pre-line; /* 줄바꿈 유지 */
+}
+
+/* .booking-form button {
+	background-color: #007bff; 
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px; 
+	cursor: pointer;
+} */
+
+/* .booking-form button:hover {
+	background-color: #0056b3; 
+} */
+
+/* Carousel 컨테이너 높이 설정 */
+.carousel-inner {
+	max-height: 500px; /* 원하는 고정 높이 */
+	overflow: hidden; /* 초과 이미지를 숨김 */
+	display: flex
+}
+
+/* Carousel 이미지 스타일 */
+.carousel-item img {
+	width: 100%; /* 컨테이너 너비에 맞춤 */
+	height: 100%; /* 컨테이너 높이에 맞춤 */
+	/* 이미지 비율을 유지하며 컨테이너 내에 맞춤 */
+	/*  object-position: center; */ /* 이미지를 중앙에 위치  */
+}
+</style>
 </head>
-	<!-- Header -->
-	<div th:insert="~{layouts/header :: header}"></div>
+<!-- Header -->
+<div th:insert="~{layouts/header :: header}"></div>
 <body>
-<div class="container my-4">
-	<a th:href="@{/facility/main}" class="more-link"> ◀시설예약목록 </a>
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-	  <div class="carousel-indicators">
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-	    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-	  </div>
-	  <div class="carousel-inner">
-	    <div class="carousel-item active" data-bs-interval="5000">
-	      <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1"  alt="Product Image">
-	    </div>
-	    <div class="carousel-item" data-bs-interval="5000">
-	       <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2"  alt="Product Image">
-	    </div>
-	    <div class="carousel-item" data-bs-interval="5000">
-	       <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3"  alt="Product Image">
-	    </div>
-	    <div class="carousel-item" data-bs-interval="5000">
-	       <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" alt="Product Image">
-	    </div>
-	  </div>
-	  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-	    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-	    <span class="visually-hidden">Previous</span>
-	  </button>
-	  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-	    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-	    <span class="visually-hidden">Next</span>
-	  </button>
+	<div class="container my-4">
+		<a th:href="@{/facility/main}" class="more-link"> ◀시설예약목록 </a>
+		<div id="carouselExampleIndicators" class="carousel slide"
+			data-bs-ride="carousel">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="0" class="active" aria-current="true"
+					aria-label="Slide 1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="1" aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="2" aria-label="Slide 3"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="3" aria-label="Slide 4"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active" data-bs-interval="5000">
+					<img th:src="|/view/${facility.facilityImage1}|"
+						id="facilityImage1" alt="Product Image">
+				</div>
+				<div class="carousel-item" data-bs-interval="5000">
+					<img th:src="|/view/${facility.facilityImage2}|"
+						id="facilityImage2" alt="Product Image">
+				</div>
+				<div class="carousel-item" data-bs-interval="5000">
+					<img th:src="|/view/${facility.facilityImage3}|"
+						id="facilityImage3" alt="Product Image">
+				</div>
+				<div class="carousel-item" data-bs-interval="5000">
+					<img th:src="|/view/${facility.facilityImage4}|"
+						id="facilityImage4" alt="Product Image">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+
+		<div style="padding-top: 10px;">
+			<!-- 예약 form start  -->
+			<form class="booking-form" action="/facility/submit-booking"
+				method="POST">
+
+				<div th:if="${facility.facilityIsOnlyClub}"
+					style="color: red; font-weight: bold;">
+					<span>✅ 해당 시설은 클럽장만 예약할 수 있는 시설입니다</span>
+				</div>
+				<br />
+
+				<div class="form-group">
+					<label for="memId">예약자ID: </label> <span id="memId" name="memId"
+						th:text="${userId}"></span> <input type="hidden" id="memId"
+						name="memId" th:value="${userId}">
+
+				</div>
+
+				<div class="form-group">
+					<label for="reservationDate">예약 날짜</label> <input
+						id="reservationDate" name="reservationDate" type="date"
+						placeholder="날짜를 선택하세요" required>
+				</div>
+
+				<div class="form-group">
+					<label for="reservationTime">예약 시간</label> <select
+						id="reservationStartTime" name="reservationStartTime" type="time"
+						required></select> <select id="reservationEndTime"
+						name="reservationEndTime" type="time" required></select>
+					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
+
+					<label for="count">예약 인원</label> <input type="number" id="count"
+						name="count" placeholder="예약 인원을 입력해주세요." required>
+				</div>
+
+
+				<div class="form-group">
+					<label for="price">시간 당 이용 요금(1hour):</label> <span
+						th:text="${facility.formattedPrice}"></span>원 <input type="hidden"
+						id="price" name="price" th:value="${facility.price}">
+				</div>
+				<div class="form-group">
+					<label for="totalPrice">최종 결제 금액:</label> <span class="totalPrice">0</span>원
+				</div>
+				<hr />
+				<!-- 결제 옵션 -->
+				<h4>결제하기</h4>
+				<div id="paymentOptions">
+					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> <span
+						id="memMoney" th:text="${#authentication.principal.memMoney}"></span>원
+						<input type="number" id="memMoney_ip" name="memMoney" class="hidden">
+					<input type="number" id="useFitpay" class="form-control me-2"
+						placeholder="사용할 금액 입력" style="width: 150px;">
+					<button class="btn btn-secondary" id="useFitpayButton"
+						type="button">사용</button>
+					<button class="btn btn-primary" id="useFullAmount" type="button">전액
+						사용</button>
+					<button class="btn btn-danger" id="deleteAmount" type="button">취소</button>
+				</div>
+				<div>
+					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
+						충전하기</button>
+					<button class="btn btn-danger" onclick="processPayment('inicis')"
+						type="button">KG이니시스</button>
+				</div>
+		</div>
+
+
+		<!-- 숨겨진 FITPAY 충전 영역 -->
+		<div id="fitpayOptions" style="display: none; margin-top: 20px;">
+			<h5>FITPAY 충전</h5>
+			<div class="d-flex align-items-center mb-3">
+
+				<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input
+					type="number" id="chargeAmount" class="form-control me-2"
+					placeholder="금액 입력" style="width: 150px;">
+				<button class="btn btn-primary" onclick="chargeFitpay()"
+					type="button">충전하기</button>
+			</div>
+
+			<div>
+				<button class="btn btn-success
+							me-2"
+					onclick="selectPayment('naverPay')" type="button">네이버페이</button>
+				<button class="btn btn-warning" onclick="selectPayment('kakaoPay')"
+					type="button">카카오페이</button>
+				<button class="btn btn-danger" onclick="selectPayment('payco')"
+					type="button">페이코</button>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="totalPrice">최종 결제 금액:</label> <span class="totalPrice">0</span>원
+		</div>
+
+		<div class="form-group mt-3">
+			<label for="totalPaid">낸 금액:</label> <span id="totalPaid">0</span>원
+		</div>
+
+		<div class="form-group">
+			<label for="remainingAmount">내야할 금액:</label> <span
+				id="remainingAmount">0</span>원
+		</div>
+		<button type="submit" class="btn btn-primary">예약하기</button>
+		<hr />
+		<!-- 시설명  -->
+		<div class="form-group">
+			<label for="facilityName">시설명:</label> <span
+				th:text="${facility.facilityName}"></span> <input type="hidden"
+				id="facilityName" name="facilityName"
+				th:value="${facility.facilityName}"> <input type="hidden"
+				id="facilityCode" name="facilityCode"
+				th:value="${facility.facilityCode}">
+		</div>
+		<!-- 시설 주소  -->
+		<div class="form-group">
+			<label for="facilityAddress">시설 주소: </label> <span
+				th:text="${facility.facilityAddress}"></span>
+		</div>
+		<div class="form-group">
+			<label for="facilityDescription">이용안내: </label> <span
+				style="white-space: pre-line;"
+				th:text="${facility.facilityDescription}"></span>
+		</div>
+		<!-- 시설 운영 시간 -->
+		<div class="form-group">
+			<label for="facilityTime">운영 시간:</label> <span
+				th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
+		</div>
+
+
+
+
+		</form>
+		<hr />
+
 	</div>
 
-	<div style="padding-top:10px;">
-		<!-- 예약 form start  -->
-	    <form class="booking-form" action="/facility/submit-booking" method="POST">
-		
-		<div th:if="${facility.facilityIsOnlyClub}" style="color: red; font-weight: bold;"><span>✅ 해당 시설은 클럽장만 예약할 수 있는 시설입니다</span></div></br>
-	    
-	    <div class="form-group">
-		    <label for="memId">예약자ID: </label>
-		    <span id="memId" name="memId" th:text="${userId}"></span>
-		    <input type="hidden" id="memId" name="memId" th:value="${userId}">
-		    
-	     </div>
-	     
- 		<div class="form-group">
-    	 <label for="reservationDate">예약 날짜</label>
-    	 <input id="reservationDate" name="reservationDate" type="date" placeholder="날짜를 선택하세요" required>
-		</div>
-		
-		<div class="form-group">
-	      <label for="reservationTime">예약 시간</label>
-		  <select id="reservationStartTime" name="reservationStartTime" type="time" required></select>
-		  <select id="reservationEndTime" name="reservationEndTime" type="time" required></select>
-    	  <!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
-    	  
-	      <label for="count">예약 인원</label>
-	      <input type="number" id="count" name="count" placeholder="예약 인원을 입력해주세요." required>
-		</div>
-		
-		
-	      <div class="form-group">
-	      	<label for="price">시간 당 이용 요금(1hour):</label>
-	      	<span th:text="${facility.formattedPrice}"></span>원
-	      	<input type="hidden" id="price" name="price" th:value="${facility.price}">
-	      </div>
-	       <hr />
-	       <!-- 시설명  -->
-	        <div class="form-group">
-	           <label for="facilityName">시설명:</label>
-	           <span th:text="${facility.facilityName}"></span>
-	           <input type="hidden" id="facilityName" name="facilityName" th:value="${facility.facilityName}">
-	            <input type="hidden" id="facilityCode" name="facilityCode" th:value="${facility.facilityCode}">
-			</div>
-			<!-- 시설 주소  -->
-			<div class="form-group">
-		        <label for="facilityAddress">시설 주소: </label>
-		        <span th:text="${facility.facilityAddress}"></span>
-	         </div>
-			<div class="form-group">
-		        <label for="facilityDescription">이용안내: </label>
-		        <span style="white-space: pre-line;" th:text="${facility.facilityDescription}"></span>
-	         </div>
-	         <!-- 시설 운영 시간 -->
-	        	<div class="form-group">
-		         <label for="facilityTime">운영 시간:</label>
-	          	 <span th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
-	        </div>
-	    
 
-	        <button th:if="${!facility.facilityIsOnlyClub}" type="submit" >예약하기</button>
-	        <button th:if="${facility.facilityIsOnlyClub && isClubOwner}" type="submit" >예약하기</button>
-	        
-	    </form>
-    </div>
-</div>
 
 	<!-- Footer -->
 	<div th:insert="~{layouts/footer :: footer}"></div>
-	
-    <script>
+
+	<script>
         // 날짜 선택 Flatpickr 초기화
         flatpickr("#reservationDate", {
             dateFormat: "Y-m-d", // 날짜 형식 (YYYY-MM-DD)
@@ -202,12 +286,134 @@
         });
 
     </script>
-    
-<script th:inline="javascript">
+
+	<script th:inline="javascript">
 
     // 서버에서 전달받은 운영 시간 (Thymeleaf 변수 사용)
     const facilityStartTime =  /*[[${facility.facilityStartTime}]]*/"9:00";	//서버에서 받지 못했을 때 기본 값 9:00
     const facilityEndTime =  /*[[${facility.facilityEndTime}]]*/"22:00"; //서버에서 받지 못했을 때 기본 값 22:00
+    const pricePerHour = parseFloat(/*[[${facility.price}]]*/ "10000");
+    let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
+    let totalPaid = 0;
+   
+    
+    // 최종 결제 금액 계산
+    function calculateTotalPrice() {
+        const startTime = document.getElementById("reservationStartTime").value;
+        const endTime = document.getElementById("reservationEndTime").value;
+
+        if (startTime && endTime) {
+            const start = new Date(`1970-01-01T${startTime}`);
+            const end = new Date(`1970-01-01T${endTime}`);
+            const duration = (end - start) / (1000 * 60 * 60); // 시간 차 계산
+            const totalPrice = duration * pricePerHour;
+            document.querySelectorAll(".totalPrice").forEach((element) => {
+                element.textContent = totalPrice;
+            });
+			document.getElementById("remainingAmount").textContent =totalPrice;
+			return totalPrice;
+        }
+		return 0;
+    }
+    
+    document.getElementById("reservationStartTime").addEventListener("change", function(){
+    	document.querySelectorAll(".totalPrice").forEach((element) => {
+            element.textContent = pricePerHour;
+        });
+    });
+    document.getElementById("reservationEndTime").addEventListener("change", calculateTotalPrice, calculateAmountToPay);
+    
+    // 내야할 금액 계산
+   function calculateAmountToPay() {
+	   document.getElementById("remainingAmount").textContent -= totalPaid;
+    };
+    calculateAmountToPay();
+     
+    // 금액 초기화 함수
+    function reset(){
+    	 const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
+    	
+    	totalPaid = 0;
+        const totalPrice = pricePerHour - totalPaid; // 최종 금액 다시 계산
+        
+        const remainingAmount = totalPrice;
+
+        // UI 초기화
+        memMoney = memMoney + useFitpayInput;
+        document.getElementById("memMoney_ip").value = memMoney;
+        document.getElementById("memMoney").textContent = memMoney;
+        document.getElementById("totalPaid").textContent = totalPaid;
+        document.getElementById("remainingAmount").textContent = totalPrice;
+        document.getElementById("useFitpay").value = "";
+        return;
+    	    
+    }
+    
+    // 취소 버튼 누를시, 다시 원상복귀
+    document.getElementById("deleteAmount").addEventListener("click",reset);
+    		
+   
+    
+    
+ // '사용' 버튼 클릭 이벤트
+    document.getElementById("useFitpayButton").addEventListener("click", () => {
+    	// reset();
+        const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
+
+        if (isNaN(useFitpayInput) || useFitpayInput < 0) {
+            alert("올바른 금액을 입력해주세요.");
+            return;
+        }
+
+
+        if (useFitpayInput > memMoney) {
+            alert("잔액이 부족합니다.");
+            return;
+        }
+
+        // 값 업데이트
+        memMoney -= useFitpayInput;
+        totalPaid += useFitpayInput;
+        const remainingAmount = Math.max(pricePerHour - totalPaid, 0);
+        document.getElementById("memMoney_ip").value = memMoney;
+
+        // UI 업데이트
+        document.getElementById("memMoney").textContent = memMoney;
+        document.getElementById("totalPaid").textContent = totalPaid;
+        document.getElementById("remainingAmount").textContent = remainingAmount;
+    });
+
+
+    // '전액 사용' 버튼 클릭 이벤트
+    document.getElementById("useFullAmount").addEventListener("click", () => {
+    	// reset();
+    	document.getElementById("useFitpay").value = calculateTotalPrice();
+    	  const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
+    
+
+          if (isNaN(useFitpayInput) || useFitpayInput < 0) {
+              alert("올바른 금액을 입력해주세요.");
+              return;
+          }
+
+
+          if (useFitpayInput > memMoney) {
+              alert("잔액이 부족합니다.");
+              return;
+          }
+
+          // 값 업데이트
+          memMoney -= useFitpayInput;
+          totalPaid += useFitpayInput;
+          const remainingAmount = Math.max(pricePerHour - totalPaid, 0);
+          document.getElementById("memMoney_ip").value = memMoney;
+
+          // UI 업데이트
+          document.getElementById("memMoney").textContent = memMoney;
+          document.getElementById("totalPaid").textContent = totalPaid;
+          document.getElementById("remainingAmount").textContent = remainingAmount;
+    });
+
     
  // 운영 시간 기반으로 예약 가능한 시간 생성 <예약 시작 시간>
     function generateReservationStartTimes(startTime, endTime) {
@@ -261,9 +467,37 @@
 
     
     
+    
+    
+    
+ // FITPAY 충전하기 버튼 클릭 이벤트
+    document.getElementById("fitpayCharge").addEventListener("click", function () {
+        const fitpayOptions = document.getElementById("fitpayOptions");
+        fitpayOptions.style.display = fitpayOptions.style.display === "none" ? "block" : "none";
+    });
+
+    // 결제 방법 선택
+    function selectPayment(method) {
+        alert(`${method}로 결제를 진행합니다.`);
+    }
+
+    // FITPAY 충전
+    function chargeFitpay() {
+        const chargeAmount = document.getElementById("chargeAmount").value;
+
+        if (!chargeAmount || chargeAmount <= 0) {
+            alert("충전 금액을 올바르게 입력해주세요.");
+            return;
+        }
+
+        alert(`${chargeAmount}원을 충전합니다.`);
+        // 실제 충전 로직은 여기에 추가 (API 호출 등)
+    }
+    
+    
 </script>
-	
-	
+
+
 </body>
 
 </html>

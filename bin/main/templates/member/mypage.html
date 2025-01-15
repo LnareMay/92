@@ -34,8 +34,24 @@
 			</div>
 
 			<div class="btn_wrap">
-				<a href="/member/mypage" class="active">나의정보</a> <a href="/member/reservation">나의시설예약</a>
-				 <a href="#">운동캘린더</a>
+				<div class="header">
+					<a href="/member/mypage" class="active">나의정보</a> <a
+						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
+				</div>
+				<div style="align-items: center;">
+					<div
+						style="cursor:pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
+						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
+						<p
+							style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
+							<span th:text="${#authentication.principal.memMoney}"></span>원
+						</p>
+					</div>
+					<div style="display: inline-flex; gap: 5px; width:100%">
+						<button class="btn btn-primary" style="width:50%">충전</button>
+						<button class="btn btn-success" style="width:50%">송금</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -73,7 +89,7 @@
 							style="font-size: 13px; color: #999;"></p>
 					</div>
 
-					<div class="flex" style="gap: 5px; margin-bottom:20px;">
+					<div class="flex" style="gap: 5px; margin-bottom: 20px;">
 
 						<button class="btn btn-primary"
 							onclick="location.href='/member/mypage_modify'"
@@ -83,7 +99,7 @@
 					</div>
 
 
-					<div class="flex myinfo_wrap" style="margin-bottom:30px;">
+					<div class="flex myinfo_wrap" style="margin-bottom: 30px;">
 						<div
 							th:if="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_NAME != null}">
 							<p>⚽ 좋아하는 운동</p>
@@ -106,14 +122,12 @@
 							<p>💖 관심있는 클럽</p>
 							<p>-선택필요-</p>
 						</div>
-						
-						<div
-							th:if="${#authentication.principal.memBirthday != null}">
+
+						<div th:if="${#authentication.principal.memBirthday != ''}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div
-							th:if="${#authentication.principal.memBirthday == null}">
+						<div th:if="${#authentication.principal.memBirthday == ''}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -129,7 +143,7 @@
 
 			</div>
 
-			<div class="feed-container" style="margin-top:30px;">
+			<div class="feed-container" style="margin-top: 30px;">
 				<!-- Repeat this block 30 times for a 3x10 grid -->
 				<div class="feed-item">
 					<img src="" alt="Placeholder Image">

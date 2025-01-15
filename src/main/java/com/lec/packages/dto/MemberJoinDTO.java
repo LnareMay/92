@@ -1,7 +1,10 @@
 package com.lec.packages.dto;
 
+import java.math.BigDecimal;
+
 import com.lec.packages.domain.exercise_code_table;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -23,6 +26,7 @@ public class MemberJoinDTO {
 	private String memAddressDetail;
 	private String memZipcode;
 	private String memAddressSet;
+    private BigDecimal memMoney;
 	private boolean memIsmanager;
 	private boolean deleteFlag;
 	private boolean memSocial;

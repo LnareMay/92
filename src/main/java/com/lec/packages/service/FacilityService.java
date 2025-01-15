@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,6 @@ public interface FacilityService {
 	PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO);
 	FacilityDTO getFacilityByCode(String facilityCode);
 	void modify(FacilityDTO facilityDTO);
-	void bookByMember(ReservationDTO reservationDTO);
+	void bookByMember(ReservationDTO reservationDTO,BigDecimal memMoney);
 	List<ReservationDTO> getReservationsByFacilityCode(String facilityCode); 
 }
