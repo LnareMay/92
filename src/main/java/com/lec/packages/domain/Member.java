@@ -1,6 +1,7 @@
 package com.lec.packages.domain;
 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +93,10 @@ public class Member extends BaseEntity{
 
     @Column(name = "MEM_ADDRESS_SET", length = 100)
     private String memAddressSet;
-
+    
+    @Column(name = "MEM_MONEY", columnDefinition = "DECIMAL(50, 0) DEFAULT 0")
+    private BigDecimal memMoney;
+    
     @Column(name = "MEM_ISMANAGER", columnDefinition = "TINYINT(1)")
     private boolean memIsmanager;
 
@@ -138,6 +142,13 @@ public class Member extends BaseEntity{
 	private List<Club_Member_List> clubs;
 	
 
+	// 엔티티 저장 전에 기본값 설정
+	@PrePersist
+	public void setDefaultValues() {
+	    if (this.memMoney == null) {
+	        this.memMoney = BigDecimal.ZERO; // 기본값을 0으로 설정
+	    }
+	}
 	
 	
 	

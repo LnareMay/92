@@ -232,6 +232,21 @@ public class MemberController {
 
 	        // Fetch reservations by memId
 	        List<Reservation> reservations = reservationRepository.findByMemId(memId);
+	        
+	     /// 업데이트된 사용자 정보 가져오기
+	        Member updatedMember = memberRepository.findById(memId)
+	                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+	        UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
+
+	        // 새 인증 정보 생성
+	        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	                updatedUser,
+	                updatedUser.getPassword(),
+	                updatedUser.getAuthorities()
+	        );
+
+	        // 보안 컨텍스트 갱신
+	        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
 
 	        if (!reservations.isEmpty()) {

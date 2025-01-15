@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -78,11 +80,11 @@ public class FacilityController {
 	    }
 	    
 	    @PostMapping("/submit-booking")
-		public String facilityBookByMemberPost(ReservationDTO reservationDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		public String facilityBookByMemberPost(ReservationDTO reservationDTO, @RequestParam("memMoney") BigDecimal memMoney, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		    log.info("시설예약 POST방식.....");
 		    log.info(reservationDTO);
 
-	        facilityService.bookByMember(reservationDTO);
+	        facilityService.bookByMember(reservationDTO, memMoney);
 	        redirectAttributes.addFlashAttribute("result", "시설예약 성공");
 		    
 
