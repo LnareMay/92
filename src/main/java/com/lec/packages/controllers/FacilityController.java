@@ -38,12 +38,11 @@ public class FacilityController {
 	private final ClubService clubService;
 	 
 	    @GetMapping("/main")
-	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model, @AuthenticationPrincipal User user) {
+	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
 	    	 
 	    	 String requestURI = request.getRequestURI();  	 
  
 			 PageResponseDTO<FacilityDTO> responseDTO = facilityService.list(pageRequestDTO);
-			 boolean isClubOwner = clubService.checkClubOwner(user.getUsername());
 			
 			 log.info("............................."+responseDTO);
 			 
@@ -53,7 +52,6 @@ public class FacilityController {
 			 model.addAttribute("totalPages", responseDTO.getTotal());  //총페이지
 			 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
 			 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
-			 model.addAttribute("isClubOwner", isClubOwner);
 			 
 			 return "facility/facility_main";		 
 		 }
@@ -68,12 +66,15 @@ public class FacilityController {
 	    	//시설 정보를 가져오기 위해 서비스 호출
 			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
 			List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
+			//클럽장 체크
+			boolean isClubOwner = clubService.checkClubOwner(userDetails.getUsername());
 
 			//log.info("FacilityDTO: {}", facilityDTO);
 			String userId = userDetails.getUsername();
 			//모델에 로그인 정보를 추가하여 뷰로 전달
-			
 			model.addAttribute("userId",userId);
+			//클럽장 체크 결과 전달
+			model.addAttribute("isClubOwner", isClubOwner);
 			//모델에 시설 정보를 추가하여 뷰로 전달
 			model.addAttribute("facility",facilityDTO);
 			model.addAttribute("reservations", reservations);
