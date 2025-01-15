@@ -4,6 +4,7 @@ package com.lec.packages.controllers;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.service.ClubService;
 import com.lec.packages.service.FacilityService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,13 +35,15 @@ import lombok.extern.log4j.Log4j2;
 public class FacilityController {
 	
     private final FacilityService facilityService;
+	private final ClubService clubService;
 	 
 	    @GetMapping("/main")
-	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
+	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model, @AuthenticationPrincipal User user) {
 	    	 
 	    	 String requestURI = request.getRequestURI();  	 
  
 			 PageResponseDTO<FacilityDTO> responseDTO = facilityService.list(pageRequestDTO);
+			 boolean isClubOwner = clubService.checkClubOwner(user.getUsername());
 			
 			 log.info("............................."+responseDTO);
 			 
@@ -49,6 +53,7 @@ public class FacilityController {
 			 model.addAttribute("totalPages", responseDTO.getTotal());  //총페이지
 			 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
 			 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
+			 model.addAttribute("isClubOwner", isClubOwner);
 			 
 			 return "facility/facility_main";		 
 		 }

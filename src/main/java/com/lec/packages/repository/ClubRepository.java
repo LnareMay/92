@@ -31,5 +31,8 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
     @Query("SELECT c FROM Club c WHERE c.deleteFlag = false AND c.clubAddress LIKE %:memberAddress% AND "
     		+ "c.clubTheme LIKE %:clubTheme% order by c.CREATEDATE")
     Page<Club> findByClubAddressAndTheme(@Param("memberAddress") String memberAddress, @Param("clubTheme") String clubTheme, Pageable pageable);
+
+    // 클럽 방장인지 체크
+    Long countByMemId(String memId);
     
 }

@@ -103,6 +103,6 @@ public interface ClubService {
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
 	
     List<ClubDTO> clubListWithMemID(String username);
-
-
+	
+    boolean checkClubOwner(String username);
 }

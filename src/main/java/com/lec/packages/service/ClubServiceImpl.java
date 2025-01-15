@@ -525,6 +525,17 @@ public class ClubServiceImpl implements ClubService {
 		return dtoClub;
 	}
 
+	@Override
+	public boolean checkClubOwner(String username) {
+		long clubCount = clubRepository.countByMemId(username);
+
+		boolean isClubOwner = false;
+		if(clubCount > 0) {
+			isClubOwner = true;
+		}
+		return isClubOwner;
+	}
+
 
 
 
