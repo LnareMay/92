@@ -44,55 +44,50 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	//검색 및 리스트 
 	@Override
 	public Page<Facility> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
-		
-		QFacility facility = QFacility.facility;
-		JPQLQuery<Facility> query = from(facility);
-		
-		
-		if (types != null && types.length > 0 && keywords != null && keywords.length > 0) {
-	        BooleanBuilder booleanBuilder = new BooleanBuilder();
+	    QFacility facility = QFacility.facility;
+	    JPQLQuery<Facility> query = from(facility);
 
+	    // BooleanBuilder 초기화
+	    BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+	    if (types != null && types.length > 0 && keywords != null && keywords.length > 0) {
 	        for (String type : types) {
 	            switch (type) {
 	                case "a": // 지역 검색
-	                    for (String keyword : keywords) {
-	                    	if (keywords[0] != null && !keywords[0].isEmpty()) {
-	                    		booleanBuilder.or(facility.facilityAddress.contains(keyword));
-	                    	}
+	                    if (keywords[0] != null && !keywords[0].isEmpty()) {
+	                        booleanBuilder.and(facility.facilityAddress.contains(keywords[0]));
 	                    }
 	                    break;
 
 	                case "e": // 운동 유형 검색
-	                    for (String keyword : keywords) {
-	                    	if (keywords[1] != null && !keywords[1].isEmpty()) {
-	                    		booleanBuilder.or(facility.exerciseCode.contains(keyword));
-	                    	}
+	                    if (keywords[1] != null && !keywords[1].isEmpty()) {
+	                        booleanBuilder.and(facility.exerciseCode.contains(keywords[1]));
 	                    }
 	                    break;
 
 	                case "ae": // 지역 + 운동 유형 검색
-	                	if (keywords[0] != null && !keywords[0].isEmpty() &&
-	                        keywords[1] != null && !keywords[1].isEmpty()) {
-	                        booleanBuilder.or(
-	                            facility.facilityAddress.contains(keywords[0])
-	                                .and(facility.exerciseCode.contains(keywords[1]))
-	                        );
+	                    if (keywords[0] != null && !keywords[0].isEmpty()) {
+	                        booleanBuilder.and(facility.facilityAddress.contains(keywords[0]));
+	                    }
+	                    if (keywords[1] != null && !keywords[1].isEmpty()) {
+	                        booleanBuilder.and(facility.exerciseCode.contains(keywords[1]));
 	                    }
 	                    break;
 
 	                default:
 	                    throw new IllegalArgumentException("Invalid search type: " + type);
 	            }
-	        }	      
+	        }
 	        query.where(booleanBuilder);
 	    }
-		
 
-		getQuerydsl().applyPagination(pageable, query);
-		
+	    // 페이징 적용
+	    getQuerydsl().applyPagination(pageable, query);
+
+	    // 결과 조회 및 반환
 	    List<Facility> list = query.fetch();
 	    long count = query.fetchCount();
-	    
+
 	    return new PageImpl<>(list, pageable, count);
 	}
 	
