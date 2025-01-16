@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 폼 제출 이벤트
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+		
+		// 최소 하나의 파일이 업로드되었는지 확인
+		  if (uploadedFiles.length === 0) {
+			  alert("최소 한 개의 파일은 업로드해야 합니다.");
+	          return;
+		    }
 
         // FormData 객체 생성
         const formData = new FormData(form);

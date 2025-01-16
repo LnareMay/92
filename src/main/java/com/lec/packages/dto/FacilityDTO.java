@@ -38,6 +38,7 @@ public class FacilityDTO {
     
     private String facilityDescription;
 
+    @NotNull
     private String facilityImage1;
     
     private String  facilityImage2;
