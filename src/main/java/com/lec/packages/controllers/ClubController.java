@@ -68,6 +68,10 @@ public class ClubController {
 		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
 		model.addAttribute("principal", principal);
 		
+		String memId = principal.getMemId();
+		boolean isMember = clubService.isJoinMember(memId, clubCode);
+		model.addAttribute("isMember", isMember);
+		
 		// 클럽상세보기에서 회원3명만 보여지기 제한
 		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
 											  .stream()

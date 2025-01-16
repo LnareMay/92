@@ -49,6 +49,8 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 
 	    // BooleanBuilder 초기화
 	    BooleanBuilder booleanBuilder = new BooleanBuilder();
+	    
+	    booleanBuilder.and(facility.deleteFlag.eq(false)); 
 
 	    if (types != null && types.length > 0 && keywords != null && keywords.length > 0) {
 	        for (String type : types) {

@@ -207,7 +207,8 @@
 			    <ul class="pagination justify-content-center">
 			        <!-- 이전 페이지 버튼 -->
 			        <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
-			            <a class="page-link" th:href="@{|/facility/main?page=${pageNumber - 1}&size=${pageSize}|}" aria-label="Previous">
+			            <a class="page-link" aria-label="Previous"
+						 th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${pageNumber - 1}&size=${pageSize}|}">
 			                «
 			            </a>
 			        </li>
@@ -215,12 +216,14 @@
 			        <!-- 페이지 번호 -->
 			        <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
 			            th:classappend="${page == pageNumber} ? 'active'">
-			            <a class="page-link" th:href="@{|/facility/main?page=${page}&size=${pageSize}|}" th:text="${page}"></a>
+			            <a class="page-link" th:text="${page}"
+						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${page}&size=${pageSize}|}"></a>
 			        </li>
 			
 			        <!-- 다음 페이지 버튼 -->
 			        <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
-			            <a class="page-link" th:href="@{|/facility/main?page=${pageNumber + 1}&size=${pageSize}|}" aria-label="Next">
+			            <a class="page-link" aria-label="Next"
+						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${pageNumber + 1}&size=${pageSize}|}">
 			                »
 			            </a>
 			        </li>
@@ -240,11 +243,11 @@
         const cityModal = document.getElementById("city-modal"); // 시/군/구 모달
         const cityTitle = document.getElementById("city-title");
         const cityButtons = document.getElementById("city-buttons");
-        const facilityAddressInput = document.getElementById("facilityAddress"); // 숨겨진 input
+        const facilityAddressInput = document.getElementById("facilityAddress");
 
         const sportSelect = document.getElementById("sport-select"); // 운동 유형 선택
         const sportModal = document.getElementById("sport-modal"); // 운동 유형 모달
-        const exerciseCodeInput = document.getElementById("exerciseCode"); // 숨겨진 input
+        const exerciseCodeInput = document.getElementById("exerciseCode");
 
         const searchButton = document.querySelector(".search-btn"); // 검색 버튼
         const searchForm = document.querySelector(".search-bar"); // 폼
@@ -296,9 +299,9 @@
 							event.preventDefault();
 							
                             const selectedRegion = `${province} ${city}`;
-                            facilityAddressInput.value = selectedRegion; // 숨겨진 필드에 저장
-                            regionSelect.querySelector("span").textContent = selectedRegion; // UI 업데이트
-                            closeModals(); // 모달 닫기
+                            facilityAddressInput.value = selectedRegion; 
+                            regionSelect.querySelector("span").textContent = selectedRegion; 
+                            closeModals(); 
                         });
                         cityButtons.appendChild(cityButton);
                     });
@@ -311,27 +314,27 @@
 		
 		// 운동유형 모달 열기
 		    sportSelect.addEventListener("click", () => {
-		        sportModal.style.display = "block"; // 운동유형 모달 보이기
+		        sportModal.style.display = "block";
 		    });
 
         // 운동 유형 선택
         document.querySelectorAll("#sport-buttons button").forEach(button => {
             button.addEventListener("click", (event) => {
-                event.preventDefault(); // 기본 동작 방지
+                event.preventDefault(); 
 				
-                const selectedSport = button.dataset.sport; // 운동 유형
+                const selectedSport = button.dataset.sport;
 				const selectedSportValue = button.value;
 				
                 sportSelect.querySelector("span").textContent = selectedSport;
 				
-                exerciseCodeInput.value = selectedSportValue; // 숨겨진 필드에 저장
-                sportModal.style.display = "none"; // 모달 닫기
+                exerciseCodeInput.value = selectedSportValue; 
+                sportModal.style.display = "none"; 
             });
         });
 
         // 검색 버튼 클릭 시 폼 제출
         searchButton.addEventListener("click", (event) => {
-            event.preventDefault(); // 기본 동작 방지
+            event.preventDefault();
             searchForm.submit(); // 폼 제출
         });
 		
@@ -340,6 +343,13 @@
 		            sportModal.style.display = "none";
 		        });
 		    });
+			
+		// 이전버튼
+		const backButton = document.getElementById("back-btn");
+		backButton.addEventListener("click", () => {
+			cityModal.style.display = "none";
+			regionModal.style.display = "block";
+		})
 
         // 모달 닫기 함수
         function closeModals() {

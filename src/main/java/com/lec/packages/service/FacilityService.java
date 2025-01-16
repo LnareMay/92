@@ -16,7 +16,7 @@ public interface FacilityService {
 
 	String register(FacilityDTO facilityDTO);
 	PageResponseDTO<FacilityDTO> listByUser(String userId, PageRequestDTO pageRequestDTO);
-	PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO);
+//	PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO);
 	FacilityDTO getFacilityByCode(String facilityCode);
 	void modify(FacilityDTO facilityDTO);
 	void bookByMember(ReservationDTO reservationDTO,BigDecimal memMoney);

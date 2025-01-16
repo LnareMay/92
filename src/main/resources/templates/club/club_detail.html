@@ -80,11 +80,13 @@
 				style="margin-bottom: 10px"></p>
 
 			<!-- 가입/탈퇴 버튼 -->
-			<span th:if="${clubdto.MemId != principal.memId}">
+			<span th:if="${!isMember}">
 				<form action="/club/club_join" method="post" onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-warning">클럽 가입</button>
 				</form>
+			</span>
+			<span th:if="${isMember}">
 				<form action="/club/club_joindelete" method="post" onsubmit="return confirm('클럽을 탈퇴하시겠습니까?');" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-danger">클럽 탈퇴</button>
@@ -258,7 +260,7 @@
 		});
 	}
 	
-	/* 이미 가입된 회원확인 */
+	/* 이미 가입/탈퇴된 회원확인 */
 	 const flashMessage = document.getElementById("flashMessage");
 	 if (flashMessage) {
 		const message = flashMessage.getAttribute("data-message");

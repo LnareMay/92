@@ -42,22 +42,27 @@ public class FacilityController {
 	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
 	    		, Model model
-	    		, @RequestParam(value = "facilityAddress", required = false) String facilityAddress
-                , @RequestParam(value = "exerciseCode", required = false) String exerciseCode) {
+	    		, @RequestParam(value = "facilityAddress", required = false, defaultValue = "ALL") String facilityAddress
+                , @RequestParam(value = "exerciseCode", required = false, defaultValue = "ALL") String exerciseCode) {
 	    	
-	    	String requestURI = request.getRequestURI();  	 
+	    	String currentURI = request.getRequestURI();  
+	    	
+	    	if ("ALL".equals(facilityAddress)) {
+	    		facilityAddress = "";	  
+	    	} if ("ALL".equals(exerciseCode)) {
+	    		exerciseCode = "";	  
+	    	}
 	    	
 	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode);
-	    	
+	
 	    	log.info("............................."+responseDTO);
-	    	
-	    	
-	    	 model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
+	    		    	
+	    	 model.addAttribute("currentURI", currentURI); // requestURI를 모델에 추가
 	    	 model.addAttribute("facilities",responseDTO.getDtoList());	
 			 model.addAttribute("totalPages", responseDTO.getTotal());  //총페이지
 			 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
 			 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
-			 model.addAttribute("address", facilityAddress); 
+			 model.addAttribute("facilityAddress", facilityAddress); 
 			 model.addAttribute("exerciseCode", exerciseCode); 
 	    	
 	    	return "facility/facility_main";		 
@@ -72,8 +77,8 @@ public class FacilityController {
 
 	        redirectAttributes.addAttribute("facilityAddress", facilityAddress);
 	        redirectAttributes.addAttribute("exerciseCode", exerciseCode);
-	        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
-	        redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
+	        redirectAttributes.addAttribute("pageNumber", pageRequestDTO.getPage());
+	        redirectAttributes.addAttribute("pageSize", pageRequestDTO.getSize());
 	        
 	        log.info("facilityAddress: {}", facilityAddress);
 	        log.info("exerciseCode: {}", exerciseCode);
