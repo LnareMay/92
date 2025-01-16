@@ -386,4 +386,15 @@ public class ClubRestController {
 		return myClubList;
 	}
 
+	@GetMapping("/ownerClubList")
+	public List<ClubDTO> getOwnerClubList(HttpServletRequest request, Model model, @AuthenticationPrincipal User user){
+		String requestURI = request.getRequestURI();
+		log.info("do getOwnerClubList");
+		model.addAttribute("currentURI", requestURI);
+
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(user.getUsername());
+
+		return ownerClubList;
+	}
+
 }

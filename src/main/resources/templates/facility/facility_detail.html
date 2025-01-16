@@ -24,6 +24,7 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 	crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <!--flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -158,14 +159,14 @@
 						placeholder="날짜를 선택하세요" required>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group resInfo">
 					<label for="reservationTime">예약 시간</label> <select
 						id="reservationStartTime" name="reservationStartTime" type="time"
 						required></select> <select id="reservationEndTime"
 						name="reservationEndTime" type="time" required></select>
 					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 
-					<label for="count">예약 인원</label> <input type="number" id="count"
+					<label id="countLabel" for="count">예약 인원</label> <input type="number" id="count"
 						name="count" placeholder="예약 인원을 입력해주세요." required>
 				</div>
 
@@ -236,7 +237,8 @@
 			<label for="remainingAmount">내야할 금액:</label> <span
 				id="remainingAmount">0</span>원
 		</div>
-		<button type="submit" class="btn btn-primary">예약하기</button>
+		<button th:if="${!facility.facilityIsOnlyClub}" type="submit" class="btn btn-primary">예약하기</button>
+	    <button th:if="${facility.facilityIsOnlyClub && isClubOwner}" type="submit" class="btn btn-primary">예약하기</button>
 		<hr />
 		<!-- 시설명  -->
 		<div class="form-group">
@@ -295,6 +297,8 @@
     const pricePerHour = parseFloat(/*[[${facility.price}]]*/ "10000");
     let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
     let totalPaid = 0;
+	const isClubOwner = /*[[${isClubOwner}]]*/"";
+	const facilityIsOnlyClub = /*[[${facility.facilityIsOnlyClub}]]*/"";
    
     
     // 최종 결제 금액 계산
@@ -494,6 +498,26 @@
         // 실제 충전 로직은 여기에 추가 (API 호출 등)
     }
     
+	async function getClubList(){
+    	const response = await axios.get(`/club/ownerClubList`)
+    	return response.data
+	}
+
+
+	if(facilityIsOnlyClub == true && isClubOwner == true) {
+		let str = "";
+		getClubList().then(data => {
+			str = '<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;">'
+			data.forEach(club => {
+				str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
+			});
+			str += '</select>'
+			document.querySelector("#countLabel").textContent = "예약할 클럽"
+			document.querySelector("#count").remove()
+			document.querySelector(".resInfo").innerHTML += str
+		})
+
+	}
     
 </script>
 
