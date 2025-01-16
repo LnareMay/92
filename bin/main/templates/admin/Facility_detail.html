@@ -136,10 +136,10 @@
               <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image" class="product-image">
               </div>
               <div class="col-12 product-image-thumbs">
-                <div class="product-image-thumb active"> <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"></div>
-                <div class="product-image-thumb">  <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2" alt="Product Image"></div>
-                <div class="product-image-thumb" > <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3" alt="Product Image" ></div>
-                <div class="product-image-thumb" > <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" alt="Product Image" ></div>
+                <div class="product-image-thumb active" th:if="${facility.facilityImage1 != null}"> <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"></div>
+                <div class="product-image-thumb" th:if="${facility.facilityImage2 != null}">  <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2" alt="Product Image"></div>
+                <div class="product-image-thumb" th:if="${facility.facilityImage3 != null}" > <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3" alt="Product Image" ></div>
+                <div class="product-image-thumb"  th:if="${facility.facilityImage4 != null}"> <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" alt="Product Image" ></div>
               </div>
             </div>
             <div class="col-12 col-sm-6">

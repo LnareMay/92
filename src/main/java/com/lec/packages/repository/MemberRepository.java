@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 
 public interface MemberRepository extends JpaRepository<Member, String>{
@@ -33,4 +34,5 @@ public interface MemberRepository extends JpaRepository<Member, String>{
 		       "LEFT JOIN FETCH m.memClub c " +
 		       "WHERE m.memEmail = :memEmail and m.memSocial = true")
 	Optional<Member> findByMemEmail(@Param("memEmail") String memEmail);
+	
 }

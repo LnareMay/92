@@ -4,6 +4,7 @@ package com.lec.packages.service;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,14 +23,17 @@ import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
 import com.lec.packages.domain.Reservation;
+import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.FacilityRepository;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.repository.TransferHistoryRepository;
 import com.lec.packages.util.RandomStringGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +53,8 @@ public class FacilityServiceImpl implements FacilityService{
 	private final MemberRepository memberRepository;
 	
 	private final ReservationRepository reservationRepository;
+	
+	private final TransferHistoryRepository transferHistoryRepository;
 	
 
 	//시설 등록
@@ -161,9 +167,8 @@ public class FacilityServiceImpl implements FacilityService{
 		
 		
 	}
-
 	@Override
-	public void bookByMember(ReservationDTO reservationDTO, BigDecimal memMoney) {
+	public void bookByMember(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, BigDecimal memMoney) {
 	    // Step 1: 예약 정보를 검증
 	    if (reservationDTO.getReservationStartTime().isAfter(reservationDTO.getReservationEndTime())) {
 	        throw new IllegalArgumentException("예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
@@ -174,14 +179,12 @@ public class FacilityServiceImpl implements FacilityService{
 	            reservationDTO.getReservationStartTime(),
 	            reservationDTO.getReservationEndTime()
 	    ).toHours();
-
-
 	    BigDecimal totalPrice = BigDecimal.valueOf(hours).multiply(reservationDTO.getPrice());
 
 	    // Step 3: ReservationCode 생성
-	    String reservationCode = ""+System.currentTimeMillis();
+	    String reservationCode = "" + System.currentTimeMillis();
 	    reservationDTO.setReservationCode(reservationCode);
-
+	    transferHistoryDTO.setTransferCode(reservationCode);
 
 	    // Step 4: ReservationDTO를 Reservation 엔티티로 변환
 	    Reservation reservation = Reservation.builder()
@@ -198,18 +201,44 @@ public class FacilityServiceImpl implements FacilityService{
 	            .deleteFlag(false) // 초기 상태 설정
 	            .build();
 
+	    TransferHistory transferHistory = TransferHistory.builder()
+	            .transferCode(reservationCode)
+	            .amount(totalPrice)
+	            .memo(transferHistoryDTO.getMemo())
+	            .status("송금성공")
+	            .transferDate(LocalDateTime.now())
+	            .receiverId(transferHistoryDTO.getReceiverId())
+	            .senderId(transferHistoryDTO.getSenderId())
+	            .build();
+
 	    // Step 5: 데이터베이스에 저장
 	    reservationRepository.save(reservation);
-	    
-	    Member member = memberRepository.findById(reservationDTO.getMemId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        member.setMemMoney(memMoney);
-        memberRepository.save(member);
+	    transferHistoryRepository.save(transferHistory);
+
+	    // Step 6: senderId(예약자)의 memMoney 업데이트
+	    Member sender = memberRepository.findById(reservationDTO.getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+	    sender.setMemMoney(memMoney);
+	    memberRepository.save(sender);
+
+	    // Step 7: receiverId의 memMoney 업데이트
+	    Member receiverMember = transferHistoryDTO.getReceiverId(); // Member 객체
+	    if (receiverMember == null || receiverMember.getMemId() == null) {
+	        throw new IllegalArgumentException("수신자 정보가 유효하지 않습니다.");
+	    }
+
+	    Member receiver = memberRepository.findById(receiverMember.getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + receiverMember.getMemId()));
+
+	    BigDecimal updatedReceiverMoney = receiver.getMemMoney().add(totalPrice); // 기존 금액 + totalPrice
+	    receiver.setMemMoney(updatedReceiverMoney);
+	    memberRepository.save(receiver);
 
 	    // 로그 출력 (선택 사항)
 	    log.info("시설 예약이 완료되었습니다: {}", reservation);
+	    log.info("송금 내역: {}", transferHistory);
+	    log.info("수신자 업데이트된 잔액: {}", updatedReceiverMoney);
 	}
-
 
 	@Override
 	public List<ReservationDTO> getReservationsByFacilityCode(String facilityCode) {
