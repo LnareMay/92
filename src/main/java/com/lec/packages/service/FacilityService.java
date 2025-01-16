@@ -20,4 +20,7 @@ public interface FacilityService {
 	void modify(FacilityDTO facilityDTO);
 	void bookByMember(ReservationDTO reservationDTO);
 	List<ReservationDTO> getReservationsByFacilityCode(String facilityCode); 
+	
+	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
+			,String facilityAddress, String exerciseCode);
 }

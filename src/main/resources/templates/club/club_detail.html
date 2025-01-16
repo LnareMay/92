@@ -125,7 +125,8 @@
                                 th:if="${clubmember.memId == clubdto.memId}"
                                 class="text-warning small">⭐</span>
                             </p>
-                            <small class="text-muted" th:text="${clubmember.memAddress}"></small>
+                            <small class="text-muted" th:if="${clubmember.memAddressSet != null}" 
+                            	th:text="${clubmember.memAddressSet}"></small>
                             <!-- <small class="text-muted" th:text="${clubdto.clubAddress}"></small> -->
                           </div>
                         </div>

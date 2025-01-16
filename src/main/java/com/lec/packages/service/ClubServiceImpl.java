@@ -62,6 +62,7 @@ public class ClubServiceImpl implements ClubService {
 		return clubCode;
 	}
 
+	/*
 	@Override
 	public void updateImages(String clubCode, ClubDTO clubDTO) {
 		Optional<Club> optionalClub = clubRepository.findById(clubCode);
@@ -73,7 +74,7 @@ public class ClubServiceImpl implements ClubService {
 			club.setClubImage4(clubDTO.getClubImage4());
 			clubRepository.save(club);
 		}
-	}
+	} */ 
 
 	// 클럽코드생성
 	@Override
@@ -215,29 +216,30 @@ public class ClubServiceImpl implements ClubService {
 	    Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
 	    Club club = result.orElseThrow();
 
-	    // 기존 이미지 유지
-	    if (clubDTO.getClubImage1() == null) clubDTO.setClubImage1(club.getClubImage1());
-	    if (clubDTO.getClubImage2() == null) clubDTO.setClubImage2(club.getClubImage2());
-	    if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3());
-	    if (clubDTO.getClubImage4() == null) clubDTO.setClubImage4(club.getClubImage4());
+	    if (clubDTO.getClubImage1() == null) clubDTO.setClubImage1(club.getClubImage1()); 
+	    if (clubDTO.getClubImage2() == null) clubDTO.setClubImage2(club.getClubImage2()); 
+	    if (clubDTO.getClubImage3() == null) clubDTO.setClubImage3(club.getClubImage3()); 
+	    if (clubDTO.getClubImage4() == null) clubDTO.setClubImage4(club.getClubImage4()); 
 
+	    // 클럽 정보 업데이트
 	    club.change(
-	            clubDTO.getClubIntroduction(),
-	            clubDTO.getClubAddress(),
-	            clubDTO.getClubName(),
-	            clubDTO.getClubTheme(),
-	            clubDTO.getClubExercise(),
-	            clubDTO.getClubPw(),
-	            clubDTO.isClubIsprivate(),
-	            clubDTO.getClubImage1(),
-	            clubDTO.getClubImage2(),
-	            clubDTO.getClubImage3(),
-	            clubDTO.getClubImage4()
+	        clubDTO.getClubIntroduction(),
+	        clubDTO.getClubAddress(),
+	        clubDTO.getClubName(),
+	        clubDTO.getClubTheme(),
+	        clubDTO.getClubExercise(),
+	        clubDTO.getClubPw(),
+	        clubDTO.isClubIsprivate(),
+	        clubDTO.getClubImage1(),
+	        clubDTO.getClubImage2(),
+	        clubDTO.getClubImage3(),
+	        clubDTO.getClubImage4()
 	    );
 
+	    // 클럽 정보 저장
 	    clubRepository.save(club);
 	}
-	
+
 	// 클럽삭제
 	@Override
 	public void remove(String clubCode) {

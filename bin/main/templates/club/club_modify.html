@@ -87,15 +87,14 @@
 					   <img id="photo-upload-1" th:src="${clubdto.clubImage1 != null ? '/view/' + clubdto.clubImage1 : '/img/plus_icon.png'}"
 					   							th:classappend="${clubdto.clubImage1 == null ? 'default-icon' : ''}"alt="대표이미지1">
 			        </label>
-			      <!-- <button type="button" class="delete-btn" onclick="removeImage('clubImage1', 'photo-upload-1')">X</button> -->
 			       <input id="clubImage1" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-1')" style="display: none;">
 			    </div>
 			    <div class="club-image-upload">
-			 		<label for="clubImage2">   	
-					   <img id="photo-upload-2" th:src="${clubdto.clubImage2 != null ? '/view/' + clubdto.clubImage2 : '/img/plus_icon.png'}"  
-												th:classappend="${clubdto.clubImage2 == null ? 'default-icon' : ''}"alt="대표이미지2">
-			        </label>
-			          <input id="clubImage2" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-2')" style="display: none;">
+					<label for="clubImage2">
+					   <img id="photo-upload-2" th:src="${clubdto.clubImage2 != null ? '/view/' + clubdto.clubImage2 : '/img/plus_icon.png'}"
+					           					th:classappend="${clubdto.clubImage2 == null ? 'default-icon' : ''}" alt="대표이미지2">
+					</label>
+				   <input id="clubImage2" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-2')" style="display: none;">
 			    </div>
 			    <div class="club-image-upload">
 			    	<label for="clubImage3">   	
@@ -216,17 +215,6 @@
 	        })
 	        .catch(error => console.error("파일 업로드 실패:", error));
 	}
-	
-	/* 클럽이미지제거
-	function removeImage(inputId, imgId) {
-		const fileInput = document.getElementById(inputId);
-		const image = document.getElementById(imgId);
-		
-		image.src = "/img/plus_icon.png";
-		image.classList.add("default-icon");
-		
-		fileInput.value = "";
-	} */
 
 </script>
 
