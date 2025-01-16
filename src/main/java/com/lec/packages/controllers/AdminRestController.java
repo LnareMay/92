@@ -135,44 +135,7 @@ public class AdminRestController {
 	}
 
 
-	//시설 사진 수정(삭제)
-	@RestController
-	@RequestMapping("/admin")
-	public class FacilityController {
-
-	    @DeleteMapping("/remove/{facilityCode}/{columnName}")
-	    public ResponseEntity<Map<String, Boolean>> removeFacilityImage(
-	            @PathVariable("facilityCode") String facilityCode,
-	            @PathVariable("columnName") String columnName) {
-	        Map<String, Boolean> resultMap = new HashMap<>();
-	        boolean updated = false;
-
-	        try {
-	            // 시설 정보 가져오기
-	            Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
-	            Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
-
-	            // 컬럼 이름에 따라 해당 컬럼을 null로 설정
-	            switch (columnName) {
-	                case "facilityImage1" -> facility.setFacilityImage1(null);
-	                case "facilityImage2" -> facility.setFacilityImage2(null);
-	                case "facilityImage3" -> facility.setFacilityImage3(null);
-	                case "facilityImage4" -> facility.setFacilityImage4(null);
-	                default -> throw new IllegalArgumentException("잘못된 컬럼 이름입니다.");
-	            }
-
-	            // 변경 내용 저장
-	            facilityRepository.save(facility);
-	            updated = true;
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", false));
-	        }
-
-	        resultMap.put("result", updated);
-	        return ResponseEntity.ok(resultMap);
-	    }
-	}
+	
 
 
 
@@ -253,64 +216,123 @@ public class AdminRestController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	    }
 	}
-	
-	// 시설 정보 수정
-	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<?> facilityModify(
-	        @ModelAttribute FacilityDTO facilityDTO,
-	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-	        HttpServletRequest request,
-	        Model model,
-	        PageRequestDTO pageRequestDTO,
-	        RedirectAttributes redirectAttributes) {
+    
+    //시설 사진 수정(삭제)
+  	@DeleteMapping("/remove/{facilityCode}/{columnName}")
+  	public ResponseEntity<Map<String, Boolean>> removeFacilityImage(
+  	        @PathVariable("facilityCode") String facilityCode,
+  	        @PathVariable("columnName") String columnName) {
+  	    Map<String, Boolean> resultMap = new HashMap<>();
+  	    boolean updated = false;
 
-	    String requestURI = request.getRequestURI();
-	    model.addAttribute("currentURI", requestURI);
+  	    try {
+  	        // 시설 정보 가져오기
+  	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
+  	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
 
-	    try {
-	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
-	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
+  	        // 컬럼 이름에 따라 해당 컬럼을 null로 설정
+  	        switch (columnName) {
+  	            case "facilityImage1" -> facility.setFacilityImage1(null);
+  	            case "facilityImage2" -> facility.setFacilityImage2(null);
+  	            case "facilityImage3" -> facility.setFacilityImage3(null);
+  	            case "facilityImage4" -> facility.setFacilityImage4(null);
+  	            default -> throw new IllegalArgumentException("잘못된 컬럼 이름입니다.");
+  	        }
 
-	        if (files != null && !files.isEmpty()) {
-	            for (int i = 0; i < files.size(); i++) {
-	                MultipartFile file = files.get(i);
-	                if (file != null && !file.isEmpty()) {
-	                    String originalFileName = file.getOriginalFilename();
-	                    String uuid = UUID.randomUUID().toString();
-	                    String fileName = uuid + "_" + originalFileName;
+  	        // 변경 내용 저장
+  	        facilityRepository.save(facility); // 반드시 호출하여 변경 사항 저장
+  	        updated = true;
+  	    } catch (Exception e) {
+  	        e.printStackTrace();
+  	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", false));
+  	    }
 
-	                    Path filePath = Paths.get(uploadPath, fileName);
-	                    file.transferTo(filePath);
+  	    resultMap.put("result", updated);
+  	    return ResponseEntity.ok(resultMap);
+  	}
 
-	                    switch (i) {
-	                        case 0 -> facilityDTO.setFacilityImage1(fileName);
-	                        case 1 -> facilityDTO.setFacilityImage2(fileName);
-	                        case 2 -> facilityDTO.setFacilityImage3(fileName);
-	                        case 3 -> facilityDTO.setFacilityImage4(fileName);
-	                    }
-	                }
-	            }
-	        }
+    
+    
+    
+  	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  	public ResponseEntity<?> facilityModify(
+  	        @ModelAttribute FacilityDTO facilityDTO,
+  	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+  	        @RequestParam(value = "existingFiles", required = false) List<String> existingFiles,
+  	        @RequestParam(value = "deletedFiles", required = false) List<String> deletedFiles,
+  	        HttpServletRequest request,
+  	        Model model,
+  	        PageRequestDTO pageRequestDTO,
+  	        RedirectAttributes redirectAttributes) {
 
-	        if (facilityDTO.getFacilityImage1() == null) facilityDTO.setFacilityImage1(facility.getFacilityImage1());
-	        if (facilityDTO.getFacilityImage2() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage2());
-	        if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage3(facility.getFacilityImage3());
-	        if (facilityDTO.getFacilityImage4() == null) facilityDTO.setFacilityImage4(facility.getFacilityImage4());
+  	    try {
+  	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
+  	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
+
+  	        // 삭제된 기존 파일 처리
+  	        if (deletedFiles != null && !deletedFiles.isEmpty()) {
+  	            for (String fileName : deletedFiles) {
+  	                // 데이터베이스에서 컬럼 값 제거
+  	                if (facility.getFacilityImage1() != null && facility.getFacilityImage1().equals(fileName)) {
+  	                    facility.setFacilityImage1(null);
+  	                } else if (facility.getFacilityImage2() != null && facility.getFacilityImage2().equals(fileName)) {
+  	                    facility.setFacilityImage2(null);
+  	                } else if (facility.getFacilityImage3() != null && facility.getFacilityImage3().equals(fileName)) {
+  	                    facility.setFacilityImage3(null);
+  	                } else if (facility.getFacilityImage4() != null && facility.getFacilityImage4().equals(fileName)) {
+  	                    facility.setFacilityImage4(null);
+  	                }
+
+  	                // 파일 시스템에서 실제 파일 삭제
+  	                Path filePath = Paths.get(uploadPath, fileName);
+  	                Files.deleteIfExists(filePath);
+  	            }
+  	            facilityRepository.save(facility); // 변경 사항 저장
+  	        }
+
+  	        // 기존 파일 유지
+  	        if (existingFiles != null) {
+  	            facilityDTO.setFacilityImage1(existingFiles.size() > 0 ? existingFiles.get(0) : null);
+  	            facilityDTO.setFacilityImage2(existingFiles.size() > 1 ? existingFiles.get(1) : null);
+  	            facilityDTO.setFacilityImage3(existingFiles.size() > 2 ? existingFiles.get(2) : null);
+  	            facilityDTO.setFacilityImage4(existingFiles.size() > 3 ? existingFiles.get(3) : null);
+  	        }
+
+  	        // 새로 업로드된 파일 처리
+  	        if (files != null && !files.isEmpty()) {
+  	            for (int i = 0; i < files.size(); i++) {
+  	                MultipartFile file = files.get(i);
+  	                if (!file.isEmpty()) {
+  	                    String originalFileName = file.getOriginalFilename();
+  	                    String uuid = UUID.randomUUID().toString();
+  	                    String fileName = uuid + "_" + originalFileName;
+
+  	                    Path filePath = Paths.get(uploadPath, fileName);
+  	                    file.transferTo(filePath);
+
+  	                    switch (i) {
+  	                        case 0 -> facilityDTO.setFacilityImage1(fileName);
+  	                        case 1 -> facilityDTO.setFacilityImage2(fileName);
+  	                        case 2 -> facilityDTO.setFacilityImage3(fileName);
+  	                        case 3 -> facilityDTO.setFacilityImage4(fileName);
+  	                    }
+  	                }
+  	            }
+  	        }
+
+  	        // 시설 정보 업데이트
+  	        facilityService.modify(facilityDTO);
+
+  	        String redirectUrl = String.format("./Facility_detail?facilityCode=%s", facilityDTO.getFacilityCode());
+  	        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
+
+  	    } catch (Exception e) {
+  	        e.printStackTrace();
+  	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+  	    }
+  	}
 
 
-	        facilityService.modify(facilityDTO);
-	      
-
-	        String redirectUrl = String.format("./Facility_detail?facilityCode=%s", facilityDTO.getFacilityCode());
-	        return ResponseEntity.status(HttpStatus.FOUND)
-	                .header(HttpHeaders.LOCATION, redirectUrl)
-	                .build();
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
-	    }
-	}
 
 	/*
 	 * @GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}") public
