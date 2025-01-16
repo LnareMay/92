@@ -1,28 +1,13 @@
-function countFilesInFileList(){
-	const fileList = document.getElementById('fileList');
-	const fileCount = fileList.querySelectorAll('tr').length;
-	
-	return fileCount;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const addFilesBtn = document.getElementById('addFilesBtn');
     const form = document.getElementById('facilityAdd'); // 폼 ID
 	const fileList = document.getElementById('fileList'); // 파일 리스트 테이블
-	
-	const fileCount = countFilesInFileList();
 
     let uploadedFiles = []; // 업로드된 파일 목록
 
     // 파일 추가 버튼 클릭 이벤트
     addFilesBtn.addEventListener('click', () => {
-		
-		if (fileCount >= 4) {
-			alert("최대 4개의 파일만 업로드할 수 있습니다.");
-			return;
-		}
-		
         if (uploadedFiles.length >= 4) {
             alert("최대 4개의 파일만 업로드할 수 있습니다.");
             return;
@@ -59,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileName = e.target.getAttribute('data-file');
                 uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
                 e.target.closest('tr').remove();
-
             });
         });
     });
@@ -96,5 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('서버 통신 중 오류가 발생했습니다.');
         }
     });
+	
+	
+
 	
 });
