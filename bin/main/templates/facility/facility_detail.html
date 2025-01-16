@@ -153,8 +153,8 @@
 				</div>
 				<br />
 
-				<div class="form-group">
-					<label for="memId">예약자ID: </label> <span id="memId" name="memId"
+				<div class="form-group resInfo">
+					<label for="memId" class="changeToClub">예약자ID: </label> <span id="memId" name="memId"
 						th:text="${userId}"></span> <input type="text" id="memId"
 						name="memId" class="blind" th:value="${userId}"> <input
 						type="text" id="senderId" class="blind" name="senderId"
@@ -169,7 +169,8 @@
 						placeholder="날짜를 선택하세요" required>
 				</div>
 
-				<div class="form-group resInfo">
+				<div class="form-group">
+					<input type="hidden" name="isOnlyClub" th:value="${facility.facilityIsOnlyClub}">
 					<label for="reservationTime">예약 시간</label> <select
 						id="reservationStartTime" name="reservationStartTime" type="time"
 						required></select> <select id="reservationEndTime"
@@ -557,13 +558,13 @@
 	if(facilityIsOnlyClub == true && isClubOwner == true) {
 		let str = "";
 		getClubList().then(data => {
-			str = '<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;">'
+			str = '<select class="custom-select" id="inputGroupSelect01" name="memId" style="text-align: center;" onchange="(selectBoxChange(this.value))">'
 			data.forEach(club => {
 				str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
 			});
 			str += '</select>'
-			document.querySelector("#countLabel").textContent = "예약할 클럽"
-			document.querySelector("#count").remove()
+			document.querySelector(".changeToClub").textContent = "예약할 클럽"
+			document.querySelector("#memId").remove()
 			document.querySelector(".resInfo").innerHTML += str
 		})
 
@@ -581,6 +582,11 @@
     // '폼 제출' 버튼 클릭 전에 호출하여 최신 값을 설정
     const form = document.querySelector("form");
     form.addEventListener("submit", updateHiddenAmount);
+
+
+	function selectBoxChange(value) {
+		document.querySelector("#senderId").value = value
+	}
 </script>
 
 
