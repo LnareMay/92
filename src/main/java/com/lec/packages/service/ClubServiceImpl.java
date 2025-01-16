@@ -536,6 +536,18 @@ public class ClubServiceImpl implements ClubService {
 		return isClubOwner;
 	}
 
+	@Override
+	public List<ClubDTO> ownerClubListWithMemId(String username) {
+		List<Club> ownerClubList = clubRepository.findByMemId(username);
+
+		List<ClubDTO> resClubDTOs = new ArrayList();
+		ownerClubList.forEach(club -> {
+			ClubDTO dto = ClubDTO.builder().clubCode(club.getClubCode()).clubName(club.getClubName()).build();
+			resClubDTOs.add(dto);
+		});
+		return resClubDTOs;
+	}
+
 
 
 

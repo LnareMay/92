@@ -34,5 +34,7 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
 
     // 클럽 방장인지 체크
     Long countByMemId(String memId);
+
+    List<Club> findByMemId(String username);
     
 }

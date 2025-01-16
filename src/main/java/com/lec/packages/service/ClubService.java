@@ -105,4 +105,5 @@ public interface ClubService {
     List<ClubDTO> clubListWithMemID(String username);
 	
     boolean checkClubOwner(String username);
+    List<ClubDTO> ownerClubListWithMemId(String username);
 }
