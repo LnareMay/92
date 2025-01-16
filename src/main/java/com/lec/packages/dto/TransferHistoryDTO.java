@@ -8,14 +8,16 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.lec.packages.domain.Member;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferHistoryDTO {
     private String transferCode;          // Unique identifier for each transfer
-    private String senderId;          // ID of the member who sends money
-    private String receiverId;        // ID of the member who receives money
+    private Member senderId;          // ID of the member who sends money
+    private Member receiverId;        // ID of the member who receives money
     private BigDecimal amount;        // Amount transferred
     private LocalDateTime transferDate; // Date and time of the transfer
     private String status;            // Status of the transfer (e.g., Success, Failed)

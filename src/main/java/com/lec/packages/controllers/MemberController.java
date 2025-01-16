@@ -1,5 +1,6 @@
 package com.lec.packages.controllers;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -263,6 +264,40 @@ public class MemberController {
 
 
 
+	// 금액 충전
+	@GetMapping("/charge/point")
+    public String myCashPro(@RequestParam("amount") BigDecimal amount,@RequestParam("plusPoint") BigDecimal plusPoint, HttpServletRequest request,Model model){
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+	        String memId = member.getMemId(); // Current logged-in user's ID
 
+	        
+        memberService.chargePoint(memId,amount, plusPoint);
+        
+      /// 업데이트된 사용자 정보 가져오기
+        Member updatedMember = memberRepository.findById(memId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
+
+        // 새 인증 정보 생성
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                updatedUser,
+                updatedUser.getPassword(),
+                updatedUser.getAuthorities()
+        );
+
+        // 보안 컨텍스트 갱신
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+        
+	    };
+	    // 이전 페이지 URL 가져오기
+	    String referer = request.getHeader("Referer");
+	    if (referer != null) {
+	        return "redirect:" + referer; // 이전 페이지로 리다이렉트
+	    }
+		return "redirect:/member/mypage";
+	}
 }
 

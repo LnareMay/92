@@ -1,5 +1,7 @@
 package com.lec.packages.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.lec.packages.dto.MemberJoinDTO;
@@ -28,6 +30,7 @@ public interface MemberService {
 	
 	void updateMemAddressSet(String memberId, String memAddressSet);
 	
+	void chargePoint(String id,BigDecimal amount, BigDecimal plusPoint);
 	
 	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);

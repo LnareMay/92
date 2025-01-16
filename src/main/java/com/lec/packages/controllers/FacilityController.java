@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.FacilityService;
 
@@ -114,11 +116,11 @@ public class FacilityController {
 	    }
 	    
 	    @PostMapping("/submit-booking")
-		public String facilityBookByMemberPost(ReservationDTO reservationDTO, @RequestParam("memMoney") BigDecimal memMoney, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		public String facilityBookByMemberPost(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, @RequestParam("memMoney") BigDecimal memMoney, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		    log.info("시설예약 POST방식.....");
 		    log.info(reservationDTO);
 
-	        facilityService.bookByMember(reservationDTO, memMoney);
+	        facilityService.bookByMember(transferHistoryDTO, reservationDTO, memMoney);
 	        redirectAttributes.addFlashAttribute("result", "시설예약 성공");
 		    
 
