@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -133,37 +135,47 @@ public class AdminRestController {
 	}
 
 
-	@Operation(summary = "파일삭제", description = "DELETE 방식으로 첨부파일 삭제")
-	@DeleteMapping(value = "/remove/{fileName}")
-	public ResponseEntity<Map<String, Boolean>> removeFile(@PathVariable("fileName") String fileName) {
-	    Map<String, Boolean> resultMap = new HashMap<>();
-	    boolean removed = false;
-	    try {
-	        // 전달된 파일 이름이 썸네일 파일(s_)이라면, 원본 파일 이름 추출
-	        String originalFileName = fileName.startsWith("s_") ? fileName.substring(2) : fileName;
-	        // 원본 파일 경로
-	        File originalFile = new File(uploadPath + File.separator + originalFileName);
-	        // 썸네일 파일 경로
-	        File thumbnailFile = new File(uploadPath + File.separator + fileName);
-	        // 원본 파일 삭제
-	        if (originalFile.exists()) {
-	            String contentType = Files.probeContentType(originalFile.toPath());
-	            removed = originalFile.delete();
-	            // 썸네일 파일 삭제 (이미지일 경우만)
-	            if (contentType != null && contentType.startsWith("image") && thumbnailFile.exists()) {
-	                thumbnailFile.delete();
+	//시설 사진 수정(삭제)
+	@RestController
+	@RequestMapping("/admin")
+	public class FacilityController {
+
+	    @DeleteMapping("/remove/{facilityCode}/{columnName}")
+	    public ResponseEntity<Map<String, Boolean>> removeFacilityImage(
+	            @PathVariable("facilityCode") String facilityCode,
+	            @PathVariable("columnName") String columnName) {
+	        Map<String, Boolean> resultMap = new HashMap<>();
+	        boolean updated = false;
+
+	        try {
+	            // 시설 정보 가져오기
+	            Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
+	            Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
+
+	            // 컬럼 이름에 따라 해당 컬럼을 null로 설정
+	            switch (columnName) {
+	                case "facilityImage1" -> facility.setFacilityImage1(null);
+	                case "facilityImage2" -> facility.setFacilityImage2(null);
+	                case "facilityImage3" -> facility.setFacilityImage3(null);
+	                case "facilityImage4" -> facility.setFacilityImage4(null);
+	                default -> throw new IllegalArgumentException("잘못된 컬럼 이름입니다.");
 	            }
-	        } else {
-	            log.warn("파일이 존재하지 않습니다: {}", originalFileName);
+
+	            // 변경 내용 저장
+	            facilityRepository.save(facility);
+	            updated = true;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("result", false));
 	        }
-	    } catch (IOException e) {
-	        log.error("파일 삭제 중 오류 발생: {}", e.getMessage());
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body(Map.of("result", false));
+
+	        resultMap.put("result", updated);
+	        return ResponseEntity.ok(resultMap);
 	    }
-	    resultMap.put("result", removed);
-	    return ResponseEntity.ok(resultMap);
 	}
+
+
+
 
 	// 시설 등록
     @PostMapping(value = "/Facility_add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -270,17 +282,11 @@ public class AdminRestController {
 	                    Path filePath = Paths.get(uploadPath, fileName);
 	                    file.transferTo(filePath);
 
-	                    String contentType = Files.probeContentType(filePath);
-	                    if (contentType != null && contentType.startsWith("image")) {
-	                        File thumbnail = new File(uploadPath, "s_" + fileName);
-	                        Thumbnailator.createThumbnail(filePath.toFile(), thumbnail, 200, 200);
-	                    }
-
 	                    switch (i) {
 	                        case 0 -> facilityDTO.setFacilityImage1(fileName);
-	                        case 1 -> facilityDTO.setFacilityImage1(fileName);
-	                        case 2 -> facilityDTO.setFacilityImage1(fileName);
-	                        case 3 -> facilityDTO.setFacilityImage1(fileName);
+	                        case 1 -> facilityDTO.setFacilityImage2(fileName);
+	                        case 2 -> facilityDTO.setFacilityImage3(fileName);
+	                        case 3 -> facilityDTO.setFacilityImage4(fileName);
 	                    }
 	                }
 	            }
@@ -288,8 +294,8 @@ public class AdminRestController {
 
 	        if (facilityDTO.getFacilityImage1() == null) facilityDTO.setFacilityImage1(facility.getFacilityImage1());
 	        if (facilityDTO.getFacilityImage2() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage2());
-	        if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage3());
-	        if (facilityDTO.getFacilityImage4() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage4());
+	        if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage3(facility.getFacilityImage3());
+	        if (facilityDTO.getFacilityImage4() == null) facilityDTO.setFacilityImage4(facility.getFacilityImage4());
 
 
 	        facilityService.modify(facilityDTO);

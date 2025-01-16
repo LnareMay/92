@@ -135,6 +135,7 @@
     <!-- Main content -->
     <section class="content">
    <form id="facilityEdit" action="/admin/modify" method="post" enctype="multipart/form-data">
+   <input type="hidden" name="facilityCode" th:value="${facility.facilityCode}" />
       <div class="row">
         <div class="col-md-6">
           <div class="card card-primary">
@@ -165,7 +166,7 @@
            
               <div class="form-group">
                 <label for="inputDescription">Facility Description</label>
-                <textarea id="facilityDescription" name="facilityDescription" class="form-control" rows="4"></textarea>
+                <textarea id="facilityDescription" name="facilityDescription" th:text="${facility.facilityDescription}" class="form-control" rows="4"></textarea>
               </div>
                 
               <div class="form-group">
@@ -243,28 +244,28 @@
                
                <tbody id="fileList">
                
-				<tr th:if="${facility.facilityImage1 != null}">
+				 <tr th:if="${facility.facilityImage1 != null}">
 				    <td th:text="${facility.facilityImage1}"></td>
 				    <td class="text-right">
-				        <button type="button" class="btn btn-danger btn-sm remove-file" th:data-file="${facility.facilityImage1}">Remove</button>
+				       <button type="button" class="btn btn-danger btn-sm remove-file" data-column="facilityImage1">Remove</button>
 				    </td>
 				</tr>
 				<tr th:if="${facility.facilityImage2 != null}">
 				    <td th:text="${facility.facilityImage2}"></td>
 				    <td class="text-right">
-				        <button type="button" class="btn btn-danger btn-sm remove-file" th:data-file="${facility.facilityImage2}">Remove</button>
+				        <button type="button" class="btn btn-danger btn-sm remove-file" data-column="facilityImage2">Remove</button>
 				    </td>
 				</tr>
 				<tr th:if="${facility.facilityImage3 != null}">
 				    <td th:text="${facility.facilityImage3}"></td>
 				    <td class="text-right">
-				        <button type="button" class="btn btn-danger btn-sm remove-file" th:data-file="${facility.facilityImage3}">Remove</button>
+				         <button type="button" class="btn btn-danger btn-sm remove-file" data-column="facilityImage3">Remove</button>
 				    </td>
 				</tr>
 				<tr th:if="${facility.facilityImage4 != null}">
 				    <td th:text="${facility.facilityImage4}"></td>
 				    <td class="text-right">
-				        <button type="button" class="btn btn-danger btn-sm remove-file" th:data-file="${facility.facilityImage4}">Remove</button>
+				         <button type="button" class="btn btn-danger btn-sm remove-file" data-column="facilityImage4">Remove</button>
 				    </td>
 				</tr>  
                </tbody> 
@@ -322,7 +323,7 @@
       
       <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <a href="/admin/main" class="btn btn-secondary">Cancel</a>
-        <input type="submit" value="Create new Facility" class="btn btn-success" style="margin-left: auto;">
+        <input type="submit" value="Facility EDIT" class="btn btn-success" style="margin-left: auto;">
       </div>
       
    </form>
@@ -351,7 +352,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/admin.js"></script>
 
-<script src="/js/file_upload.js"></script>
+<script src="/js/file_edit.js"></script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

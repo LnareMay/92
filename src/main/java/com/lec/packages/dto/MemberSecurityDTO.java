@@ -1,5 +1,6 @@
 package com.lec.packages.dto;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.exercise_code_table;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,6 +40,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private String memAddressDetail;
     private String memZipcode;
     private String memAddressSet;
+    private BigDecimal memMoney;
     private boolean memIsmanager;
     private boolean deleteFlag;
     private boolean memSocial;
@@ -49,7 +52,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
                              exercise_code_table memExercise, exercise_code_table memClub, String memPicture,
                              String memIntroduction, boolean memGender, String memTell, String memEmail,
                              String memBirthday, String memAddress, String memAddressDetail, String memZipcode,
-                             String memAddressSet, boolean memIsmanager, boolean deleteFlag, boolean memSocial,
+                             String memAddressSet, BigDecimal memMoney, boolean memIsmanager, boolean deleteFlag, boolean memSocial,
                              Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
 
@@ -69,6 +72,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.memAddressDetail = memAddressDetail;
         this.memZipcode = memZipcode;
         this.memAddressSet = memAddressSet;
+        this.memMoney = memMoney;
         this.memIsmanager = memIsmanager;
         this.deleteFlag = deleteFlag;
         this.memSocial = memSocial;

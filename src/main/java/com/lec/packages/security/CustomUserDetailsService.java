@@ -102,6 +102,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 					  , member.getMemAddressDetail()
 					  , member.getMemZipcode()
 					  , member.getMemAddressSet()
+					  , member.getMemMoney()
 					  , member.isMemIsmanager()
 					  , member.isMemSocial()
 					  , member.isDeleteFlag()

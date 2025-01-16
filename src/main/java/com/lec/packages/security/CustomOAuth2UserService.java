@@ -151,6 +151,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 member.getMemAddressDetail(),
                 member.getMemZipcode(),
                 member.getMemAddressSet(),
+                member.getMemMoney(),
                 member.isMemIsmanager(),
                 member.isMemSocial(),
                 member.isDeleteFlag(),

@@ -28,6 +28,7 @@ import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.repository.FacilityRepository;
+import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.util.RandomStringGenerator;
 
@@ -44,6 +45,8 @@ public class FacilityServiceImpl implements FacilityService{
 	private final ModelMapper modelMapper;
 
 	private final FacilityRepository facilityRepository;
+
+	private final MemberRepository memberRepository;
 	
 	private final ReservationRepository reservationRepository;
 	
@@ -192,7 +195,7 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 	@Override
-	public void bookByMember(ReservationDTO reservationDTO) {
+	public void bookByMember(ReservationDTO reservationDTO, BigDecimal memMoney) {
 	    // Step 1: 예약 정보를 검증
 	    if (reservationDTO.getReservationStartTime().isAfter(reservationDTO.getReservationEndTime())) {
 	        throw new IllegalArgumentException("예약 시작 시간이 종료 시간보다 늦을 수 없습니다.");
@@ -223,12 +226,17 @@ public class FacilityServiceImpl implements FacilityService{
 	            .reservationDate(reservationDTO.getReservationDate())
 	            .count(reservationDTO.getCount())
 	            .price(totalPrice)
-	            .reservationProgress("결제대기") // 초기 상태 설정
+	            .reservationProgress("예약진행중") // 초기 상태 설정
 	            .deleteFlag(false) // 초기 상태 설정
 	            .build();
 
 	    // Step 5: 데이터베이스에 저장
 	    reservationRepository.save(reservation);
+	    
+	    Member member = memberRepository.findById(reservationDTO.getMemId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        member.setMemMoney(memMoney);
+        memberRepository.save(member);
 
 	    // 로그 출력 (선택 사항)
 	    log.info("시설 예약이 완료되었습니다: {}", reservation);
