@@ -37,6 +37,7 @@ import lombok.extern.log4j.Log4j2;
 public class FacilityController {
 	
     private final FacilityService facilityService;
+    private final ClubService clubService;
 	    
 	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
