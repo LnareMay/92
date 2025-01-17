@@ -21,5 +21,6 @@ public class TransferHistoryDTO {
     private BigDecimal amount;        // Amount transferred
     private LocalDateTime transferDate; // Date and time of the transfer
     private String status;            // Status of the transfer (e.g., Success, Failed)
-    private String memo;              // Memo for the transfer
+    private String memo;              // Memo for the transfe
+    private String clubCode;
 }

@@ -40,4 +40,7 @@ public class TransferHistory {
 
     @Column(name = "MEMO", columnDefinition = "TEXT")
     private String memo;
+    
+    @Column(length = 100, name = "CLUB_CODE")
+    private String clubCode;
 }

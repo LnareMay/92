@@ -58,6 +58,8 @@ public class ReservationDTO {
 
     private boolean deleteFlag;
     
+    private String clubCode;
+    
     //PRICE 포멧팅
     public String getFormattedPrice() {
         if (price == null) {
