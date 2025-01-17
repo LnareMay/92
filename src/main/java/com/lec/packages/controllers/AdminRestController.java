@@ -269,10 +269,9 @@ public class AdminRestController {
   	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
   	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
 
-  	        // 삭제된 기존 파일 처리
+  	        // 삭제된 파일 처리 (필드 값을 null로 변경)
   	        if (deletedFiles != null && !deletedFiles.isEmpty()) {
   	            for (String fileName : deletedFiles) {
-  	                // 데이터베이스에서 컬럼 값 제거
   	                if (facility.getFacilityImage1() != null && facility.getFacilityImage1().equals(fileName)) {
   	                    facility.setFacilityImage1(null);
   	                } else if (facility.getFacilityImage2() != null && facility.getFacilityImage2().equals(fileName)) {
@@ -282,26 +281,25 @@ public class AdminRestController {
   	                } else if (facility.getFacilityImage4() != null && facility.getFacilityImage4().equals(fileName)) {
   	                    facility.setFacilityImage4(null);
   	                }
-
-  	                // 파일 시스템에서 실제 파일 삭제
-  	                Path filePath = Paths.get(uploadPath, fileName);
-  	                Files.deleteIfExists(filePath);
   	            }
   	            facilityRepository.save(facility); // 변경 사항 저장
   	        }
 
   	        // 기존 파일 유지
-  	        if (existingFiles != null) {
-  	            facilityDTO.setFacilityImage1(existingFiles.size() > 0 ? existingFiles.get(0) : null);
-  	            facilityDTO.setFacilityImage2(existingFiles.size() > 1 ? existingFiles.get(1) : null);
-  	            facilityDTO.setFacilityImage3(existingFiles.size() > 2 ? existingFiles.get(2) : null);
-  	            facilityDTO.setFacilityImage4(existingFiles.size() > 3 ? existingFiles.get(3) : null);
+  	        if (existingFiles != null && !existingFiles.isEmpty()) {
+  	        		// 기존 파일이 존재할 경우만 설정
+  	                facilityDTO.setFacilityImage1(existingFiles.size() > 0 ? existingFiles.get(0) : null);
+  	                facilityDTO.setFacilityImage2(existingFiles.size() > 1 ? existingFiles.get(1) : null);
+  	                facilityDTO.setFacilityImage3(existingFiles.size() > 2 ? existingFiles.get(2) : null);
+  	                facilityDTO.setFacilityImage4(existingFiles.size() > 3 ? existingFiles.get(3) : null);
+  	            
   	        }
 
   	        // 새로 업로드된 파일 처리
   	        if (files != null && !files.isEmpty()) {
   	            for (int i = 0; i < files.size(); i++) {
   	                MultipartFile file = files.get(i);
+  	                
   	                if (!file.isEmpty()) {
   	                    String originalFileName = file.getOriginalFilename();
   	                    String uuid = UUID.randomUUID().toString();
@@ -331,6 +329,8 @@ public class AdminRestController {
   	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
   	    }
   	}
+
+
 
 
 

@@ -139,7 +139,6 @@ public class FacilityServiceImpl implements FacilityService{
 		Optional<Facility> result = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
 		Facility facility = result.orElseThrow();
 		 
-		// 기존 이미지 유지
 	    if (facilityDTO.getFacilityImage1() == null) facilityDTO.setFacilityImage1(facility.getFacilityImage1());
 	    if (facilityDTO.getFacilityImage2() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage2());
 	    if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage3(facility.getFacilityImage3());

@@ -13,17 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // **1. 초기화: 이미 렌더링된 기존 파일 목록 가져오기**
     document.querySelectorAll('#fileList tr').forEach(row => {
         const fileName = row.querySelector('td').innerText.trim();
-        if (fileName) {
+		const removeButton = row.querySelector('.remove-file');
+		
+        if (fileName && removeButton) {
+			removeButton.setAttribute('data-file',fileName);
             existingFiles.push(fileName);
-        }
+		}
+	
     });
 
     // **2. 파일 추가 버튼 클릭 이벤트**
     addFilesBtn.addEventListener('click', () => {
-		if (uploadedFiles.length >= 4) {
-		     alert("최대 4개의 파일만 업로드할 수 있습니다.");
-		     return;
-		}
+        if (uploadedFiles.length >= 4) {
+            alert("최대 4개의 파일만 업로드할 수 있습니다.");
+            return;
+        }
         fileInput.click();
     });
 
@@ -35,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!uploadedFiles.some(uploadedFile => uploadedFile.name === file.name)) { // 중복 방지
                 uploadedFiles.push(file);
 
-				const fileList = document.getElementById('fileList');
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${file.name}</td>
@@ -50,48 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         attachRemoveHandlers(); // 삭제 버튼 이벤트 핸들러 추가
-		
-		
     });
 
     // **4. 삭제 버튼 이벤트 핸들러 추가**
     function attachRemoveHandlers() {
         document.querySelectorAll('.remove-file').forEach(button => {
-            button.addEventListener('click', async (e) => {
+            button.addEventListener('click', (e) => {
+				
                 const fileName = e.target.getAttribute('data-file'); // 파일 이름 가져오기
                 const columnName = e.target.getAttribute('data-column'); // 삭제할 컬럼 이름
 
                 if (columnName) {
-                    // **기존 파일 삭제 처리**
-                    try {
-                        const response = await fetch(`/admin/remove/${facilityCode}/${columnName}`, {
-                            method: 'DELETE',
-                        });
-
-                        if (response.ok) {
-                            const result = await response.json();
-                            if (result.result) {
-                                alert(`${columnName}이(가) 성공적으로 삭제되었습니다.`);
-                                e.target.closest('tr').remove(); // UI에서 해당 행 제거
-                                deletedFiles.push(fileName); // 삭제된 기존 파일 추적
-                                existingFiles = existingFiles.filter(file => file !== fileName); // 기존 배열에서 제거
-                            } else {
-                                alert(`${columnName} 삭제에 실패했습니다.`);
-                            }
-                        } else {
-                            alert("삭제 요청 중 오류가 발생했습니다.");
-                        }
-                    } catch (error) {
-                        console.error("Error deleting file:", error);
-                        alert("서버와 통신 중 오류가 발생했습니다.");
-                    }
+                    // 기존 파일 삭제 처리
+					if(!deletedFiles.includes(fileName)){
+	                    deletedFiles.push(fileName); // 삭제된 기존 파일 추적
+	                    existingFiles = existingFiles.filter(file => file !== fileName); // 기존 배열에서 제거		
+	                    console.log(`Deleted file added to deletedFiles: ${fileName}`);
+					}
                 } else {
-                    // **새로 추가한 파일 삭제 처리**
+                    // 새로 추가한 파일 삭제 처리
                     uploadedFiles = uploadedFiles.filter(file => file.name !== fileName); // 업로드 리스트에서 제거
                     removedNewFiles.push(fileName); // 삭제된 새 파일 추적
-                    e.target.closest('tr').remove(); // UI에서 해당 행 제거
-
+                    console.log(`Deleted new file: ${fileName}`);
                 }
+
+                e.target.closest('tr').remove(); // UI에서 해당 행 제거
             });
         });
     }
@@ -99,12 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	form.addEventListener('submit', async (e) => {
 	    e.preventDefault();
 	    console.log("Form submission started");
-
-	    // 최소 하나의 파일 확인
-	    if (uploadedFiles.length === 0 && existingFiles.length === 0) {
-	        alert("최소 한 개의 파일은 업로드해야 합니다.");
-	        return;
-	    }
 
 	    const formData = new FormData(form);
 
@@ -141,8 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	    console.log("Form submission ended");
 	});
-
-
 
     attachRemoveHandlers();
 });
