@@ -33,16 +33,24 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 	    BooleanBuilder builder = new BooleanBuilder();
 	    
 	    builder.and(club.deleteFlag.eq(false)); // deleteflag가 0인것만 조회
-
+	    
 	    // 주소 필터 추가
+	    String region = "";
 	    if (types != null && Arrays.asList(types).contains("address")) {
 	        String addressKeyword = Arrays.stream(keywords)
 	                                      .filter(keyword -> keyword != null && !keyword.isBlank())
 	                                      .findFirst()
 	                                      .orElse("");
 	        if (!addressKeyword.isEmpty()) {
-	            builder.and(club.clubAddress.containsIgnoreCase(addressKeyword));
+	            String[] addressParts = addressKeyword.split(" ");
+	            if (addressParts.length >= 2) {
+	            	region = addressParts[0] + " " + addressParts[1]; // "서울특별시 서초구"
+	            }
 	        }
+	    }
+	    
+	    if (!region.isEmpty()) {
+	        builder.and(club.clubAddress.startsWithIgnoreCase(region));
 	    }
 
 	    // 테마 필터 추가
@@ -60,7 +68,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 	    List<Club> clubs = query.fetch();
 	    long total = query.fetchCount();
 	    
-	    log.info("========Clubtheme Query: {}", query.toString());
+//	    log.info("========Clubtheme Query: {}", query.toString());
 
 	    return new PageImpl<>(clubs, pageable, total);
 	}
@@ -74,7 +82,8 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 		JPQLQuery<Club> query = from(club);
 
 		query.innerJoin(club_Member_List).on(club.clubCode.eq(club_Member_List.clubCode));
-		query.where(club_Member_List.memId.eq(memId), club.deleteFlag.isNull().or(club.deleteFlag.isFalse()));
+		query.where(club_Member_List.memId.eq(memId), club_Member_List.deleteFlag.isNull().or(club_Member_List.deleteFlag.isFalse()),
+				club.deleteFlag.isNull().or(club.deleteFlag.isFalse()));
 		
 
 		List<Club> clubList = query.fetch();

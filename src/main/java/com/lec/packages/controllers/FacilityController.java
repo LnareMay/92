@@ -42,26 +42,49 @@ import lombok.extern.log4j.Log4j2;
 public class FacilityController {
 	
     private final FacilityService facilityService;
-	private final ClubService clubService;
-	 
+    private final ClubService clubService;
+	    
 	    @GetMapping("/main")
-	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO , Model model) {
-	    	 
-	    	 String requestURI = request.getRequestURI();  	 
- 
-			 PageResponseDTO<FacilityDTO> responseDTO = facilityService.list(pageRequestDTO);
-			
-			 log.info("............................."+responseDTO);
-			 
-			
-			 model.addAttribute("currentURI", requestURI); // requestURI를 모델에 추가
-			 model.addAttribute("facilities",responseDTO.getDtoList());	
-			 model.addAttribute("totalPages", responseDTO.getTotal());  //총페이지
-			 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
-			 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
-			 
-			 return "facility/facility_main";		 
-		 }
+	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
+	    		, Model model
+	    		, @RequestParam(value = "facilityAddress", required = false, defaultValue = "ALL") String facilityAddress
+                , @RequestParam(value = "exerciseCode", required = false, defaultValue = "ALL") String exerciseCode) {
+	    	
+	    	String currentURI = request.getRequestURI();  
+	    	
+	    	if ("ALL".equals(facilityAddress)) {
+	    		facilityAddress = "";	  
+	    	} if ("ALL".equals(exerciseCode)) {
+	    		exerciseCode = "";	  
+	    	}
+	    	
+	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode);
+	
+	    	log.info("............................."+responseDTO);
+	    		    	
+	    	 model.addAttribute("currentURI", currentURI); // requestURI를 모델에 추가
+	    	 model.addAttribute("responseDTO",responseDTO);	
+			 model.addAttribute("facilityAddress", facilityAddress); 
+			 model.addAttribute("exerciseCode", exerciseCode); 
+	    	
+	    	return "facility/facility_main";		 
+	    }
+	    
+	    // 시설 검색조회
+	    @PostMapping("/main/search")
+	    public String searchFacility(PageRequestDTO pageRequestDTO,
+	                                 @RequestParam(value = "facilityAddress", required = false) String facilityAddress,
+	                                 @RequestParam(value = "exerciseCode", required = false) String exerciseCode,
+	                                 RedirectAttributes redirectAttributes) {
+
+	        redirectAttributes.addAttribute("facilityAddress", facilityAddress);
+	        redirectAttributes.addAttribute("exerciseCode", exerciseCode);
+	        
+	        log.info("facilityAddress: {}", facilityAddress);
+	        log.info("exerciseCode: {}", exerciseCode);
+
+	        return "redirect:/facility/main";
+	    }
 	    
 	    @GetMapping("/detail/{facilityCode}")
 	    public String FaciltyDetailPage( @PathVariable("facilityCode") String facilityCode

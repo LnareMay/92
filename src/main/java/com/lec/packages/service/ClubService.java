@@ -22,11 +22,11 @@ import jakarta.validation.Valid;
 public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
-	void updateImages(String clubCode, ClubDTO clubDTO);
+//	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
-	void modify(ClubDTO clubDTO);
+	void modify(ClubDTO clubDTO);	
 	void remove(String clubCode);
 	
 	void join(String memId, String clubCode);
@@ -103,7 +103,8 @@ public interface ClubService {
     String removeClubBoard(ClubBoardDTO clubBoardDTO);
 	
     List<ClubDTO> clubListWithMemID(String username);
-	
+
     boolean checkClubOwner(String username);
     List<ClubDTO> ownerClubListWithMemId(String username);
+
 }

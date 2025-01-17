@@ -81,7 +81,10 @@
 				<div class="club-image-upload">
 					<label for="clubImage1"> <img id="photo-upload-1" src="/img/plus_icon.png" alt="대표이미지1"
 							class="default-icon">
-					</label> <input id="clubImage1" name="files" type="file" accept="image/*"
+					</label>
+					<button type="button" class="delete-btn" onclick="removeImage('clubImage1', 'photo-upload-1')">X</button>
+					 
+					 <input id="clubImage1" name="files" type="file" accept="image/*"
 						onchange="previewImage(event, 'photo-upload-1')" style="display: none;" />
 				</div>
 				<div class="club-image-upload">
@@ -228,6 +231,17 @@
 			.catch(error => console.error("업로드 중 오류 발생:", error));
 	}
 
+	// 이미지 제거
+	function removeImage(inputId, imgId) {
+	    const fileInput = document.getElementById(inputId);
+	    const image = document.getElementById(imgId);
+
+	    // UI 초기화
+	    image.src = "/img/plus_icon.png"; // 기본 이미지로 변경
+	    image.classList.add("default-icon");
+	    fileInput.value = ""; // 파일 입력 초기화
+	}
+	
 	// 지역선택
 	/*function selectAddress() {
 		const citySelect = document.getElementById("city");

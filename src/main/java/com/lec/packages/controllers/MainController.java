@@ -59,10 +59,6 @@ public class MainController {
         if (member != null) {
             model.addAttribute("member", member); // Member 객체를 모델에 추가
 
-            /* address가 "ALL"이고 사용자의 주소가 설정된 경우, 사용자의 주소를 기본값으로 사용
-            if ("ALL".equalsIgnoreCase(address) && member.getMemAddressSet() != null) {
-                address = member.getMemAddressSet();
-            } */
             if ("ALL".equalsIgnoreCase(address)) {
                 if (member.getMemAddressSet() != null && !member.getMemAddressSet().isEmpty()) {
                     address = member.getMemAddressSet();

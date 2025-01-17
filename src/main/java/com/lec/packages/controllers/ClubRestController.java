@@ -156,7 +156,8 @@ public class ClubRestController {
 	            }
 	        } else {
 	            log.warn("파일이 존재하지 않습니다: {}", originalFileName);
-	        }
+	        }	       
+	        
 	    } catch (IOException e) {
 	        log.error("파일 삭제 중 오류 발생: {}", e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -279,8 +280,8 @@ public class ClubRestController {
 
 	    try {
 	        Optional<Club> optionalClub = clubRepository.findById(clubDTO.getClubCode());
-	        Club club = optionalClub.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
-
+	        Club club = optionalClub.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));        
+	        
 	        if (files != null && !files.isEmpty()) {
 	            for (int i = 0; i < files.size(); i++) {
 	                MultipartFile file = files.get(i);
@@ -327,6 +328,8 @@ public class ClubRestController {
 	    }
 	}
 
+
+	
 	@GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}")
 	public ClubBoardReplyDTO getReplyDTO(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo) {
 		ClubBoardReplyDTO replyDTO = clubService.readReply(clubCode, boardNo, replyNo);
