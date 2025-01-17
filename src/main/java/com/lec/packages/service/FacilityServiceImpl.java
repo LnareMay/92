@@ -154,7 +154,7 @@ public class FacilityServiceImpl implements FacilityService{
 		return PageResponseDTO.<FacilityDTO>withAll()
 				.pageRequestDTO(pageRequestDTO)
 				.dtoList(dtoList)
-				.total(result.getTotalPages())
+				.total((int)result.getTotalElements())
 				.build();
 	}
 

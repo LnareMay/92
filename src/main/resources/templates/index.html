@@ -263,8 +263,8 @@
 					<th:block
 						th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
 						<li class="page-item"
-							th:classappend="${responseDTO.page == i} ? 'active'"><a
-							class="page-link"
+							th:classappend="${responseDTO.page == i} ? 'active'">
+							<a class="page-link"
 							th:href="@{'/'(theme=${theme}, address=${address}, page=${i})}">
 								[[${i}]] </a></li>
 					</th:block>

@@ -171,7 +171,7 @@
 		<div th:if="${facilities != null and facilities.isEmpty()}">등록된 시설이 없습니다.</div>
 		<div class="container mt-4">
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-				<div class="col" th:each="facility : ${facilities}">
+				<div class="col" th:each="facility : ${responseDTO.dtoList}">
 					 <div class="card h-100"  th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${facility.facilityCode})}'|">
 						<div class="img_wrap">
 							<img class="card-img-top" th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"
@@ -203,27 +203,32 @@
 					</div>
 				</div>
 			</div>
-			<nav aria-label="Page navigation" class="mt-3">
+			<nav th:if="${!responseDTO.dtoList.isEmpty()}" 
+				aria-label="Page navigation" class="mt-3">
 			    <ul class="pagination justify-content-center">
 			        <!-- 이전 페이지 버튼 -->
-			        <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
+			        <li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'">
 			            <a class="page-link" aria-label="Previous"
-						 th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${pageNumber - 1}&size=${pageSize}|}">
+ 						 th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page-1}|}">
 			                «
 			            </a>
+			           <!-- th:href="@{'/facility/main'(facilityAddress=${facilityAddress}, exerciseCode=${exerciseCode}, page=${responseDTO.page - 1})}"> -->
 			        </li>
 			
 			        <!-- 페이지 번호 -->
-			        <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
-			            th:classappend="${page == pageNumber} ? 'active'">
-			            <a class="page-link" th:text="${page}"
-						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${page}&size=${pageSize}|}"></a>
-			        </li>
+			        <th:block 
+			        	th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+				        <li class="page-item" 
+				            th:classappend="${responseDTO.page == i} ? 'active'">
+				            <a class="page-link" 
+							th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${i}|}">[[${i}]]</a>
+				        </li>
+				    </th:block>
 			
 			        <!-- 다음 페이지 버튼 -->
-			        <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
+			        <li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
 			            <a class="page-link" aria-label="Next"
-						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${pageNumber + 1}&size=${pageSize}|}">
+						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page + 1}|}">
 			                »
 			            </a>
 			        </li>

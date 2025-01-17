@@ -60,10 +60,7 @@ public class FacilityController {
 	    	log.info("............................."+responseDTO);
 	    		    	
 	    	 model.addAttribute("currentURI", currentURI); // requestURI를 모델에 추가
-	    	 model.addAttribute("facilities",responseDTO.getDtoList());	
-			 model.addAttribute("totalPages", responseDTO.getTotal());  //총페이지
-			 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
-			 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
+	    	 model.addAttribute("responseDTO",responseDTO);	
 			 model.addAttribute("facilityAddress", facilityAddress); 
 			 model.addAttribute("exerciseCode", exerciseCode); 
 	    	
@@ -79,8 +76,6 @@ public class FacilityController {
 
 	        redirectAttributes.addAttribute("facilityAddress", facilityAddress);
 	        redirectAttributes.addAttribute("exerciseCode", exerciseCode);
-	        redirectAttributes.addAttribute("pageNumber", pageRequestDTO.getPage());
-	        redirectAttributes.addAttribute("pageSize", pageRequestDTO.getSize());
 	        
 	        log.info("facilityAddress: {}", facilityAddress);
 	        log.info("exerciseCode: {}", exerciseCode);
