@@ -4,6 +4,8 @@ package com.lec.packages.controllers;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -103,6 +106,45 @@ public class FacilityController {
 	        return "redirect:" + redirectUrl;
 		    
 		}
+	    
+	    // 이니시스 결제
+	    @PostMapping("/pay-by-inisis")
+	    @ResponseBody
+	    public ResponseEntity<String> payByInisis(
+	            @RequestParam("imp_uid") String impUid,
+	            @RequestParam("merchant_uid") String merchantUid,
+	            @RequestParam("amount") BigDecimal amount,
+	            HttpServletRequest request,
+	            RedirectAttributes redirectAttributes) {
+
+	        log.info("결제 요청: imp_uid={}, merchant_uid={}, amount={}", impUid, merchantUid, amount);
+
+	        try {
+	            // 1. 아임포트 결제 검증 로직 추가 (필수)
+	            boolean isVerified = verifyPaymentWithIamport(impUid, amount);
+	            if (!isVerified) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                        .body("결제 검증 실패: 결제 정보가 일치하지 않습니다.");
+	            }
+
+	           
+
+	            // 3. 성공 응답 반환
+	            return ResponseEntity.ok("결제 및 예약 성공");
+	        } catch (Exception e) {
+	            log.error("결제 처리 실패: {}", e.getMessage(), e);
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body("서버 내부 오류로 인해 결제 처리가 실패했습니다.");
+	        }
+	    }
+
+	    // 아임포트 REST API를 사용하여 결제를 검증
+	    private boolean verifyPaymentWithIamport(String impUid, BigDecimal amount) {
+	        // 아임포트 REST API로 결제 정보를 가져와서 금액 확인
+	        // 실제 검증 로직을 작성 (아임포트 인증 키 사용)
+	        return true; // 임시로 항상 검증 성공 처리
+	    }
+
 
 }
 	
