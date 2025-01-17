@@ -167,6 +167,9 @@ public class MemberServiceImpl implements MemberService{
 	private String generateChargeCode() {
 	    return "" + System.currentTimeMillis();
 	}
+	
+	
+	
 
 //	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {
 //		// 업로드된 파일명을 MemberJoinDTO에 설정
