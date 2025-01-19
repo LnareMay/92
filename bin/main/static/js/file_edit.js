@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addFilesBtn = document.getElementById('addFilesBtn');
     const fileList = document.getElementById('fileList');
     const form = document.getElementById('facilityEdit');
-    const facilityCode = document.querySelector('input[name="facilityCode"]').value; // 시설 코드 가져오기
     const MAX_FILES = 4; // 최대 업로드 가능한 파일 개수
 
     let uploadedFiles = []; // 새로 추가된 파일 목록
@@ -67,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = Array.from(fileInput.files); // 사용자가 선택한 파일 배열로 변환
 
         if (uploadedFiles.length + existingFiles.length + files.length > MAX_FILES) { 
-            // 최대 개수를 초과하는 경우 경고 메시지 표시 및 초기화
             alert(`최대 ${MAX_FILES}개의 파일만 업로드할 수 있습니다.`);
             fileInput.value = ""; // 입력 초기화
             return;
@@ -75,40 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         files.forEach(file => {
             if (!uploadedFiles.some(uploadedFile => uploadedFile.name === file.name)) { 
-                // 중복 방지: 이미 추가된 파일인지 확인
                 uploadedFiles.push(file); // 새로 추가된 파일 목록에 추가
             } else {
                 alert(`${file.name}은(는) 이미 추가된 파일입니다.`);
             }
         });
 
-        updateFileList(); // 리스트 업데이트 (기존 및 새로 추가된 파일 모두 포함)
+        updateFileList(); 
     });
 
     // **5. 삭제 버튼 이벤트 핸들러 추가**
     function attachRemoveHandlers() {
         document.querySelectorAll('.remove-file').forEach(button => {
             button.addEventListener('click', (e) => {
-                const fileName = e.target.getAttribute('data-file'); // 삭제할 파일 이름 가져오기
-                const columnName = e.target.getAttribute('data-column'); // 기존 파일 여부 확인
+                const fileName = e.target.getAttribute('data-file'); 
+                const columnName = e.target.getAttribute('data-column'); 
 
                 if (columnName) { 
-                    // 기존 파일 삭제 처리
                     if (!deletedFiles.includes(fileName)) { 
-                        deletedFiles.push(fileName); // 삭제된 기존 파일 추적
-                        existingFiles = existingFiles.filter(file => file !== fileName); // 기존 배열에서 제거
+                        deletedFiles.push(fileName); 
+                        existingFiles = existingFiles.filter(file => file !== fileName); 
                     }
                 } else { 
-                    // 새로 추가한 파일 삭제 처리
-                    uploadedFiles = uploadedFiles.filter(file => file.name !== fileName); // 업로드 리스트에서 제거
-                    removedNewFiles.push(fileName); // 삭제된 새로 추가한 파일 추적
+                    uploadedFiles = uploadedFiles.filter(file => file.name !== fileName); 
+                    removedNewFiles.push(fileName);
                 }
 
-                updateFileList(); // UI 업데이트 (리스트 갱신)
+                updateFileList(); 
             });
         });
     }
 
+    // **6. 폼 제출 이벤트 처리**
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -116,45 +112,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
 
-        // 기존 파일 추가
         existingFiles.forEach((fileName) => {
             formData.append('existingFiles[]', fileName);
             console.log(`Added to FormData (existing): ${fileName}`);
         });
 
-        // 새로 추가된 파일 추가
         uploadedFiles.forEach((file) => {
             formData.append('newFiles[]', file);
             console.log(`Added to FormData (new): ${file.name}`);
         });
 
-        // 삭제된 기존 파일 정보 전송
         deletedFiles.forEach((fileName) => {
             formData.append('deletedFiles[]', fileName);
             console.log(`Added to FormData (deleted): ${fileName}`);
         });
 
-        // 삭제된 새로 추가한 파일 정보도 전송 (서버에서 무시하도록 처리)
         removedNewFiles.forEach(fileName => {
             formData.append('removedNewFiles[]', fileName);
             console.log(`Added to removedNewFiles(new): ${fileName}`);
         });
 
-        try {
-            const response = await fetch(form.action, { method: 'POST', body: formData });
+		try {
+		        const response = await fetch(form.action, {
+		            method: 'POST',
+		            body: formData
+		        });
 
-            if (response.ok) {
-                alert("시설 정보가 성공적으로 수정되었습니다.");
-            } else {
-                alert("시설 정보 수정 중 오류가 발생했습니다.");
-            }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("서버와 통신 중 오류가 발생했습니다.");
-        }
+		        // JSON 응답 처리
+		        const data = await response.json();
+		        
+		        if (data.redirectUrl) {
+		            // 리다이렉션 URL이 있으면 해당 페이지로 이동
+					alert("시설 정보가 성공적으로 수정되었습니다.");
+		            window.location.href = data.redirectUrl;
+		        } else if (response.ok) {
+		            alert("시설 정보가 성공적으로 수정되었습니다.");
+		        } else {
+		            alert("시설 정보 수정 중 오류가 발생했습니다.");
+		        }
+		    } catch (error) {
+		        console.error("Error submitting form:", error);
+		        alert("서버와 통신 중 오류가 발생했습니다.");
+		    }
 
-        console.log("Form submission ended");
+		console.log("Form submission ended");
     });
 
-    updateFileList(); // 초기 리스트 렌더링 (기존 및 새로 추가된 데이터 포함)
+    updateFileList(); 
 });
