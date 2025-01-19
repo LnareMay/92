@@ -191,6 +191,7 @@ public class FacilityServiceImpl implements FacilityService{
 							   ,facilityDTO.getPrice()
 							   ,facilityDTO.getFacilityStartTime()
 							   ,facilityDTO.getFacilityEndTime()
+							   ,facilityDTO.getExerciseCode()
 							   ,facilityDTO.getFacilityImage1()
 							   ,facilityDTO.getFacilityImage2()
 							   ,facilityDTO.getFacilityImage3()
