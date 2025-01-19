@@ -1,17 +1,22 @@
 package com.lec.packages.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.lec.packages.domain.ChargeHistory;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
 import com.lec.packages.domain.exercise_code_table;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.repository.ChargeHistoryRepository;
 import com.lec.packages.repository.ExerciseRepository;
 import com.lec.packages.repository.MemberRepository;
 
@@ -27,6 +32,7 @@ public class MemberServiceImpl implements MemberService{
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final ExerciseRepository exerciseRepository;
+	private final ChargeHistoryRepository chargeHistoryRepository;
 //	private final Member member;
 	
 	@Override
@@ -136,6 +142,32 @@ public class MemberServiceImpl implements MemberService{
         memberRepository.save(member);
     }
 
+	// 금액 충전
+	@Override
+	public void chargePoint(String id,BigDecimal amount,BigDecimal plusPoint){
+		Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        member.setMemMoney(amount);
+        memberRepository.save(member);
+        
+        // 충전 내역 저장
+        ChargeHistory chargeHistory = ChargeHistory.builder()
+                .chargeCode(generateChargeCode()) // 고유 코드 생성 메서드
+                .memId(id)
+                .amount(plusPoint)
+                .chargeDate(LocalDateTime.now())
+                .paymentMethod("CARD") // 결제 방법 (예: 카드 결제)
+                .status("충전성공") // 상태
+                .build();
+        
+        chargeHistoryRepository.save(chargeHistory);
+    }
+	
+	// 고유 코드 생성 (UUID 사용 예제)
+	private String generateChargeCode() {
+	    return "" + System.currentTimeMillis();
+	}
+	
 	
 	
 

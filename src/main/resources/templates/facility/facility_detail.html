@@ -24,10 +24,15 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 	crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <!--flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript"
+	src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 
 <style>
 /* 폼 스타일 */
@@ -94,34 +99,38 @@
 		<div id="carouselExampleIndicators" class="carousel slide"
 			data-bs-ride="carousel">
 			<div class="carousel-indicators">
-			    <button type="button" data-bs-target="#carouselExampleIndicators"
-			        data-bs-slide-to="0" class="active" aria-current="true"
-			        aria-label="Slide 1" th:if="${facility.facilityImage1 != null}"></button>
-			    <button type="button" data-bs-target="#carouselExampleIndicators"
-			        data-bs-slide-to="1" aria-label="Slide 2"
-			        th:if="${facility.facilityImage2 != null}"></button>
-			    <button type="button" data-bs-target="#carouselExampleIndicators"
-			        data-bs-slide-to="2" aria-label="Slide 3"
-			        th:if="${facility.facilityImage3 != null}"></button>
-			    <button type="button" data-bs-target="#carouselExampleIndicators"
-			        data-bs-slide-to="3" aria-label="Slide 4"
-			        th:if="${facility.facilityImage4 != null}"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="0" class="active" aria-current="true"
+					aria-label="Slide 1" th:if="${facility.facilityImage1 != null}"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="1" aria-label="Slide 2"
+					th:if="${facility.facilityImage2 != null}"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="2" aria-label="Slide 3"
+					th:if="${facility.facilityImage3 != null}"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators"
+					data-bs-slide-to="3" aria-label="Slide 4"
+					th:if="${facility.facilityImage4 != null}"></button>
 			</div>
 
 			<div class="carousel-inner">
-				<div class="carousel-item active" data-bs-interval="5000" th:if="${facility.facilityImage1 != null}">
+				<div class="carousel-item active" data-bs-interval="5000"
+					th:if="${facility.facilityImage1 != null}">
 					<img th:src="|/view/${facility.facilityImage1}|"
 						id="facilityImage1" alt="Product Image">
 				</div>
-				<div class="carousel-item" data-bs-interval="5000" th:if="${facility.facilityImage2 != null}">
+				<div class="carousel-item" data-bs-interval="5000"
+					th:if="${facility.facilityImage2 != null}">
 					<img th:src="|/view/${facility.facilityImage2}|"
 						id="facilityImage2" alt="Product Image">
 				</div>
-				<div class="carousel-item" data-bs-interval="5000" th:if="${facility.facilityImage3 != null}">
+				<div class="carousel-item" data-bs-interval="5000"
+					th:if="${facility.facilityImage3 != null}">
 					<img th:src="|/view/${facility.facilityImage3}|"
 						id="facilityImage3" alt="Product Image">
 				</div>
-				<div class="carousel-item" data-bs-interval="5000" th:if="${facility.facilityImage4 != null}">
+				<div class="carousel-item" data-bs-interval="5000"
+					th:if="${facility.facilityImage4 != null}">
 					<img th:src="|/view/${facility.facilityImage4}|"
 						id="facilityImage4" alt="Product Image">
 				</div>
@@ -149,10 +158,13 @@
 				</div>
 				<br />
 
-				<div class="form-group">
-					<label for="memId">예약자ID: </label> <span id="memId" name="memId"
-						th:text="${userId}"></span> <input type="hidden" id="memId"
-						name="memId" th:value="${userId}">
+				<div class="form-group resInfo">
+					<label for="memId" class="changeToClub">예약자ID: </label> <span id="memId" name="memId"
+						th:text="${userId}"></span> <input type="text" id="memId"
+						name="memId" class="blind" th:value="${userId}"> <input
+						type="text" id="senderId" class="blind" name="senderId"
+						th:value="${userId}"> <input type="text" class="blind"
+						id="receiverId" name="receiverId" th:value="${facility.memId}">
 
 				</div>
 
@@ -163,21 +175,22 @@
 				</div>
 
 				<div class="form-group">
+					<input type="hidden" name="isOnlyClub" th:value="${facility.facilityIsOnlyClub}">
 					<label for="reservationTime">예약 시간</label> <select
 						id="reservationStartTime" name="reservationStartTime" type="time"
 						required></select> <select id="reservationEndTime"
 						name="reservationEndTime" type="time" required></select>
 					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 
-					<label for="count">예약 인원</label> <input type="number" id="count"
+					<label id="countLabel" for="count">예약 인원</label> <input type="number" id="count"
 						name="count" placeholder="예약 인원을 입력해주세요." required>
 				</div>
 
 
 				<div class="form-group">
 					<label for="price">시간 당 이용 요금(1hour):</label> <span
-						th:text="${facility.formattedPrice}"></span>원 <input type="hidden"
-						id="price" name="price" th:value="${facility.price}">
+						th:text="${facility.formattedPrice}"></span>원 <input type="number"
+						id="price" class="blind" name="price" th:value="${facility.price}">
 				</div>
 				<div class="form-group">
 					<label for="totalPrice">최종 결제 금액:</label> <span class="totalPrice">0</span>원
@@ -188,9 +201,10 @@
 				<div id="paymentOptions">
 					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> <span
 						id="memMoney" th:text="${#authentication.principal.memMoney}"></span>원
-						<input type="number" id="memMoney_ip" name="memMoney" class="hidden">
+					<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 					<input type="number" id="useFitpay" class="form-control me-2"
-						placeholder="사용할 금액 입력" style="width: 150px;">
+						placeholder="사용할 금액 입력"
+						style="width: 150px; display: inline-block">
 					<button class="btn btn-secondary" id="useFitpayButton"
 						type="button">사용</button>
 					<button class="btn btn-primary" id="useFullAmount" type="button">전액
@@ -200,78 +214,77 @@
 				<div>
 					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
 						충전하기</button>
-					<button class="btn btn-danger" onclick="processPayment('inicis')"
-						type="button">KG이니시스</button>
+					<button class="btn btn-danger" id="inisisBtn"
+						type="button">KG이니시스 결제하기</button>
 				</div>
+
+
+
+				<!-- 숨겨진 FITPAY 충전 영역 -->
+				<div id="fitpayOptions" style="display: none; margin-top: 20px;">
+					<h5>FITPAY 충전</h5>
+					<div class="d-flex align-items-center mb-3">
+
+						<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input
+							type="number" id="chargeAmount" class="form-control me-2"
+							placeholder="금액 입력" style="width: 150px;">
+					</div>
+
+					<div>
+						<button class="btn btn-warning charge-btn" type="button"
+							id="chargeBtn_kakao" data-pg="kakaopay">카카오페이</button>
+						<button class="btn btn-success charge-btn" type="button"
+							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button>
+						<button class="btn btn-danger charge-btn" type="button"
+							id="chargeBtn_payco" data-pg="payco">페이코</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="totalPrice">최종 결제 금액:</label> <span class="totalPrice">0</span>원
+					<input type="hidden" id="amount" name="amount" value="0">
+				</div>
+
+				<div class="form-group mt-3">
+					<label for="totalPaid">낸 금액:</label> <span id="totalPaid">0</span>원
+				</div>
+
+				<div class="form-group">
+					<label for="remainingAmount">내야할 금액:</label> <span
+						id="remainingAmount">0</span>원
+				</div>
+				<button th:if="${!facility.facilityIsOnlyClub}" type="submit" class="btn btn-primary">예약하기</button>
+	      <button th:if="${facility.facilityIsOnlyClub && isClubOwner}" type="submit" class="btn btn-primary">예약하기</button>
+				<hr />
+				<!-- 시설명  -->
+				<div class="form-group">
+					<label for="facilityName">시설명:</label> <span
+						th:text="${facility.facilityName}"></span> <input type="hidden"
+						id="facilityName" name="facilityName"
+						th:value="${facility.facilityName}"> <input type="hidden"
+						id="facilityCode" name="facilityCode"
+						th:value="${facility.facilityCode}">
+				</div>
+				<!-- 시설 주소  -->
+				<div class="form-group">
+					<label for="facilityAddress">시설 주소: </label> <span
+						th:text="${facility.facilityAddress}"></span>
+				</div>
+				<div class="form-group">
+					<label for="facilityDescription">이용안내: </label> <span
+						style="white-space: pre-line;"
+						th:text="${facility.facilityDescription}"></span>
+				</div>
+				<!-- 시설 운영 시간 -->
+				<div class="form-group">
+					<label for="facilityTime">운영 시간:</label> <span
+						th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
+				</div>
+
+
+
+
+			</form>
 		</div>
-
-
-		<!-- 숨겨진 FITPAY 충전 영역 -->
-		<div id="fitpayOptions" style="display: none; margin-top: 20px;">
-			<h5>FITPAY 충전</h5>
-			<div class="d-flex align-items-center mb-3">
-
-				<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input
-					type="number" id="chargeAmount" class="form-control me-2"
-					placeholder="금액 입력" style="width: 150px;">
-				<button class="btn btn-primary" onclick="chargeFitpay()"
-					type="button">충전하기</button>
-			</div>
-
-			<div>
-				<button class="btn btn-success
-							me-2"
-					onclick="selectPayment('naverPay')" type="button">네이버페이</button>
-				<button class="btn btn-warning" onclick="selectPayment('kakaoPay')"
-					type="button">카카오페이</button>
-				<button class="btn btn-danger" onclick="selectPayment('payco')"
-					type="button">페이코</button>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="totalPrice">최종 결제 금액:</label> <span class="totalPrice">0</span>원
-		</div>
-
-		<div class="form-group mt-3">
-			<label for="totalPaid">낸 금액:</label> <span id="totalPaid">0</span>원
-		</div>
-
-		<div class="form-group">
-			<label for="remainingAmount">내야할 금액:</label> <span
-				id="remainingAmount">0</span>원
-		</div>
-		<button type="submit" class="btn btn-primary">예약하기</button>
-		<hr />
-		<!-- 시설명  -->
-		<div class="form-group">
-			<label for="facilityName">시설명:</label> <span
-				th:text="${facility.facilityName}"></span> <input type="hidden"
-				id="facilityName" name="facilityName"
-				th:value="${facility.facilityName}"> <input type="hidden"
-				id="facilityCode" name="facilityCode"
-				th:value="${facility.facilityCode}">
-		</div>
-		<!-- 시설 주소  -->
-		<div class="form-group">
-			<label for="facilityAddress">시설 주소: </label> <span
-				th:text="${facility.facilityAddress}"></span>
-		</div>
-		<div class="form-group">
-			<label for="facilityDescription">이용안내: </label> <span
-				style="white-space: pre-line;"
-				th:text="${facility.facilityDescription}"></span>
-		</div>
-		<!-- 시설 운영 시간 -->
-		<div class="form-group">
-			<label for="facilityTime">운영 시간:</label> <span
-				th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
-		</div>
-
-
-
-
-		</form>
-		<hr />
 
 	</div>
 
@@ -299,6 +312,8 @@
     const pricePerHour = parseFloat(/*[[${facility.price}]]*/ "10000");
     let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
     let totalPaid = 0;
+	const isClubOwner = /*[[${isClubOwner}]]*/"";
+	const facilityIsOnlyClub = /*[[${facility.facilityIsOnlyClub}]]*/"";
    
     
     // 최종 결제 금액 계산
@@ -337,13 +352,13 @@
     function reset(){
     	 const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
     	
+    	 memMoney = memMoney + totalPaid;
     	totalPaid = 0;
         const totalPrice = pricePerHour - totalPaid; // 최종 금액 다시 계산
         
         const remainingAmount = totalPrice;
 
         // UI 초기화
-        memMoney = memMoney + useFitpayInput;
         document.getElementById("memMoney_ip").value = memMoney;
         document.getElementById("memMoney").textContent = memMoney;
         document.getElementById("totalPaid").textContent = totalPaid;
@@ -384,6 +399,7 @@
         // UI 업데이트
         document.getElementById("memMoney").textContent = memMoney;
         document.getElementById("totalPaid").textContent = totalPaid;
+        document.getElementById("useFitpay").value = "";
         document.getElementById("remainingAmount").textContent = remainingAmount;
     });
 
@@ -415,6 +431,7 @@
           // UI 업데이트
           document.getElementById("memMoney").textContent = memMoney;
           document.getElementById("totalPaid").textContent = totalPaid;
+          document.getElementById("useFitpay").value = "";
           document.getElementById("remainingAmount").textContent = remainingAmount;
     });
 
@@ -479,26 +496,193 @@
         const fitpayOptions = document.getElementById("fitpayOptions");
         fitpayOptions.style.display = fitpayOptions.style.display === "none" ? "block" : "none";
     });
+    
+    
+    $(function () {
+        // 공통 클래스 사용
+        $('.charge-btn').off("click").on("click", function (event) {
+            event.preventDefault(); // 기본 동작 방지
 
-    // 결제 방법 선택
-    function selectPayment(method) {
-        alert(`${method}로 결제를 진행합니다.`);
-    }
+            var IMP = window.IMP; // 아임포트 객체
+            IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
 
-    // FITPAY 충전
-    function chargeFitpay() {
-        const chargeAmount = document.getElementById("chargeAmount").value;
+            var money = parseFloat($('#chargeAmount').val());
+            if (isNaN(money) || money <= 0) {
+                alert("충전 금액을 올바르게 입력하세요.");
+                return;
+            }
 
-        if (!chargeAmount || chargeAmount <= 0) {
-            alert("충전 금액을 올바르게 입력해주세요.");
-            return;
+            // 클릭된 버튼에 따라 PG 설정
+            var pgProvider = $(this).attr('data-pg'); // 버튼에 설정된 PG 값 가져오기
+            
+            if(pgProvider == "naverpay"){
+            	alert("서비스 준비중입니다.");
+            	return;
+            }
+            
+            IMP.request_pay({
+                pg: pgProvider, // 결제수단 (kakaopay 또는 naverpay)
+                pay_method: 'card',
+                merchant_uid: 'merchant_' + new Date().getTime(), // 고유 주문 ID
+                name: 'FITPAY 충전',
+                amount: money,
+                buyer_email: '/*[[${#authentication.principal.memEmail}]]*/',
+                buyer_name: '/*[[${#authentication.principal.memName}]]*/',
+                buyer_tel: '/*[[${#authentication.principal.memTell}]]*/',
+                buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
+                buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
+            }, function (rsp) {
+                if (rsp.success) {
+                	alert("결제가 성공했습니다!");
+                    memMoney += money; // 충전 금액 추가
+                    $("#memMoney_ip").val(memMoney);
+                    $("#memMoney").text(memMoney.toLocaleString());
+
+                    // 서버로 충전 금액 전송
+                    $.ajax({
+                        type: "GET",
+                        url: "/member/charge/point",
+                        data: { "amount": memMoney, "plusPoint": money },
+                        success: function (response) {
+                            console.log("충전 성공: ", response);
+                            $("#chargeAmount").val("");
+                            alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("충전 실패: ", error);
+                            alert("충전 중 문제가 발생했습니다.");
+                        }
+                    });
+                } else {
+                    alert("결제가 실패했습니다. 다시 시도해주세요.");
+                }
+            });
+        });
+        
+        // paymentInisis
+        $('#inisisBtn').off("click").on("click", function (event) {
+		    paymentInisis(event); // event 객체를 전달
+		});
+
+        
+     // 버튼 이벤트 핸들러 등록
+        $('#inisisBtn').off("click").on("click", function (event) {
+            paymentInisis(event);
+        });
+
+        function paymentInisis(event) {
+            if (event) event.preventDefault(); // 기본 동작 방지
+
+            var IMP = window.IMP; // 아임포트 객체
+            IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
+
+            // 결제 금액 가져오기
+            var money = parseFloat($('.totalPrice:first').text().replace(/[^0-9.]/g, '')); // 숫자만 추출
+            console.log("결제 금액:", money); // 디버깅 로그
+
+            if (isNaN(money) || money <= 0) {
+                alert("결제 금액을 올바르게 입력하세요.");
+                return;
+            }
+
+            // 이메일 처리
+            var buyerEmail = '/*[[${#authentication.principal.memEmail}]]*/';
+            buyerEmail = buyerEmail.replace(/^\/\*|"|\*\/$/g, "").trim();
+            console.log("이메일 값:", buyerEmail); // 디버깅 로그
+
+            // IMP.request_pay 호출
+            IMP.request_pay(
+                {
+                    pg: 'html5_inicis',
+                    pay_method: 'card',
+                    merchant_uid: 'merchant_' + new Date().getTime(),
+                    name: 'FITPAY 결제',
+                    amount: money,
+                    buyer_email: buyerEmail,
+                    buyer_name: '/*[[${#authentication.principal.memName}]]*/',
+                    buyer_tel: '/*[[${#authentication.principal.memTell}]]*/',
+                    buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
+                    buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
+                },
+                function (rsp) {
+                    alert("결제 응답:", rsp); // 디버깅 로그
+
+                    if (rsp.success) {
+                        alert("결제가 성공했습니다!");
+
+                        // 서버로 결제 정보 전송 후 폼 제출
+                        $.ajax({
+                            type: "POST",
+                            url: "/facility/pay-by-inisis", // 서버의 결제 완료 처리 URL
+                            data: {
+                                imp_uid: rsp.imp_uid,
+                                merchant_uid: rsp.merchant_uid,
+                                amount: money
+                            },
+                            success: function (response) {
+                                console.log("서버 응답:", response); // 디버깅 로그
+                                alert("결제가 완료되었습니다.");
+
+                                // 폼 제출
+                                $(".booking-form").submit();
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("결제 검증 실패:", error); // 디버깅 로그
+                                alert("결제 검증 중 문제가 발생했습니다.");
+                            }
+                        });
+                    } else {
+                        console.error("결제 실패:", rsp.error_msg);
+                        alert(`결제가 실패했습니다. 이유: ${rsp.error_msg}`);
+                    }
+                }
+            );
         }
 
-        alert(`${chargeAmount}원을 충전합니다.`);
-        // 실제 충전 로직은 여기에 추가 (API 호출 등)
+    });
+  
+
+
+
+    
+	async function getClubList(){
+    	const response = await axios.get(`/club/ownerClubList`)
+    	return response.data
+	}
+
+
+	if(facilityIsOnlyClub == true && isClubOwner == true) {
+		let str = "";
+		getClubList().then(data => {
+			str = '<select class="custom-select" id="inputGroupSelect01" name="memId" style="text-align: center;" onchange="(selectBoxChange(this.value))">'
+			data.forEach(club => {
+				str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
+			});
+			str += '</select>'
+			document.querySelector(".changeToClub").textContent = "예약할 클럽"
+			document.querySelector("#memId").remove()
+			document.querySelector(".resInfo").innerHTML += str
+		})
+
+	}
+    
+    // 최종 결제 금액을 숨겨진 input에 동적으로 복사
+    function updateHiddenAmount() {
+        const totalPriceElement = document.querySelector(".totalPrice");
+        const amountInput = document.getElementById("amount");
+        if (totalPriceElement && amountInput) {
+            amountInput.value = parseFloat(totalPriceElement.textContent) || 0; // 숫자로 변환
+        }
     }
     
-    
+    // '폼 제출' 버튼 클릭 전에 호출하여 최신 값을 설정
+    const form = document.querySelector("form");
+    form.addEventListener("submit", updateHiddenAmount);
+
+
+	function selectBoxChange(value) {
+		document.querySelector("#senderId").value = value
+	}
 </script>
 
 

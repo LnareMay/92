@@ -21,11 +21,11 @@ public class TransferHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SENDER_ID", referencedColumnName = "MEM_ID", nullable = false)
-    private Member sender;
+    private Member senderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECEIVER_ID", referencedColumnName = "MEM_ID", nullable = false)
-    private Member receiver;
+    private Member receiverId;
 
 
     @Column(name = "AMOUNT", nullable = false, precision = 50, scale = 0)
@@ -40,4 +40,7 @@ public class TransferHistory {
 
     @Column(name = "MEMO", columnDefinition = "TEXT")
     private String memo;
+    
+    @Column(length = 100, name = "CLUB_CODE")
+    private String clubCode;
 }
