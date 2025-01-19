@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -252,7 +253,7 @@ public class AdminRestController {
   	}
 
     
-    
+  	@CrossOrigin(origins = "*", exposedHeaders = "Location")
   	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   	public ResponseEntity<?> facilityModify(
   	        @ModelAttribute FacilityDTO facilityDTO,
@@ -327,14 +328,18 @@ public class AdminRestController {
   	        // 5. 시설 정보 업데이트
   	        facilityService.modify(facilityDTO);
 
-  	        // 리다이렉트 URL 설정
-  	        String redirectUrl = String.format("./Facility_detail?facilityCode=%s", facilityDTO.getFacilityCode());
-  	        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
-
-  	    } catch (Exception e) {
-  	        e.printStackTrace();
-  	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+  	        // JSON 형식의 리다이렉션 응답
+  	        String redirectUrl = String.format("/admin/Facility_detail/%s", facilityDTO.getFacilityCode());
+  	        Map<String, String> response = new HashMap<>();
+  	        response.put("redirectUrl", redirectUrl);
+  	        
+  	        return ResponseEntity.ok(response);
+  	    	} 
+  	    catch (Exception e) {
+  	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+  	                .body(Map.of("error", "오류가 발생했습니다."));
   	    }
+
   	}
 
 
