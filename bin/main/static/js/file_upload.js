@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addFilesBtn = document.getElementById('addFilesBtn');
     const form = document.getElementById('facilityAdd'); // 폼 ID
 	const fileList = document.getElementById('fileList'); // 파일 리스트 테이블
-
+	const MAX_FILES=4;
     let uploadedFiles = []; // 업로드된 파일 목록
 
     // 파일 추가 버튼 클릭 이벤트
@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 파일 선택 이벤트
    fileInput.addEventListener('change', () => {
        const files = Array.from(fileInput.files);
+	   
+	   if(files.length > MAX_FILES){
+		errorMessage.textContent = `최대 ${MAX_FILES}개의 파일만 선택할 수 있습니다.`;
+		
+		fileInput.value="";		//입력초기
+		fileList.innerHTML="";	//리스트초기
+		return;
+	   }
+	   errorMessage.textContent = "";
+	   fileList.innerHTML="";
 
        files.forEach(file => {
            if (uploadedFiles.some(uploadedFile => uploadedFile.name === file.name)) {

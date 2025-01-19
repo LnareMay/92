@@ -253,23 +253,20 @@ public class AdminRestController {
 
     
     
-    
   	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   	public ResponseEntity<?> facilityModify(
   	        @ModelAttribute FacilityDTO facilityDTO,
   	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
   	        @RequestParam(value = "existingFiles", required = false) List<String> existingFiles,
   	        @RequestParam(value = "deletedFiles", required = false) List<String> deletedFiles,
-  	        HttpServletRequest request,
-  	        Model model,
-  	        PageRequestDTO pageRequestDTO,
-  	        RedirectAttributes redirectAttributes) {
+  	        @RequestParam(value = "removedNewFiles", required = false) List<String> removedNewFiles) {
 
   	    try {
+  	        // 1. 시설 정보 가져오기
   	        Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
   	        Facility facility = optionalFacility.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시설입니다."));
 
-  	        // 삭제된 파일 처리 (필드 값을 null로 변경)
+  	        // 2. 삭제된 기존 파일 처리 (필드 값을 null로 변경)
   	        if (deletedFiles != null && !deletedFiles.isEmpty()) {
   	            for (String fileName : deletedFiles) {
   	                if (facility.getFacilityImage1() != null && facility.getFacilityImage1().equals(fileName)) {
@@ -285,42 +282,52 @@ public class AdminRestController {
   	            facilityRepository.save(facility); // 변경 사항 저장
   	        }
 
-  	        // 기존 파일 유지
+  	        // 3. 기존 파일 유지
   	        if (existingFiles != null && !existingFiles.isEmpty()) {
-  	        		// 기존 파일이 존재할 경우만 설정
-  	                facilityDTO.setFacilityImage1(existingFiles.size() > 0 ? existingFiles.get(0) : null);
-  	                facilityDTO.setFacilityImage2(existingFiles.size() > 1 ? existingFiles.get(1) : null);
-  	                facilityDTO.setFacilityImage3(existingFiles.size() > 2 ? existingFiles.get(2) : null);
-  	                facilityDTO.setFacilityImage4(existingFiles.size() > 3 ? existingFiles.get(3) : null);
-  	            
+  	            // 기존 파일이 존재할 경우만 설정
+  	            facilityDTO.setFacilityImage1(existingFiles.size() > 0 ? existingFiles.get(0) : null);
+  	            facilityDTO.setFacilityImage2(existingFiles.size() > 1 ? existingFiles.get(1) : null);
+  	            facilityDTO.setFacilityImage3(existingFiles.size() > 2 ? existingFiles.get(2) : null);
+  	            facilityDTO.setFacilityImage4(existingFiles.size() > 3 ? existingFiles.get(3) : null);
   	        }
 
-  	        // 새로 업로드된 파일 처리
+  	        // 4. 새로 업로드된 파일 처리 (삭제되지 않은 것만 저장)
   	        if (files != null && !files.isEmpty()) {
+  	            int existingFileCount = existingFiles != null ? existingFiles.size() : 0;
+
   	            for (int i = 0; i < files.size(); i++) {
   	                MultipartFile file = files.get(i);
-  	                
+
   	                if (!file.isEmpty()) {
   	                    String originalFileName = file.getOriginalFilename();
+
+  	                    // 새로 추가한 후 삭제된 파일은 저장하지 않음
+  	                    if (removedNewFiles != null && removedNewFiles.contains(originalFileName)) {
+  	                        continue;
+  	                    }
+
   	                    String uuid = UUID.randomUUID().toString();
   	                    String fileName = uuid + "_" + originalFileName;
 
   	                    Path filePath = Paths.get(uploadPath, fileName);
   	                    file.transferTo(filePath);
 
-  	                    switch (i) {
+  	                    // 빈 슬롯(필드)에 새로운 파일 추가
+  	                    switch (existingFileCount + i) { // 기존 파일 개수를 기준으로 인덱스 조정
   	                        case 0 -> facilityDTO.setFacilityImage1(fileName);
   	                        case 1 -> facilityDTO.setFacilityImage2(fileName);
   	                        case 2 -> facilityDTO.setFacilityImage3(fileName);
   	                        case 3 -> facilityDTO.setFacilityImage4(fileName);
+  	                        default -> throw new IllegalArgumentException("최대 4개의 이미지만 허용됩니다.");
   	                    }
   	                }
   	            }
   	        }
 
-  	        // 시설 정보 업데이트
+  	        // 5. 시설 정보 업데이트
   	        facilityService.modify(facilityDTO);
 
+  	        // 리다이렉트 URL 설정
   	        String redirectUrl = String.format("./Facility_detail?facilityCode=%s", facilityDTO.getFacilityCode());
   	        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
 
