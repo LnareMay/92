@@ -184,10 +184,10 @@ public class AdminController {
 		 
 		 String memId = userDetails.getUsername();
 		 //로그인 한 유저의 시설 코드 받아오기 
+		 FacilityDTO facilityDTO = facilityService.getFacilityBylistByUser(userDetails.getUsername());
 		 
-		 String facilityCode = getFacilityCodeFromUser(userDetails.getUsername());
-		 FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
-		 PageResponseDTO<ReservationDTO> responseDTO = reservationService.ReservationlistByUser(memId,pageRequestDTO);
+		 //facilityCode에해당하는 예약 목록 조
+		 PageResponseDTO<ReservationDTO> responseDTO = reservationService.getReservationByFacilityCode(facilityCode,pageRequestDTO);
 		 log.info("............................."+responseDTO);
 		 
 		 model.addAttribute("memId",memId);	

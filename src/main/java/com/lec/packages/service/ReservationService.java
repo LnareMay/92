@@ -6,5 +6,5 @@ import com.lec.packages.dto.ReservationDTO;
 
 public interface ReservationService {
 
-	PageResponseDTO<ReservationDTO> ReservationlistByUser(String memId, PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ReservationDTO> getReservationByFacilityCode(String facilityCode, PageRequestDTO pageRequestDTO);
 }

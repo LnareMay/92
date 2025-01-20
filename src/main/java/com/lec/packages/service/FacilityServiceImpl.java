@@ -299,6 +299,15 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 
+	@Override
+	public FacilityDTO getFacilityBylistByUser(String memId) {
+		
+		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
+		
+		return modelMapper.map(facility, FacilityDTO.class);
+	}
+
+
 
 
 

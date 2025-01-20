@@ -19,6 +19,7 @@ public interface FacilityRepository extends JpaRepository<Facility,String> , Fac
   
     Optional<Facility> findByFacilityCode(@Param("facilityCode") String facilityCode);
     
- 
+    Optional<Facility> findByMemId(String memId);
+  
 
 }

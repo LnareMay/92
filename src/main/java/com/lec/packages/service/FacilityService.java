@@ -27,4 +27,5 @@ public interface FacilityService {
 	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 			,String facilityAddress, String exerciseCode);
 	void remove(String facilityCode);
+	FacilityDTO getFacilityBylistByUser(String username);
 }
