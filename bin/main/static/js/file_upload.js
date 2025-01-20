@@ -17,19 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 파일 선택 이벤트
    fileInput.addEventListener('change', () => {
-       const files = Array.from(fileInput.files);
+      
+	 const files = Array.from(fileInput.files);
 	   
 	   if(files.length > MAX_FILES){
 		errorMessage.textContent = `최대 ${MAX_FILES}개의 파일만 선택할 수 있습니다.`;
 		
-		fileInput.value="";		//입력초기
-		fileList.innerHTML="";	//리스트초기
+		fileInput.value="";		//입력초기화
+		fileList.innerHTML="";	//리스트초기화
 		return;
 	   }
-	   errorMessage.textContent = "";
-	   fileList.innerHTML="";
+	  // errorMessage.textContent = "";
+	  // fileList.innerHTML="";
 
        files.forEach(file => {
+		
            if (uploadedFiles.some(uploadedFile => uploadedFile.name === file.name)) {
                alert(`파일 ${file.name}은 이미 추가되었습니다.`);
                return;
