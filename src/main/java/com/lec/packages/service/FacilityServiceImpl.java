@@ -284,6 +284,19 @@ public class FacilityServiceImpl implements FacilityService{
 	            .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
 	            .collect(Collectors.toList());
 	}
+	
+
+
+	//시설 삭제
+	@Override
+	public void remove(String facilityCode) {
+		Facility facility = facilityRepository.findByFacilityCode(facilityCode).orElseThrow(()->new IllegalArgumentException("존재하지 않는 시설입니다."));
+		
+		facility.setDeleteFlag(true);
+		
+		facilityRepository.save(facility);
+		
+	}
 
 
 

@@ -74,7 +74,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview menu-open">
+          <li class="nav-item has-treeview menu-open ">
             <a href="/admin/main" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -95,12 +95,6 @@
                   <p>시설 목록</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="/admin/calendar" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>시설 예약 현황</p>
-                </a>
-              </li>
             </ul>
           </li>
           
@@ -108,15 +102,21 @@
         	 <a href="/admin/main" class="nav-link">
         	   <i class="nav-icon fas fa-tachometer-alt"></i>
         	   <p>
-                 매출
+                 예약
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-             <ul class="nav nav-treeview">
+             <ul class="nav nav-treeview active">
               <li class="nav-item">
-				    <a href="/admin/Facility_add" class="nav-link">
+				    <a href="/admin/Reservation_list" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>매출 확인</p>
+                  <p>예약 목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/admin/calendar" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>시설 예약 현황</p>
                 </a>
               </li>
               </ul>
@@ -205,7 +205,8 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr th:each="facility , stat : ${facilities}">            
+                  <tr th:each="facility , stat : ${facilities}"
+                  	  th:if="${facility.deleteFlag == false}">            
                     <!--Facility Name  -->    
                      <td th:text="${facility.facilityName}"></td>
                     <!--Facility Price  -->    
