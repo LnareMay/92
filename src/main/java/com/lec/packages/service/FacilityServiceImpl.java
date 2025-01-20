@@ -132,14 +132,15 @@ public class FacilityServiceImpl implements FacilityService{
 	// 시설목록 새로만듬
 	@Override
 	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
-				,String facilityAddress, String exerciseCode) {		
+				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
         // 검색 필터링
-        String[] types = {"a", "e", "ae"};
-        String[] keywords = {facilityAddress, exerciseCode};
+        String[] types = {"a", "e", "c", "ae","aec"};
+        String[] keywords = new String[3];
         keywords[0] = (facilityAddress != null) ? facilityAddress : "ALL";
         keywords[1] = (exerciseCode != null) ? exerciseCode : "ALL";
+        keywords[2] = (facilityIsOnlyClub == null) ? null : (facilityIsOnlyClub ? "true" : "false");
         
 		Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
 		
@@ -149,7 +150,7 @@ public class FacilityServiceImpl implements FacilityService{
 				  .map(facility -> modelMapper.map(facility, FacilityDTO.class))
 				  .collect(Collectors.toList());
 		
-		log.info("=== Facility Keywords==== : {}, {}", keywords[0], keywords[1]); 
+		log.info("=== Facility Keywords==== : {}, {}, {}", keywords[0], keywords[1], keywords[2]); 
 		
 		return PageResponseDTO.<FacilityDTO>withAll()
 				.pageRequestDTO(pageRequestDTO)

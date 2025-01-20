@@ -48,7 +48,8 @@ public class FacilityController {
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
 	    		, Model model
 	    		, @RequestParam(value = "facilityAddress", required = false, defaultValue = "ALL") String facilityAddress
-                , @RequestParam(value = "exerciseCode", required = false, defaultValue = "ALL") String exerciseCode) {
+                , @RequestParam(value = "exerciseCode", required = false, defaultValue = "ALL") String exerciseCode
+                , @RequestParam(value = "facilityIsOnlyClub", required = false) Boolean facilityIsOnlyClub) {
 	    	
 	    	String currentURI = request.getRequestURI();  
 	    	
@@ -56,9 +57,9 @@ public class FacilityController {
 	    		facilityAddress = "";	  
 	    	} if ("ALL".equals(exerciseCode)) {
 	    		exerciseCode = "";	  
-	    	}
+	    	} 
 	    	
-	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode);
+	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode, facilityIsOnlyClub);
 	
 	    	log.info("............................."+responseDTO);
 	    		    	
@@ -66,6 +67,7 @@ public class FacilityController {
 	    	 model.addAttribute("responseDTO",responseDTO);	
 			 model.addAttribute("facilityAddress", facilityAddress); 
 			 model.addAttribute("exerciseCode", exerciseCode); 
+			 model.addAttribute("facilityIsOnlyClub", facilityIsOnlyClub); 
 	    	
 	    	return "facility/facility_main";		 
 	    }
@@ -75,13 +77,16 @@ public class FacilityController {
 	    public String searchFacility(PageRequestDTO pageRequestDTO,
 	                                 @RequestParam(value = "facilityAddress", required = false) String facilityAddress,
 	                                 @RequestParam(value = "exerciseCode", required = false) String exerciseCode,
+	                                 @RequestParam(value = "facilityIsOnlyClub", required = false) Boolean facilityIsOnlyClub, 
 	                                 RedirectAttributes redirectAttributes) {
-
+	    	
 	        redirectAttributes.addAttribute("facilityAddress", facilityAddress);
 	        redirectAttributes.addAttribute("exerciseCode", exerciseCode);
+	        redirectAttributes.addAttribute("facilityIsOnlyClub", facilityIsOnlyClub);
 	        
 	        log.info("facilityAddress: {}", facilityAddress);
 	        log.info("exerciseCode: {}", exerciseCode);
+	        log.info("facilityIsOnlyClub: {}", facilityIsOnlyClub);
 
 	        return "redirect:/facility/main";
 	    }

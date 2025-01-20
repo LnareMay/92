@@ -25,5 +25,5 @@ public interface FacilityService {
 	List<ReservationDTO> getReservationsByFacilityCode(String facilityCode); 
 	
 	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
-			,String facilityAddress, String exerciseCode);
+			,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub);
 }
