@@ -654,13 +654,13 @@
 	if(facilityIsOnlyClub == true && isClubOwner == true) {
 		let str = "";
 		getClubList().then(data => {
-			str = '<select class="custom-select" id="inputGroupSelect01" name="memId" style="text-align: center;" onchange="(selectBoxChange(this.value))">'
+			str = '<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;" onchange="(selectBoxChange(this.value))">'
 			data.forEach(club => {
 				str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
 			});
 			str += '</select>'
 			document.querySelector(".changeToClub").textContent = "예약할 클럽"
-			document.querySelector("#memId").remove()
+			document.querySelector("#memId").classList.add("blind")
 			document.querySelector(".resInfo").innerHTML += str
 		})
 
@@ -681,7 +681,7 @@
 
 
 	function selectBoxChange(value) {
-		document.querySelector("#senderId").value = value
+		// document.querySelector("#senderId").value = value
 	}
 </script>
 

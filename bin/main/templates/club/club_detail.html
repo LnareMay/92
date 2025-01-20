@@ -138,40 +138,8 @@
 
 			           <!-- 일정 섹션 -->
 			           <div class="col-md-6">
-			               <section class="clubsection">
-			                   <div class="section-header mb-3">
-			                       <h6>일정 </h6>
-			                       <a href="/club/club_calendar" class="more-link">더보기</a>
-			                   </div>
-			                   <div>
-			                       <!-- 기능구현아직... 
-			                       <div class="d-flex align-items-center mb-3">
-			                           <div class="me-3 text-center">
-			                               <div class="bg-light p-2 rounded">
-			                                   <strong>12월<br>16</strong>
-			                               </div>
-			                           </div>
-			                           <div>
-			                               <p class="mb-1 fw-bold">독서가 곁들여진 일상 글쓰기 모임</p>
-			                               <span class="text-danger small">모집중</span><br>
-			                               <small class="text-muted">오후 3:30 · 2/4명</small>
-			                           </div>
-			                       </div>
-			                       
-			                       <div class="d-flex align-items-center mb-3">
-			                           <div class="me-3 text-center">
-			                               <div class="bg-light p-2 rounded">
-			                                   <strong>12월<br>16</strong>
-			                               </div>
-			                           </div>
-			                           <div>
-			                               <p class="mb-1 fw-bold">유종의 미 거두는 연말독서 같이해요</p>
-			                               <span class="text-muted small">종료</span><br>
-			                               <small class="text-muted">오후 5:00 · 1/4명</small>
-			                           </div>
-			                       </div>
-								   -->
-			                   </div>
+			               <section class="clubResSection">
+			                   
 			               </section>
 			           </div> 
 				</div>
@@ -280,7 +248,53 @@
 			event.preventDefault();
 		}
 	 });
-	 
+	
+	const resSection = document.querySelector(".clubResSection");
+
+	async function getClubResList() {
+		const response = await axios.get(`/club/getClubResList/${clubCode}`)
+		return response.data
+	}
+
+	function resStatus(nowCount, totalCount) {
+		if(totalCount > nowCount){
+			return "모집 중"
+		} else {
+			return "종료"
+		}
+	}
+
+	function printResList() {
+		getClubResList().then(data => {
+			let str = `<div class="section-header mb-3">
+							<h6>일정 </h6>
+						</div>
+						<div>`
+			console.log(data);
+			data.forEach(resData => {
+				console.log(resData)
+				str += `<div class="d-flex align-items-center mb-3">
+						  <div class="me-3 text-center">
+							  <div class="bg-light p-1 rounded">
+								  <strong>${resData.reservationDate.substr(5,2)}월<br>${resData.reservationDate.substr(8,2)}일</strong>
+							  </div>
+						  </div>
+						  <div>
+							  <p class="mb-1 fw-bold">${resData.facilityName}</p>
+							  <span class="text-danger small">${resStatus(resData.nowMemCount, resData.count)}</span><br>
+							  <small class="text-muted">${resData.reservationStartTime.substr(0,5)} · ${resData.nowMemCount}/${resData.count}명</small>
+						  </div>
+					  </div>`
+			});
+			str += "</div>"
+	
+			console.log(str)
+			resSection.innerHTML = str
+		})
+
+	}
+
+	printResList();
 
 </script>
 </html>
