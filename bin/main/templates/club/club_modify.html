@@ -94,16 +94,13 @@
 					   <img id="photo-upload-2" th:src="${clubdto.clubImage2 != null ? '/view/' + clubdto.clubImage2 : '/img/plus_icon.png'}"
 					           					th:classappend="${clubdto.clubImage2 == null ? 'default-icon' : ''}" alt="대표이미지2">
 					</label>
-					<!--<button type="button" class="delete-btn" onclick="removeImage('clubImage2', 'photo-upload-2', '${clubdto.clubCode}', 2)">X</button>-->
-					<button type="button" class="delete-btn" onclick="deleteImage('${clubdto.clubImage2}', 'clubImage2', '${clubdto.clubCode}')">삭제</button>
 				   <input id="clubImage2" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-2')" style="display: none;">
 			    </div>
 			    <div class="club-image-upload">
 			    	<label for="clubImage3">   	
 					   <img id="photo-upload-3" th:src="${clubdto.clubImage3 != null ? '/view/' + clubdto.clubImage3 : '/img/plus_icon.png'}"  
 					   							th:classappend="${clubdto.clubImage3 == null ? 'default-icon' : ''}"alt="대표이미지3">
-			        </label>
-					<button type="button" class="delete-btn" onclick="deleteImage('${imageFileName}')">X</button>
+			        </label>					
 			           <input id="clubImage3" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-3')" style="display: none;">
 			    </div>
 			    
@@ -220,30 +217,7 @@
 	        })
 	        .catch(error => console.error("파일 업로드 실패:", error));
    }
-   
-   function deleteImage(fileName, imageField, clubCode) {
-	if(confirm("이미지를 삭제하시겠습니까?")) {
-			const encodeFileName = encodeURIComponent(fileName);
-			const encodeImageField = encodeURIComponent(imageField);
-			const encodClubCode = encodeURIComponent(clubCode);
-		
-		    fetch(`/club/removeImage?fileName=${encodeFileName}&imageField=${encodeImageField}&clubCode=${encodClubCode}`, {
-			method: 'DELETE',
-		})
-		.then(response => response.json())
-		.then(data => {
-			if(data.result) {
-				alert("이미지가 성공적으로 삭제되었습니다.")
-			} else {
-				alert("이미지 삭제에 실패했습니다.")
-				console.log("파일명:", fileName);
-			}
-		})
-		.catch(error => {
-			alert ("삭제 요청 중 오류가 발생했습니다.")
-		})
-	}
-   }
+
 
 </script>
 </body>

@@ -353,7 +353,7 @@ p.fw-bold {
 	flex: 1;
 }
 
-.clubsection {
+.clubsection, .clubResSection  {
 	margin-top: 0px;
 }
 
