@@ -20,6 +20,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
 
 
+
 	//List<Reservation> findByMemId(String memId);
 
  
@@ -54,5 +55,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode, Date reservationDate, boolean deleteFlag);
+
+
+	
+	
 
 }

@@ -406,6 +406,8 @@ public class FacilityServiceImpl implements FacilityService{
 	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
 
 		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
+
+
 		/*
 		 * Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()->new
 		 * IllegalArgumentException("생성된 시설이 없습니다."));
