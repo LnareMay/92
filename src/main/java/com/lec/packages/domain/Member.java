@@ -149,8 +149,7 @@ public class Member extends BaseEntity{
 	        this.memMoney = BigDecimal.ZERO; // 기본값을 0으로 설정
 	    }
 	}
-	
-	
-	
+
+
     
 }

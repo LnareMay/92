@@ -12,7 +12,7 @@ import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
-
+import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,6 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	private final ModelMapper modelMapper;
 	private final ReservationRepository reservationRepository;
+	private final MemberRepository memberRepository;
 	
 		//로그인 한 유저가 등록한 시설(facilityCode)의 예약내역 
 //		@Override	
@@ -47,8 +48,8 @@ public class ReservationServiceImpl implements ReservationService {
 //								  .build();
 //		}
 
-	//로그인 한 유저가 등록한 시설의 예약 불러오기
-	  @Override
+	 	//로그인 한 유저가 등록한 시설의 예약 불러오기
+	    @Override
 	    public PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
 	       
 		  Pageable pageable = pageRequestDTO.getPageable("reservationCode");
@@ -66,7 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
 					              .build();
 	    }
 
-	  //예약코드로 시설 예약 정보 불러오기
+	//예약코드로 시설 예약 정보 불러오기
 	@Override
 	public ReservationDTO getReservationByCode(String reservationCode) {
 		
@@ -76,6 +77,9 @@ public class ReservationServiceImpl implements ReservationService {
 		return modelMapper.map(reservation, ReservationDTO.class);
 		
 	}
+
+
+	
 	
 	
 }

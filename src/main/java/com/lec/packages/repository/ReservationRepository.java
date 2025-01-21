@@ -10,20 +10,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
-import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.ClubReservationInterface;
+import com.lec.packages.dto.MemberSecurityDTO;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 
-
-
-
-	//List<Reservation> findByMemId(String memId);
-
- 
 
   Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
@@ -55,6 +48,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode, Date reservationDate, boolean deleteFlag);
+
+
+	//예약 테이블의 memId를 통해 Member 테이블의 정보를 조회
+	@Query("SELECT m FROM Member m WHERE m.memId = :memId")
+	Member findMemberByReservationMemId(@Param("memId") String memId);
 
 
 	

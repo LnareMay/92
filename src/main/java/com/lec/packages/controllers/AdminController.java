@@ -24,11 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Facility;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.repository.FacilityRepository;
+import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.service.FacilityService;
 import com.lec.packages.service.ReservationService;
 
@@ -48,6 +51,7 @@ public class AdminController {
 	private final FacilityService facilityService;
 	private final FacilityRepository facilityRepository;
 	private final ReservationService reservationService;
+	private final ReservationRepository reservationRepository;
 
 	
 	 @GetMapping("/main")
@@ -55,10 +59,13 @@ public class AdminController {
 		 
 		
 		 String userId = userDetails.getUsername();
-		 PageResponseDTO<FacilityDTO> responseDTO = facilityService.listByUser(userId,pageRequestDTO);
+		 
+		 PageResponseDTO<FacilityDTO> responseFacilityDTO = facilityService.listByUser(userId,pageRequestDTO);
+		 PageResponseDTO<ReservationDTO> responseReservationDTO =reservationService.getAllReservationsForUser(userId, pageRequestDTO);
 
 		 model.addAttribute("userId",userId);
-		 model.addAttribute("facilities",responseDTO.getDtoList());
+		 model.addAttribute("facilities",responseFacilityDTO.getDtoList());
+		 model.addAttribute("reservations",responseReservationDTO.getDtoList());
 		 
 		 
 	     return "admin/Admin_Main"; 
@@ -188,6 +195,8 @@ public class AdminController {
 		 return "redirect:/admin/Facility_list";
 	 }
 	 
+	 
+	 //예약 리스트
 	 @GetMapping("/Reservation_list")
 	 public String ListReservationPage(PageRequestDTO pageRequestDTO, Model model, 
 	     @AuthenticationPrincipal UserDetails userDetails) {
@@ -206,8 +215,27 @@ public class AdminController {
 	     return "admin/Reservation_list";
 	 }
 	 
+	 //예약 취소 리스트(확인용)
+	 @GetMapping("/Reservation_Refuselist")
+	 public String ListReservationRefusPage(PageRequestDTO pageRequestDTO, Model model, 
+			 @AuthenticationPrincipal UserDetails userDetails) {
+		 
+		 String memId = userDetails.getUsername();
+		 
+		 PageResponseDTO<ReservationDTO> responseDTO = 
+				 reservationService.getAllReservationsForUser(memId, pageRequestDTO);
+		 
+		 model.addAttribute("memId", memId);
+		 model.addAttribute("reservations", responseDTO.getDtoList());
+		 model.addAttribute("totalPages", responseDTO.getTotal());
+		 model.addAttribute("pageNumber", pageRequestDTO.getPage());
+		 model.addAttribute("pageSize", pageRequestDTO.getSize());
+		 
+		 return "admin/Reservation_refuselist";
+	 }
 	 
-	 //시설 상세보기
+	 
+	 //예약 상세보기
 	 @GetMapping("/Reservation_detail/{reservationCode}")
 	 public String DetailReservationPage(@PathVariable("reservationCode") String reservationCode, Model model,@AuthenticationPrincipal UserDetails userDetails) {
 		 
@@ -215,16 +243,73 @@ public class AdminController {
 		 
 		 //예약 정보를 가져오기 위해 서비스 호출
 		 ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+		 
+		 //예약코드로 멤버정보 가져오기
+//		 MemberSecurityDTO memberDTO = reservationService.getMemberInfoByReservationCode(reservationCode);
 		
 		 //모델에 로그인 정보를 추가하여 뷰로 전달
 		 model.addAttribute("memId", memId);
 		 //모델에 시설 정보를 추가하여 뷰로 전달
 		 model.addAttribute("reservation",reservationDTO);
+//		 model.addAttribute("member",memberDTO);
  
 		 return "admin/Reservation_detail";
 	 }
-
-
+	 
+	 //승인 거절
+	 @GetMapping("/Reservation_refuse/{reservationCode}")
+	 public String refuseReservation(@PathVariable("reservationCode") String reservationCode) {
+		 
+		 //예약 정보를 가져오기 위해 서비스 호출
+		 ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+		 
+		// DTO를 엔티티로 변환하고 상태 변경
+		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
+		    										   .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+		    
+		    // 예약 상태 변경
+		    reservation.setReservationProgress("예약취소");
+		    reservationRepository.save(reservation);
+		    
+		    return "redirect:/admin/Reservation_list";
+	 }
+	 
+	 //예약 승인
+	 @GetMapping("/Reservation_confirm/{reservationCode}")
+	 public String confirmReservation(@PathVariable("reservationCode") String reservationCode) {
+		 
+		 //예약 정보를 가져오기 위해 서비스 호출
+		 ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+		 
+		 // DTO를 엔티티로 변환하고 상태 변경
+		 Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
+				 .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+		 
+		 // 예약 상태 변경
+		 reservation.setReservationProgress("예약완료");
+		 reservationRepository.save(reservation);
+		 
+		 return "redirect:/admin/Reservation_list";
+	 }
+	 
+	 //예약 승인 리스트(확인용)
+	 @GetMapping("/Reservation_Confirmlist")
+	 public String ListReservationConfirmPage(PageRequestDTO pageRequestDTO, Model model, 
+			 @AuthenticationPrincipal UserDetails userDetails) {
+		 
+		 String memId = userDetails.getUsername();
+		 
+		 PageResponseDTO<ReservationDTO> responseDTO = 
+				 reservationService.getAllReservationsForUser(memId, pageRequestDTO);
+		 
+		 model.addAttribute("memId", memId);
+		 model.addAttribute("reservations", responseDTO.getDtoList());
+		 model.addAttribute("totalPages", responseDTO.getTotal());
+		 model.addAttribute("pageNumber", pageRequestDTO.getPage());
+		 model.addAttribute("pageSize", pageRequestDTO.getSize());
+		 
+		 return "admin/Reservation_confirmlist";
+	 }
 	 
 
 	 

@@ -134,7 +134,8 @@ public class FacilityServiceImpl implements FacilityService{
 	
 	// 시설목록 새로만듬
 	@Override
-	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO ,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
+	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
+				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
         // 검색 필터링
@@ -202,6 +203,16 @@ public class FacilityServiceImpl implements FacilityService{
 		
 		facilityRepository.save(facility);
 		
+		
+	}
+	
+	@Override
+	public void remove(String facilityCode) {
+		Facility facility = facilityRepository.findByFacilityCode(facilityCode).orElseThrow(()->new IllegalArgumentException("존재하지 않는 시설입니다."));
+		
+		facility.setDeleteFlag(true);
+		
+		facilityRepository.save(facility);
 		
 	}
 	
@@ -321,25 +332,9 @@ public class FacilityServiceImpl implements FacilityService{
 	            .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
 	            .collect(Collectors.toList());
 	}
-	
-
-
-	//시설 삭제
-	@Override
-	public void remove(String facilityCode) {
-		Facility facility = facilityRepository.findByFacilityCode(facilityCode).orElseThrow(()->new IllegalArgumentException("존재하지 않는 시설입니다."));
-		
-		facility.setDeleteFlag(true);
-		
-		facilityRepository.save(facility);
-		
-	}
-
-
 
 
 	@Override
-
 	public List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate) {
 		
 		List<Reservation> reservations = reservationRepository.findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(facilityCode, reservationDate, false);
@@ -392,36 +387,6 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(transferHistory);
 	    reservationRepository.save(reservation);
-	}
-
-
-	@Override
-	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO, String facilityAddress,
-			String exerciseCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
-
-		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
-
-
-		/*
-		 * Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()->new
-		 * IllegalArgumentException("생성된 시설이 없습니다."));
-		 * 
-		 * // ModelMapper를 사용하여 Facility -> FacilityDTO 변환 return
-		 * modelMapper.map(facility, FacilityDTO.class);
-		 *
-		 */
-
-		List<Facility> facilities = facilityRepository.findByMemId(memId);
-
-	    return facilities.stream()
-				        .map(facility -> modelMapper.map(facility, FacilityDTO.class))
-				        .collect(Collectors.toList());
 	}
 
 

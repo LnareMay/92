@@ -180,7 +180,7 @@
               </thead>
               <tbody>
                   <tr th:each="reservation , stat : ${reservations}"
-				  	  th:if="${reservation.reservationProgress=='예약진행중'}">
+				  	  th:if="${reservation.reservationProgress=='예약취소'}">
                       <td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td> 
                       <td>
                           <a th:text="${reservation.facilityName}"></a>
@@ -200,9 +200,7 @@
                           <a th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}" class="btn btn-primary btn-sm" >
                              <i class="fas fa-folder"></i> View
                           </a>
-                          <a class="btn btn-success btn-sm" 
-						     th:href="@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}"
-						     onclick="return confirm('예약 확정 하시겠습니까?')" >
+                          <a class="btn btn-success btn-sm" onclick="return confirm('예약 확정 하시겠습니까?')" >
                              <i class="fa fa-check-circle" aria-hidden="true"></i>    
                               confirm
                           </a>
@@ -222,7 +220,7 @@
             <ul class="pagination justify-content-center">
                 <!-- 이전 페이지 버튼 -->
                 <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/Reservation_list(page=${pageNumber - 1})}" aria-label="Previous">
+                    <a class="page-link" th:href="@{/admin/Reservation_refuse(page=${pageNumber - 1})}" aria-label="Previous">
                         «                   
                     </a>
                 </li>
@@ -230,12 +228,12 @@
                 <!-- 페이지 번호 -->
                 <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
                     th:classappend="${page == pageNumber} ? 'active'">
-                    <a class="page-link" th:href="@{/admin/Reservation_list(page=${page})}" th:text="${page}"></a>
+                    <a class="page-link" th:href="@{/admin/Reservation_refuse(page=${page})}" th:text="${page}"></a>
                 </li>
 
                 <!-- 다음 페이지 버튼 -->
                 <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/Reservation_list(page=${pageNumber + 1})}" aria-label="Next">
+                    <a class="page-link" th:href="@{/admin/Reservation_refuse(page=${pageNumber + 1})}" aria-label="Next">
                     	»
                     </a>
                 </li>

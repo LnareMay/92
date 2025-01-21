@@ -64,7 +64,7 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="/member/mypage" class="d-block" th:text="${userId}"></a>
+          <a href="/member/mypage" class="d-block" th:text="${memId}"></a>
         </div>
       </div>
 
@@ -179,7 +179,8 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr th:each="reservation , stat : ${reservations}">
+                  <tr th:each="reservation , stat : ${reservations}"
+				  	  th:if="${reservation.reservationProgress=='예약진행중'}">
                       <td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td> 
                       <td>
                           <a th:text="${reservation.facilityName}"></a>
@@ -188,21 +189,28 @@
                       </td>               
                      <td th:text="|₩ ${reservation.formattedPrice}|"></td>
                      <td th:text="${reservation.reservationCode}"></td>
-                     <th th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></th>
+                     <td>
+						<a th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></a>
+						</br>
+						<small th:with="duration=${T(java.time.Duration).between(reservation.reservationStartTime, reservation.reservationEndTime)}"
+												       th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
+					 </td>
                      <td th:text="${reservation.count}"></td>
                       <td class="project-actions text-right">
                           <a th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}" class="btn btn-primary btn-sm" >
                              <i class="fas fa-folder"></i> View
                           </a>
-                          <a class="btn btn-success btn-sm" >
-                              <i class="fas fa-pencil-alt">
-                              </i>
-                              Edit
+                          <a class="btn btn-success btn-sm" 
+						     th:href="@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}"
+						     onclick="return confirm('예약 확정 하시겠습니까?')" >
+                             <i class="fa fa-check-circle" aria-hidden="true"></i>    
+                              confirm
                           </a>
 							<a class="btn btn-danger btn-sm" 
-							   onclick="return confirm('정말 삭제하시겠습니까?')">
-							    <i class="fas fa-trash"></i>
-							    Delete
+								th:href="@{/admin/Reservation_refuse/{reservationCode}(reservationCode=${reservation.reservationCode})}"
+							   onclick="return confirm('승인 거절 하시겠습니까?')">
+							   <i class="fa fa-ban" aria-hidden="true"></i>
+								Refuse
 							</a>
                       </td>
                   </tr>
