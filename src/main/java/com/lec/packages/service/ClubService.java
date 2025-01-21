@@ -110,4 +110,6 @@ public interface ClubService {
 
     List<ClubReservationDTO> getClubResList(String clubCode);
 
+    String addClubResMember(String reservationCode, String clubCode, String memId);
+
 }
