@@ -2,10 +2,13 @@ package com.lec.packages.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,12 +16,16 @@ import org.springframework.stereotype.Service;
 import com.lec.packages.domain.ChargeHistory;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.MemberRole;
+import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.domain.exercise_code_table;
+import com.lec.packages.dto.ChargeHistoryDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.ChargeHistoryRepository;
 import com.lec.packages.repository.ExerciseRepository;
 import com.lec.packages.repository.MemberRepository;
+import com.lec.packages.repository.TransferHistoryRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -169,6 +176,42 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	
+
+
+	    @Autowired
+	    private TransferHistoryRepository transferHistoryRepository;
+
+	    public List<TransferHistoryDTO> getTransferHistories(String memId) {
+	        List<TransferHistory> transferHistories = transferHistoryRepository.findByMemId(memId);
+	        return transferHistories.stream()
+	                .map(th -> TransferHistoryDTO.builder()
+	                        .transferCode(th.getTransferCode())
+	                        .senderId(th.getSenderId()) // Member의 memId를 추출
+	                        .receiverId(th.getReceiverId()) // Member의 memId를 추출
+	                        .amount(th.getAmount())
+	                        .transferDate(th.getTransferDate())
+	                        .status(th.getStatus())
+	                        .memo(th.getMemo())
+	                        .clubCode(th.getClubCode())
+	                        .build())
+	                .collect(Collectors.toList());
+	    }
+
+	    public List<ChargeHistoryDTO> getChargeHistories(String memId) {
+	        List<ChargeHistory> chargeHistories = chargeHistoryRepository.findByMemId(memId);
+	        return chargeHistories.stream()
+	                .map(ch -> ChargeHistoryDTO.builder()
+	                        .chargeCode(ch.getChargeCode())
+	                        .memId(ch.getMemId())
+	                        .amount(ch.getAmount())
+	                        .chargeDate(ch.getChargeDate())
+	                        .paymentMethod(ch.getPaymentMethod())
+	                        .status(ch.getStatus())
+	                        .build())
+	                .collect(Collectors.toList());
+	
+	}
+
 	
 
 //	public void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName) {

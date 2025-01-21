@@ -1,11 +1,14 @@
 package com.lec.packages.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.lec.packages.dto.ChargeHistoryDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 
 public interface MemberService {
 	// 회원가입에서 해당아이디가 존재할 경우에는
@@ -31,6 +34,10 @@ public interface MemberService {
 	void updateMemAddressSet(String memberId, String memAddressSet);
 	
 	void chargePoint(String id,BigDecimal amount, BigDecimal plusPoint);
+
+	List<TransferHistoryDTO> getTransferHistories(String memId);
+
+	List<ChargeHistoryDTO> getChargeHistories(String memId);
 	
 	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
