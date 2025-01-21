@@ -4,7 +4,10 @@ package com.lec.packages.service;
 
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -321,6 +324,13 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 
+	@Override
+	public List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate) {
+		
+		List<Reservation> reservations = reservationRepository.findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(facilityCode, reservationDate, false);
+		return reservations;
+	}
+
 	// 시설 예약취소
 	@Override
 	@Transactional
@@ -368,8 +378,6 @@ public class FacilityServiceImpl implements FacilityService{
 	    transferHistoryRepository.save(transferHistory);
 	    reservationRepository.save(reservation);
 	}
-
-
 
 
 

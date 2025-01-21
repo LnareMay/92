@@ -199,7 +199,7 @@
 
 				<div class="form-group">
 					<label for="reservationDate">예약 날짜</label> <input
-						id="reservationDate" name="reservationDate" type="date"
+						id="reservationDate" name="reservationDate" type="date" onchange="dateChange(this.value)"
 						placeholder="날짜를 선택하세요" required>
 				</div>
 
@@ -208,8 +208,8 @@
 						th:value="${facility.facilityIsOnlyClub}"> <label
 						for="reservationTime">예약 시간</label> <select
 						id="reservationStartTime" name="reservationStartTime" type="time"
-						required></select> <select id="reservationEndTime"
-						name="reservationEndTime" type="time" required></select>
+						required disabled></select> <select id="reservationEndTime"
+						name="reservationEndTime" type="time" required disabled></select>
 					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 
 					<label id="countLabel" for="count">예약 인원</label> <input
@@ -352,7 +352,36 @@
     let totalPaid = 0;
 	const isClubOwner = /*[[${isClubOwner}]]*/"";
 	const facilityIsOnlyClub = /*[[${facility.facilityIsOnlyClub}]]*/"";
-   
+	const facilityCode = /*[[${facility.facilityCode}]]*/"";
+
+	// 시간 선택
+	let reservation;
+	async function getReservationTime(value) {
+		const reservationDate = value;
+		const response = await axios.get(`/facility/getReservationTimeList/${facilityCode},${reservationDate}`)
+    	return response.data
+	}
+
+	function dateChange(value) {
+		getReservationTime(value).then(data => {
+			const startSelect = document.getElementById("reservationStartTime");
+			const endSelect = document.getElementById("reservationEndTime");
+			const resDate = document.getElementById("reservationDate");
+			startSelect.disabled = false;
+			endSelect.disabled = false;
+			const childs = startSelect.childNodes
+			data.forEach(reservation => {
+				childs.forEach(element => {
+					const elementTime = new Date(`${resDate.value}T${element.value}`);
+					const startTime = new Date(`${resDate.value}T${reservation.reservationStartTime}`)
+					const endTime = new Date(`${resDate.value}T${reservation.reservationEndTime}`)
+					if(elementTime.getTime() == startTime.getTime()) element.disabled = true;
+					if(elementTime > startTime && elementTime < endTime) element.disabled = true;
+				});
+			});
+			reservation = data;
+		})
+	}
     
     // 최종 결제 금액 계산
     function calculateTotalPrice() {
@@ -487,14 +516,14 @@
             const timeString = start.toTimeString().slice(0, 5); // HH:MM 형식
             const option = document.createElement("option");
             option.value = timeString;
-            option.textContent = timeString;
+            option.textContent = timeString;			
             startSelect.appendChild(option);
             start.setMinutes(start.getMinutes() + interval); // 60분 간격으로 증가
         }
     }
 
     // 운영 시간 기반으로 예약 가능한 시간 생성 <예약 종료 시간>
-    function generateReservationEndTimes(selectedStartTime, endTime) {
+    function generateReservationEndTimes(selectedStartTime, endTime, reservations) {
         const endSelect = document.getElementById("reservationEndTime");
         const start = new Date(`1970-01-01T${selectedStartTime}`);
         const end = new Date(`1970-01-01T${endTime}`);
@@ -512,12 +541,23 @@
             option.textContent = timeString;
             endSelect.appendChild(option);
         }
+		const resDate = document.getElementById("reservationDate");
+		const childs = endSelect.childNodes
+		const startSelectTime = new Date(`${resDate.value}T${selectedStartTime}`);
+		for(let i = 0; i < reservations.length; i++) {
+			childs.forEach(element => {
+				const elementTime = new Date(`${resDate.value}T${element.value}`);
+				const startTime = new Date(`${resDate.value}T${reservations[i].reservationStartTime}`)
+				const endTime = new Date(`${resDate.value}T${reservations[i].reservationEndTime}`)
+				if(elementTime > startTime && elementTime < endTime) element.disabled = true;
+			});
+		};
     }
 
     // 이벤트 연결
     document.getElementById("reservationStartTime").addEventListener("change", function () {
         const selectedStartTime = this.value; // 선택된 시작 시간
-        generateReservationEndTimes(selectedStartTime, facilityEndTime); // 종료 시간 생성
+        generateReservationEndTimes(selectedStartTime, facilityEndTime, reservation); // 종료 시간 생성
     });
 
     // 초기 시간 목록 생성
@@ -677,6 +717,7 @@
 	function selectBoxChange(value) {
 		// document.querySelector("#senderId").value = value
 	}
+
 </script>
 
 
