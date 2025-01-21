@@ -1,5 +1,5 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
-<footer th:fragment="charge_popup" id="charge_popup">
+<div th:fragment="charge_popup" id="charge_popup">
 	<div class="container">
 		<!-- 어두운 배경 오버레이 추가 -->
 		<div id="overlay"></div>
@@ -28,7 +28,7 @@
 
 		<script th:inline="javascript">
 		// FITPAY 충전하기 버튼 클릭 이벤트
-		let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
+		let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000") || 0;// 사용자 잔액
 		
 		document.getElementById("fitpayCharge").addEventListener("click", function () {
 			const fitpayOptions = document.getElementById("fitpayOptions");
@@ -136,5 +136,5 @@
 	</script>
 
 	</div>
-</footer>
+</div>
 </html>

@@ -18,5 +18,9 @@ public interface TransferHistoryRepository extends JpaRepository<TransferHistory
     @Query("SELECT th FROM TransferHistory th WHERE th.transferDate = :transferDate AND th.senderId.memId = :senderId")
     Optional<TransferHistory> findByTransferDateAndSenderId(@Param("transferDate") LocalDateTime transferDate,
                                                             @Param("senderId") String senderId);
+
+    @Query("SELECT th FROM TransferHistory th JOIN FETCH th.senderId JOIN FETCH th.receiverId WHERE th.senderId.memId = :memId")
+    List<TransferHistory> findByMemId(@Param("memId") String memId);
+
 }
 

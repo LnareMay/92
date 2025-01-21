@@ -56,12 +56,13 @@
 					<div style="display: inline-flex; gap: 5px; width: 100%">
 						<button class="btn btn-primary" id="fitpayCharge"
 							style="width: 50%">충전</button>
-						<button class="btn btn-success" style="width: 50%">내역</button>
+						<button class="btn btn-success" id="payList" style="width: 50%">내역</button>
 					</div>
 				</div>
 			</div>
 
 			<div th:insert="~{layouts/charge_popup :: charge_popup}"></div>
+			<div th:insert="~{layouts/pay_list :: pay_list}"></div>
 		</div>
 
 		<div class="main">
