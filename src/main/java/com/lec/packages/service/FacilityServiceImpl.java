@@ -202,6 +202,8 @@ public class FacilityServiceImpl implements FacilityService{
 		
 		
 	}
+	
+	// 시설예약
 	@Override
 	public void bookByMember(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, BigDecimal memMoney) {
 	    // Step 1: 예약 정보를 검증

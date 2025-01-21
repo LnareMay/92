@@ -12,7 +12,18 @@ import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.ClubReservationInterface;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
-	 List<Reservation> findByMemId(String memId);
+	 
+	@Query("SELECT r FROM Reservation r " +
+		       "WHERE r.memId = :memId " +
+		       "ORDER BY " +
+		       "CASE r.reservationProgress " +
+		       "    WHEN '예약진행중' THEN 1 " +
+		       "    WHEN '예약완료' THEN 2 " +
+		       "    WHEN '예약취소' THEN 3 " +
+		       "    ELSE 4 " + // 예상치 못한 상태를 처리
+		       "END, " +
+		       "r.CREATEDATE DESC")
+	List<Reservation> findByMemId(@Param("memId") String memId);
 
 	List<Reservation> findByFacilityCode(String facilityCode);
 
