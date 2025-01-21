@@ -41,11 +41,12 @@
 			<!-- 모달: 예약유형 선택 -->
 			    <div id="reser-modal" class="modal">
 			        <div class="modal-content">
-			            <h3>예약 유형 선택</h3>
+			            <h3>예약 유형 선택</h3> 
 			            <div id="reser-buttons" class="button-grid">
-			                <button type="button" data-sport="클럽전용" value="true">클럽전용</button>
-			                <button type="button" data-sport="개인" value="false">개인</button>			                				
+			                <button type="button" data-reser="클럽전용" value="true">클럽전용</button>
+			                <button type="button" data-reser="개인" value="false">개인</button>	
 			            </div>
+						<button type="button" id="close-btn" data-modal="reser-modal">닫기</button>                				
 			        </div>
 			    </div>
 			    <input type="hidden" id="facilityIsOnlyClub" name="facilityIsOnlyClub" />
@@ -82,6 +83,7 @@
 							<button type="button" data-province="제주특별자치도">제주</button>
 							<button type="button" data-province="강원특별자치도">강원</button>
 						</div>
+						<button type="button" id="close-btn" data-modal="reser-modal">닫기</button>    
 					</div>
 				</div>
 
@@ -90,7 +92,7 @@
 			        <div class="modal-content">
 			            <h3 id="city-title"></h3>
 			            <div id="city-buttons" class="button-grid"></div>
-			          <!--  <button id="back-btn">이전으로</button>-->
+			            <button type="button" id="close-btn" data-modal="reser-modal">닫기</button>    
 			        </div>
 			    </div>
 			</div>
@@ -118,6 +120,7 @@
 			                <button type="button" data-sport="테니스" value="EXE_TENNIS">테니스</button>							
 			                <button type="button" data-sport="요가" value="EXE_YOGA">요가</button>							
 			            </div>
+						<button type="button" id="close-btn" data-modal="reser-modal">닫기</button>    
 			        </div>
 			    </div>
 				<input type="hidden" id="exerciseCode" name="exerciseCode" />
@@ -256,7 +259,9 @@
 
         const searchButton = document.querySelector(".search-btn"); // 검색 버튼
         const searchForm = document.querySelector(".search-bar"); // 폼
-
+		
+		const modals = document.querySelectorAll(".modal");
+		
         // 지역 선택 시 모달 열기
         regionSelect.addEventListener("click", () => {
 			closeModals();
@@ -365,11 +370,19 @@
             searchForm.submit(); // 폼 제출
         });
 		
-		document.querySelectorAll(".modal .close").forEach(closeButton => {
-		        closeButton.addEventListener("click", () => {
-		            sportModal.style.display = "none";
+		// 닫기버튼 
+		document.querySelectorAll("#close-btn").forEach(button => {
+		        button.addEventListener("click", () => {
+					closeModals();
 		        });
 		    });
+			
+		// 모달 닫기 함수
+		function closeModals() {
+		    modals.forEach(modal => {
+			modal.style.display = "none";
+			});
+		} 
 			
 		/* 이전버튼
 		const backButton = document.getElementById("back-btn");
@@ -379,13 +392,7 @@
 		}) */
 
 
-       // 모달 닫기 함수
-        function closeModals() {
-            regionModal.style.display = "none";
-            cityModal.style.display = "none";
-            sportModal.style.display = "none";
-			reserModal.style.display = "none";
-        } 
+       
     });
 </script>
 </body>

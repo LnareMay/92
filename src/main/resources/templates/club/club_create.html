@@ -336,9 +336,14 @@
 	                    if (statusCode === kakao.maps.services.Status.OK) {
 	                        // 동 이름 가져오기
 	                        const dongAddress = result.find((region) => region.region_type === "H")?.address_name;
-	                        if (dongAddress) {
-	                            status.textContent = `현재 위치: ${dongAddress}`;
-	                            clubAddressInput.value = dongAddress; // clubAddress 히든 필드에 설정
+	                      /*   if (dongAddress) {
+	                            status.textContent = `현재 위치: ${dongAddress}`; */
+	                            if (dongAddress) {
+	                            	const trimaddress = dongAddress.replace("특별시", "")
+	                            								   .replace("광역시", "")
+	                            								   .trim();
+	                            	status.textContent = `현재 위치: ${trimaddress}`;	                            
+	                            	clubAddressInput.value = trimaddress; // clubAddress 히든 필드에 설정
 	                        } else {
 	                            status.textContent = "주소 정보를 가져올 수 없습니다.";
 	                            clubAddressInput.value = ""; // 오류 시 빈 값 설정
