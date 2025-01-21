@@ -339,6 +339,7 @@ public class FacilityServiceImpl implements FacilityService{
 
 
 	@Override
+
 	public List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate) {
 		
 		List<Reservation> reservations = reservationRepository.findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(facilityCode, reservationDate, false);
@@ -403,14 +404,8 @@ public class FacilityServiceImpl implements FacilityService{
 
 
 	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
-		
+
 		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
-
-	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
-		
-
-
-	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
 		/*
 		 * Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()->new
 		 * IllegalArgumentException("생성된 시설이 없습니다."));
@@ -421,6 +416,7 @@ public class FacilityServiceImpl implements FacilityService{
 		 */
 
 		List<Facility> facilities = facilityRepository.findByMemId(memId);
+
 	    return facilities.stream()
 				        .map(facility -> modelMapper.map(facility, FacilityDTO.class))
 				        .collect(Collectors.toList());
