@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,47 +100,6 @@ public class AdminController {
 	 }
 	 
 	 
-//	 //시설 수정하기 Post
-//	 @PostMapping("/Facility_edit/{facilityCode}")
-//	 public String EditFaciltyPagePost(@Valid FacilityDTO facilityDTO
-//									 	,@PathVariable("facilityCode") String facilityCode
-//										,BindingResult bindingResult
-//										,RedirectAttributes redirectAttributes
-//										,Model model
-//										,@AuthenticationPrincipal UserDetails userDetails
-//										,@RequestParam("exerciseCode") String exerciseCode) {
-//		 
-//		 // NULL로 변환하여 DB에 저장할 수 있도록 함.
-//		 if (exerciseCode == null || exerciseCode.isEmpty()) {
-//		        exerciseCode = null;
-//		    }
-//
-//	    if (bindingResult.hasErrors()) {
-//	  
-//	    	log.info("입력된 정보에 에러가 있습니다: {}", bindingResult.getAllErrors());
-//	       
-//	        String userId = userDetails.getUsername();
-//	        
-//	        // 에러 메시지와 사용자 입력 데이터를 모델에 추가
-//	        model.addAttribute("facilityDTO", facilityDTO);
-//    	    model.addAttribute("userId", userId);
-//    	    
-//	        model.addAttribute("errors", bindingResult.getFieldErrors());
-//
-//
-//	        // 입력 페이지로 다시 이동
-//	        return "admin/Facility_add";
-//	    }
-//
-//	    log.info("등록 요청: {}", facilityDTO);
-//
-//	    // 시설 등록 및 결과 처리
-//	    facilityService.modify(facilityDTO);
-//	    redirectAttributes.addFlashAttribute("result", "시설이 성공적으로 등록되었습니다");
-//		 
-//		 return "admin/Facility_list";
-//	 }
-	 
 	 //시설 상세보기
 	 @GetMapping("/Facility_detail/{facilityCode}")
 	 public String DetailFaciltyPage(@PathVariable("facilityCode") String facilityCode, Model model,@AuthenticationPrincipal UserDetails userDetails) {
@@ -178,44 +138,95 @@ public class AdminController {
 		 return "admin/Facility_list";		 
 	 }
 	 
-	 //예약 리스트 보기
-	 @GetMapping("/Reservation_list")
-	 public String ListReservationPage(PageRequestDTO pageRequestDTO , Model model, @AuthenticationPrincipal UserDetails userDetails) {
-		 
-		 String memId = userDetails.getUsername();
-		 //로그인 한 유저의 시설 코드 받아오기 
-		 FacilityDTO facilityDTO = facilityService.getFacilityBylistByUser(userDetails.getUsername());
-		 
-		 //facilityCode에해당하는 예약 목록 조
-		 PageResponseDTO<ReservationDTO> responseDTO = reservationService.getReservationByFacilityCode(facilityCode,pageRequestDTO);
-		 log.info("............................."+responseDTO);
-		 
-		 model.addAttribute("memId",memId);	
-		 
-		 model.addAttribute("reservations",responseDTO.getDtoList());
-		 model.addAttribute("totalPages", responseDTO.getTotal());
-		 model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
-		 model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
-		 
-		 return "admin/Reservation_list";		 
-	 }
-	 
-
+//	 @GetMapping("/Reservation_list")
+//	 public String ListReservationPage(PageRequestDTO pageRequestDTO, Model model, 
+//	     @AuthenticationPrincipal UserDetails userDetails) {
+//	     
+	 	 
+//	     String memId = userDetails.getUsername();
+//	     
+//	     // 로그인 한 유저의 시설 코드들 받아오기 
+//	     List<FacilityDTO> facilityDTOs = facilityService.getFacilityCodeByUser(userDetails.getUsername());
+//	     
+//	     // 모든 시설의 예약 정보를 담을 리스트
+//	     List<ReservationDTO> allReservations = new ArrayList<>();
+//	     
+//	     // 각 시설의 예약 정보 조회 --> 凸성능 쓰레기凸
+//	     for (FacilityDTO facility : facilityDTOs) {
+//	         PageResponseDTO<ReservationDTO> responseDTO = 
+//	             reservationService.getReservationByFacilityCode(facility.getFacilityCode(), pageRequestDTO);
+//	         allReservations.addAll(responseDTO.getDtoList());
+//	     }
+//	     
+//	     // 페이징 처리를 위한 계산
+//	     int totalItems = allReservations.size();
+//	     int pageSize = pageRequestDTO.getSize();
+//	     int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+//	     
+//	     model.addAttribute("memId", memId);
+//	     model.addAttribute("facilities", facilityDTOs);
+//	     model.addAttribute("reservations", allReservations);
+//	     model.addAttribute("totalPages", totalPages);
+//	     model.addAttribute("pageNumber", pageRequestDTO.getPage());
+//	     model.addAttribute("pageSize", pageRequestDTO.getSize());
+//	     
+//	     return "admin/Reservation_list";
+//	 }
 	 
 	 @GetMapping("/Facility_delete/{facilityCode}")
 	 public String deleteFacility(@PathVariable("facilityCode") String facilityCode) {
-	     // 시설 정보 조회
-	     Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
-	     
-	     if (optionalFacility.isPresent()) {
-	         Facility facility = optionalFacility.get();
-	         // deleteFlag를 0으로 설정
-	         facility.setDeleteFlag(true);
-	         facilityRepository.save(facility);
-	     }
-	     
-	     return "redirect:/admin/Facility_list";
+		 // 시설 정보 조회
+		 Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
+		 
+		 if (optionalFacility.isPresent()) {
+			 Facility facility = optionalFacility.get();
+			 // deleteFlag를 0으로 설정
+			 facility.setDeleteFlag(true);
+			 facilityRepository.save(facility);
+		 }
+		 
+		 return "redirect:/admin/Facility_list";
 	 }
+	 
+	 @GetMapping("/Reservation_list")
+	 public String ListReservationPage(PageRequestDTO pageRequestDTO, Model model, 
+	     @AuthenticationPrincipal UserDetails userDetails) {
+	     
+	     String memId = userDetails.getUsername();
+	     
+	     PageResponseDTO<ReservationDTO> responseDTO = 
+	         reservationService.getAllReservationsForUser(memId, pageRequestDTO);
+	     
+	     model.addAttribute("memId", memId);
+	     model.addAttribute("reservations", responseDTO.getDtoList());
+	     model.addAttribute("totalPages", responseDTO.getTotal());
+	     model.addAttribute("pageNumber", pageRequestDTO.getPage());
+	     model.addAttribute("pageSize", pageRequestDTO.getSize());
+	     
+	     return "admin/Reservation_list";
+	 }
+	 
+	 
+	 //시설 상세보기
+	 @GetMapping("/Reservation_detail/{reservationCode}")
+	 public String DetailReservationPage(@PathVariable("reservationCode") String reservationCode, Model model,@AuthenticationPrincipal UserDetails userDetails) {
+		 
+		  String memId = userDetails.getUsername();
+		 
+		 //예약 정보를 가져오기 위해 서비스 호출
+		 ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+		
+		 //모델에 로그인 정보를 추가하여 뷰로 전달
+		 model.addAttribute("memId", memId);
+		 //모델에 시설 정보를 추가하여 뷰로 전달
+		 model.addAttribute("reservation",reservationDTO);
+ 
+		 return "admin/Reservation_detail";
+	 }
+
+
+	 
+
 	 
 	 
 	 @GetMapping("/calendar")

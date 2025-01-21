@@ -2,6 +2,7 @@ package com.lec.packages.repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.ClubReservationDTO;
@@ -16,9 +18,16 @@ import com.lec.packages.dto.ClubReservationInterface;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 
-	List<Reservation> findByMemId(String memId);
+	//List<Reservation> findByMemId(String memId);
 
-	List<Reservation> findByFacilityCode(String facilityCode);
+
+	 // 사용자의 모든 시설에 대한 예약 조회 (서브쿼리 사용)
+    @Query("SELECT r FROM Reservation r " +"WHERE r.facilityCode IN (SELECT f.facilityCode FROM Facility f WHERE f.memId = :memId) " +"ORDER BY r.reservationDate DESC")
+    Page<Reservation> findAllReservationsWithUser(@Param("memId") String memId, Pageable pageable);
+	//Page<Reservation> findByFacilityCode(String facilityCode,Pageable pageable);
+	//Page<Reservation> searchByMemId(String memId, Pageable pageable);
+
+    Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
 	Page<Reservation> searchByMemId(String memId, Pageable pageable);
 
@@ -42,5 +51,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode, Date reservationDate, boolean deleteFlag);
+
 
 }

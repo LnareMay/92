@@ -27,15 +27,19 @@ public interface FacilityService {
 	void bookByMember(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO,BigDecimal memMoney);
 	List<ReservationDTO> getReservationsByFacilityCode(String facilityCode); 
 	
-	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
-
-			,String facilityAddress, String exerciseCode);
+	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO,String facilityAddress, String exerciseCode);
 	void remove(String facilityCode);
+
 	FacilityDTO getFacilityBylistByUser(String username);
 
+	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 			,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub);
-
+	
     List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate);
 	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
+
+
+	
+	 List<FacilityDTO> getFacilityCodeByUser(String memId);
 
 }

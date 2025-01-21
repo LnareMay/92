@@ -164,17 +164,17 @@
                       <th style="width: 20%">
                           Facility Name
                       </th>
-                      <th style="width: 30%">
-                          Facility Address
-                      </th>
                       <th>
                           Facility Price
+                      </th>
+                      <th style="width: 20%">
+                          Reservation Code
                       </th>
                       <th style="width: 20%">
                       		Reservation Start Time ~ End Time
                       </th>
                       <th style="width: 5%">
-                      		Reservation Person Count
+                      		Person Count
                       </th>
                   </tr>
               </thead>
@@ -186,18 +186,20 @@
                           <br/>
                            <small th:text="${reservation.reservationDate}"></small> 	    
                       </td>               
-                     <td th:text="${reservation.formattedPrice}"></td>
+                     <td th:text="|₩ ${reservation.formattedPrice}|"></td>
+                     <td th:text="${reservation.reservationCode}"></td>
+                     <th th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></th>
+                     <td th:text="${reservation.count}"></td>
                       <td class="project-actions text-right">
-                          <a th:href="@{/admin/Facility_detail/{facilityCode}(facilityCode=${facility.facilityCode})}" class="btn btn-primary btn-sm" >
+                          <a th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}" class="btn btn-primary btn-sm" >
                              <i class="fas fa-folder"></i> View
                           </a>
-                          <a th:href="@{/admin/Facility_edit/{facilityCode}(facilityCode=${facility.facilityCode})}" class="btn btn-success btn-sm" >
+                          <a class="btn btn-success btn-sm" >
                               <i class="fas fa-pencil-alt">
                               </i>
                               Edit
                           </a>
 							<a class="btn btn-danger btn-sm" 
-							   th:href="@{/admin/Facility_delete/{facilityCode}(facilityCode=${facility.facilityCode})}"
 							   onclick="return confirm('정말 삭제하시겠습니까?')">
 							    <i class="fas fa-trash"></i>
 							    Delete

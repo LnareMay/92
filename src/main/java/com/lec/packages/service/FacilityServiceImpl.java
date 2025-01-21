@@ -134,8 +134,7 @@ public class FacilityServiceImpl implements FacilityService{
 	
 	// 시설목록 새로만듬
 	@Override
-	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
-				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
+	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO ,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
         // 검색 필터링
@@ -337,13 +336,6 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 
-	@Override
-	public FacilityDTO getFacilityBylistByUser(String memId) {
-		
-		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
-		
-		return modelMapper.map(facility, FacilityDTO.class);
-	}
 
 
 	@Override
@@ -399,6 +391,34 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(transferHistory);
 	    reservationRepository.save(reservation);
+	}
+
+
+	@Override
+	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO, String facilityAddress,
+			String exerciseCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public List<FacilityDTO> getFacilityCodeByUser(String memId) {
+		
+		Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()-> new IllegalArgumentException("시설 정보를 찾을 수 없습니다."));
+		/*
+		 * Facility facility = facilityRepository.findByMemId(memId).orElseThrow(()->new
+		 * IllegalArgumentException("생성된 시설이 없습니다."));
+		 * 
+		 * // ModelMapper를 사용하여 Facility -> FacilityDTO 변환 return
+		 * modelMapper.map(facility, FacilityDTO.class);
+		 *
+		 */
+		List<Facility> facilities = facilityRepository.findByMemId(memId);
+		
+		return modelMapper.map(facility, FacilityDTO.class);
+	    return facilities.stream()
+				        .map(facility -> modelMapper.map(facility, FacilityDTO.class))
+				        .collect(Collectors.toList());
 	}
 
 

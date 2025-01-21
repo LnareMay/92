@@ -28,24 +28,54 @@ public class ReservationServiceImpl implements ReservationService {
 	private final ModelMapper modelMapper;
 	private final ReservationRepository reservationRepository;
 	
-	//유저별 예약 목록 보기
-		@Override
-		public PageResponseDTO<ReservationDTO> ReservationlistByUser(String memId, PageRequestDTO pageRequestDTO) {
-		    Pageable pageable = pageRequestDTO.getPageable("reservationCode");
-		    Page<Reservation> result = reservationRepository.searchByMemId(memId, pageable); // pageable 파라미터 추가
-	
-		    List<ReservationDTO> dtoList = result.getContent()
-											        .stream()
-											        .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
-											        .collect(Collectors.toList());
-	
-		    return PageResponseDTO.<ReservationDTO>withAll()
-		   			  .pageRequestDTO(pageRequestDTO)
-		   			  .dtoList(dtoList)
-		   			  .total(result.getTotalPages())
-		   			  .build();
-		}
+		//로그인 한 유저가 등록한 시설(facilityCode)의 예약내역 
+//		@Override	
+//		public PageResponseDTO<ReservationDTO> getReservationByFacilityCode(String facilityCode,PageRequestDTO pageRequestDTO) {
+//			
+//			Pageable pageable = pageRequestDTO.getPageable("reservationCode");
+//			Page<Reservation> result = reservationRepository.findByFacilityCode(facilityCode,pageable);
+//			
+//			List<ReservationDTO> dtoList = result.getContent()
+//												 .stream()
+//												 .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+//												 .collect(Collectors.toList());
+//		
+//			return PageResponseDTO.<ReservationDTO>withAll()
+//								  .pageRequestDTO(pageRequestDTO)
+//								  .dtoList(dtoList)
+//								  .total(result.getTotalPages())
+//								  .build();
+//		}
 
+	//로그인 한 유저가 등록한 시설의 예약 불러오기
+	  @Override
+	    public PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
+	       
+		  Pageable pageable = pageRequestDTO.getPageable("reservationCode");
+	      Page<Reservation> result = reservationRepository.findAllReservationsWithUser(memId, pageable);
+	       
+	      List<ReservationDTO> dtoList = result.getContent()
+			        			               .stream()
+						                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+								               .collect(Collectors.toList());
+	    
+	        return PageResponseDTO.<ReservationDTO>withAll()
+					              .pageRequestDTO(pageRequestDTO)
+					              .dtoList(dtoList)
+					              .total(result.getTotalPages())
+					              .build();
+	    }
+
+	  //예약코드로 시설 예약 정보 불러오기
+	@Override
+	public ReservationDTO getReservationByCode(String reservationCode) {
+		
+		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
+				.orElseThrow(()->new IllegalArgumentException("시설을 찾을 수 없습니다: "+reservationCode));
+		
+		return modelMapper.map(reservation, ReservationDTO.class);
+		
+	}
 	
 	
 }
