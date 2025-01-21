@@ -249,10 +249,8 @@
 							<h6>일정 </h6>
 						</div>
 						<div>`
-			console.log(data);
 			data.forEach(resData => {
-				console.log(resData)
-				str += `<div class="d-flex align-items-center mb-3">
+				str += `<div class="d-flex align-items-center mb-3" onclick="addMember(${resData.reservationCode}, ${resData.clubCode}, ${resData.nowMemCount}, ${resData.count})">
 						  <div class="me-3 text-center">
 							  <div class="bg-light p-1 rounded">
 								  <strong>${resData.reservationDate.substr(5,2)}월<br>${resData.reservationDate.substr(8,2)}일</strong>
@@ -267,13 +265,35 @@
 			});
 			str += "</div>"
 	
-			console.log(str)
 			resSection.innerHTML = str
 		})
 
 	}
 
 	printResList();
+
+	async function addMember(reservationCode, clubCode, nowMemCount, count) {
+
+		if(resStatus(nowMemCount, count) == "종료"){
+			alert("이미 모집 완료된 일정입니다.")
+			return
+		}
+
+		const yesNo = confirm("해당 일정에 참가하시겠습니까?")
+		if(yesNo) {
+			const response = await axios.get(`/club/addClubResMember/${reservationCode},${clubCode}`)
+			console.log(response.data);
+			if(response.data == "success") {
+				printResList();
+				return;
+			} else if(response.data == "exist") {
+				alert("이미 참가한 일정입니다.")
+				return;
+			}
+		} else {
+			return
+		}
+	}
 
 </script>
 </html>
