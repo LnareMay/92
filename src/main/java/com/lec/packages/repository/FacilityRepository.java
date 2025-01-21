@@ -1,5 +1,6 @@
 package com.lec.packages.repository;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +18,4 @@ public interface FacilityRepository extends JpaRepository<Facility,String> , Fac
     boolean existsByFacilityCode(String facilityCode);
   
     Optional<Facility> findByFacilityCode(@Param("facilityCode") String facilityCode);
-
 }

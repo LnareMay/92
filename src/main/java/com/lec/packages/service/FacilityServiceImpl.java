@@ -4,7 +4,10 @@ package com.lec.packages.service;
 
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -316,6 +319,14 @@ public class FacilityServiceImpl implements FacilityService{
 	    return reservations.stream()
 	            .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
 	            .collect(Collectors.toList());
+	}
+
+
+	@Override
+	public List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate) {
+		
+		List<Reservation> reservations = reservationRepository.findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(facilityCode, reservationDate, false);
+		return reservations;
 	}
 
 
