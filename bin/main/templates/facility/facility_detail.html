@@ -540,7 +540,7 @@
     	        buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
     	    }, function (rsp) {
     	        if (rsp.success) {
-    	            alert("결제가 성공했습니다!");
+    	            // alert("결제가 성공했습니다!");
     	            memMoney += money; // 충전 금액 추가
     	            $("#memMoney_ip").val(memMoney);
     	            $("#memMoney").text(memMoney.toLocaleString());
