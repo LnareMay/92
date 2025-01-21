@@ -319,6 +319,56 @@ public class FacilityServiceImpl implements FacilityService{
 	}
 
 
+	// 시설 예약취소
+	@Override
+	@Transactional
+	public void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO) {
+	    // 1. reservationCode로 Reservation 정보 조회
+	    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationDTO.getReservationCode());
+	    if (optionalReservation.isEmpty()) {
+	        throw new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다.");
+	    }
+	    Reservation reservation = optionalReservation.get();
+
+	    // 예약의 mem_id와 현재 로그인된 사용자 ID가 같은지 확인
+	    if (!reservation.getMemId().equals(memId)) {
+	        throw new IllegalStateException("예약 취소 권한이 없습니다.");
+	    }
+
+	    // 2. transfer_history에서 createDate, sender_id가 같은 TransferHistory 가져오기
+	    TransferHistory transferHistory = transferHistoryRepository.findByTransferDateAndSenderId(
+	            reservation.getCREATEDATE(), 
+	            memId
+	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	    // 3. sender_id의 memMoney 업데이트
+	    Member sender = memberRepository.findById(memId)
+	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
+	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
+
+	    // 4. receiver_id의 memMoney 업데이트
+	    Member receiver = memberRepository.findById(transferHistory.getReceiverId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+
+	    // 5. transfer_history의 상태를 '송금 취소'로 변경
+	    transferHistory.setStatus("송금취소");
+
+	    // 6. reservation의 상태를 '예약취소'로 변경
+	    reservation.setReservationProgress("예약취소");
+	    
+	    // 7. reservation의 deleteFlag를 '1'로 변경
+	    reservation.setDeleteFlag(true);
+
+	    // 8. 변경된 데이터 저장
+	    memberRepository.save(sender);
+	    memberRepository.save(receiver);
+	    transferHistoryRepository.save(transferHistory);
+	    reservationRepository.save(reservation);
+	}
+
+
+
 
 
 
