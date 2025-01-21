@@ -94,15 +94,15 @@
 			</span>
 	
 			<!-- 수정/삭제 버튼 -->
-			<span th:if="${clubdto.MemId == principal.memId}">
-				<a th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}" class="btn btn-success" style="display: inline;">클럽 수정</a>
-	
-	
-				<form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
-					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
-					<button type="submit" class="btn btn-danger">클럽 삭제</button>
-				</form>
+			<span th:if="${principal != null and clubdto.MemId == principal.memId}">
+			    <a th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}" class="btn btn-success" style="display: inline;">클럽 수정</a>
+			
+			    <form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
+			        <input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+			        <button type="submit" class="btn btn-danger">클럽 삭제</button>
+			    </form>
 			</span>
+
 		</section>
 				   <hr >
 				
