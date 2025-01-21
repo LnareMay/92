@@ -67,13 +67,34 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	                    }
 	                    break;
 
+	                case "c": // 예약 유형 검색
+	                	if (keywords[2] != null && !keywords[2].isEmpty()) {
+	                		boolean isOnlyClub = Boolean.parseBoolean(keywords[2]);
+	                		booleanBuilder.and(facility.facilityIsOnlyClub.eq(isOnlyClub));
+	                	} else {
+	                		booleanBuilder.and(facility.facilityIsOnlyClub.eq(true).or(facility.facilityIsOnlyClub.eq(false)));
+	                	}
+	                	
 	                case "ae": // 지역 + 운동 유형 검색
 	                    if (keywords[0] != null && !keywords[0].isEmpty()) {
 	                        booleanBuilder.and(facility.facilityAddress.contains(keywords[0]));
 	                    }
 	                    if (keywords[1] != null && !keywords[1].isEmpty()) {
 	                        booleanBuilder.and(facility.exerciseCode.contains(keywords[1]));
-	                    }
+	                    }	                    
+	              
+	                   
+	                case "aec": // 지역 + 운동 + 예약 유형 검색
+	                	if (keywords[0] != null && !keywords[0].isEmpty()) {
+	                		booleanBuilder.and(facility.facilityAddress.contains(keywords[0]));
+	                	}
+	                	if (keywords[1] != null && !keywords[1].isEmpty()) {
+	                		booleanBuilder.and(facility.exerciseCode.contains(keywords[1]));
+	                	}
+	                	if(keywords[2] != null && !keywords[2].isEmpty()) {
+	                		boolean isOnlyClub = Boolean.parseBoolean(keywords[2]);
+	                		booleanBuilder.and(facility.facilityIsOnlyClub.eq(isOnlyClub));
+	                	}
 	                    break;
 
 	                default:
