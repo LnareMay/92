@@ -21,13 +21,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	//List<Reservation> findByMemId(String memId);
 
 
-	 // 사용자의 모든 시설에 대한 예약 조회 (서브쿼리 사용)
-    @Query("SELECT r FROM Reservation r " +"WHERE r.facilityCode IN (SELECT f.facilityCode FROM Facility f WHERE f.memId = :memId) " +"ORDER BY r.reservationDate DESC")
-    Page<Reservation> findAllReservationsWithUser(@Param("memId") String memId, Pageable pageable);
-	//Page<Reservation> findByFacilityCode(String facilityCode,Pageable pageable);
-	//Page<Reservation> searchByMemId(String memId, Pageable pageable);
+  Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
-    Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
 	Page<Reservation> searchByMemId(String memId, Pageable pageable);
 
@@ -49,10 +44,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	 // 사용자의 모든 시설에 대한 예약 조회 (서브쿼리 사용)
     @Query("SELECT r FROM Reservation r " +"WHERE r.facilityCode IN (SELECT f.facilityCode FROM Facility f WHERE f.memId = :memId) " +"ORDER BY r.reservationDate DESC")
     Page<Reservation> findAllReservationsWithUser(@Param("memId") String memId, Pageable pageable);
-	//Page<Reservation> findByFacilityCode(String facilityCode,Pageable pageable);
-	//Page<Reservation> searchByMemId(String memId, Pageable pageable);
-
-    Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
 
 	// 시설 예약 내역 클럽원 현재 인원 수

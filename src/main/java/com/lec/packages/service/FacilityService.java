@@ -44,7 +44,6 @@ public interface FacilityService {
 	 List<FacilityDTO> getFacilityCodeByUser(String memId);
 
 
-	
-	 List<FacilityDTO> getFacilityCodeByUser(String memId);
+
 
 }
