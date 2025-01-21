@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // **4. 파일 선택 시 리스트에 추가**
     fileInput.addEventListener('change', () => {
+		
         const files = Array.from(fileInput.files); // 사용자가 선택한 파일 배열로 변환
 
         if (uploadedFiles.length + existingFiles.length + files.length > MAX_FILES) { 

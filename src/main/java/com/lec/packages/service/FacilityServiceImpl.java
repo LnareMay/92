@@ -189,6 +189,7 @@ public class FacilityServiceImpl implements FacilityService{
 							   ,facilityDTO.getPrice()
 							   ,facilityDTO.getFacilityStartTime()
 							   ,facilityDTO.getFacilityEndTime()
+							   ,facilityDTO.getExerciseCode()
 							   ,facilityDTO.getFacilityImage1()
 							   ,facilityDTO.getFacilityImage2()
 							   ,facilityDTO.getFacilityImage3()
@@ -218,29 +219,61 @@ public class FacilityServiceImpl implements FacilityService{
 	    transferHistoryDTO.setTransferCode(reservationCode);
 
 	    // Step 4: ReservationDTO를 Reservation 엔티티로 변환
-	    Reservation reservation = Reservation.builder()
-	            .reservationCode(reservationCode) // 고유 예약 코드 설정
-	            .facilityCode(reservationDTO.getFacilityCode())
-	            .facilityName(reservationDTO.getFacilityName())
-	            .memId(reservationDTO.getMemId())
-	            .reservationStartTime(reservationDTO.getReservationStartTime())
-	            .reservationEndTime(reservationDTO.getReservationEndTime())
-	            .reservationDate(reservationDTO.getReservationDate())
-	            .count(reservationDTO.getCount())
-	            .price(totalPrice)
-	            .reservationProgress("예약진행중") // 초기 상태 설정
-	            .deleteFlag(false) // 초기 상태 설정
-	            .build();
+		Reservation reservation;
+		if(reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
+			reservation = Reservation.builder()
+					.reservationCode(reservationCode) // 고유 예약 코드 설정
+					.facilityCode(reservationDTO.getFacilityCode())
+					.facilityName(reservationDTO.getFacilityName())
+					.memId(reservationDTO.getMemId())
+					.reservationStartTime(reservationDTO.getReservationStartTime())
+					.reservationEndTime(reservationDTO.getReservationEndTime())
+					.reservationDate(reservationDTO.getReservationDate())
+					.count(reservationDTO.getCount())
+					.price(totalPrice)
+					.reservationProgress("예약진행중") // 초기 상태 설정
+					.deleteFlag(false) // 초기 상태 설정
+					.build();
+		} else {
+			reservation = Reservation.builder()
+					.reservationCode(reservationCode) // 고유 예약 코드 설정
+					.facilityCode(reservationDTO.getFacilityCode())
+					.facilityName(reservationDTO.getFacilityName())
+					.memId(reservationDTO.getMemId())
+					.reservationStartTime(reservationDTO.getReservationStartTime())
+					.reservationEndTime(reservationDTO.getReservationEndTime())
+					.reservationDate(reservationDTO.getReservationDate())
+					.count(reservationDTO.getCount())
+					.price(totalPrice)
+					.reservationProgress("예약진행중") // 초기 상태 설정
+					.deleteFlag(false) // 초기 상태 설정
+					.clubCode(reservationDTO.getClubCode())
+					.build();
+		}
 
-	    TransferHistory transferHistory = TransferHistory.builder()
-	            .transferCode(reservationCode)
-	            .amount(totalPrice)
-	            .memo(transferHistoryDTO.getMemo())
-	            .status("송금성공")
-	            .transferDate(LocalDateTime.now())
-	            .receiverId(transferHistoryDTO.getReceiverId())
-	            .senderId(transferHistoryDTO.getSenderId())
-	            .build();
+		TransferHistory transferHistory;
+		if(reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
+			transferHistory = TransferHistory.builder()
+					.transferCode(reservationCode)
+					.amount(totalPrice)
+					.memo(transferHistoryDTO.getMemo())
+					.status("송금성공")
+					.transferDate(LocalDateTime.now())
+					.receiverId(transferHistoryDTO.getReceiverId())
+					.senderId(transferHistoryDTO.getSenderId())
+					.build();
+		} else {
+			transferHistory = TransferHistory.builder()
+					.transferCode(reservationCode)
+					.amount(totalPrice)
+					.memo(transferHistoryDTO.getMemo())
+					.status("송금성공")
+					.transferDate(LocalDateTime.now())
+					.receiverId(transferHistoryDTO.getReceiverId())
+					.senderId(transferHistoryDTO.getSenderId())
+					.clubCode(reservationDTO.getClubCode())
+					.build();
+		}
 
 	    // Step 5: 데이터베이스에 저장
 	    reservationRepository.save(reservation);

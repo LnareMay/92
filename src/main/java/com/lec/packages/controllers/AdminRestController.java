@@ -144,7 +144,7 @@ public class AdminRestController {
 	// 시설 등록
     @PostMapping(value = "/Facility_add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> addFaciltyPagePost(
-										        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+										        @RequestPart(value = "files[]", required = false) List<MultipartFile> files,
 										        @RequestParam("facilityName") String facilityName,
 										        @RequestParam("memId") String memId,
 										        @RequestParam("facilityStartTime") LocalTime facilityStartTime,
@@ -257,10 +257,10 @@ public class AdminRestController {
   	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   	public ResponseEntity<?> facilityModify(
   	        @ModelAttribute FacilityDTO facilityDTO,
-  	        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-  	        @RequestParam(value = "existingFiles", required = false) List<String> existingFiles,
-  	        @RequestParam(value = "deletedFiles", required = false) List<String> deletedFiles,
-  	        @RequestParam(value = "removedNewFiles", required = false) List<String> removedNewFiles) {
+  	        @RequestPart(value = "newFiles[]", required = false) List<MultipartFile> files,
+  	        @RequestParam(value = "existingFiles[]", required = false) List<String> existingFiles,
+  	        @RequestParam(value = "deletedFiles[]", required = false) List<String> deletedFiles,
+  	        @RequestParam(value = "removedNewFiles[]", required = false) List<String> removedNewFiles) {
 
   	    try {
   	        // 1. 시설 정보 가져오기

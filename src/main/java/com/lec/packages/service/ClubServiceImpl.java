@@ -28,12 +28,15 @@ import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.ClubBoardReplyRepository;
 import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.repository.ClubRepository;
+import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.dto.ClubReservationInterface;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +55,7 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubBoardRepository clubBoardRepository;
 	private final ClubBoardReplyRepository clubBoardReplyRepository;
 	private final ClubMemberRepository clubMemberRepository;
+	private final ReservationRepository reservationRepository;
 	
 	
 	// 클럽생성
@@ -551,6 +555,25 @@ public class ClubServiceImpl implements ClubService {
 			resClubDTOs.add(dto);
 		});
 		return resClubDTOs;
+	}
+
+	@Override
+	public List<ClubReservationDTO> getClubResList(String clubCode) {
+		List<ClubReservationInterface> clubReservationDTOs = reservationRepository.getClubResList(clubCode);
+		log.info("do getClubResList in serviceImpl");
+		log.info(clubReservationDTOs);
+
+		List<ClubReservationDTO> dtos = new ArrayList<>();
+		for (ClubReservationInterface clubReservationInterface : clubReservationDTOs) {
+			ClubReservationDTO dto = ClubReservationDTO.builder().ReservationProgress(clubReservationInterface.getReservationProgress())
+									.clubCode(clubReservationInterface.getClubCode()).count(clubReservationInterface.getCount())
+									.facilityName(clubReservationInterface.getFacilityName()).nowMemCount(clubReservationInterface.getNowMemCount())
+									.reservationCode(clubReservationInterface.getReservationCode()).reservationStartTime(clubReservationInterface.getReservationStartTime())
+									.reservationDate(clubReservationInterface.getReservationDate()).build();
+			dtos.add(dto);
+		}
+
+		return dtos;
 	}
 
 
