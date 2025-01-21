@@ -101,32 +101,29 @@ public class FacilityController {
 	    }
 	    
 	    @GetMapping("/detail/{facilityCode}")
-	    public String FaciltyDetailPage( @PathVariable("facilityCode") String facilityCode
-	    								,HttpServletRequest request
-	    								,PageRequestDTO pageRequestDTO 
-	    								, Model model
-	    								,@AuthenticationPrincipal UserDetails userDetails) {
-	    	
-	    	//시설 정보를 가져오기 위해 서비스 호출
-			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
-			List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
-			//클럽장 체크
-			boolean isClubOwner = clubService.checkClubOwner(userDetails.getUsername());
+	    public String facilityDetailPage(@PathVariable("facilityCode") String facilityCode,
+	                                     HttpServletRequest request,
+	                                     PageRequestDTO pageRequestDTO,
+	                                     Model model,
+	                                     @AuthenticationPrincipal UserDetails userDetails) {
+	        // 시설 정보를 가져오기
+	        FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
+	        List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
 
-			//log.info("FacilityDTO: {}", facilityDTO);
-			String userId = userDetails.getUsername();
-			//모델에 로그인 정보를 추가하여 뷰로 전달
-			model.addAttribute("userId",userId);
-			//클럽장 체크 결과 전달
-			model.addAttribute("isClubOwner", isClubOwner);
-			//모델에 시설 정보를 추가하여 뷰로 전달
-			model.addAttribute("facility",facilityDTO);
-			model.addAttribute("reservations", reservations);
-			model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
-			
-	    	return "facility/facility_detail";		 
+	        // 로그인 여부 확인
+	        String userId = (userDetails != null) ? userDetails.getUsername() : "비회원";
+	        boolean isClubOwner = (userDetails != null) && clubService.checkClubOwner(userId);
+
+	        // 모델에 값 추가
+	        model.addAttribute("userId", userId);
+	        model.addAttribute("isClubOwner", isClubOwner);
+	        model.addAttribute("facility", facilityDTO);
+	        model.addAttribute("reservations", reservations);
+	        model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
+
+	        return "facility/facility_detail";
 	    }
-	    
+
 	    // 시설예약
 	    @PostMapping("/submit-booking")
 		public String facilityBookByMemberPost(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, @RequestParam("memMoney") BigDecimal memMoney, HttpServletRequest request, RedirectAttributes redirectAttributes) {

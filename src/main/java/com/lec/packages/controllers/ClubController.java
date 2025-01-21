@@ -54,41 +54,49 @@ public class ClubController {
 	}
 	
 	@GetMapping({"/club_detail", "/club_modify"})
-	public void clubDetail(@RequestParam("clubCode") String clubCode
-			, PageRequestDTO pageRequestDTO
-			, HttpServletRequest request, Model model) {
-		String requestURI = request.getRequestURI();
-		model.addAttribute("currentURI", requestURI);
-				
-		ClubDTO clubDTO = clubService.detail(clubCode);		
-		if(clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
-			clubDTO.setClubTheme(clubDTO.getClubTheme());
-		}
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
-		model.addAttribute("principal", principal);
-		
-		String memId = principal.getMemId();
-		boolean isMember = clubService.isJoinMember(memId, clubCode);
-		model.addAttribute("isMember", isMember);
-		
-		// 클럽상세보기에서 회원3명만 보여지기 제한
-		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
-											  .stream()
-											  .limit(3)
-/*											  .peek(m -> {
-												  if (m.getMemPicture() == null || m.getMemPicture().isEmpty())
-													  m.setMemPicture("/img/upload/img_profile.png");
-											  }) */
-											  .collect(Collectors.toList());
-        model.addAttribute("clubmembers", clubmembers);
-        
-        Map<String, Integer> memberCount = clubService.membercount();
-		model.addAttribute("memberCount", memberCount);
+	public void clubDetail(@RequestParam("clubCode") String clubCode,
+	                       PageRequestDTO pageRequestDTO,
+	                       HttpServletRequest request, Model model) {
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
 
-        model.addAttribute("clubdto", clubDTO);
+	    // 클럽 정보 가져오기
+	    ClubDTO clubDTO = clubService.detail(clubCode);		
+	    if (clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
+	        clubDTO.setClubTheme(clubDTO.getClubTheme());
+	    }
+
+	    // 인증 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    Object principal = authentication != null ? authentication.getPrincipal() : null;
+
+	    if (principal instanceof MemberSecurityDTO) {
+	        MemberSecurityDTO member = (MemberSecurityDTO) principal;
+	        model.addAttribute("principal", member);
+
+	        String memId = member.getMemId();
+	        boolean isMember = clubService.isJoinMember(memId, clubCode);
+	        model.addAttribute("isMember", isMember);
+	    } else {
+	        // 비회원 또는 익명 사용자 처리
+	        model.addAttribute("principal", null);
+	        model.addAttribute("isMember", false);
+	    }
+
+	    // 클럽 상세보기에서 회원 3명만 보여지기 제한
+	    List<Member> clubMembers = clubService.findMemberDetails(clubCode)
+	                                          .stream()
+	                                          .limit(3)
+	                                          .collect(Collectors.toList());
+	    model.addAttribute("clubmembers", clubMembers);
+
+	    // 회원 수 가져오기
+	    Map<String, Integer> memberCount = clubService.membercount();
+	    model.addAttribute("memberCount", memberCount);
+
+	    model.addAttribute("clubdto", clubDTO);
 	}
+
 		
 	@PostMapping("/club_remove")
 	public String clubRemove(@RequestParam(value = "clubCode", required = false) String clubCode
