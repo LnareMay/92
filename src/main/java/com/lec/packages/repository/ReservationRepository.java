@@ -18,8 +18,10 @@ import com.lec.packages.dto.ClubReservationInterface;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 
+
 	//List<Reservation> findByMemId(String memId);
 
+ 
 
   Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
 
@@ -51,7 +53,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode, Date reservationDate, boolean deleteFlag);
-
 
 
 }
