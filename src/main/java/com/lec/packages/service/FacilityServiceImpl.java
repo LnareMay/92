@@ -206,6 +206,16 @@ public class FacilityServiceImpl implements FacilityService{
 		
 	}
 	
+	@Override
+	public void remove(String facilityCode) {
+		Facility facility = facilityRepository.findByFacilityCode(facilityCode).orElseThrow(()->new IllegalArgumentException("존재하지 않는 시설입니다."));
+		
+		facility.setDeleteFlag(true);
+		
+		facilityRepository.save(facility);
+		
+	}
+	
 	// 시설예약
 	@Override
 	public void bookByMember(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, BigDecimal memMoney) {

@@ -2,10 +2,11 @@ package com.lec.packages.dto;
 
 import java.math.BigDecimal;
 
+
 import com.lec.packages.domain.exercise_code_table;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotEmpty;
+
+import lombok.Builder;
 import lombok.Data;
 
 @Data

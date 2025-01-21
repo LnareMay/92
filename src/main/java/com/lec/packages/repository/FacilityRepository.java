@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Facility;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.repository.search.FacilitySearch;
 
 public interface FacilityRepository extends JpaRepository<Facility,String> , FacilitySearch{
@@ -18,4 +19,9 @@ public interface FacilityRepository extends JpaRepository<Facility,String> , Fac
     boolean existsByFacilityCode(String facilityCode);
   
     Optional<Facility> findByFacilityCode(@Param("facilityCode") String facilityCode);
+
+    
+    List<Facility> findByMemId(String memId);
+  
+
 }

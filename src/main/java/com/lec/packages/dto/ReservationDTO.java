@@ -66,4 +66,9 @@ public class ReservationDTO {
         return NumberFormat.getNumberInstance(Locale.KOREA).format(price);
     }
 
+	public boolean isPresent() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

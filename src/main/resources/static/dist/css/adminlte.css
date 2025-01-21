@@ -20343,6 +20343,7 @@ html.maximized-card {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.125);
   position: relative;
+  width: 100%;
 }
 
 .invoice-title {
