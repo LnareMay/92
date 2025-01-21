@@ -57,32 +57,7 @@
 				</div>
 			</div>
 
-			<!-- 어두운 배경 오버레이 추가 -->
-			<div id="overlay"></div>
-
-			<div id="fitpayOptions" class="popup_style">
-				<h5>FITPAY 충전</h5>
-				<div class="d-flex align-items-center mb-3">
-
-					<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input type="number"
-						id="chargeAmount" class="form-control me-2" placeholder="금액 입력" style="width: 150px;">
-				</div>
-
-				<div>
-					<button class="btn btn-warning charge-btn" type="button" id="chargeBtn_kakao"
-						data-pg="kakaopay">카카오페이</button>
-					<!-- <button class="btn btn-success charge-btn" type="button"
-							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button> -->
-					<button class="btn btn-danger charge-btn" type="button" id="chargeBtn_payco"
-						data-pg="payco">페이코</button>
-					<!-- <button class="btn btn-danger charge-btn" id="chargeBtn_inisis" data-pg="html5_inicis.TEST"
-						type="button">KG이니시스</button> -->
-					<!-- kakaopay, payco제외하고는 https환경에서만 작동됨으로 뺌... -->
-				</div>
-			</div>
-
-
-
+			<div th:insert="~{layouts/charge_popup :: charge_popup}"></div>
 
 
 		</div>
@@ -149,11 +124,11 @@
 							<p>-선택필요-</p>
 						</div>
 
-						<div th:if="${#authentication.principal.memBirthday != ''}">
+						<div th:if="${#authentication.principal.memBirthday != null}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div th:if="${#authentication.principal.memBirthday == ''}">
+						<div th:if="${#authentication.principal.memBirthday == null}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -187,114 +162,7 @@
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
 	
-	<script th:inline="javascript">
-		// FITPAY 충전하기 버튼 클릭 이벤트
-		let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
-		
-		document.getElementById("fitpayCharge").addEventListener("click", function () {
-			const fitpayOptions = document.getElementById("fitpayOptions");
-			const overlay = document.getElementById("overlay");
-
-			if (fitpayOptions.style.display === "none" || !fitpayOptions.style.display) {
-				// fitpayOptions 표시 및 배경 어둡게
-				fitpayOptions.style.display = "block";
-				overlay.style.display = "block";
-			} else {
-				// fitpayOptions 숨김 및 배경 밝게
-				fitpayOptions.style.display = "none";
-				overlay.style.display = "none";
-			}
-		});
-
-		// 오버레이 클릭 시 fitpayOptions 닫기
-		document.getElementById("overlay").addEventListener("click", function () {
-			document.getElementById("fitpayOptions").style.display = "none";
-			this.style.display = "none";
-		});
-
-
-
-		$(function () {
-			$('.charge-btn').off("click").on("click", function (event) {
-			    event.preventDefault(); // 기본 동작 방지
-
-			    var IMP = window.IMP; // 아임포트 객체
-			    IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
-
-			    var money = parseFloat($('#chargeAmount').val());
-			    if (isNaN(money) || money <= 0) {
-			        alert("충전 금액을 올바르게 입력하세요.");
-			        return;
-			    }
-
-			    // 클릭된 버튼에 따라 PG 설정
-			    var pgProvider = $(this).attr('data-pg');
-			    if (!pgProvider || (pgProvider !== "html5_inicis" && pgProvider !== "kakaopay" && pgProvider !== "payco")) {
-			        alert("올바른 PG 값을 설정하세요.");
-			        return;
-			    }
-
-			    // 이메일 및 전화번호 처리
-			    var buyerEmail = '/*[[${#authentication.principal.memEmail}]]*/';
-			    buyerEmail = buyerEmail.replace(/[^\w@.-]/g, "").trim();
-
-			    var buyertel = '/*[[${#authentication.principal.memTell}]]*/';
-			    buyertel = buyertel.replace(/[^\d-]/g, "").trim();
-
-			    // 결제 요청
-			    IMP.request_pay({
-			        pg: pgProvider,
-			        pay_method: 'card',
-			        merchant_uid: 'merchant_' + new Date().getTime(),
-			        name: 'FITPAY 충전',
-			        amount: money,
-			        buyer_email: buyerEmail,
-			        buyer_name: '/*[[${#authentication.principal.memName}]]*/',
-			        buyer_tel: buyertel,
-			        buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
-			        buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
-			    }, function (rsp) {
-			        if (rsp.success) {
-			            // alert("결제가 성공했습니다!");
-			            memMoney += money; // 충전 금액 추가
-			            $("#memMoney_ip").val(memMoney);
-			            $("#memMoney").text(memMoney.toLocaleString());
-
-			            // 서버로 충전 금액 전송
-			            $.ajax({
-			                type: "GET",
-			                url: "/member/charge/point",
-			                data: { "amount": memMoney, "plusPoint": money },
-			                success: function (response) {
-			                    console.log("충전 성공: ", response);
-			                    $("#chargeAmount").val("");
-			                 	// 팝업 닫기
-			                    $("#fitpayOptions").hide();
-			                    $("#overlay").hide();
-
-			                    // DOM 변경 후 alert 호출
-			                    setTimeout(() => {
-			                        alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
-			                    }, 100);
-			                },
-			                error: function (xhr, status, error) {
-			                    console.error("충전 실패: ", error);
-			                    alert("충전 중 문제가 발생했습니다.");
-			                }
-			            });
-			        } else {
-			            console.error("결제 실패:", rsp.error_msg);
-			            alert(`결제가 실패했습니다. 이유: ${rsp.error_msg}`);
-			        }
-			    });
-			});
-
-		    
-		 
-		    
-		});
-
-	</script>
+	
 </body>
 
 </html>

@@ -29,5 +29,8 @@ public interface FacilityService {
 	
 	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 			,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub);
+
     List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate);
+	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
+
 }

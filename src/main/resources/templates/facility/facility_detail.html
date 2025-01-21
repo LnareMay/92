@@ -29,8 +29,10 @@
 <!--flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
-    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript"
+	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 
 <style>
@@ -87,6 +89,31 @@
 	height: 100%; /* 컨테이너 높이에 맞춤 */
 	/* 이미지 비율을 유지하며 컨테이너 내에 맞춤 */
 	/*  object-position: center; */ /* 이미지를 중앙에 위치  */
+}
+
+/* 마이페이지 팝업 */
+/* 어두운 배경 오버레이 */
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+	z-index: 999; /* fitpayCharge 아래 */
+	display: none; /* 기본적으로 숨김 */
+}
+
+.popup_style {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	padding: 30px;
+	border-radius: 20px;
+	z-index: 1000;
 }
 </style>
 </head>
@@ -158,12 +185,15 @@
 				<br />
 
 				<div class="form-group resInfo">
-					<label for="memId" class="changeToClub">예약자ID: </label> <span id="memId" name="memId"
-						th:text="${userId}"></span> <input type="text" id="memId"
-						name="memId" class="blind" th:value="${userId}"> <input
-						type="text" id="senderId" class="blind" name="senderId"
-						th:value="${userId}"> <input type="text" class="blind"
-						id="receiverId" name="receiverId" th:value="${facility.memId}">
+					<label for="memId" class="changeToClub">예약자ID: </label> <span
+						id="memId" name="memId" th:text="${userId}"></span> <input
+						type="text" id="memId" name="memId" class="blind"
+						th:value="${userId}"> <input type="text" id="senderId"
+						class="blind" name="senderId" th:value="${userId}"> <input
+						type="text" class="blind" id="receiverId" name="receiverId"
+						th:value="${facility.memId}"> <input type="text"
+						class="blind" name="createDate">
+
 
 				</div>
 
@@ -174,15 +204,17 @@
 				</div>
 
 				<div class="form-group">
-					<input type="hidden" name="isOnlyClub" th:value="${facility.facilityIsOnlyClub}">
-					<label for="reservationTime">예약 시간</label> <select
+					<input type="hidden" name="isOnlyClub"
+						th:value="${facility.facilityIsOnlyClub}"> <label
+						for="reservationTime">예약 시간</label> <select
 						id="reservationStartTime" name="reservationStartTime" type="time"
 						required disabled></select> <select id="reservationEndTime"
 						name="reservationEndTime" type="time" required disabled></select>
 					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 
-					<label id="countLabel" for="count">예약 인원</label> <input type="number" id="count"
-						name="count" placeholder="예약 인원을 입력해주세요." required>
+					<label id="countLabel" for="count">예약 인원</label> <input
+						type="number" id="count" name="count" placeholder="예약 인원을 입력해주세요."
+						required>
 				</div>
 
 
@@ -201,25 +233,28 @@
 					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> <span
 						id="memMoney" th:text="${#authentication.principal.memMoney}"></span>원
 					<input type="number" id="memMoney_ip" name="memMoney" class="blind">
+					
+					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
+						충전하기</button>
+				</div>
+				<div>
 					<input type="number" id="useFitpay" class="form-control me-2"
 						placeholder="사용할 금액 입력"
 						style="width: 150px; display: inline-block">
-					<button class="btn btn-secondary" id="useFitpayButton"
+						
+						<button class="btn btn-secondary" id="useFitpayButton"
 						type="button">사용</button>
 					<button class="btn btn-primary" id="useFullAmount" type="button">전액
 						사용</button>
 					<button class="btn btn-danger" id="deleteAmount" type="button">취소</button>
-				</div>
-				<div>
-					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
-						충전하기</button>
-					
+
 				</div>
 
 
-
+				<!-- 어두운 배경 오버레이 추가 -->
+				<div id="overlay"></div>
 				<!-- 숨겨진 FITPAY 충전 영역 -->
-				<div id="fitpayOptions" style="display: none; margin-top: 20px;">
+				<div id="fitpayOptions" class="popup_style">
 					<h5>FITPAY 충전</h5>
 					<div class="d-flex align-items-center mb-3">
 
@@ -235,7 +270,7 @@
 							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button> -->
 						<button class="btn btn-danger charge-btn" type="button"
 							id="chargeBtn_payco" data-pg="payco">페이코</button>
-							<!-- <button class="btn btn-danger charge-btn" id="chargeBtn_inisis" data-pg="html5_inicis.TEST"
+						<!-- <button class="btn btn-danger charge-btn" id="chargeBtn_inisis" data-pg="html5_inicis.TEST"
 						type="button">KG이니시스</button> -->
 						<!-- kakaopay, payco제외하고는 https환경에서만 작동됨으로 뺌... -->
 					</div>
@@ -253,8 +288,10 @@
 					<label for="remainingAmount">내야할 금액:</label> <span
 						id="remainingAmount">0</span>원
 				</div>
-				<button th:if="${!facility.facilityIsOnlyClub}" type="submit" class="btn btn-primary">예약하기</button>
-	      <button th:if="${facility.facilityIsOnlyClub && isClubOwner}" type="submit" class="btn btn-primary">예약하기</button>
+				<button th:if="${!facility.facilityIsOnlyClub}" type="submit"
+					class="btn btn-primary">예약하기</button>
+				<button th:if="${facility.facilityIsOnlyClub && isClubOwner}"
+					type="submit" class="btn btn-primary">예약하기</button>
 				<hr />
 				<!-- 시설명  -->
 				<div class="form-group">
@@ -529,14 +566,29 @@
 
     
     
-    
-    
-    
  // FITPAY 충전하기 버튼 클릭 이벤트
-    document.getElementById("fitpayCharge").addEventListener("click", function () {
-        const fitpayOptions = document.getElementById("fitpayOptions");
-        fitpayOptions.style.display = fitpayOptions.style.display === "none" ? "block" : "none";
-    });
+	
+	document.getElementById("fitpayCharge").addEventListener("click", function () {
+		const fitpayOptions = document.getElementById("fitpayOptions");
+		const overlay = document.getElementById("overlay");
+
+		if (fitpayOptions.style.display === "none" || !fitpayOptions.style.display) {
+			// fitpayOptions 표시 및 배경 어둡게
+			fitpayOptions.style.display = "block";
+			overlay.style.display = "block";
+		} else {
+			// fitpayOptions 숨김 및 배경 밝게
+			fitpayOptions.style.display = "none";
+			overlay.style.display = "none";
+		}
+	});
+
+	// 오버레이 클릭 시 fitpayOptions 닫기
+	document.getElementById("overlay").addEventListener("click", function () {
+		document.getElementById("fitpayOptions").style.display = "none";
+		this.style.display = "none";
+	});
+
     
     
     $(function () {
@@ -594,6 +646,9 @@
     	                    console.log("충전 성공: ", response);
     	                    $("#chargeAmount").val("");
     	                    alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
+    	                 	// 팝업 닫기
+		                    $("#fitpayOptions").hide();
+		                    $("#overlay").hide();
     	                },
     	                error: function (xhr, status, error) {
     	                    console.error("충전 실패: ", error);

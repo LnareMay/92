@@ -219,6 +219,7 @@ public class MemberController {
 	    }
 	}
 
+	// 마이페이지 나의시설예약 조회
 	@GetMapping("/reservation")
 	public String reservationGet(HttpServletRequest request, Model model) {
 	    // Add current URI to the model
@@ -276,7 +277,7 @@ public class MemberController {
 	        
         memberService.chargePoint(memId,amount, plusPoint);
         
-      /// 업데이트된 사용자 정보 가져오기
+       // 업데이트된 사용자 정보 가져오기
         Member updatedMember = memberRepository.findById(memId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
