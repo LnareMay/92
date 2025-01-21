@@ -997,4 +997,29 @@ z-index:5;
     font-weight: bold;
 }
 
+/* 마이페이지 팝업 */
+/* 어두운 배경 오버레이 */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+    z-index: 999; /* fitpayCharge 아래 */
+    display: none; /* 기본적으로 숨김 */
+}
+
+#mypage_pg .popup_style{
+	display: none;
+	position:fixed;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    z-index: 1000; 
+}
+
 
