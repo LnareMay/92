@@ -90,7 +90,9 @@
 				<div class="club-image-upload">
 					<label for="clubImage2"> <img id="photo-upload-2" src="/img/plus_icon.png" alt="대표이미지2"
 							class="default-icon">
-					</label> <input id="clubImage2" name="files" type="file" accept="image/*"
+					</label>
+					<button type="button" class="delete-btn" onclick="removeImage('clubImage2', 'photo-upload-2')">X</button>
+					 <input id="clubImage2" name="files" type="file" accept="image/*"
 						onchange="previewImage(event, 'photo-upload-2')" style="display: none;" />
 				</div>
 				<div class="club-image-upload">

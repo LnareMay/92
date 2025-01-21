@@ -327,8 +327,61 @@ public class ClubRestController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
 	    }
 	}
-
-
+	
+	@DeleteMapping("/removeImage")
+	public ResponseEntity<Map<String, Boolean>> removeImage(@RequestParam("fileName")String fileName,
+										@RequestParam("imageField") String imageField,
+										@RequestParam("clubCode") String clubCode) {
+		Map<String, Boolean> resultMap = new HashMap<>();
+		boolean removed = false;
+		
+		try {
+			Optional<Club> optional = clubRepository.findById(clubCode);
+			Club club = optional.orElseThrow(() -> new IllegalArgumentException("클럽이 존재하지 않습니다"));
+	        
+			String originalFileName = fileName.startsWith("s_") ? fileName.substring(2) : fileName;
+	        File originalFile = new File(uploadPath + File.separator + originalFileName);
+	        File thumbnailFile = new File(uploadPath + File.separator + fileName);
+	        
+	        // 원본 파일 삭제
+	        if (originalFile.exists()) {
+	            String contentType = Files.probeContentType(originalFile.toPath());
+	            removed = originalFile.delete();
+	            // 썸네일 파일 삭제 (이미지일 경우만)
+	            if (contentType != null && contentType.startsWith("image") && thumbnailFile.exists()) {
+	                thumbnailFile.delete();
+	            }
+	        } else {
+	            log.warn("파일이 존재하지 않습니다: {}", originalFileName);
+	        }	       
+	        
+	        if(removed) {
+	        	switch (imageField) {
+	        		case "clubImage1" :
+	        			club.setClubImage1(null);
+	        			break;
+	        		case "clubImage2" :
+	        			club.setClubImage2(null);
+	        			break;
+	        		case "clubImage3" :
+	        			club.setClubImage3(null);
+	        			break;
+	        		case "clubImage4" :
+	        			club.setClubImage4(null);
+	        			break;
+	        	}
+	        	clubRepository.save(club);
+	        }	        
+		    resultMap.put("result", removed);
+		    return ResponseEntity.ok(resultMap);
+		} 
+	    catch (IOException e) {
+	        log.error("파일 삭제 중 오류 발생: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Map.of("result", false));
+	    }
+	}
+	
 	
 	@GetMapping("club/replies/getReply/{clubCode},{boardNo},{replyNo}")
 	public ClubBoardReplyDTO getReplyDTO(@PathVariable("clubCode") String clubCode, @PathVariable("boardNo") int boardNo, @PathVariable("replyNo") int replyNo) {

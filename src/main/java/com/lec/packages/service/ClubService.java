@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
-//	void updateImages(String clubCode, ClubDTO clubDTO);
+	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
@@ -106,5 +106,6 @@ public interface ClubService {
 
     boolean checkClubOwner(String username);
     List<ClubDTO> ownerClubListWithMemId(String username);
+
 
 }

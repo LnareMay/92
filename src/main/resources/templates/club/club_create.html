@@ -90,20 +90,26 @@
 				<div class="club-image-upload">
 					<label for="clubImage2"> <img id="photo-upload-2" src="/img/plus_icon.png" alt="대표이미지2"
 							class="default-icon">
-					</label> <input id="clubImage2" name="files" type="file" accept="image/*"
+					</label>
+					<button type="button" class="delete-btn" onclick="removeImage('clubImage2', 'photo-upload-2')">X</button>
+					 <input id="clubImage2" name="files" type="file" accept="image/*"
 						onchange="previewImage(event, 'photo-upload-2')" style="display: none;" />
 				</div>
 				<div class="club-image-upload">
 					<label for="clubImage3"> <img id="photo-upload-3" src="/img/plus_icon.png" alt="대표이미지3"
 							class="default-icon">
-					</label> <input id="clubImage3" name="files" type="file" accept="image/*"
+					</label> 
+					<button type="button" class="delete-btn" onclick="removeImage('clubImage3', 'photo-upload-3')">X</button>
+					<input id="clubImage3" name="files" type="file" accept="image/*"
 						onchange="previewImage(event, 'photo-upload-3')" style="display: none;" />
 				</div>
 
 				<div class="club-image-upload">
 					<label for="clubImage4"> <img id="photo-upload-4" src="/img/plus_icon.png" alt="대표이미지4"
 							class="default-icon">
-					</label> <input id="clubImage4" name="files" type="file" accept="image/*"
+					</label>
+					<button type="button" class="delete-btn" onclick="removeImage('clubImage4', 'photo-upload-4')">X</button>
+					<input id="clubImage4" name="files" type="file" accept="image/*"
 						onchange="previewImage(event, 'photo-upload-4')" style="display: none;" />
 				</div>
 			</div>
