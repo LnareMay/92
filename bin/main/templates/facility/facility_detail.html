@@ -29,10 +29,9 @@
 <!--flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/ko.js"></script>
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript"
-	src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
 
 <style>
 /* 폼 스타일 */
@@ -214,8 +213,7 @@
 				<div>
 					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
 						충전하기</button>
-					<button class="btn btn-danger" id="inisisBtn"
-						type="button">KG이니시스 결제하기</button>
+					
 				</div>
 
 
@@ -233,10 +231,13 @@
 					<div>
 						<button class="btn btn-warning charge-btn" type="button"
 							id="chargeBtn_kakao" data-pg="kakaopay">카카오페이</button>
-						<button class="btn btn-success charge-btn" type="button"
-							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button>
+						<!-- <button class="btn btn-success charge-btn" type="button"
+							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button> -->
 						<button class="btn btn-danger charge-btn" type="button"
 							id="chargeBtn_payco" data-pg="payco">페이코</button>
+							<!-- <button class="btn btn-danger charge-btn" id="chargeBtn_inisis" data-pg="html5_inicis.TEST"
+						type="button">KG이니시스</button> -->
+						<!-- kakaopay, payco제외하고는 https환경에서만 작동됨으로 뺌... -->
 					</div>
 				</div>
 				<div class="form-group">
@@ -346,7 +347,7 @@
    function calculateAmountToPay() {
 	   document.getElementById("remainingAmount").textContent -= totalPaid;
     };
-    calculateAmountToPay();
+    document.getElementById("remainingAmount").textContent = pricePerHour;
      
     // 금액 초기화 함수
     function reset(){
@@ -499,152 +500,79 @@
     
     
     $(function () {
-        // 공통 클래스 사용
-        $('.charge-btn').off("click").on("click", function (event) {
-            event.preventDefault(); // 기본 동작 방지
+    	$('.charge-btn').off("click").on("click", function (event) {
+    	    event.preventDefault(); // 기본 동작 방지
 
-            var IMP = window.IMP; // 아임포트 객체
-            IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
+    	    var IMP = window.IMP; // 아임포트 객체
+    	    IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
 
-            var money = parseFloat($('#chargeAmount').val());
-            if (isNaN(money) || money <= 0) {
-                alert("충전 금액을 올바르게 입력하세요.");
-                return;
-            }
+    	    var money = parseFloat($('#chargeAmount').val());
+    	    if (isNaN(money) || money <= 0) {
+    	        alert("충전 금액을 올바르게 입력하세요.");
+    	        return;
+    	    }
 
-            // 클릭된 버튼에 따라 PG 설정
-            var pgProvider = $(this).attr('data-pg'); // 버튼에 설정된 PG 값 가져오기
-            
-            if(pgProvider == "naverpay"){
-            	alert("서비스 준비중입니다.");
-            	return;
-            }
-            
-            IMP.request_pay({
-                pg: pgProvider, // 결제수단 (kakaopay 또는 naverpay)
-                pay_method: 'card',
-                merchant_uid: 'merchant_' + new Date().getTime(), // 고유 주문 ID
-                name: 'FITPAY 충전',
-                amount: money,
-                buyer_email: '/*[[${#authentication.principal.memEmail}]]*/',
-                buyer_name: '/*[[${#authentication.principal.memName}]]*/',
-                buyer_tel: '/*[[${#authentication.principal.memTell}]]*/',
-                buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
-                buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
-            }, function (rsp) {
-                if (rsp.success) {
-                	alert("결제가 성공했습니다!");
-                    memMoney += money; // 충전 금액 추가
-                    $("#memMoney_ip").val(memMoney);
-                    $("#memMoney").text(memMoney.toLocaleString());
+    	    // 클릭된 버튼에 따라 PG 설정
+    	    var pgProvider = $(this).attr('data-pg');
+    	    if (!pgProvider || (pgProvider !== "html5_inicis" && pgProvider !== "kakaopay" && pgProvider !== "payco")) {
+    	        alert("올바른 PG 값을 설정하세요.");
+    	        return;
+    	    }
 
-                    // 서버로 충전 금액 전송
-                    $.ajax({
-                        type: "GET",
-                        url: "/member/charge/point",
-                        data: { "amount": memMoney, "plusPoint": money },
-                        success: function (response) {
-                            console.log("충전 성공: ", response);
-                            $("#chargeAmount").val("");
-                            alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("충전 실패: ", error);
-                            alert("충전 중 문제가 발생했습니다.");
-                        }
-                    });
-                } else {
-                    alert("결제가 실패했습니다. 다시 시도해주세요.");
-                }
-            });
-        });
+    	    // 이메일 및 전화번호 처리
+    	    var buyerEmail = '/*[[${#authentication.principal.memEmail}]]*/';
+    	    buyerEmail = buyerEmail.replace(/[^\w@.-]/g, "").trim();
+
+    	    var buyertel = '/*[[${#authentication.principal.memTell}]]*/';
+    	    buyertel = buyertel.replace(/[^\d-]/g, "").trim();
+
+    	    // 결제 요청
+    	    IMP.request_pay({
+    	        pg: pgProvider,
+    	        pay_method: 'card',
+    	        merchant_uid: 'merchant_' + new Date().getTime(),
+    	        name: 'FITPAY 충전',
+    	        amount: money,
+    	        buyer_email: buyerEmail,
+    	        buyer_name: '/*[[${#authentication.principal.memName}]]*/',
+    	        buyer_tel: buyertel,
+    	        buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
+    	        buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
+    	    }, function (rsp) {
+    	        if (rsp.success) {
+    	            alert("결제가 성공했습니다!");
+    	            memMoney += money; // 충전 금액 추가
+    	            $("#memMoney_ip").val(memMoney);
+    	            $("#memMoney").text(memMoney.toLocaleString());
+
+    	            // 서버로 충전 금액 전송
+    	            $.ajax({
+    	                type: "GET",
+    	                url: "/member/charge/point",
+    	                data: { "amount": memMoney, "plusPoint": money },
+    	                success: function (response) {
+    	                    console.log("충전 성공: ", response);
+    	                    $("#chargeAmount").val("");
+    	                    alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
+    	                },
+    	                error: function (xhr, status, error) {
+    	                    console.error("충전 실패: ", error);
+    	                    alert("충전 중 문제가 발생했습니다.");
+    	                }
+    	            });
+    	        } else {
+    	            console.error("결제 실패:", rsp.error_msg);
+    	            alert(`결제가 실패했습니다. 이유: ${rsp.error_msg}`);
+    	        }
+    	    });
+    	});
+
         
-        // paymentInisis
-        $('#inisisBtn').off("click").on("click", function (event) {
-		    paymentInisis(event); // event 객체를 전달
-		});
-
+     
         
-     // 버튼 이벤트 핸들러 등록
-        $('#inisisBtn').off("click").on("click", function (event) {
-            paymentInisis(event);
-        });
-
-        function paymentInisis(event) {
-            if (event) event.preventDefault(); // 기본 동작 방지
-
-            var IMP = window.IMP; // 아임포트 객체
-            IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
-
-            // 결제 금액 가져오기
-            var money = parseFloat($('.totalPrice:first').text().replace(/[^0-9.]/g, '')); // 숫자만 추출
-            console.log("결제 금액:", money); // 디버깅 로그
-
-            if (isNaN(money) || money <= 0) {
-                alert("결제 금액을 올바르게 입력하세요.");
-                return;
-            }
-
-            // 이메일 처리
-            var buyerEmail = '/*[[${#authentication.principal.memEmail}]]*/';
-            buyerEmail = buyerEmail.replace(/^\/\*|"|\*\/$/g, "").trim();
-            console.log("이메일 값:", buyerEmail); // 디버깅 로그
-
-            // IMP.request_pay 호출
-            IMP.request_pay(
-                {
-                    pg: 'html5_inicis',
-                    pay_method: 'card',
-                    merchant_uid: 'merchant_' + new Date().getTime(),
-                    name: 'FITPAY 결제',
-                    amount: money,
-                    buyer_email: buyerEmail,
-                    buyer_name: '/*[[${#authentication.principal.memName}]]*/',
-                    buyer_tel: '/*[[${#authentication.principal.memTell}]]*/',
-                    buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
-                    buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
-                },
-                function (rsp) {
-                    alert("결제 응답:", rsp); // 디버깅 로그
-
-                    if (rsp.success) {
-                        alert("결제가 성공했습니다!");
-
-                        // 서버로 결제 정보 전송 후 폼 제출
-                        $.ajax({
-                            type: "POST",
-                            url: "/facility/pay-by-inisis", // 서버의 결제 완료 처리 URL
-                            data: {
-                                imp_uid: rsp.imp_uid,
-                                merchant_uid: rsp.merchant_uid,
-                                amount: money
-                            },
-                            success: function (response) {
-                                console.log("서버 응답:", response); // 디버깅 로그
-                                alert("결제가 완료되었습니다.");
-
-                                // 폼 제출
-                                $(".booking-form").submit();
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("결제 검증 실패:", error); // 디버깅 로그
-                                alert("결제 검증 중 문제가 발생했습니다.");
-                            }
-                        });
-                    } else {
-                        console.error("결제 실패:", rsp.error_msg);
-                        alert(`결제가 실패했습니다. 이유: ${rsp.error_msg}`);
-                    }
-                }
-            );
-        }
-
     });
-  
 
 
-
-    
 	async function getClubList(){
     	const response = await axios.get(`/club/ownerClubList`)
     	return response.data
@@ -666,6 +594,21 @@
 
 	}
     
+	
+    // 내야할 금액 확인 및 폼 제출 제어
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function (event) {
+        const remainingAmount = parseFloat(document.getElementById("remainingAmount").textContent);
+
+        if (remainingAmount > 0) {
+            event.preventDefault(); // 폼 제출 방지
+            alert("내야 할 금액이 남아 있습니다. 결제를 완료해주세요.");
+        } else {
+            updateHiddenAmount(); // 숨겨진 금액 업데이트
+        }
+    });
+
     // 최종 결제 금액을 숨겨진 input에 동적으로 복사
     function updateHiddenAmount() {
         const totalPriceElement = document.querySelector(".totalPrice");
@@ -674,10 +617,6 @@
             amountInput.value = parseFloat(totalPriceElement.textContent) || 0; // 숫자로 변환
         }
     }
-    
-    // '폼 제출' 버튼 클릭 전에 호출하여 최신 값을 설정
-    const form = document.querySelector("form");
-    form.addEventListener("submit", updateHiddenAmount);
 
 
 	function selectBoxChange(value) {
