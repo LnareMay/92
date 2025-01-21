@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.Model;
@@ -44,7 +45,7 @@ import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 
 import com.lec.packages.dto.ClubDTO;
-
+import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 
@@ -400,4 +401,29 @@ public class ClubRestController {
 		return ownerClubList;
 	}
 
+	@GetMapping("/getClubResList/{clubCode}")
+	public List<ClubReservationDTO> getClubResList(HttpServletRequest request, Model model, @PathVariable("clubCode") String clubCode) {
+		String requestURI = request.getRequestURI();
+		log.info("do getClubResList");
+		model.addAttribute("currentURI", requestURI);
+
+		List<ClubReservationDTO> clubReservationDTOs = clubService.getClubResList(clubCode);		
+
+		return clubReservationDTOs;
+	}
+
+	@GetMapping("/addClubResMember/{reservationCode},{clubCode}")
+	public String addClubResMember(HttpServletRequest request, Model model, @PathVariable("reservationCode") String reservationCode, @PathVariable("clubCode") String clubCode
+									, @AuthenticationPrincipal User user) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		log.info("do addClubResMember");
+		log.info(reservationCode);
+		log.info(clubCode);
+
+		String addResult = clubService.addClubResMember(reservationCode, clubCode, user.getUsername());
+
+		return addResult;
+	}
 }

@@ -14,6 +14,7 @@ import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.ClubMemberDTO;
+import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 
@@ -106,5 +107,9 @@ public interface ClubService {
 
     boolean checkClubOwner(String username);
     List<ClubDTO> ownerClubListWithMemId(String username);
+
+    List<ClubReservationDTO> getClubResList(String clubCode);
+
+    String addClubResMember(String reservationCode, String clubCode, String memId);
 
 }

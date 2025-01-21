@@ -53,6 +53,12 @@ public class CustomSecurityConfig {
 		
 		
 		 log.info("CustomSecurityConfig 초기화 중...");
+		 
+		// HTTPS 강제 리디렉션 설정
+//        http.requiresChannel(channel -> 
+//            channel.anyRequest().requiresSecure()
+//        );
+
 
 		// 인증처리로직
 		// http.formLogin(); 스프링시큐티에서 기본제공하는 로그인 화면

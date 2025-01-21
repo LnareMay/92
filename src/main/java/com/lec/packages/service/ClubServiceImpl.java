@@ -1,5 +1,7 @@
 package com.lec.packages.service;
 
+import java.sql.Date;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,19 +22,26 @@ import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Reservation;
+import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
+import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
+import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.ClubBoardReplyRepository;
 import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.repository.ClubRepository;
+import com.lec.packages.repository.ClubReservationMemberRepository;
+import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.dto.ClubReservationInterface;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +58,8 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubBoardRepository clubBoardRepository;
 	private final ClubBoardReplyRepository clubBoardReplyRepository;
 	private final ClubMemberRepository clubMemberRepository;
+	private final ReservationRepository reservationRepository;
+	private final ClubReservationMemberRepository clubReservationMemberRepository;
 	
 	
 	// 클럽생성
@@ -548,6 +559,53 @@ public class ClubServiceImpl implements ClubService {
 			resClubDTOs.add(dto);
 		});
 		return resClubDTOs;
+	}
+
+	@Override
+	public List<ClubReservationDTO> getClubResList(String clubCode) {
+		List<ClubReservationInterface> clubReservationDTOs = reservationRepository.getClubResList(clubCode);
+		log.info("do getClubResList in serviceImpl");
+		log.info(clubReservationDTOs);
+
+		List<ClubReservationDTO> dtos = new ArrayList<>();
+		for (ClubReservationInterface clubReservationInterface : clubReservationDTOs) {
+			ClubReservationDTO dto = ClubReservationDTO.builder().ReservationProgress(clubReservationInterface.getReservationProgress())
+									.clubCode(clubReservationInterface.getClubCode()).count(clubReservationInterface.getCount())
+									.facilityName(clubReservationInterface.getFacilityName()).nowMemCount(clubReservationInterface.getNowMemCount())
+									.reservationCode(clubReservationInterface.getReservationCode()).reservationStartTime(clubReservationInterface.getReservationStartTime())
+									.reservationDate(clubReservationInterface.getReservationDate()).build();
+			dtos.add(dto);
+		}
+
+		return dtos;
+	}
+
+	@Override
+	public String addClubResMember(String reservationCode, String clubCode, String memId) {
+		Optional<Reservation> resOptional = reservationRepository.findById(reservationCode);
+		Reservation reservation = resOptional.orElseThrow();
+		ClubReservationMemberKeyClass keyClass = new ClubReservationMemberKeyClass();
+		keyClass.setReservationCode(reservationCode);
+		keyClass.setClubCode(clubCode);
+		keyClass.setMemId(memId);
+
+		Optional<Reservation_Member_List> optional = clubReservationMemberRepository.findById(keyClass);
+		if(!optional.isEmpty()) {
+			return "exist";
+		}
+
+		Date reservationDate = reservation.getReservationDate();
+		LocalTime reservationTime = reservation.getReservationStartTime();
+
+		Reservation_Member_List reservation_Member_List = Reservation_Member_List.builder().reservationCode(reservationCode)
+														.clubCode(clubCode).memId(memId).reservationTime(reservationTime)
+														.reservationDate(reservationDate).build();
+		Reservation_Member_List result = clubReservationMemberRepository.save(reservation_Member_List);
+		if(result != null) {
+			return "success";
+		}
+
+		return "fail";
 	}
 
 

@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
-<!-- meta_tag include -->
-<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title></title>
+	<!-- meta_tag include -->
 
-<!-- 공통 css -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" th:href="@{/css/common.css}">
+	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+	<title></title>
 
-<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
-<!-- Linking CSS files -->
-<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+	<!-- 공통 css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 
-<!-- 공통 js -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-	crossorigin="anonymous"></script>
+	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+	<!-- Linking CSS files -->
+	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+
+	<!-- 공통 js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 </head>
+
 <body>
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main container" id="mypage_pg">
@@ -35,24 +38,28 @@
 
 			<div class="btn_wrap">
 				<div class="header">
-					<a href="/member/mypage" class="active">나의정보</a> <a
-						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
+					<a href="/member/mypage" class="active">나의정보</a> <a href="/member/reservation">나의시설예약</a> <a
+						href="#">운동캘린더</a>
 				</div>
 				<div style="align-items: center;">
 					<div
-						style="cursor:pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
+						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
-						<p
-							style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#authentication.principal.memMoney}"></span>원
+						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
+							<span th:text="${#authentication.principal.memMoney}" id="memMoney"></span>원
+							<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 						</p>
 					</div>
-					<div style="display: inline-flex; gap: 5px; width:100%">
-						<button class="btn btn-primary" style="width:50%">충전</button>
-						<button class="btn btn-success" style="width:50%">내역</button>
+					<div style="display: inline-flex; gap: 5px; width: 100%">
+						<button class="btn btn-primary" id="fitpayCharge" style="width: 50%">충전</button>
+						<button class="btn btn-success" style="width: 50%">내역</button>
 					</div>
 				</div>
 			</div>
+
+			<div th:insert="~{layouts/charge_popup :: charge_popup}"></div>
+
+
 		</div>
 
 		<div class="main">
@@ -63,39 +70,34 @@
 					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}"
-							alt="프로필 이미지">
+						<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|"
-							alt="프로필 이미지">
+						<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지">
 					</th:block>
 
 					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
 					<th:block
 						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-						<img
-							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-							alt="프로필 이미지">
+						<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지">
 					</th:block>
 
 					<div style="text-align: center">
 
 						<h3 th:text="${#authentication.principal.memNickname}"></h3>
-						<p th:text="${#authentication.principal.memIntroduction}"
-							style="font-size: 13px; color: #999;"></p>
+						<p th:text="${#authentication.principal.memIntroduction}" style="font-size: 13px; color: #999;">
+						</p>
 					</div>
 
 					<div class="flex" style="gap: 5px; margin-bottom: 20px;">
 
-						<button class="btn btn-primary"
-							onclick="location.href='/member/mypage_modify'"
+						<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'"
 							style="font-size: 11px;">수정하기</button>
-						<button class="btn btn-danger"
-							onclick="location.href='/member/logout'" style="font-size: 11px;">로그아웃</button>
+						<button class="btn btn-danger" onclick="location.href='/member/logout'"
+							style="font-size: 11px;">로그아웃</button>
 					</div>
 
 
@@ -103,8 +105,7 @@
 						<div
 							th:if="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_NAME != null}">
 							<p>⚽ 좋아하는 운동</p>
-							<p
-								th:text="${#authentication.principal.memExercise.EXERCISE_NAME}"></p>
+							<p th:text="${#authentication.principal.memExercise.EXERCISE_NAME}"></p>
 						</div>
 						<div
 							th:if="${#authentication.principal.memExercise == null or #authentication.principal.memExercise.EXERCISE_NAME == null}">
@@ -123,11 +124,11 @@
 							<p>-선택필요-</p>
 						</div>
 
-						<div th:if="${#authentication.principal.memBirthday != ''}">
+						<div th:if="${#authentication.principal.memBirthday != null}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div th:if="${#authentication.principal.memBirthday == ''}">
+						<div th:if="${#authentication.principal.memBirthday == null}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -160,5 +161,8 @@
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
+	
+	
 </body>
+
 </html>
