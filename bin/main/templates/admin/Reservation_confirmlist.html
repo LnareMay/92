@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="../../dist/css/css_sh.css" /> -->
+    <link rel="stylesheet" th:href="@{/css/detail_sh.css}" />
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -183,7 +183,8 @@
 				  	  th:if="${reservation.reservationProgress=='예약완료'}">
                       <td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td> 
                       <td>
-                          <a th:text="${reservation.facilityName}"></a>
+                          <a th:text="${reservation.facilityName}"></a><span class="ReservationProgressTag_confirm"
+                          													  th:if="${reservation.reservationProgress=='예약완료'}">예약승인 및 완료</span>
                           <br/>
                            <small th:text="${reservation.reservationDate}"></small> 	    
                       </td>               
