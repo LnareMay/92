@@ -34,6 +34,7 @@ public interface FacilityService {
 
     List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate);
 	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
+	void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 
 
 
