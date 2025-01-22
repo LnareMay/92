@@ -1035,6 +1035,41 @@ z-index:5;
     padding: 30px;
     border-radius: 20px;
     z-index: 1000; 
+    width: 350px;
+    min-height: 450px;
+}
+
+/* 마이페이지 송금/충전모달 탭*/
+#mypage_pg .tab-content{
+	display: none;
+	list-style: none;
+	margin: 10px 0;
+}
+
+#mypage_pg .tab-button{
+	position: relative;	
+	display: inline-block;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	background-color: white;
+	border-bottom: 2px solid transparent;
+}
+
+#mypage_pg .tab-content.active{
+	display: block;
+}
+
+#mypage_pg .tab-button.active{
+	font-weight: bold;
+    border-bottom: 2px solid #000;
+}
+
+#mypage_pg .close-button{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	border: none;
 }
 
 

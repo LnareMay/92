@@ -66,71 +66,51 @@
 		</div>
 
 		<div class="main">
-			<ul>
-				<li th:each="reservation : ${reservations}"
-					style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
-					<p>
-						<strong>시설명:</strong> <span th:text="${reservation.facilityName}"
-							style="text-decoration: underline; cursor: pointer;"
-							th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${reservation.facilityCode})}'|"></span>
-					</p>
-					<p>
-						<strong>예약 코드:</strong> <span
-							th:text="${reservation.reservationCode}"></span>
+    <ul>
+        <li th:if="${#lists.isEmpty(reservations)}" 
+            style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9; text-align: center;">
+            <p><strong>예약내역이 없습니다.</strong></p>
+        </li>
+        <li th:each="reservation : ${reservations}" 
+            style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+            <p>
+                <strong>시설명:</strong> <span th:text="${reservation.facilityName}"
+                    style="text-decoration: underline; cursor: pointer;"
+                    th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${reservation.facilityCode})}'|"></span>
+            </p>
+            <p>
+                <strong>예약 코드:</strong> <span th:text="${reservation.reservationCode}"></span>
+            </p>
+            <p>
+                <strong>이용 날짜:</strong> <span th:text="${reservation.reservationDate}"></span>
+            </p>
+            <p>
+                <strong>예약 시간:</strong> <span th:text="${reservation.reservationStartTime}"></span> - <span th:text="${reservation.reservationEndTime}"></span>
+            </p>
+            <p>
+                <strong>예약 요청일:</strong> <span class="formatted-date" th:attr="data-createdate=${reservation.CREATEDATE}"></span>
+            </p>
+            <p>
+                <strong>인원:</strong> <span th:text="${reservation.count}"></span>명
+            </p>
+            <p>
+                <strong>금액:</strong> <span th:text="${reservation.price}"></span>원
+            </p>
+            <p>
+                <strong>예약 상태:</strong> <span th:text="${reservation.reservationProgress}" th:classappend="'status-' +  ${reservation.reservationProgress}"></span>
+            </p>
+            <form th:action="@{/facility/cancel-booking}" method="post">
+                <input type="hidden" name="reservationCode" th:value="${reservation.reservationCode}">
+                <input type="hidden" name="memId" th:value="${reservation.memId}">
+                <input type="hidden" name="price" th:value="${reservation.price}">
+                <div th:if="${reservation.reservationProgress!='예약취소'}">
+                    <button class="btn btn-danger" type="submit">예약취소</button>
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>
 
-					</p>
-					<p>
-						<strong>이용 날짜:</strong> <span
-							th:text="${reservation.reservationDate}"></span>
-					</p>
-					<p>
-						<strong>예약 시간:</strong> <span
-							th:text="${reservation.reservationStartTime}"></span> - <span
-							th:text="${reservation.reservationEndTime}"></span>
-					</p>
-					<p>
-						<strong>예약 요청일:</strong> <span class="formatted-date"
-							th:attr="data-createdate=${reservation.CREATEDATE}"></span>
-					</p>
-
-
-
-					<p>
-						<strong>인원:</strong> <span th:text="${reservation.count}"></span>명
-					</p>
-					<p>
-						<strong>금액:</strong> <span th:text="${reservation.price}"></span>원
-					</p>
-					<p>
-						<strong>예약 상태:</strong> <span
-							th:text="${reservation.reservationProgress}"
-							th:classappend="'status-' +  ${reservation.reservationProgress}"></span>
-					</p>
-					<form th:action="@{/facility/cancel-booking}" method="post">
-						<input type="hidden" name="reservationCode"
-							th:value="${reservation.reservationCode}"> <input
-							type="hidden" name="memId" th:value="${reservation.memId}">
-						<input type="hidden" name="price" th:value="${reservation.price}">
-
-						<div th:if="${reservation.reservationProgress!='예약취소'}">
-							<button class="btn btn-danger" type="submit">예약취소</button>
-						</div>
-
-						<!-- <button class="btn btn-danger charge-btn" type="submit">예약취소</button> -->
-
-					</form>
-
-
-				</li>
-
-
-			</ul>
-
-
-
-
-
-		</div>
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
