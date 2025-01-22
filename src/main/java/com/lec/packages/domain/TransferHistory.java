@@ -19,6 +19,9 @@ public class TransferHistory {
     @Column(name = "TRANSFER_CODE")
     private String transferCode;
 
+    @Column(name = "PAY_CODE")
+	 private String payCode;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SENDER_ID", referencedColumnName = "MEM_ID", nullable = false)
     private Member senderId;
