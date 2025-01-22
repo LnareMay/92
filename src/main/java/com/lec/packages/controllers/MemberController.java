@@ -312,6 +312,21 @@ public class MemberController {
 	    }
 	}
 	
+	// 관리자계정일 경우 송금내역 조회
+	@GetMapping("/pay_list/transfer_manager")
+	@ResponseBody
+	public List<TransferHistoryDTO> getTransferHistoriesWhenManager() {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+	        String memId = member.getMemId();
+	        // Return transfer history
+	        return memberService.getTransferHistorieWhenManager(memId);
+	    } else {
+	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
+	    }
+	}
+	
 	// 마이페이지 충전 내역 조회
 	@GetMapping("/pay_list/charge")
 	@ResponseBody

@@ -63,12 +63,15 @@
 	                        const li = document.createElement("li");
 							
 							const icon = history.status === '송금성공' 
-									? '<i class="bi bi-plus-circle" style="color: red"></i>' 
-									: '<i class="bi bi-dash-circle" style="color: blue"></i>';
+									? '<i class="bi bi-dash-circle" style="color: red"></i>' 
+									: '<i class="bi bi-plus-circle" style="color: blue"></i>';
+									
 							
 	                        li.innerHTML = `
+	                        	<p style="color:#999">${history.transferDate}</p>
 	                            <p>${history.status} | ${history.receiverId?.memId || ''}</p>
 	                            <strong>${icon} ${history.amount}원</strong>
+	                            <hr>
 	                        `;
 	                        transferList.appendChild(li);
 	                    });
@@ -83,7 +86,9 @@
 	                    chargeData.forEach(history => {
 	                        const li = document.createElement("li");
 	                        li.innerHTML = `
-	                            <p>${history.chargeDate || ''} | ${history.amount}원</p>
+	                            <p style="color:#999">${history.chargeDate || ''}</p>
+	                            <p><i class="bi bi-plus-circle" style="color: blue"></i>${history.amount}원</p>
+	                            <hr>
 	                        `;
 	                        chargeList.appendChild(li);
 	                    });
