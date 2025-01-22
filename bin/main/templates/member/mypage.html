@@ -31,7 +31,17 @@
 </head>
 
 <body>
-	<div th:insert="~{layouts/header :: header}"></div>
+
+	<th:block th:if="${member.memIsmanager == true}">
+		<div th:insert="~{layouts/admin_header :: admin_header}"></div>
+	</th:block>
+
+	<th:block th:if="${member.memIsmanager == false}">
+		<div th:insert="~{layouts/header :: header}"></div>
+	</th:block>
+
+
+
 	<main class="main container" id="mypage_pg">
 		<div class="sidebar">
 			<div class="header">
@@ -40,10 +50,17 @@
 			</div>
 
 			<div class="btn_wrap">
-				<div class="header">
+				<div class="header" th:if="${member.memIsmanager == false}">
 					<a href="/member/mypage" class="active">나의정보</a> <a
 						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
 				</div>
+				
+				<div class="header" th:if="${member.memIsmanager == true}">
+					<a href="/member/mypage" class="active">나의정보</a>
+				</div>
+
+				
+				
 				<div style="align-items: center;">
 					<div
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
@@ -76,29 +93,21 @@
 
 					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication != null 
-    and #authentication.principal.memPicture != null 
-    and #authentication.principal.memPicture.startsWith('http') 
-    and member != null 
-    and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}"
+						th:if="${member.memSocial == true && (member.memPicture != null || member.memPicture !='')}">
+						<img th:src="${member.memPicture}"
 							alt="프로필 이미지">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication != null 
-    and #authentication.principal.memPicture != null 
-    and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|"
+						th:if="${member.memSocial == false && member.memPicture != null && member.memPicture !=''}">
+						<img th:src="|/view/${member.memPicture}|"
 							alt="프로필 이미지">
 					</th:block>
 
 					<!-- 기본 프로필 이미지 -->
 					<th:block
-						th:if="${#authentication == null 
-    or #authentication.principal.memPicture == null 
-    or #authentication.principal.memPicture == ''}">
+						th:if="${member.memPicture == null || member.memPicture ==''}">
 						<img
 							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
 							alt="기본 프로필 이미지">
@@ -145,11 +154,13 @@
 							<p>-선택필요-</p>
 						</div>
 
-						<div th:if="${#authentication != null and #authentication.principal.memBirthday != null and #authentication.principal.memBirthday != ''}">
+						<div
+							th:if="${#authentication != null and #authentication.principal.memBirthday != null and #authentication.principal.memBirthday != ''}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div th:if="${#authentication == null or #authentication.principal.memBirthday == null or #authentication.principal.memBirthday == ''}">
+						<div
+							th:if="${#authentication == null or #authentication.principal.memBirthday == null or #authentication.principal.memBirthday == ''}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -182,8 +193,6 @@
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
-
-
 </body>
 
 </html>

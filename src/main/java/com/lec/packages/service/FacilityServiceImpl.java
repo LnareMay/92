@@ -364,7 +364,7 @@ public class FacilityServiceImpl implements FacilityService{
 	        throw new IllegalStateException("예약 취소 권한이 없습니다.");
 	    }
 
-	    // 2. transfer_history에서 createDate, sender_id가 같은 TransferHistory 가져오기
+	    // 2. transfer_history에서 payCode가 같은 TransferHistory 가져오기
 	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(
 	            reservation.getPayCode()
 	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
@@ -393,6 +393,50 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(transferHistory);
 	    reservationRepository.save(reservation);
+	}
+
+
+	@Override
+	public void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
+			ReservationDTO reservationDTO) {
+		 // 1. reservationCode로 Reservation 정보 조회
+	    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationDTO.getReservationCode());
+	    if (optionalReservation.isEmpty()) {
+	        throw new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다.");
+	    }
+	    Reservation reservation = optionalReservation.get();
+
+
+	    // 2. transfer_history에서 payCode가 같은 TransferHistory 가져오기
+	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(
+	            reservation.getPayCode()
+	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	    // 3. receiver_id의 memMoney 업데이트
+	    Member receiver = memberRepository.findById(memId)
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+
+	    // 4. sender_id의 memMoney 업데이트
+	    Member sender = memberRepository.findById(transferHistory.getSenderId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
+	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
+
+	    // 5. transfer_history의 상태를 '송금 취소'로 변경
+	    transferHistory.setStatus("송금취소");
+
+	    // 6. reservation의 상태를 '예약취소'로 변경
+	    reservation.setReservationProgress("예약취소");
+	    
+	    // 7. reservation의 deleteFlag를 '1'로 변경
+	    reservation.setDeleteFlag(true);
+
+	    // 8. 변경된 데이터 저장
+	    memberRepository.save(sender);
+	    memberRepository.save(receiver);
+	    transferHistoryRepository.save(transferHistory);
+	    reservationRepository.save(reservation);
+		
 	}
 
 
