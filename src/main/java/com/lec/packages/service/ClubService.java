@@ -30,7 +30,7 @@ public interface ClubService {
 	void modify(ClubDTO clubDTO);	
 	void remove(String clubCode);
 	
-	void join(String memId, String clubCode);
+	void join(String memId, String clubCode, String clubPw);
 	boolean isJoinMember(String memId, String clubCode); 
 	void joindelete(String memId, String clubCode);
 	boolean isJoinDeleteMember(String memId, String clubCode);
@@ -108,8 +108,11 @@ public interface ClubService {
     boolean checkClubOwner(String username);
     List<ClubDTO> ownerClubListWithMemId(String username);
 
+
     List<ClubReservationDTO> getClubResList(String clubCode);
 
+
     String addClubResMember(String reservationCode, String clubCode, String memId);
+
 
 }

@@ -100,7 +100,7 @@
 			    	<label for="clubImage3">   	
 					   <img id="photo-upload-3" th:src="${clubdto.clubImage3 != null ? '/view/' + clubdto.clubImage3 : '/img/plus_icon.png'}"  
 					   							th:classappend="${clubdto.clubImage3 == null ? 'default-icon' : ''}"alt="대표이미지3">
-			        </label>
+			        </label>					
 			           <input id="clubImage3" name="files" type="file" accept="image/*" onchange="uploadAndPreviewImage(event, 'photo-upload-3')" style="display: none;">
 			    </div>
 			    
@@ -135,17 +135,19 @@
         </form>
         </main>
     <div th:insert="~{layouts/footer :: footer}"></div>
-</body>
+
  <script> 
-		document.addEventListener("DOMContentLoaded", function () {
+		document.addEventListener("DOMContentLoaded", function () {		
 			const selectedExercise = document.getElementById('clubExercise').value;
 			const exercisebuttons = document.querySelectorAll('.exercise-selection button');
+			
 			
 			exercisebuttons.forEach(button => {
 				if(button.value === selectedExercise) {
 					button.classList.add('selected');
 				}
-			});
+			});			
+			
 		});
 			
 			
@@ -214,8 +216,10 @@
 	            console.log("파일 업로드 성공:", result);
 	        })
 	        .catch(error => console.error("파일 업로드 실패:", error));
-	}
+   }
+
 
 </script>
+</body>
 
 </html>

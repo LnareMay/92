@@ -215,24 +215,7 @@ public class AdminController {
 	     return "admin/Reservation_list";
 	 }
 	 
-	 //예약 취소 리스트(확인용)
-	 @GetMapping("/Reservation_Refuselist")
-	 public String ListReservationRefusPage(PageRequestDTO pageRequestDTO, Model model, 
-			 @AuthenticationPrincipal UserDetails userDetails) {
-		 
-		 String memId = userDetails.getUsername();
-		 
-		 PageResponseDTO<ReservationDTO> responseDTO = 
-				 reservationService.getAllReservationsForUser(memId, pageRequestDTO);
-		 
-		 model.addAttribute("memId", memId);
-		 model.addAttribute("reservations", responseDTO.getDtoList());
-		 model.addAttribute("totalPages", responseDTO.getTotal());
-		 model.addAttribute("pageNumber", pageRequestDTO.getPage());
-		 model.addAttribute("pageSize", pageRequestDTO.getSize());
-		 
-		 return "admin/Reservation_refuselist";
-	 }
+
 	 
 	 
 	 //예약 상세보기
@@ -272,6 +255,25 @@ public class AdminController {
 		    reservationRepository.save(reservation);
 		    
 		    return "redirect:/admin/Reservation_list";
+	 }
+	 
+	 //예약 취소 리스트(확인용)
+	 @GetMapping("/Reservation_Refuselist")
+	 public String ListReservationRefusPage(PageRequestDTO pageRequestDTO, Model model, 
+			 @AuthenticationPrincipal UserDetails userDetails) {
+		 
+		 String memId = userDetails.getUsername();
+		 
+		 PageResponseDTO<ReservationDTO> responseDTO = 
+				 reservationService.getAllReservationsForUser(memId, pageRequestDTO);
+		 
+		 model.addAttribute("memId", memId);
+		 model.addAttribute("reservations", responseDTO.getDtoList());
+		 model.addAttribute("totalPages", responseDTO.getTotal());
+		 model.addAttribute("pageNumber", pageRequestDTO.getPage());
+		 model.addAttribute("pageSize", pageRequestDTO.getSize());
+		 
+		 return "admin/Reservation_refuselist";
 	 }
 	 
 	 //예약 승인

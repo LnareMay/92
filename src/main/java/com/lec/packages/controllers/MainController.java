@@ -62,6 +62,8 @@ public class MainController {
             if ("ALL".equalsIgnoreCase(address)) {
                 if (member.getMemAddressSet() != null && !member.getMemAddressSet().isEmpty()) {
                     address = member.getMemAddressSet();
+                } else if (member.getMemAddress() != null){
+                	address = member.getMemAddress();
                 }
             }
         }

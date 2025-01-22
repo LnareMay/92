@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +55,9 @@ import lombok.extern.log4j.Log4j2;
 public class ClubServiceImpl implements ClubService {
 
 	private final ModelMapper modelMapper;
+	@Autowired
 	private final ClubRepository clubRepository;
+	
 	private final ClubBoardRepository clubBoardRepository;
 	private final ClubBoardReplyRepository clubBoardReplyRepository;
 	private final ClubMemberRepository clubMemberRepository;
@@ -72,8 +75,8 @@ public class ClubServiceImpl implements ClubService {
 
 		return clubCode;
 	}
-
-	/*
+	
+	/* 클럽수정 이미지변경
 	@Override
 	public void updateImages(String clubCode, ClubDTO clubDTO) {
 		Optional<Club> optionalClub = clubRepository.findById(clubCode);
@@ -85,7 +88,7 @@ public class ClubServiceImpl implements ClubService {
 			club.setClubImage4(clubDTO.getClubImage4());
 			clubRepository.save(club);
 		}
-	} */ 
+	}  */
 
 	// 클럽코드생성
 	@Override
@@ -176,7 +179,8 @@ public class ClubServiceImpl implements ClubService {
                 .dtoList(dtoList)
                 .total((int) result.getTotalElements())
                 .build();
-    }
+    }       
+    
 	// 클럽상세보기
 	@Override
 	public ClubDTO detail(String clubCode) {
@@ -264,7 +268,16 @@ public class ClubServiceImpl implements ClubService {
 	
 	// 클럽가입하기
 	@Override
-	public void join(String memId, String clubCode) {
+	public void join(String memId, String clubCode, String clubPw) {		
+		Club club = clubRepository.findById(clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
+		// 비공개 클럽일때
+		if (club.isClubIsprivate()) {
+			if (club.getClubPw() == null || !club.getClubPw().equals(clubPw)) {
+				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			}
+		}
+		
 		Club_Member_List clubMember = new Club_Member_List();
 		clubMember.setMemId(memId);
 		clubMember.setClubCode(clubCode);
@@ -607,7 +620,6 @@ public class ClubServiceImpl implements ClubService {
 
 		return "fail";
 	}
-
 
 
 
