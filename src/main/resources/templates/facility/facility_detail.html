@@ -403,6 +403,7 @@ option[value=""][disabled] {
                 element.textContent = totalPrice;
             });
 			document.getElementById("remainingAmount").textContent =totalPrice;
+			
 			return totalPrice;
         }
 		return 0;
@@ -427,9 +428,13 @@ option[value=""][disabled] {
     	
     	 memMoney = memMoney + totalPaid;
     	totalPaid = 0;
-        const totalPrice = pricePerHour - totalPaid; // 최종 금액 다시 계산
+        const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
         
         const remainingAmount = totalPrice;
+        
+     	// '전액 사용' 버튼 활성/비활성화
+        const useFullAmountButton = document.getElementById("useFullAmount");
+        useFullAmountButton.disabled = false; // 버튼 활성화
 
         // UI 초기화
         document.getElementById("memMoney_ip").value = memMoney;
@@ -466,8 +471,11 @@ option[value=""][disabled] {
         // 값 업데이트
         memMoney -= useFitpayInput;
         totalPaid += useFitpayInput;
-        const remainingAmount = Math.max(pricePerHour - totalPaid, 0);
+        
+		const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
+        const remainingAmount = Math.max(totalPrice - totalPaid, 0);
         document.getElementById("memMoney_ip").value = memMoney;
+        
 
         // UI 업데이트
         document.getElementById("memMoney").textContent = memMoney;
@@ -481,8 +489,8 @@ option[value=""][disabled] {
     document.getElementById("useFullAmount").addEventListener("click", () => {
     	// reset();
     	document.getElementById("useFitpay").value = calculateTotalPrice();
-    	  const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
-    
+    	  // const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
+    	  const useFitpayInput = Math.max(calculateTotalPrice() - totalPaid, 0);
 
           if (isNaN(useFitpayInput) || useFitpayInput < 0) {
               alert("올바른 금액을 입력해주세요.");
@@ -494,12 +502,20 @@ option[value=""][disabled] {
               alert("잔액이 부족합니다.");
               return;
           }
-
+ 
           // 값 업데이트
           memMoney -= useFitpayInput;
           totalPaid += useFitpayInput;
-          const remainingAmount = Math.max(pricePerHour - totalPaid, 0);
+          const remainingAmount = Math.max(calculateTotalPrice() - totalPaid, 0);
           document.getElementById("memMoney_ip").value = memMoney;
+          
+       		// '전액 사용' 버튼 활성/비활성화
+	        const useFullAmountButton = document.getElementById("useFullAmount");
+	        if (memMoney <= 0 || memMoney > totalPaid) {
+	            useFullAmountButton.disabled = true; // 버튼 비활성화
+	        } else {
+	            useFullAmountButton.disabled = false; // 버튼 활성화
+	        }
 
           // UI 업데이트
           document.getElementById("memMoney").textContent = memMoney;

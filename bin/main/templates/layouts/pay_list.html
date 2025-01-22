@@ -93,7 +93,7 @@
 				                : '<i class="bi bi-plus-circle" style="color: blue"></i>';
 				            li.innerHTML = `
 				                <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
-				                <p>${history.status} | ${history.receiverId?.memId || ''}</p>
+				                <p>${history.status} | ${history.receiverId || ''}</p>
 				                <strong>${icon} ${history.amount}원</strong>
 				                <hr>
 				            `;
@@ -118,7 +118,7 @@
 
 			                li.innerHTML = `
 			                    <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
-			                    <p><span>${statusText}</span> | ${history.senderId?.memId || ''}</p>
+			                    <p><span>${statusText}</span> | ${history.senderId || ''}</p>
 			                    <strong>${icon} ${history.amount}원</strong>
 			                    <hr>
 			                `;
