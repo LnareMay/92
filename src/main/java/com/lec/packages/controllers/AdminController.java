@@ -458,15 +458,16 @@ public class AdminController {
             @AuthenticationPrincipal UserDetails userDetails) {
         
         String memId = userDetails.getUsername();
-        List<ReservationDTO> confirmedReservations = 
-            reservationService.getConfirmedReservationsForUser(memId);
+        List<ReservationDTO> confirmedReservations = reservationService.getConfirmedReservationsForUser(memId);
         
         List<Map<String, Object>> events = new ArrayList<>();
         
         for (ReservationDTO reservation : confirmedReservations) {
             Map<String, Object> event = new HashMap<>();
             event.put("title", reservation.getFacilityName());
-            event.put("start", reservation.getReservationDate());
+            // start와 end 속성 사용
+            event.put("start", reservation.getReservationDate() + "T" + reservation.getReservationStartTime());
+            event.put("end", reservation.getReservationDate() + "T" + reservation.getReservationEndTime());
             event.put("id", reservation.getReservationCode());
             event.put("status", reservation.getReservationProgress());
             events.add(event);
@@ -474,5 +475,6 @@ public class AdminController {
         
         return events;
     }
+
 
 }

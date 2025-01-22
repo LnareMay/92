@@ -84,7 +84,12 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public List<ReservationDTO> getConfirmedReservationsForUser(String memId) {
 		
-		 return reservationRepository.findConfirmedReservationsByMemId(memId);
+		 List<Reservation> reservations = reservationRepository.findConfirmedReservationsByMemId(memId);
+	    
+	    return reservations.stream()
+				           .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+				           .collect(Collectors.toList());
+	    
 	}
 
 

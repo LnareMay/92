@@ -174,18 +174,29 @@
             var Calendar = FullCalendar.Calendar;
             var calendarEl = document.getElementById('calendar');
 
-            var calendar = new Calendar(calendarEl, {
-                plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                'themeSystem': 'bootstrap'
-            });
+			var calendar = new Calendar(calendarEl, {
+			    plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+			    header: {
+			        left: 'prev,next today',
+			        center: 'title',
+			        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+			    },
+			    'themeSystem': 'bootstrap',
+			    events: '/admin/calendar/events',  // 서버에서 예약 데이터를 가져오는 엔드포인트
+				eventTimeFormat: { 
+				       hour: 'numeric',
+				       minute: '2-digit',
+				       meridiem: 'short' // 'short'로 설정하면 AM/PM 형식으로 표시
+				   },
+			    eventClick: function(info) {
+			        // 이벤트 클릭시 동작
+			        console.log(info.event.title);
+			    }
+			});
 
             calendar.render();
         });
     </script>
+	
 </body>
 </html>
