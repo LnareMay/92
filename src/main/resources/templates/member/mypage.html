@@ -31,7 +31,17 @@
 </head>
 
 <body>
-	<div th:insert="~{layouts/header :: header}"></div>
+
+	<th:block th:if="${member.memIsmanager == true}">
+		<div th:insert="~{layouts/admin_header :: admin_header}"></div>
+	</th:block>
+
+	<th:block th:if="${member.memIsmanager == false}">
+		<div th:insert="~{layouts/header :: header}"></div>
+	</th:block>
+
+
+
 	<main class="main container" id="mypage_pg">
 		<div class="sidebar">
 			<div class="header">
@@ -40,10 +50,17 @@
 			</div>
 
 			<div class="btn_wrap">
-				<div class="header">
+				<div class="header" th:if="${member.memIsmanager == false}">
 					<a href="/member/mypage" class="active">나의정보</a> <a
 						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
 				</div>
+				
+				<div class="header" th:if="${member.memIsmanager == true}">
+					<a href="/member/mypage" class="active">나의정보</a>
+				</div>
+
+				
+				
 				<div style="align-items: center;">
 					<div
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
@@ -145,11 +162,13 @@
 							<p>-선택필요-</p>
 						</div>
 
-						<div th:if="${#authentication != null and #authentication.principal.memBirthday != null and #authentication.principal.memBirthday != ''}">
+						<div
+							th:if="${#authentication != null and #authentication.principal.memBirthday != null and #authentication.principal.memBirthday != ''}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div th:if="${#authentication == null or #authentication.principal.memBirthday == null or #authentication.principal.memBirthday == ''}">
+						<div
+							th:if="${#authentication == null or #authentication.principal.memBirthday == null or #authentication.principal.memBirthday == ''}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -182,8 +201,6 @@
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
-
-
 </body>
 
 </html>

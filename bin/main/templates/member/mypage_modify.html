@@ -31,7 +31,14 @@
 </head>
 
 <body>
-	<div th:insert="~{layouts/header :: header}"></div>
+	<th:block th:if="${member.memIsmanager == true}">
+		<div th:insert="~{layouts/admin_header :: admin_header}"></div>
+	</th:block>
+
+	<th:block th:if="${member.memIsmanager == false}">
+		<div th:insert="~{layouts/header :: header}"></div>
+	</th:block>
+	
 	<main class="main container" id="mypage_pg">
 		<div class="sidebar">
 			<div class="header">
@@ -39,9 +46,13 @@
 				<!-- <button class="btn btn-danger" onclick="location.href='/member/logout'">로그아웃</button> -->
 			</div>
 			<div class="btn_wrap">
-				<div class="header">
-					<a href="/member/mypage" class="active">나의정보</a> <a href="/member/reservation">나의시설예약</a> <a
-						href="#">운동캘린더</a>
+				<div class="header" th:if="${member.memIsmanager == false}">
+					<a href="/member/mypage" class="active">나의정보</a> <a
+						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
+				</div>
+				
+				<div class="header" th:if="${member.memIsmanager == true}">
+					<a href="/member/mypage" class="active">나의정보</a>
 				</div>
 				<div style="align-items: center;">
 					<div
