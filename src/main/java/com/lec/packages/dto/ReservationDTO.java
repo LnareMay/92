@@ -72,5 +72,19 @@ public class ReservationDTO {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public ReservationDTO(String reservationCode
+						 ,Date reservationDate
+						 ,LocalTime reservationStartTime
+						 ,LocalTime reservationEndTime
+						 ,String reservationProgress
+						 ,String facilityName) {
+				this.reservationCode = reservationCode;
+				this.reservationDate = reservationDate;
+				this.reservationStartTime = reservationStartTime;
+				this.reservationEndTime = reservationEndTime;
+				this.reservationProgress = reservationProgress;
+				this.facilityName = facilityName;
+		}
 
 }

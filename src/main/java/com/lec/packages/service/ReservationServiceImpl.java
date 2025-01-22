@@ -67,6 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
 					              .build();
 	    }
 
+	    
 	//예약코드로 시설 예약 정보 불러오기
 	@Override
 	public ReservationDTO getReservationByCode(String reservationCode) {
@@ -77,6 +78,20 @@ public class ReservationServiceImpl implements ReservationService {
 		return modelMapper.map(reservation, ReservationDTO.class);
 		
 	}
+
+
+	//로그인 한 유저의 예약 승인 된 시설 만 노출
+	@Override
+	public List<ReservationDTO> getConfirmedReservationsForUser(String memId) {
+		
+		 List<Reservation> reservations = reservationRepository.findConfirmedReservationsByMemId(memId);
+	    
+	    return reservations.stream()
+				           .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+				           .collect(Collectors.toList());
+	    
+	}
+
 
 
 	
