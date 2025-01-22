@@ -165,7 +165,8 @@
                     Facility Name: <a th:href="@{/admin/Facility_detail/{facilityCode}(facilityCode=${reservation.facilityCode})}" 
    					  th:text="${reservation.facilityName}"></a><br>
                     Facility Code: <a th:text="${reservation.facilityCode}"></a><br>
-                    Email: info@almasaeedstudio.com
+                    Email: <span th:text="${manager.memEmail}"></span><br>
+                    Tell: <span th:text="${manager.memTell}"></span>
                   </address>
                 </div>
                 <!-- /.col -->
@@ -173,10 +174,8 @@
                   To
                   <address>
                     <strong>User ID: <a th:text="${reservation.memId}"></a></strong><br>
-                    <!--795 Folsom Ave, Suite 600<br>
-                    San Francisco, CA 94107<br>
-                    Phone: (555) 539-1037<br>
-                    Email: john.doe@example.com-->
+                    Nickname: <span th:text="${member.memNickname}"></span><br>
+                    Email: <span th:text="${member.memEmail}"></span>
                   </address>
                 </div>
                 <!-- /.col -->
