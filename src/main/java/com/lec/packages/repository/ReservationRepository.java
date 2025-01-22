@@ -55,6 +55,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	Member findMemberByReservationMemId(@Param("memId") String memId);
 
 
+
 	
 	
 

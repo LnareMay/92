@@ -197,8 +197,9 @@ public class AdminController {
 
 	// 예약 리스트
 	@GetMapping("/Reservation_list")
-	public String ListReservationPage(PageRequestDTO pageRequestDTO, Model model,
-			@AuthenticationPrincipal UserDetails userDetails) {
+	public String ListReservationPage(PageRequestDTO pageRequestDTO
+									  , Model model
+								      ,@AuthenticationPrincipal UserDetails userDetails) {
 
 		String memId = userDetails.getUsername();
 

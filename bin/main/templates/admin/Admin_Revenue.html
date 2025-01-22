@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +17,6 @@
   <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="../../dist/css/css_sh.css" /> -->
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -36,14 +34,13 @@
       </li>
     </ul>
 
-	<!-- Right navbar links -->
-	 <ul class="navbar-nav ml-auto">
+    <!-- Right navbar links -->
+	<ul class="navbar-nav ml-auto">
       <li class="nav-item">
     	<!-- 로그아웃 버튼 만들기 -->
     	<a href="/member/logout" class="btn btn-block btn-outline-danger">Logout</a>
       </li>
     </ul>
-    
   </nav>
   <!-- /.navbar -->
 
@@ -73,7 +70,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview menu-open ">
+          <li class="nav-item has-treeview menu-open">
             <a href="/admin/main" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -91,23 +88,23 @@
               <li class="nav-item">
                 <a href="/admin/Facility_list" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>시설 목록</p>
+                  <p>시설 목록 > 시설 상세</p>
                 </a>
               </li>
             </ul>
           </li>
           
            <li class="nav-item has-treeview">
-        	 <a href="/admin/main" class="nav-link ">
+        	 <a href="/admin/main" class="nav-link">
         	   <i class="nav-icon fas fa-tachometer-alt"></i>
         	   <p>
                  예약
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-             <ul class="nav nav-treeview active">
+             <ul class="nav nav-treeview">
               <li class="nav-item">
-				    <a href="/admin/Reservation_list" class="nav-link active">
+				    <a href="/admin/Reservation_list" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>예약 목록</p>
                 </a>
@@ -129,12 +126,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Facility List</h1>
+            <h1>Facility Detail</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-       <li class="breadcrumb-item"><a href="/admin/main">Home</a></li>
-              <li class="breadcrumb-item active">Facility List</li>
+              <li class="breadcrumb-item">  <a href="/admin/main">Home</a></li>
+              <li class="breadcrumb-item active">Facility Detail</li>
             </ol>
           </div>
         </div>
@@ -145,98 +142,84 @@
     <section class="content">
 
       <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Facility List</h3>
+      <div class="card card-solid">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <div class="col-12">
+              <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image" class="product-image">
+              </div>
+              <div class="col-12 product-image-thumbs">
+                <div class="product-image-thumb active" th:if="${facility.facilityImage1 != null}"> <img th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"></div>
+                <div class="product-image-thumb" th:if="${facility.facilityImage2 != null}">  <img th:src="|/view/${facility.facilityImage2}|" id="facilityImage2" alt="Product Image"></div>
+                <div class="product-image-thumb" th:if="${facility.facilityImage3 != null}" > <img th:src="|/view/${facility.facilityImage3}|" id="facilityImage3" alt="Product Image" ></div>
+                <div class="product-image-thumb"  th:if="${facility.facilityImage4 != null}"> <img th:src="|/view/${facility.facilityImage4}|" id="facilityImage4" alt="Product Image" ></div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+            
+              <h2 class="my-3" th:text="${facility.facilityName}"></h2>
+              <p th:text="${facility.memId}"></p>
 
-          <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fas fa-minus"></i></button>
+              <hr>
+              
+              <table class="table table-striped projects" style="table-layout:fixed;">
+	              <tr>
+	              	<td>Facility Address</td>
+	              	<td th:text="${facility.facilityAddress}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Facility Description</td>
+	              	<td style="white-space: pre-line;" th:text="${facility.facilityDescription}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Open Time ~ EndTime</td>
+ 					<td th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Facility Create Date</td>
+	              	<td th:text="${facility.formattedCreateDate}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Facility Type</td>
+	              	<td th:switch="${facility.exerciseCode}">
+	              		<span th:case="'EXE_FOOTBALL'"> 축구장</span>
+					    <span th:case="'EXE_BASKET'"> 농구장</span>
+					    <span th:case="'EXE_BADMINTON'"> 배드민턴장</span>
+					    <span th:case="'EXE_CLIMB'"> 암벽등반장</span>
+					    <span th:case="'EXE_FUTSAL'"> 풋살장</span>
+					    <span th:case="'EXE_BASEBALL'"> 야구장</span>
+					    <span th:case="'EXE_YOGA'"> 요가</span>
+					    <span th:case="'EXE_TENNIS'"> 테니스장</span>
+					    <span th:case="'EXE_PILATES'"> 필라테스</span>
+					    <span th:case="'EXE_FITNESS'"> 헬스장</span>
+					 </td>
+	              </tr>
+              
+	              <tr>
+	              	<td>Reservation Only Club</td>
+	              	<td th:text="${facility.facilityIsOnlyClub}"></td>
+	              </tr>
+	              
+	              <tr>
+	              	<td>Facility price</td>
+	              	<td th:text="${facility.formattedPrice}" ></td>
+	              </tr>
+              
+              
+              </table>
+              
+              <br />
+            	<a href="/admin/Facility_list" class="btn btn-primary btn-block mb-3">Back to list</a>
+            </div>
+            
           </div>
-        </div>
-        <div class="card-body p-0">
-          <table class="table table-striped projects">
-              <thead>
-                  <tr>
-                      <th style="width: 1%">
-                          #
-                      </th>
-                      <th style="width: 20%">
-                          Facility Name
-                      </th>
-                      <th style="width: 30%">
-                          Facility Leader
-                      </th>
-                      <th>
-                          Facility Address
-                      </th>
-                      <th>
-                          Facility Price
-                      </th>
-                      <th style="width: 20%">
-                      </th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr th:each="facility , stat : ${facilities}"
-                   	  th:if="${facility.deleteFlag == false}">
-                      <td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td> 
-                      <td>
-                          <a th:text="${facility.facilityName}"></a>
-                          <br/>
-                           <small th:text="${facility.formattedCreateDate}"></small> 	    
-                      </td>
-                      <td th:text="${facility.memId}"></td>
-  					  <td th:text="${facility.facilityAddress}"></td>
-                     <td th:text="${facility.formattedPrice}"></td>
-                      <td class="project-actions text-right">
-                          <a th:href="@{/admin/Facility_detail/{facilityCode}(facilityCode=${facility.facilityCode})}" class="btn btn-primary btn-sm" >
-                             <i class="fas fa-folder"></i> View
-                          </a>
-                          <a th:href="@{/admin/Facility_edit/{facilityCode}(facilityCode=${facility.facilityCode})}" class="btn btn-success btn-sm" >
-                              <i class="fas fa-pencil-alt">
-                              </i>
-                              Edit
-                          </a>
-							<a class="btn btn-danger btn-sm" 
-							   th:href="@{/admin/Facility_delete/{facilityCode}(facilityCode=${facility.facilityCode})}"
-							   onclick="return confirm('정말 삭제하시겠습니까?')">
-							    <i class="fas fa-trash"></i>
-							    Delete
-							</a>
-                      </td>
-                  </tr>
 
-              </tbody>
-          </table>
-       
-         
-       <!-- 페이지네이션 -->
-		<nav aria-label="Page navigation" class="mt-3" 
-		     th:if="${not #lists.isEmpty(facilities)}">
-		    <ul class="pagination justify-content-center">
-		        <li class="page-item" th:classappend="${pageNumber == 1} ? 'disabled'">
-		            <a class="page-link" th:href="@{/admin/Facility_list(page=${pageNumber - 1})}">
-		                «                   
-		            </a>
-		        </li>
-		        
-		        <li class="page-item" 
-		            th:each="page : ${#numbers.sequence(1,totalPages)}"
-		            th:classappend="${page == pageNumber} ? 'active'">
-		            <a class="page-link" th:href="@{/admin/Facility_list(page=${page})}" 
-		               th:text="${page}"></a>
-		        </li>
-		
-		        <li class="page-item" th:classappend="${pageNumber == totalPages} ? 'disabled'">
-		            <a class="page-link" th:href="@{/admin/Facility_list(page=${pageNumber + 1})}">
-		                »
-		            </a>
-		        </li>
-		    </ul>
-		</nav>
-         		
-       	</div>
+        </div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
@@ -246,7 +229,7 @@
   </div>
   <!-- /.content-wrapper -->
 
-  	<!-- FOOTER  -->
+	<!-- FOOTER  -->
   <div th:insert="~{layouts/footer :: footer}"></div>
 
   <!-- Control Sidebar -->
@@ -265,5 +248,23 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/admin.js"></script>
+<script>
+//이미지선택
+document.querySelectorAll('.product-image-thumb').forEach((thumb) => {
+    thumb.addEventListener('click', (event) => {
+        // 현재 클릭된 썸네일의 이미지를 가져옴
+        const clickedImageSrc = event.currentTarget.querySelector('img').src;
+
+        // 상단 메인 이미지를 클릭된 이미지로 변경
+        document.querySelector('.product-image').src = clickedImageSrc;
+
+        // 썸네일 활성화 상태 업데이트
+        document.querySelectorAll('.product-image-thumb').forEach((thumb) => {
+            thumb.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+    });
+});
+</script>
 </body>
 </html>

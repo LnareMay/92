@@ -173,7 +173,7 @@
                 <div class="col-sm-4 invoice-col">
                   To
                   <address>
-                    <strong>User ID: <a th:text="${reservation.memId}"></a></strong><br>
+                    <strong>User ID:</strong> <a th:text="${reservation.memId}"></a><br>
                     Nickname: <span th:text="${member.memNickname}"></span><br>
                     Email: <span th:text="${member.memEmail}"></span>
                   </address>
@@ -181,8 +181,13 @@
                 <!-- /.col -->
                 <div class="col-sm-4 invoice-col">
                   <b>Reservation Code: </b><a th:text="${reservation.reservationCode}"></a> <br>
-                  <b>Reservation Date: </b> <a th:text="${reservation.reservationDate}"></a><br>    
-                  <b>Reservation Progress: </b> <a th:text="${reservation.reservationProgress}"></a><br>    
+                  Reservation Date:<a th:text="${reservation.reservationDate}"></a><br>    
+                  Reservation Progress:<span class="ReservationProgressTag"
+											         th:if="${reservation.reservationProgress=='예약진행중'}">예약진행중</span>
+											   <span class="ReservationProgressTag_confirm"
+											         th:if="${reservation.reservationProgress=='예약완료'}">예약 승인 및 완료 </span>
+											   <span class="ReservationProgressTag_refuse"
+											         th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>       <br>    
                 </div>
                 <!-- /.col -->
               </div>
@@ -282,11 +287,14 @@
               <div class="row no-print">
                 <div class="col-12">
                   <a href="/admin/Reservation_list" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i> Reservation List</a>
-                  <button type="button" class="btn btn-success float-right"  onclick="return confirm('예약 확정 하시겠습니까?')" > <i class="fa fa-check-circle" aria-hidden="true"></i>confirm    
-                  </button>
-                  <button type="button" class="btn btn-danger float-right" style="margin-right: 5px;"  onclick="return confirm('승인 거절 하시겠습니까?')">
-                     <i class="fa fa-ban" aria-hidden="true"></i> Refuse
-                  </button>
+                 <button type="button" class="btn btn-success float-right" style="margin-right: 5px;"
+			        	 th:onclick="|if(confirm('예약 확정 하시겠습니까?')) location.href='@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}'|">
+			          <i class="fa fa-check-circle" aria-hidden="true"></i> Confirm
+			    </button>
+                 <button type="button" class="btn btn-danger float-right" style="margin-right: 5px;"
+			        	 th:onclick="|if(confirm('승인 거절 하시겠습니까?')) location.href='@{/admin/Reservation_refuse/{reservationCode}(reservationCode=${reservation.reservationCode})}'|">
+			          <i class="fa fa-ban" aria-hidden="true"></i> Refuse
+			    </button>
                 </div>
               </div>
             </div>
