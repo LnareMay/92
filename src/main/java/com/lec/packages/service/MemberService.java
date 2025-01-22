@@ -36,8 +36,11 @@ public interface MemberService {
 	void chargePoint(String id,BigDecimal amount, BigDecimal plusPoint);
 
 	List<TransferHistoryDTO> getTransferHistories(String memId);
+	
+	List<TransferHistoryDTO> getTransferHistorieWhenManager(String memId);
 
 	List<ChargeHistoryDTO> getChargeHistories(String memId);
+	
 	
 	
 //	void saveMemberFile(MemberSecurityDTO memberSecurityDTO, String fileName);
