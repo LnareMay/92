@@ -110,14 +110,14 @@
 					<th:block
 						th:if="${member.memSocial == true && (member.memPicture != null || member.memPicture !='')}">
 						<img th:src="${member.memPicture}"
-							alt="프로필 이미지">
+							alt="프로필 이미지" id="profileImage">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
 						th:if="${member.memSocial == false && member.memPicture != null && member.memPicture !=''}">
 						<img th:src="|/view/${member.memPicture}|"
-							alt="프로필 이미지">
+							alt="프로필 이미지" id="profileImage">
 					</th:block>
 
 					<!-- 기본 프로필 이미지 -->
@@ -125,8 +125,11 @@
 						th:if="${member.memPicture == null || member.memPicture ==''}">
 						<img
 							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-							alt="기본 프로필 이미지">
+							alt="기본 프로필 이미지" id="profileImage">
 					</th:block>
+					
+					<input type="file" id="memPicture" name="memPicture" class="blind">
+					
 
 						<div class="form-group">
 							<label for="memId">아이디</label> <input type="text" id="memId"
@@ -299,7 +302,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="/js/upload.js"></script>
 	<script>
-	
 		document.addEventListener("DOMContentLoaded", function () {
 		  const urlParams = new URLSearchParams(window.location.search);
 		  if (urlParams.has('executeSearch') && urlParams.get('executeSearch') === 'true') {
