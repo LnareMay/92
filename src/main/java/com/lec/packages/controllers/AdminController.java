@@ -9,7 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +34,11 @@ import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.FacilityRepository;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.FacilityService;
 import com.lec.packages.service.ReservationService;
 
@@ -54,6 +59,7 @@ public class AdminController {
 	private final ReservationService reservationService;
 	private final ReservationRepository reservationRepository;
 	private final MemberRepository memberRepository;
+	 private final CustomUserDetailsService customUserDetailsService;
 
 	@GetMapping("/main")
 	public String adminMainPage(@AuthenticationPrincipal UserDetails userDetails, PageRequestDTO pageRequestDTO,
@@ -300,29 +306,44 @@ public class AdminController {
 
 	// 승인 거절
 	@GetMapping("/Reservation_refuse/{reservationCode}")
-	public String refuseReservation(@PathVariable("reservationCode") String reservationCode, Model model,
-			@AuthenticationPrincipal UserDetails userDetails) {
+	public String refuseReservation(
+	        TransferHistoryDTO transferHistoryDTO,
+	        @PathVariable("reservationCode") String reservationCode,
+	        Model model,
+	        @AuthenticationPrincipal UserDetails userDetails) {
 
-		// 예약 정보를 가져오기 위해 서비스 호출
-		ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+	    // 예약 정보를 가져오기 위해 서비스 호출
+	    ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
 
-		// DTO를 엔티티로 변환하고 상태 변경
-		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
-				.orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+	    // DTO를 엔티티로 변환하고 상태 변경
+	    Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
+	            .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
 
-		// 예약 상태 변경
-		reservation.setReservationProgress("예약취소");
-		reservationRepository.save(reservation);
+	    String memId = userDetails.getUsername();
+	    facilityService.cancelBookingbyManager(memId, transferHistoryDTO, reservationDTO);
 
-		String memId = userDetails.getUsername();
+	    // 업데이트된 사용자 정보 가져오기
+	    Member updatedMember = memberRepository.findById(memId)
+	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+	    UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
 
-		// Member 객체를 가져오는 로직 추가 [관리자정보]
-		Optional<Member> managerOptional = memberRepository.findById(memId);
-		if (managerOptional.isPresent()) {
-			model.addAttribute("manager", managerOptional.get());
-		}
-		return "redirect:/admin/Reservation_list";
+	    // 새 인증 정보 생성
+	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            updatedUser,
+	            updatedUser.getPassword(),
+	            updatedUser.getAuthorities()
+	    );
+
+	    // 보안 컨텍스트 갱신
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+	    // Member 객체를 가져오는 로직 추가 [관리자정보]
+	    Optional<Member> managerOptional = memberRepository.findById(memId);
+	    managerOptional.ifPresent(member -> model.addAttribute("manager", member));
+
+	    return "redirect:/admin/Reservation_list";
 	}
+
 
 	// 예약 취소 리스트(확인용)
 	@GetMapping("/Reservation_Refuselist")
