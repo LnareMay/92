@@ -53,6 +53,7 @@ public class ReservationDTO {
     @NotNull
     private String reservationProgress;
     
+    private LocalDateTime createDate;
     
     private LocalDateTime modifyDate;
 
@@ -78,13 +79,15 @@ public class ReservationDTO {
 						 ,LocalTime reservationStartTime
 						 ,LocalTime reservationEndTime
 						 ,String reservationProgress
-						 ,String facilityName) {
+						 ,String facilityName
+						 ,LocalDateTime createDate) {
 				this.reservationCode = reservationCode;
 				this.reservationDate = reservationDate;
 				this.reservationStartTime = reservationStartTime;
 				this.reservationEndTime = reservationEndTime;
 				this.reservationProgress = reservationProgress;
 				this.facilityName = facilityName;
+				this.createDate = createDate;
 		}
 
 }

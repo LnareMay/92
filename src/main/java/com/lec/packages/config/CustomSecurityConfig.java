@@ -123,7 +123,7 @@ public class CustomSecurityConfig {
 				.requestMatchers(HttpMethod.DELETE, "/admin/remove/**").hasRole("ADMIN").requestMatchers("/admin/**")
 				.hasRole("ADMIN")
 				// 로그인 및 정적 리소스는 모두 허용
-				.requestMatchers("/member/login", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
+				.requestMatchers("/member/login","/member/checkId", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
 				.permitAll()
 				// 나머지 요청은 인증된 사용자만 접근 가능
 				.anyRequest().authenticated());
@@ -145,9 +145,9 @@ public class CustomSecurityConfig {
 	    @Override
 	    public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
 	        String requestUri = request.getRequestURI();
-	        
-	        // "/view/**" 경로는 NullRequestCache 사용
-	        if (requestUri.startsWith("/view/")) {
+
+	        // "/view/**" 및 "/member/checkId" 경로는 NullRequestCache 사용
+	        if (isExcludedPath(requestUri)) {
 	            nullCache.saveRequest(request, response);
 	        } else {
 	            defaultCache.saveRequest(request, response);
@@ -158,7 +158,7 @@ public class CustomSecurityConfig {
 	    public SavedRequest getRequest(HttpServletRequest request, HttpServletResponse response) {
 	        String requestUri = request.getRequestURI();
 
-	        if (requestUri.startsWith("/view/")) {
+	        if (isExcludedPath(requestUri)) {
 	            return nullCache.getRequest(request, response);
 	        } else {
 	            return defaultCache.getRequest(request, response);
@@ -169,7 +169,7 @@ public class CustomSecurityConfig {
 	    public void removeRequest(HttpServletRequest request, HttpServletResponse response) {
 	        String requestUri = request.getRequestURI();
 
-	        if (requestUri.startsWith("/view/")) {
+	        if (isExcludedPath(requestUri)) {
 	            nullCache.removeRequest(request, response);
 	        } else {
 	            defaultCache.removeRequest(request, response);
@@ -180,16 +180,24 @@ public class CustomSecurityConfig {
 	    public HttpServletRequest getMatchingRequest(HttpServletRequest request, HttpServletResponse response) {
 	        String requestUri = request.getRequestURI();
 
-	        if (requestUri.startsWith("/view/")) {
+	        if (isExcludedPath(requestUri)) {
 	            return nullCache.getMatchingRequest(request, response);
 	        } else {
 	            return defaultCache.getMatchingRequest(request, response);
 	        }
 	    }
 
-
-
+	    /**
+	     * 특정 경로를 제외할 조건을 정의합니다.
+	     *
+	     * @param requestUri 요청 URI
+	     * @return 제외 경로에 해당하면 true
+	     */
+	    private boolean isExcludedPath(String requestUri) {
+	        return requestUri.startsWith("/view/") || requestUri.equals("/member/checkId");
+	    }
 	}
+
 	
 	@Bean
 	public AuthenticationSuccessHandler authenticationSuccessHandler() {

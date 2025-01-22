@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.MemberJoinDTO;
@@ -154,24 +155,10 @@ public class FacilityController {
 		        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
 		        String memId = member.getMemId(); // Current logged-in user's ID
 		    
+		       
 		        facilityService.cancelBooking(memId,transferHistoryDTO, reservationDTO);
+		        redirectAttributes.addFlashAttribute("result", "예약취소 성공");
 		    
-		        // 업데이트된 사용자 정보 가져오기
-		        Member updatedMember = memberRepository.findById(memId)
-		                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-		        UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
-
-		        // 새 인증 정보 생성
-		        Authentication newAuth = new UsernamePasswordAuthenticationToken(
-		                updatedUser,
-		                updatedUser.getPassword(),
-		                updatedUser.getAuthorities()
-		        );
-
-		        // 보안 컨텍스트 갱신
-		        SecurityContextHolder.getContext().setAuthentication(newAuth);
-		        
-			    };
 		        String redirectUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
 	                    .path("/member/reservation")
 	                    .toUriString();
@@ -182,6 +169,9 @@ public class FacilityController {
 		    
 		    
 		    }
+		    redirectAttributes.addFlashAttribute("error", "로그인 정보가 필요합니다.");
+		    return "redirect:/login";
+	    }
 	        
 		
 
