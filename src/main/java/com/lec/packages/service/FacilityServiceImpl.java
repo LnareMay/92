@@ -232,12 +232,18 @@ public class FacilityServiceImpl implements FacilityService{
 	    String reservationCode = "" + System.currentTimeMillis();
 	    reservationDTO.setReservationCode(reservationCode);
 	    transferHistoryDTO.setTransferCode(reservationCode);
+	    
+	    
+	    String payCode = UUID.randomUUID().toString();
+	    reservationDTO.setPayCode(payCode);
+	    transferHistoryDTO.setPayCode(payCode);
 
 	    // Step 4: ReservationDTO를 Reservation 엔티티로 변환
 		Reservation reservation;
 		if(reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
 			reservation = Reservation.builder()
 					.reservationCode(reservationCode) // 고유 예약 코드 설정
+					.payCode(payCode)
 					.facilityCode(reservationDTO.getFacilityCode())
 					.facilityName(reservationDTO.getFacilityName())
 					.memId(reservationDTO.getMemId())
@@ -249,9 +255,11 @@ public class FacilityServiceImpl implements FacilityService{
 					.reservationProgress("예약진행중") // 초기 상태 설정
 					.deleteFlag(false) // 초기 상태 설정
 					.build();
+			log.info(reservationCode);
 		} else {
 			reservation = Reservation.builder()
 					.reservationCode(reservationCode) // 고유 예약 코드 설정
+					.payCode(payCode)
 					.facilityCode(reservationDTO.getFacilityCode())
 					.facilityName(reservationDTO.getFacilityName())
 					.memId(reservationDTO.getMemId())
@@ -270,6 +278,7 @@ public class FacilityServiceImpl implements FacilityService{
 		if(reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
 			transferHistory = TransferHistory.builder()
 					.transferCode(reservationCode)
+					.payCode(payCode)
 					.amount(totalPrice)
 					.memo(transferHistoryDTO.getMemo())
 					.status("송금성공")
@@ -280,6 +289,7 @@ public class FacilityServiceImpl implements FacilityService{
 		} else {
 			transferHistory = TransferHistory.builder()
 					.transferCode(reservationCode)
+					.payCode(payCode)
 					.amount(totalPrice)
 					.memo(transferHistoryDTO.getMemo())
 					.status("송금성공")
@@ -355,9 +365,8 @@ public class FacilityServiceImpl implements FacilityService{
 	    }
 
 	    // 2. transfer_history에서 createDate, sender_id가 같은 TransferHistory 가져오기
-	    TransferHistory transferHistory = transferHistoryRepository.findByTransferDateAndSenderId(
-	            reservation.getCREATEDATE(), 
-	            memId
+	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(
+	            reservation.getPayCode()
 	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
 
 	    // 3. sender_id의 memMoney 업데이트

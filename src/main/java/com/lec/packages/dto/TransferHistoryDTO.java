@@ -15,7 +15,8 @@ import com.lec.packages.domain.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferHistoryDTO {
-    private String transferCode;          // Unique identifier for each transfer
+    private String transferCode; 
+    private String payCode;
     private Member senderId;          // ID of the member who sends money
     private Member receiverId;        // ID of the member who receives money
     private BigDecimal amount;        // Amount transferred

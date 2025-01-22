@@ -42,6 +42,9 @@ public class Reservation extends BaseEntity{
 	    @Column(length = 20, name = "RESERVATION_CODE")
 	    private String reservationCode;
 	 	
+	 	 @Column(name = "PAY_CODE")
+		 private String payCode;
+	 	
 	 	@JoinColumn(name = "FACILITY_NAME")
 	    @Column(nullable = false, name = "FACILITY_NAME", length = 50)
 	    private String facilityName;

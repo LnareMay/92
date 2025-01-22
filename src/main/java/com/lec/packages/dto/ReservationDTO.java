@@ -25,6 +25,8 @@ public class ReservationDTO {
 	@NotNull
 	private String reservationCode;
 	
+	private String payCode;
+	
     private String facilityCode;
 
     private String facilityName;
