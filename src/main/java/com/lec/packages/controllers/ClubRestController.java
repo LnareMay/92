@@ -252,7 +252,7 @@ public class ClubRestController {
 
 	        String clubCode = clubService.create(clubDTO);
 
-	        clubService.join(memId, clubCode);
+	        clubService.join(memId, clubCode, clubPw);
 
 	        response.put("success", true);
 	        response.put("redirectUrl", "/");
