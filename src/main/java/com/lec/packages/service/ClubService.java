@@ -114,5 +114,7 @@ public interface ClubService {
 
     String addClubResMember(String reservationCode, String clubCode, String memId);
 
+    List<ClubBoardDTO> getBoardListByMemID(String username);
+
 
 }

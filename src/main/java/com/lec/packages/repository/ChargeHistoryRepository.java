@@ -12,6 +12,6 @@ import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.TransferHistory;
 
 public interface ChargeHistoryRepository extends JpaRepository<ChargeHistory, String>{
-	@Query("SELECT ch FROM ChargeHistory ch WHERE ch.memId = :memId")
+	@Query("SELECT ch FROM ChargeHistory ch WHERE ch.memId = :memId order by ch.chargeDate desc")
 	List<ChargeHistory> findByMemId(@Param("memId") String memId);
 }

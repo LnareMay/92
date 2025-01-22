@@ -18,8 +18,11 @@ public interface TransferHistoryRepository extends JpaRepository<TransferHistory
     @Query("SELECT th FROM TransferHistory th WHERE th.payCode = :payCode")
     Optional<TransferHistory> findByPayCode(@Param("payCode") String payCode);
 
-    @Query("SELECT th FROM TransferHistory th JOIN FETCH th.senderId JOIN FETCH th.receiverId WHERE th.senderId.memId = :memId")
+    @Query("SELECT th FROM TransferHistory th JOIN FETCH th.senderId JOIN FETCH th.receiverId WHERE th.senderId.memId = :memId order by th.transferDate desc")
     List<TransferHistory> findByMemId(@Param("memId") String memId);
+    
+    @Query("SELECT th FROM TransferHistory th JOIN FETCH th.senderId JOIN FETCH th.receiverId WHERE th.receiverId.memId = :memId order by th.transferDate desc")
+    List<TransferHistory> findByReceiverMemId(@Param("memId") String memId);
 
 }
 

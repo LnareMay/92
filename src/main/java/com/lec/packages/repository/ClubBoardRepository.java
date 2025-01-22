@@ -1,5 +1,6 @@
 package com.lec.packages.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -19,4 +20,8 @@ public interface ClubBoardRepository extends JpaRepository<Club_Board, ClubBoard
     @EntityGraph(attributePaths = {"images"})
 	@Query("select cb from Club_Board cb where cb.clubCode = :clubCode and cb.boardNo = :boardNo")
 	Optional<Club_Board> findBoardByImages(@Param("clubCode") String clubCode, @Param("boardNo") int boardNO);
+
+    @EntityGraph(attributePaths = {"images"})
+    // @Query("select cb from Club_Board cb where cb.memID =:memId order by cb.MODIFYDATE desc")
+    List<Club_Board> findTop3ByMemIDOrderByMODIFYDATEDesc(String memId);
 }

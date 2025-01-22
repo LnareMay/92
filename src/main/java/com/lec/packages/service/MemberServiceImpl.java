@@ -186,8 +186,25 @@ public class MemberServiceImpl implements MemberService{
 	        return transferHistories.stream()
 	                .map(th -> TransferHistoryDTO.builder()
 	                        .transferCode(th.getTransferCode())
-	                        .senderId(th.getSenderId()) // Member의 memId를 추출
-	                        .receiverId(th.getReceiverId()) // Member의 memId를 추출
+	                        .senderId(th.getSenderId()) 
+	                        .receiverId(th.getReceiverId())
+	                        .amount(th.getAmount())
+	                        .transferDate(th.getTransferDate())
+	                        .status(th.getStatus())
+	                        .memo(th.getMemo())
+	                        .clubCode(th.getClubCode())
+	                        .build())
+	                .collect(Collectors.toList());
+	    }
+	    
+	    // 관리자 계정에서 송금내역 불러오기
+	    public List<TransferHistoryDTO> getTransferHistorieWhenManager(String memId) {
+	        List<TransferHistory> transferHistoriesWhenManager = transferHistoryRepository.findByReceiverMemId(memId);
+	        return transferHistoriesWhenManager.stream()
+	                .map(th -> TransferHistoryDTO.builder()
+	                        .transferCode(th.getTransferCode())
+	                        .senderId(th.getSenderId()) 
+	                        .receiverId(th.getReceiverId())
 	                        .amount(th.getAmount())
 	                        .transferDate(th.getTransferDate())
 	                        .status(th.getStatus())

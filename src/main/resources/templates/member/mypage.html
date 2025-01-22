@@ -179,15 +179,7 @@
 
 			<div class="feed-container" style="margin-top: 30px;">
 				<!-- Repeat this block 30 times for a 3x10 grid -->
-				<div class="feed-item">
-					<img src="" alt="Placeholder Image">
-				</div>
-				<div class="feed-item">
-					<img src="" alt="Placeholder Image">
-				</div>
-				<div class="feed-item">
-					<img src="" alt="Placeholder Image">
-				</div>
+				
 				<!-- Repeat ends here -->
 			</div>
 		</div>
@@ -195,5 +187,44 @@
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/gd.js"></script>
+<script th:inline="javascript">
+	const feedContainer = document.querySelector(".feed-container");
+	const memId = /*[[${#authentication.principal.memNickname}]]*/"";
+	
+	async function getBoardListByMemId() {
+		const response = await axios.get('/club/getBoardListByMemID')
+		return response.data;
+	}
+
+	function printBoardList() {
+		getBoardListByMemId().then(data => {
+			console.log(data);
+			data.forEach(dto => {
+				let str = `<div class="feed-item" onclick='location.href="/club/club_board_read?clubCode=${dto.club_CODE}&boardNo=${dto.board_NO}"'>
+					<div class="feed-header">
+						<div class="user-profile">
+							<p class="memNickname mb-1">${dto.board_TYPE}</p>
+						</div>
+					</div>
+					<div class="feed-main">
+						<img class="boardImg" src="/club/view/${dto.fileNames[0]}" onerror="this.src='/img/free-icon-no-picture-12048953.png'">
+					</div>
+					<div class="feed-content">
+						<span class="boardText">${dto.board_TEXT}</span>
+					</div>
+					</div>`
+
+				feedContainer.innerHTML += str;
+			});
+		})
+	}
+
+	printBoardList();
+
+	
+
+</script>
 
 </html>

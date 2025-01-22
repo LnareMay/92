@@ -42,6 +42,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.dto.ClubBoardAllListDTO;
+import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 
 import com.lec.packages.dto.ClubDTO;
@@ -478,5 +479,17 @@ public class ClubRestController {
 		String addResult = clubService.addClubResMember(reservationCode, clubCode, user.getUsername());
 
 		return addResult;
+	}
+
+	@GetMapping("/getBoardListByMemID")
+	public List<ClubBoardDTO> getBoardListByMemID(HttpServletRequest request, Model model, @AuthenticationPrincipal User user) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		log.info("do getBoardListByMemID");
+
+		List<ClubBoardDTO> dtos = clubService.getBoardListByMemID(user.getUsername());
+
+		return dtos;
 	}
 }
