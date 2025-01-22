@@ -240,6 +240,10 @@
         const files = fileInput.files
 
         for (let i = 0; i < files.length; i++) {
+            if(files[i].name.includes("_")) {
+                alert("_ 문자열은 포함될 수 없습니다.");
+                return;
+              }
             formObj.append("files", files[i]);
         }
 
