@@ -5,15 +5,23 @@
 		<div id="overlay"></div>
 
 		<div id="pay_list_popup" class="popup_style" style="display: none;">
-			<h5>송금내역</h5>
-			<ul id="transferHistoryList">
+			<div class="tabs">
+				<button type="button" class="tab-button active" data-tab="transferHistoryList">송금내역</button>
+				<button type="button" class="tab-button" data-tab="chargeHistoryList">충전내역</button>
+			</div>
+			<!-- 송금내역 -->
+			<ul id="transferHistoryList" class="tab-content active">
 				<!-- 송금내역 리스트가 여기에 추가됩니다 -->
 			</ul>
-			<h5>충전내역</h5>
-			<ul id="chargeHistoryList">
-				<!-- 충전내역 리스트가 여기에 추가됩니다 -->
-			</ul>
-			<button id="closePopup">닫기</button>
+			<!-- 충전내역 -->
+			<div id="chargeHistoryList" class="tab-content">
+				<div class="month-tab">
+				</div>
+				<ul id="chargeHistoryContent">
+					<!-- 충전내역 리스트가 여기에 추가됩니다 -->
+				</ul>
+			</div>
+			<button type="button" id="closePopup" class="close-button">닫기</button>		
 		</div>
 
 
@@ -53,9 +61,14 @@
 	                if (transferData && transferData.length > 0) {
 	                    transferData.forEach(history => {
 	                        const li = document.createElement("li");
+							
+							const icon = history.status === '송금성공' 
+									? '<i class="bi bi-plus-circle" style="color: red"></i>' 
+									: '<i class="bi bi-dash-circle" style="color: blue"></i>';
+							
 	                        li.innerHTML = `
 	                            <p>${history.status} | ${history.receiverId?.memId || ''}</p>
-	                            <strong>${history.amount}원</strong>
+	                            <strong>${icon} ${history.amount}원</strong>
 	                        `;
 	                        transferList.appendChild(li);
 	                    });
@@ -107,6 +120,22 @@
 		    document.getElementById("pay_list_popup").style.display = "none";
 		    document.getElementById("overlay").style.display = "none";
 		}
+		
+		// 탭전환
+		const tabButtons = document.querySelectorAll('.tab-button');
+		const tabContents = document.querySelectorAll('.tab-content');
+		
+		tabButtons.forEach(button => {
+			button.addEventListener("click", () => {
+				const targettab = button.dataset.tab;
+				
+				tabButtons.forEach(btn => btn.classList.remove("active"));
+				tabContents.forEach(content => content.classList.remove("active"));
+				
+				button.classList.add("active");
+				document.getElementById(targettab).classList.add("active")				
+			});
+		});
 
 		</script>
 
