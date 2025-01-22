@@ -14,6 +14,7 @@ import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.ClubReservationInterface;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.dto.ReservationDTO;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 
@@ -53,6 +54,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	//예약 테이블의 memId를 통해 Member 테이블의 정보를 조회
 	@Query("SELECT m FROM Member m WHERE m.memId = :memId")
 	Member findMemberByReservationMemId(@Param("memId") String memId);
+
+	//로그인 한 유저의 예약 승인 된 시설 만 노출
+	@Query("SELECT r FROM Reservation r " +
+		       "WHERE r.facilityCode IN (SELECT f.facilityCode FROM Facility f WHERE f.memId = :memId) " +
+		       "AND r.reservationProgress = '예약완료'")
+	List<Reservation> findConfirmedReservationsByMemId(@Param("memId") String memId);
 
 
 

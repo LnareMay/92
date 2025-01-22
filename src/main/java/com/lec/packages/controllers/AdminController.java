@@ -2,7 +2,9 @@ package com.lec.packages.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -281,14 +284,10 @@ public class AdminController {
 		// 예약 정보를 가져오기 위해 서비스 호출
 		ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
 
-		// 예약코드로 멤버정보 가져오기
-//		 MemberSecurityDTO memberDTO = reservationService.getMemberInfoByReservationCode(reservationCode);
-
 		// 모델에 로그인 정보를 추가하여 뷰로 전달
 		model.addAttribute("memId", memId);
 		// 모델에 시설 정보를 추가하여 뷰로 전달
 		model.addAttribute("reservation", reservationDTO);
-//		 model.addAttribute("member",memberDTO);
 
 		// Member 객체를 가져오는 로직 추가 [사용자정보]
 		Optional<Member> memberOptional = memberRepository.findById(reservationDTO.getMemId());
@@ -421,20 +420,59 @@ public class AdminController {
 
 		return "admin/Reservation_confirmlist";
 	}
-
-	@GetMapping("/calendar")
-	public String Calendar(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-
-		String userId = userDetails.getUsername();
-		model.addAttribute("userId", userId);
-
-		// Member 객체를 가져오는 로직 추가 [관리자정보]
-		Optional<Member> managerOptional = memberRepository.findById(userId);
-		if (managerOptional.isPresent()) {
-			model.addAttribute("manager", managerOptional.get());
-		}
-
-		return "admin/calendar";
-	}
+	
+//	@GetMapping("/calendar")
+//	public String Calendar(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+//
+//		String userId = userDetails.getUsername();
+//		
+//		// Member 객체를 가져오는 로직 추가 [관리자정보]
+//		Optional<Member> managerOptional = memberRepository.findById(userId);
+//		if (managerOptional.isPresent()) {
+//			model.addAttribute("manager", managerOptional.get());
+//		}
+//		
+//		model.addAttribute("userId", userId);
+//
+//		return "admin/calendar";
+//	}
+	
+	// 캘린더 페이지 보여주기
+    @GetMapping("/calendar")
+    public String showCalendar(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        String memId = userDetails.getUsername();
+        
+        // Member 객체를 가져오는 로직 추가 [관리자정보]
+        Optional<Member> managerOptional = memberRepository.findById(memId);
+        if (managerOptional.isPresent()) {
+            model.addAttribute("manager", managerOptional.get());
+        }
+        
+        return "admin/calendar";
+    }
+    
+    // 예약 데이터를 JSON으로 반환하는 API
+    @GetMapping("/calendar/events")
+    @ResponseBody
+    public List<Map<String, Object>> getConfirmedReservations(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        
+        String memId = userDetails.getUsername();
+        List<ReservationDTO> confirmedReservations = 
+            reservationService.getConfirmedReservationsForUser(memId);
+        
+        List<Map<String, Object>> events = new ArrayList<>();
+        
+        for (ReservationDTO reservation : confirmedReservations) {
+            Map<String, Object> event = new HashMap<>();
+            event.put("title", reservation.getFacilityName());
+            event.put("start", reservation.getReservationDate());
+            event.put("id", reservation.getReservationCode());
+            event.put("status", reservation.getReservationProgress());
+            events.add(event);
+        }
+        
+        return events;
+    }
 
 }

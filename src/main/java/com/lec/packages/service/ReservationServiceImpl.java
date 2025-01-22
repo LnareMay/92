@@ -80,6 +80,14 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 
+	//로그인 한 유저의 예약 승인 된 시설 만 노출
+	@Override
+	public List<ReservationDTO> getConfirmedReservationsForUser(String memId) {
+		
+		 return reservationRepository.findConfirmedReservationsByMemId(memId);
+	}
+
+
 
 	
 	
