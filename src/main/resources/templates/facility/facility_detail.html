@@ -365,6 +365,7 @@
 
 	function dateChange(value) {
 		getReservationTime(value).then(data => {
+			generateReservationStartTimes(facilityStartTime, facilityEndTime);
 			const startSelect = document.getElementById("reservationStartTime");
 			const endSelect = document.getElementById("reservationEndTime");
 			const resDate = document.getElementById("reservationDate");
