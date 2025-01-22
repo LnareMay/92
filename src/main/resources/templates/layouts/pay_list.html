@@ -1,0 +1,115 @@
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="pay_list" id="pay_list">
+	<div class="container">
+		<!-- 어두운 배경 오버레이 추가 -->
+		<div id="overlay"></div>
+
+		<div id="pay_list_popup" class="popup_style" style="display: none;">
+			<h5>송금내역</h5>
+			<ul id="transferHistoryList">
+				<!-- 송금내역 리스트가 여기에 추가됩니다 -->
+			</ul>
+			<h5>충전내역</h5>
+			<ul id="chargeHistoryList">
+				<!-- 충전내역 리스트가 여기에 추가됩니다 -->
+			</ul>
+			<button id="closePopup">닫기</button>
+		</div>
+
+
+		<script th:inline="javascript">
+		document.getElementById("payList").addEventListener("click", function () {
+		    const payListPopup = document.getElementById("pay_list_popup");
+		    const overlay = document.getElementById("overlay");
+
+		    // 데이터 로드 중 로딩 메시지 표시
+		    const loadingMessage = document.createElement("p");
+		    loadingMessage.textContent = "로딩 중...";
+		    loadingMessage.id = "loadingMessage";
+		    payListPopup.appendChild(loadingMessage);
+
+
+	        // 데이터를 병렬로 가져오기 (Promise.all)
+	        Promise.all([
+	            fetch("/member/pay_list/transfer", {
+	                method: "GET",
+	                headers: { "Content-Type": "application/json" }
+	            }).then(response => response.json()),
+	            fetch("/member/pay_list/charge", {
+	                method: "GET",
+	                headers: { "Content-Type": "application/json" }
+	            }).then(response => response.json())
+	        ])
+	            .then(([transferData, chargeData]) => {
+	                // 로딩 메시지 제거
+	                const loadingMessage = document.getElementById("loadingMessage");
+	                if (loadingMessage) {
+	                    payListPopup.removeChild(loadingMessage);
+	                }
+
+	                // 송금 내역 추가
+	                const transferList = document.getElementById("transferHistoryList");
+	                transferList.innerHTML = ""; // 기존 데이터 초기화
+	                if (transferData && transferData.length > 0) {
+	                    transferData.forEach(history => {
+	                        const li = document.createElement("li");
+	                        li.innerHTML = `
+	                            <p>${history.status} | ${history.receiverId?.memId || ''}</p>
+	                            <strong>${history.amount}원</strong>
+	                        `;
+	                        transferList.appendChild(li);
+	                    });
+	                } else {
+	                    transferList.innerHTML = "<li>송금내역이 없습니다.</li>";
+	                }
+
+	                // 충전 내역 추가
+	                const chargeList = document.getElementById("chargeHistoryList");
+	                chargeList.innerHTML = ""; // 기존 데이터 초기화
+	                if (chargeData && chargeData.length > 0) {
+	                    chargeData.forEach(history => {
+	                        const li = document.createElement("li");
+	                        li.innerHTML = `
+	                            <p>${history.chargeDate || ''} | ${history.amount}원</p>
+	                        `;
+	                        chargeList.appendChild(li);
+	                    });
+	                } else {
+	                    chargeList.innerHTML = "<li>충전내역이 없습니다.</li>";
+	                }
+
+	                // 데이터 로드 완료 후 팝업 표시
+	                payListPopup.style.display = "block";
+	                overlay.style.display = "block";
+	            })
+	            .catch(error => {
+	                console.error("Error fetching pay list:", error);
+	                alert("데이터를 불러오는 중 문제가 발생했습니다.");
+	            });
+	    });
+
+		// 팝업 닫기
+		document.getElementById("overlay").addEventListener("click", closePopup);
+		document.getElementById("closePopup").addEventListener("click", closePopup);
+
+		function closePopup() {
+		    document.getElementById("pay_list_popup").style.display = "none";
+		    document.getElementById("overlay").style.display = "none";
+		}
+
+
+
+		// 팝업 닫기
+		document.getElementById("overlay").addEventListener("click", closePopup);
+		document.getElementById("closePopup").addEventListener("click", closePopup);
+
+		function closePopup() {
+		    document.getElementById("pay_list_popup").style.display = "none";
+		    document.getElementById("overlay").style.display = "none";
+		}
+
+		</script>
+
+	</div>
+</div>
+</html>

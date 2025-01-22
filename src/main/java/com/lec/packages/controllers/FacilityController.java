@@ -6,7 +6,10 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,13 +23,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.lec.packages.domain.Member;
 import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.MemberJoinDTO;
+import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
+import com.lec.packages.repository.MemberRepository;
+import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.FacilityService;
 
@@ -43,6 +50,8 @@ public class FacilityController {
 	
     private final FacilityService facilityService;
     private final ClubService clubService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final MemberRepository memberRepository;
 	    
 	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
@@ -92,32 +101,30 @@ public class FacilityController {
 	    }
 	    
 	    @GetMapping("/detail/{facilityCode}")
-	    public String FaciltyDetailPage( @PathVariable("facilityCode") String facilityCode
-	    								,HttpServletRequest request
-	    								,PageRequestDTO pageRequestDTO 
-	    								, Model model
-	    								,@AuthenticationPrincipal UserDetails userDetails) {
-	    	
-	    	//시설 정보를 가져오기 위해 서비스 호출
-			FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
-			List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
-			//클럽장 체크
-			boolean isClubOwner = clubService.checkClubOwner(userDetails.getUsername());
+	    public String facilityDetailPage(@PathVariable("facilityCode") String facilityCode,
+	                                     HttpServletRequest request,
+	                                     PageRequestDTO pageRequestDTO,
+	                                     Model model,
+	                                     @AuthenticationPrincipal UserDetails userDetails) {
+	        // 시설 정보를 가져오기
+	        FacilityDTO facilityDTO = facilityService.getFacilityByCode(facilityCode);
+	        List<ReservationDTO> reservations = facilityService.getReservationsByFacilityCode(facilityCode);
 
-			//log.info("FacilityDTO: {}", facilityDTO);
-			String userId = userDetails.getUsername();
-			//모델에 로그인 정보를 추가하여 뷰로 전달
-			model.addAttribute("userId",userId);
-			//클럽장 체크 결과 전달
-			model.addAttribute("isClubOwner", isClubOwner);
-			//모델에 시설 정보를 추가하여 뷰로 전달
-			model.addAttribute("facility",facilityDTO);
-			model.addAttribute("reservations", reservations);
-			model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
-			
-	    	return "facility/facility_detail";		 
+	        // 로그인 여부 확인
+	        String userId = (userDetails != null) ? userDetails.getUsername() : "비회원";
+	        boolean isClubOwner = (userDetails != null) && clubService.checkClubOwner(userId);
+
+	        // 모델에 값 추가
+	        model.addAttribute("userId", userId);
+	        model.addAttribute("isClubOwner", isClubOwner);
+	        model.addAttribute("facility", facilityDTO);
+	        model.addAttribute("reservations", reservations);
+	        model.addAttribute("currentURI", request.getRequestURI()); // 현재 URI 추가
+
+	        return "facility/facility_detail";
 	    }
-	    
+
+	    // 시설예약
 	    @PostMapping("/submit-booking")
 		public String facilityBookByMemberPost(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, @RequestParam("memMoney") BigDecimal memMoney, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		    log.info("시설예약 POST방식.....");
@@ -135,44 +142,48 @@ public class FacilityController {
 		    
 		}
 	    
-	    // 이니시스 결제
-	    @PostMapping("/pay-by-inisis")
-	    @ResponseBody
-	    public ResponseEntity<String> payByInisis(
-	            @RequestParam("imp_uid") String impUid,
-	            @RequestParam("merchant_uid") String merchantUid,
-	            @RequestParam("amount") BigDecimal amount,
-	            HttpServletRequest request,
-	            RedirectAttributes redirectAttributes) {
+	   
 
-	        log.info("결제 요청: imp_uid={}, merchant_uid={}, amount={}", impUid, merchantUid, amount);
+	    // 시설예약 취소
+	    @PostMapping("/cancel-booking")
+		public String facilityCancelPost(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		    
 
-	        try {
-	            // 1. 아임포트 결제 검증 로직 추가 (필수)
-	            boolean isVerified = verifyPaymentWithIamport(impUid, amount);
-	            if (!isVerified) {
-	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	                        .body("결제 검증 실패: 결제 정보가 일치하지 않습니다.");
-	            }
+	    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+		        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+		        String memId = member.getMemId(); // Current logged-in user's ID
+		    
+		        facilityService.cancelBooking(memId,transferHistoryDTO, reservationDTO);
+		    
+		        // 업데이트된 사용자 정보 가져오기
+		        Member updatedMember = memberRepository.findById(memId)
+		                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+		        UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
 
-	           
+		        // 새 인증 정보 생성
+		        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+		                updatedUser,
+		                updatedUser.getPassword(),
+		                updatedUser.getAuthorities()
+		        );
 
-	            // 3. 성공 응답 반환
-	            return ResponseEntity.ok("결제 및 예약 성공");
-	        } catch (Exception e) {
-	            log.error("결제 처리 실패: {}", e.getMessage(), e);
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                    .body("서버 내부 오류로 인해 결제 처리가 실패했습니다.");
-	        }
-	    }
+		        // 보안 컨텍스트 갱신
+		        SecurityContextHolder.getContext().setAuthentication(newAuth);
+		        
+			    };
+		        String redirectUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+	                    .path("/member/reservation")
+	                    .toUriString();
 
-	    // 아임포트 REST API를 사용하여 결제를 검증
-	    private boolean verifyPaymentWithIamport(String impUid, BigDecimal amount) {
-	        // 아임포트 REST API로 결제 정보를 가져와서 금액 확인
-	        // 실제 검증 로직을 작성 (아임포트 인증 키 사용)
-	        return true; // 임시로 항상 검증 성공 처리
-	    }
-
+		        return "redirect:" + redirectUrl; 
+			
+		    
+		    
+		    
+		    }
+	        
+		
 
 }
 	

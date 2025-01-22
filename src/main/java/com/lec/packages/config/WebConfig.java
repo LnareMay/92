@@ -10,8 +10,10 @@ import com.lec.packages.converter.StringToExerciseCodeConverter;
 public class WebConfig implements WebMvcConfigurer {
 
     private final StringToExerciseCodeConverter stringToExerciseCodeConverter;
+    
 
     public WebConfig(StringToExerciseCodeConverter stringToExerciseCodeConverter) {
+    	
         this.stringToExerciseCodeConverter = stringToExerciseCodeConverter;
     }
 

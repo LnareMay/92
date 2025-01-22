@@ -51,8 +51,6 @@ public class ReservationDTO {
     @NotNull
     private String reservationProgress;
     
-    @NotNull
-    private LocalDateTime createDate;
     
     private LocalDateTime modifyDate;
 
@@ -67,10 +65,10 @@ public class ReservationDTO {
         }
         return NumberFormat.getNumberInstance(Locale.KOREA).format(price);
     }
-    //createDate 포멧팅
-    public String getFormattedCreateDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm:ss");
-        return createDate != null ? createDate.format(formatter) : "";
-    }
-    
+
+	public boolean isPresent() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

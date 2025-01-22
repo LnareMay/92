@@ -988,7 +988,7 @@ z-index:5;
 }
 
 /* 결제 대기 */
-.reservation_pg .status-결제대기 {
+.reservation_pg .status-예약진행중 {
     color: #ffc107; /* 노란색 */
     font-weight: bold;
 }

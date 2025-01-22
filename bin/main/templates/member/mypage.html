@@ -3,27 +3,30 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-	<!-- meta_tag include -->
+<!-- meta_tag include -->
+<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+<title></title>
 
-	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-	<title></title>
+<!-- 공통 css -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" th:href="@{/css/common.css}">
 
-	<!-- 공통 css -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" th:href="@{/css/common.css}">
+<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+<!-- Linking CSS files -->
+<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
 
-	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
-	<!-- Linking CSS files -->
-	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
-
-	<!-- 공통 js -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-		crossorigin="anonymous"></script>
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<!-- 공통 js -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+	crossorigin="anonymous"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript"
+	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 </head>
 
@@ -38,51 +41,30 @@
 
 			<div class="btn_wrap">
 				<div class="header">
-					<a href="/member/mypage" class="active">나의정보</a> <a href="/member/reservation">나의시설예약</a> <a
-						href="#">운동캘린더</a>
+					<a href="/member/mypage" class="active">나의정보</a> <a
+						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
 				</div>
 				<div style="align-items: center;">
 					<div
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
-						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#authentication.principal.memMoney}" id="memMoney"></span>원
-							<input type="number" id="memMoney_ip" name="memMoney" class="blind">
+						<p
+							style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
+							<span th:text="${#authentication.principal.memMoney}"
+								id="memMoney"></span>원 <input type="number" id="memMoney_ip"
+								name="memMoney" class="blind">
 						</p>
 					</div>
 					<div style="display: inline-flex; gap: 5px; width: 100%">
-						<button class="btn btn-primary" id="fitpayCharge" style="width: 50%">충전</button>
-						<button class="btn btn-success" style="width: 50%">내역</button>
+						<button class="btn btn-primary" id="fitpayCharge"
+							style="width: 50%">충전</button>
+						<button class="btn btn-success" id="payList" style="width: 50%">내역</button>
 					</div>
 				</div>
 			</div>
 
-			<!-- 어두운 배경 오버레이 추가 -->
-			<div id="overlay"></div>
-
-			<div id="fitpayOptions" class="popup_style">
-				<h5>FITPAY 충전</h5>
-				<div class="d-flex align-items-center mb-3">
-
-					<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input type="number"
-						id="chargeAmount" class="form-control me-2" placeholder="금액 입력" style="width: 150px;">
-				</div>
-
-				<div>
-					<button class="btn btn-warning charge-btn" type="button" id="chargeBtn_kakao"
-						data-pg="kakaopay">카카오페이</button>
-					<!-- <button class="btn btn-success charge-btn" type="button"
-							id="chargeBtn_naver" data-pg="naverpay">네이버페이</button> -->
-					<button class="btn btn-danger charge-btn" type="button" id="chargeBtn_payco"
-						data-pg="payco">페이코</button>
-					<!-- <button class="btn btn-danger charge-btn" id="chargeBtn_inisis" data-pg="html5_inicis.TEST"
-						type="button">KG이니시스</button> -->
-					<!-- kakaopay, payco제외하고는 https환경에서만 작동됨으로 뺌... -->
-				</div>
-			</div>
-
-
-
+			<div th:insert="~{layouts/charge_popup :: charge_popup}"></div>
+			<div th:insert="~{layouts/pay_list :: pay_list}"></div>
 
 
 		</div>
@@ -94,35 +76,48 @@
 
 					<!-- 소셜 로그인 사용자(memSocial == 1)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture != '' and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
+						th:if="${#authentication != null 
+    and #authentication.principal.memPicture != null 
+    and #authentication.principal.memPicture.startsWith('http') 
+    and member != null 
+    and member.memSocial}">
+						<img th:src="${#authentication.principal.memPicture}"
+							alt="프로필 이미지">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture != '' and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지">
+						th:if="${#authentication != null 
+    and #authentication.principal.memPicture != null 
+    and !#authentication.principal.memPicture.startsWith('http')}">
+						<img th:src="|/view/${#authentication.principal.memPicture}|"
+							alt="프로필 이미지">
 					</th:block>
 
-					<!-- 프로필 이미지가 없는 경우 (기본 이미지 표시) -->
+					<!-- 기본 프로필 이미지 -->
 					<th:block
-						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture == ''}">
-						<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지">
+						th:if="${#authentication == null 
+    or #authentication.principal.memPicture == null 
+    or #authentication.principal.memPicture == ''}">
+						<img
+							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
+							alt="기본 프로필 이미지">
 					</th:block>
 
 					<div style="text-align: center">
 
 						<h3 th:text="${#authentication.principal.memNickname}"></h3>
-						<p th:text="${#authentication.principal.memIntroduction}" style="font-size: 13px; color: #999;">
-						</p>
+						<p th:text="${#authentication.principal.memIntroduction}"
+							style="font-size: 13px; color: #999;"></p>
 					</div>
 
 					<div class="flex" style="gap: 5px; margin-bottom: 20px;">
 
-						<button class="btn btn-primary" onclick="location.href='/member/mypage_modify'"
+						<button class="btn btn-primary"
+							onclick="location.href='/member/mypage_modify'"
 							style="font-size: 11px;">수정하기</button>
-						<button class="btn btn-danger" onclick="location.href='/member/logout'"
-							style="font-size: 11px;">로그아웃</button>
+						<button class="btn btn-danger"
+							onclick="location.href='/member/logout'" style="font-size: 11px;">로그아웃</button>
 					</div>
 
 
@@ -130,7 +125,8 @@
 						<div
 							th:if="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_NAME != null}">
 							<p>⚽ 좋아하는 운동</p>
-							<p th:text="${#authentication.principal.memExercise.EXERCISE_NAME}"></p>
+							<p
+								th:text="${#authentication.principal.memExercise.EXERCISE_NAME}"></p>
 						</div>
 						<div
 							th:if="${#authentication.principal.memExercise == null or #authentication.principal.memExercise.EXERCISE_NAME == null}">
@@ -149,11 +145,11 @@
 							<p>-선택필요-</p>
 						</div>
 
-						<div th:if="${#authentication.principal.memBirthday != ''}">
+						<div th:if="${#authentication != null and #authentication.principal.memBirthday != null and #authentication.principal.memBirthday != ''}">
 							<p>🎂 생일</p>
 							<p th:text="${#authentication.principal.memBirthday}"></p>
 						</div>
-						<div th:if="${#authentication.principal.memBirthday == ''}">
+						<div th:if="${#authentication == null or #authentication.principal.memBirthday == null or #authentication.principal.memBirthday == ''}">
 							<p>🎂 생일</p>
 							<p>-선택필요-</p>
 						</div>
@@ -186,115 +182,8 @@
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
-	
-	<script th:inline="javascript">
-		// FITPAY 충전하기 버튼 클릭 이벤트
-		let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
-		
-		document.getElementById("fitpayCharge").addEventListener("click", function () {
-			const fitpayOptions = document.getElementById("fitpayOptions");
-			const overlay = document.getElementById("overlay");
-
-			if (fitpayOptions.style.display === "none" || !fitpayOptions.style.display) {
-				// fitpayOptions 표시 및 배경 어둡게
-				fitpayOptions.style.display = "block";
-				overlay.style.display = "block";
-			} else {
-				// fitpayOptions 숨김 및 배경 밝게
-				fitpayOptions.style.display = "none";
-				overlay.style.display = "none";
-			}
-		});
-
-		// 오버레이 클릭 시 fitpayOptions 닫기
-		document.getElementById("overlay").addEventListener("click", function () {
-			document.getElementById("fitpayOptions").style.display = "none";
-			this.style.display = "none";
-		});
 
 
-
-		$(function () {
-			$('.charge-btn').off("click").on("click", function (event) {
-			    event.preventDefault(); // 기본 동작 방지
-
-			    var IMP = window.IMP; // 아임포트 객체
-			    IMP.init('imp85150653'); // 아임포트 가맹점 식별코드
-
-			    var money = parseFloat($('#chargeAmount').val());
-			    if (isNaN(money) || money <= 0) {
-			        alert("충전 금액을 올바르게 입력하세요.");
-			        return;
-			    }
-
-			    // 클릭된 버튼에 따라 PG 설정
-			    var pgProvider = $(this).attr('data-pg');
-			    if (!pgProvider || (pgProvider !== "html5_inicis" && pgProvider !== "kakaopay" && pgProvider !== "payco")) {
-			        alert("올바른 PG 값을 설정하세요.");
-			        return;
-			    }
-
-			    // 이메일 및 전화번호 처리
-			    var buyerEmail = '/*[[${#authentication.principal.memEmail}]]*/';
-			    buyerEmail = buyerEmail.replace(/[^\w@.-]/g, "").trim();
-
-			    var buyertel = '/*[[${#authentication.principal.memTell}]]*/';
-			    buyertel = buyertel.replace(/[^\d-]/g, "").trim();
-
-			    // 결제 요청
-			    IMP.request_pay({
-			        pg: pgProvider,
-			        pay_method: 'card',
-			        merchant_uid: 'merchant_' + new Date().getTime(),
-			        name: 'FITPAY 충전',
-			        amount: money,
-			        buyer_email: buyerEmail,
-			        buyer_name: '/*[[${#authentication.principal.memName}]]*/',
-			        buyer_tel: buyertel,
-			        buyer_addr: '/*[[${#authentication.principal.memAddress}]]*/',
-			        buyer_postcode: '/*[[${#authentication.principal.memZipcode}]]*/'
-			    }, function (rsp) {
-			        if (rsp.success) {
-			            // alert("결제가 성공했습니다!");
-			            memMoney += money; // 충전 금액 추가
-			            $("#memMoney_ip").val(memMoney);
-			            $("#memMoney").text(memMoney.toLocaleString());
-
-			            // 서버로 충전 금액 전송
-			            $.ajax({
-			                type: "GET",
-			                url: "/member/charge/point",
-			                data: { "amount": memMoney, "plusPoint": money },
-			                success: function (response) {
-			                    console.log("충전 성공: ", response);
-			                    $("#chargeAmount").val("");
-			                 	// 팝업 닫기
-			                    $("#fitpayOptions").hide();
-			                    $("#overlay").hide();
-
-			                    // DOM 변경 후 alert 호출
-			                    setTimeout(() => {
-			                        alert("충전이 완료되었습니다. 충전 금액: " + money + "원");
-			                    }, 100);
-			                },
-			                error: function (xhr, status, error) {
-			                    console.error("충전 실패: ", error);
-			                    alert("충전 중 문제가 발생했습니다.");
-			                }
-			            });
-			        } else {
-			            console.error("결제 실패:", rsp.error_msg);
-			            alert(`결제가 실패했습니다. 이유: ${rsp.error_msg}`);
-			        }
-			    });
-			});
-
-		    
-		 
-		    
-		});
-
-	</script>
 </body>
 
 </html>
