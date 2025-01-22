@@ -223,44 +223,47 @@ public class MemberController {
 		}
 	}
 
-	// 마이페이지 나의시설예약 조회
+	// 마이페이지 나의 시설 예약 조회
 	@GetMapping("/reservation")
 	public String reservationGet(HttpServletRequest request, Model model) {
-		// Add current URI to the model
-		String requestURI = request.getRequestURI();
-		model.addAttribute("currentURI", requestURI);
+	    // 현재 요청 URI를 모델에 추가
+	    String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
 
-		// Get authentication details
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
-			MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
-			String memId = member.getMemId(); // Current logged-in user's ID
+	    // 인증 정보 가져오기
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication == null || !(authentication.getPrincipal() instanceof MemberSecurityDTO)) {
+	        model.addAttribute("error", "로그인 정보가 필요합니다.");
+	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
+	    }
 
-			// Fetch reservations by memId
-			List<Reservation> reservations = reservationRepository.findByMemId(memId);
+	    // 로그인한 사용자 정보 가져오기
+	    MemberSecurityDTO memberSecurity = (MemberSecurityDTO) authentication.getPrincipal();
+	    String memId = memberSecurity.getMemId(); // 현재 로그인한 사용자의 ID
 
-			/// 업데이트된 사용자 정보 가져오기
-			Member updatedMember = memberRepository.findById(memId)
-					.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-			UserDetails updatedUser = customUserDetailsService.loadUserByUsername(updatedMember.getMemId());
+	    // 사용자 정보 가져오기
+	    Member member = memberRepository.findById(memId)
+	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+	    model.addAttribute("member", member); // 사용자 정보를 모델에 추가
 
-			// 새 인증 정보 생성
-			Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, updatedUser.getPassword(),
-					updatedUser.getAuthorities());
+	    // 예약 정보 가져오기
+	    List<Reservation> reservations = reservationRepository.findByMemId(memId);
+	    if (!reservations.isEmpty()) {
+	        model.addAttribute("reservations", reservations); // 예약 목록을 모델에 추가
+	    } else {
+	        model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
+	    }
 
-			// 보안 컨텍스트 갱신
-			SecurityContextHolder.getContext().setAuthentication(newAuth);
+	    // 보안 컨텍스트 갱신 (선택 사항, 필요하면 유지)
+	    UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memId);
+	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+	            updatedUser,
+	            updatedUser.getPassword(),
+	            updatedUser.getAuthorities()
+	    );
+	    SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-			if (!reservations.isEmpty()) {
-				model.addAttribute("reservations", reservations); // Pass reservation list to the model
-			} else {
-				model.addAttribute("noReservations", "예약이 없습니다.");
-			}
-		} else {
-			model.addAttribute("error", "로그인 정보가 필요합니다.");
-		}
-
-		return "member/reservation"; // Return the view name
+	    return "member/reservation"; // 반환할 뷰 이름
 	}
 
 	// 금액 충전
@@ -301,49 +304,45 @@ public class MemberController {
 	@GetMapping("/pay_list/transfer")
 	@ResponseBody
 	public List<TransferHistoryDTO> getTransferHistories() {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
-	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
-	        String memId = member.getMemId();
-	        // Return transfer history
-	        return memberService.getTransferHistories(memId);
-	    } else {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
-	    }
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+			MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+			String memId = member.getMemId();
+			// Return transfer history
+			return memberService.getTransferHistories(memId);
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
+		}
 	}
-	
+
 	// 관리자계정일 경우 송금내역 조회
 	@GetMapping("/pay_list/transfer_manager")
 	@ResponseBody
 	public List<TransferHistoryDTO> getTransferHistoriesWhenManager() {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
-	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
-	        String memId = member.getMemId();
-	        // Return transfer history
-	        return memberService.getTransferHistorieWhenManager(memId);
-	    } else {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
-	    }
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+			MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+			String memId = member.getMemId();
+			// Return transfer history
+			return memberService.getTransferHistorieWhenManager(memId);
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
+		}
 	}
-	
+
 	// 마이페이지 충전 내역 조회
 	@GetMapping("/pay_list/charge")
 	@ResponseBody
 	public List<ChargeHistoryDTO> getChargeHistories() {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
-	        MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
-	        String memId = member.getMemId();
-	        // Return charge history
-	        return memberService.getChargeHistories(memId);
-	    } else {
-	        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
-	    }
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+			MemberSecurityDTO member = (MemberSecurityDTO) authentication.getPrincipal();
+			String memId = member.getMemId();
+			// Return charge history
+			return memberService.getChargeHistories(memId);
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
+		}
 	}
-
-
-	
-	
 
 }
