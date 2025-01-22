@@ -621,6 +621,23 @@ public class ClubServiceImpl implements ClubService {
 		return "fail";
 	}
 
+	@Override
+	public List<ClubBoardDTO> getBoardListByMemID(String username) {
+		
+		List<Club_Board> list = clubBoardRepository.findTop3ByMemIDOrderByMODIFYDATEDesc(username);
+
+		List<ClubBoardDTO> dtos = new ArrayList<>();
+
+		if(list.size() > 0) {
+			for (Club_Board clubBoard : list) {
+				ClubBoardDTO dto = entityToDTO(clubBoard);
+				dtos.add(dto);
+			}
+		}
+
+		return dtos;
+	}
+
 
 
 
