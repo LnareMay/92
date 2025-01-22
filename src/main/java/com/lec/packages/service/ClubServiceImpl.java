@@ -179,7 +179,8 @@ public class ClubServiceImpl implements ClubService {
                 .dtoList(dtoList)
                 .total((int) result.getTotalElements())
                 .build();
-    }
+    }       
+    
 	// 클럽상세보기
 	@Override
 	public ClubDTO detail(String clubCode) {
@@ -267,7 +268,16 @@ public class ClubServiceImpl implements ClubService {
 	
 	// 클럽가입하기
 	@Override
-	public void join(String memId, String clubCode) {
+	public void join(String memId, String clubCode, String clubPw) {		
+		Club club = clubRepository.findById(clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
+		// 비공개 클럽일때
+		if (club.isClubIsprivate()) {
+			if (club.getClubPw() == null || !club.getClubPw().equals(clubPw)) {
+				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			}
+		}
+		
 		Club_Member_List clubMember = new Club_Member_List();
 		clubMember.setMemId(memId);
 		clubMember.setClubCode(clubCode);

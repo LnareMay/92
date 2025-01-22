@@ -85,9 +85,13 @@
 
 			<!-- 가입/탈퇴 버튼 -->
 			<span th:if="${!isMember}">
-				<form action="/club/club_join" method="post" onsubmit="return confirm('클럽을 가입하시겠습니까?');" style="display: inline;">
+				<form action="/club/club_join" method="post" onsubmit="return confirmJoin();" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-warning">클럽 가입</button>
+					<span th:if="${clubdto.clubIsprivate}">
+						<label for="password">비밀번호:</label>
+						<input type="password" id="clubPw" name="clubPw" placeholder="비밀번호를 입력하세요" required/>						
+					</span>
 				</form>
 			</span>
 			<span th:if="${isMember && clubdto.MemId != principal.memId}">
@@ -207,6 +211,24 @@
 	}
 
 	getBoard(clubCode, 1, 3)
+	
+	// 클럽가입
+	function confirmJoin() {
+		const isPrivate = /*[[${clubdto.clubIsprivate}]]*/ false;
+		const isPw = /*[[${clubdto.clubPw}]]*/''
+		
+		if (isPrivate) {
+			const password = document.getElementById('clubPw').value;
+			if (!password) {
+				alert('비밀번호를 입력해주세요.');
+				return false;
+			} else if (password !== isPw) {
+				alert('비밀번호가 일치하지 않습니다.');
+				return false;
+			}
+		}
+		return confirm('클럽을 가입하시겠습니까?');
+	}
 	
 	/* 이미 가입/탈퇴된 회원확인 */
 	 const flashMessage = document.getElementById("flashMessage");

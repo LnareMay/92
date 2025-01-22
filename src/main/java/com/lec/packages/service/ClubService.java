@@ -30,7 +30,7 @@ public interface ClubService {
 	void modify(ClubDTO clubDTO);	
 	void remove(String clubCode);
 	
-	void join(String memId, String clubCode);
+	void join(String memId, String clubCode, String clubPw);
 	boolean isJoinMember(String memId, String clubCode); 
 	void joindelete(String memId, String clubCode);
 	boolean isJoinDeleteMember(String memId, String clubCode);

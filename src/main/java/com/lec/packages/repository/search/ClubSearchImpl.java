@@ -36,21 +36,44 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 	    
 	    // 주소 필터 추가
 	    String region = "";
+	    String originalRegion = "";
 	    if (types != null && Arrays.asList(types).contains("address")) {
 	        String addressKeyword = Arrays.stream(keywords)
 	                                      .filter(keyword -> keyword != null && !keyword.isBlank())
 	                                      .findFirst()
 	                                      .orElse("");
 	        if (!addressKeyword.isEmpty()) {
+	        	// 원본 주소 : 서울특별시 서초구
+	        	originalRegion = addressKeyword.trim();
+	        	String[] originalParts = originalRegion.split(" ");
+	            if (originalParts.length >= 2) {
+	            	originalRegion = originalParts[0] + " " + originalParts[1];
+	            } 
+	        	
+	        	addressKeyword = addressKeyword.replace("특별시", "") 
+	        								   .replace("광역시", "")
+	        								   .replace("도", "")
+	        								   .replace("전라남도", "전남")
+	        								   .replace("경상북도", "경북")
+	        								   .trim(); 
+	        	// 전처리 주소 : 서울 서초구
 	            String[] addressParts = addressKeyword.split(" ");
 	            if (addressParts.length >= 2) {
-	            	region = addressParts[0] + " " + addressParts[1]; // "서울특별시 서초구"
-	            }
+	            	region = addressParts[0] + " " + addressParts[1];
+	            } 
 	        }
 	    }
 	    
-	    if (!region.isEmpty()) {
-	        builder.and(club.clubAddress.startsWithIgnoreCase(region));
+	    if (!region.isEmpty() || !originalRegion.isEmpty()) {
+	    	BooleanBuilder addressBuilder = new BooleanBuilder();
+	    	    
+		    if (!region.isEmpty()) {
+		    	addressBuilder.or(club.clubAddress.containsIgnoreCase(region));
+		    }
+		    if (!originalRegion.isEmpty()) {
+		    	addressBuilder.or(club.clubAddress.containsIgnoreCase(originalRegion));
+		    }
+		    builder.and(addressBuilder);
 	    }
 
 	    // 테마 필터 추가
@@ -61,6 +84,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 	            builder.and(club.clubTheme.containsIgnoreCase(themeKeyword));
 	        }
 	    }
+	    
 	    query.where(builder);
 	    query.orderBy(club.CREATEDATE.asc());
 	    getQuerydsl().applyPagination(pageable, query);
@@ -72,7 +96,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 
 	    return new PageImpl<>(clubs, pageable, total);
 	}
-  
+ 
   @Override
 	public List<Club> getClubListWithMemID(String memId) {
 		

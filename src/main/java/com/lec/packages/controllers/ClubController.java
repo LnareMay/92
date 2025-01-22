@@ -103,6 +103,7 @@ public class ClubController {
 	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_join")
 	public String clubJoin(@RequestParam(value = "clubCode", required = false) String clubCode
+						 , @RequestParam(value = "clubPw", required = false) String clubPw
 						 , Authentication authentication
 						 , HttpServletRequest request
 						 , RedirectAttributes redirectAttributes) {
@@ -114,7 +115,7 @@ public class ClubController {
 			return "redirect:/club/club_detail?clubCode=" + clubCode;
 		} 
 		
-		clubService.join(memId, clubCode);
+		clubService.join(memId, clubCode, clubPw);
 		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 가입되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
