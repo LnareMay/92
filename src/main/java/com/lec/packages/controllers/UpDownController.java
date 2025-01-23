@@ -52,13 +52,13 @@ public class UpDownController {
 
 	 @Operation(summary = "File Upload Post", description = "POST 방식으로 파일 업로드!!")
 	 @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	 public List<UploadResultDTO> upload(@RequestBody UploadFileDTO uploadFileDTO, HttpServletRequest request) {
-	     log.info(uploadFileDTO);
-
-	     if (uploadFileDTO.getFiles() != null) {
+	 public List<UploadResultDTO> upload(@RequestParam("files") List<MultipartFile> files, HttpServletRequest request) {
+	     log.info("파일 업로드 요청");
+	     
+	     if (files != null && !files.isEmpty()) {
 	         final List<UploadResultDTO> list = new ArrayList<>();
 
-	         uploadFileDTO.getFiles().forEach(multipartFile -> {
+	         files.forEach(multipartFile -> {
 	             String originalFileName = multipartFile.getOriginalFilename();
 	             String uuid = UUID.randomUUID().toString();
 
@@ -78,7 +78,7 @@ public class UpDownController {
 	                 // 저장된 파일명 생성
 	                 String storedFileName = isImage ? "s_" + uuid + "_" + originalFileName : uuid + "_" + originalFileName;
 
-	              // 세션에 저장된 파일 이름 설정
+	                 // 세션에 저장된 파일 이름 설정
 	                 HttpSession session = request.getSession();
 	                 session.setAttribute("storedFileName", storedFileName);
 
@@ -98,6 +98,7 @@ public class UpDownController {
 
 	     return null;
 	 }
+
 
 	 @Operation(summary = "파일보기", description = "GET방식으로 첨부파일조회!!")
 		@GetMapping(value = "/view/{fileName}")

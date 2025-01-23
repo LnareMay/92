@@ -94,6 +94,11 @@ public class MemberController {
 		// 회원가입 처리
 		memberService.join(memberJoinDTO, storedFileName);
 		redirectAttributes.addFlashAttribute("result", "회원가입 성공");
+		
+		if (storedFileName == null || storedFileName.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("error", "프로필 사진을 업로드해야 합니다.");
+	        return "redirect:/member/join";
+	    }
 
 		// 회원가입 성공 후 세션에서 파일 이름 제거
 		session.removeAttribute("storedFileName");
@@ -166,9 +171,12 @@ public class MemberController {
 			RedirectAttributes redirectAttributes) {
 		HttpSession session = request.getSession();
 		String storedFileName = (String) session.getAttribute("storedFileName");
-		if (storedFileName == null) {
-			storedFileName = "";
-		}
+		String currentMemPicture = request.getParameter("currentMemPicture");
+		
+		// "undefined" 문자열 비교 수정
+	    if ("undefined".equals(storedFileName) || storedFileName == null || storedFileName.isEmpty()) {
+	        storedFileName = currentMemPicture; // 기존 프로필 사진 유지
+	    }
 
 		try {
 			// 회원 정보 수정
