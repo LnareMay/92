@@ -63,12 +63,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    private MemberSecurityDTO generateDTO(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+    private MemberSecurityDTO generateDTO(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean manager,boolean social,  boolean delete) {
         Optional<Member> result = memberRepository.findById(id);
 
         if (result.isEmpty()) {
             // 신규 사용자 생성
-            Member newMember = createNewMember(id, email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
+            Member newMember = createNewMember(id, email, nickname, picture, phone, gender, birthday, name, manager,social, delete);
             memberRepository.save(newMember);
             return createMemberSecurityDTO(newMember);
         } else {
@@ -108,7 +108,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
 
-    private Member createNewMember(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
+    private Member createNewMember(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name,  boolean manager,boolean social, boolean delete) {
         Member member = Member.builder()
                 .memId(id)
                 .memPw(passwordEncoder.encode(UUID.randomUUID().toString()))
@@ -119,8 +119,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .memName(name)
                 .memGender(gender)
                 .memBirthday(birthday)
-                .memSocial(social)
                 .memIsmanager(manager)
+                .memSocial(social)
                 .deleteFlag(delete)
                 .build();
 
