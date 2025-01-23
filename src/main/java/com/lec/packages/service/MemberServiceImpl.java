@@ -108,6 +108,7 @@ public class MemberServiceImpl implements MemberService{
 	        member.setMemPicture(storedFileName);
 	        member.setMemIntroduction(memberJoinDTO.getMemIntroduction());
 	        member.setMemTell(memberJoinDTO.getMemTell());
+	        member.setMemBirthday(memberJoinDTO.getMemBirthday());
 	        member.setMemEmail(memberJoinDTO.getMemEmail());
 	        member.setMemAddress(memberJoinDTO.getMemAddress());
 	        member.setMemAddressDetail(memberJoinDTO.getMemAddressDetail());
@@ -186,8 +187,8 @@ public class MemberServiceImpl implements MemberService{
 	        return transferHistories.stream()
 	                .map(th -> TransferHistoryDTO.builder()
 	                        .transferCode(th.getTransferCode())
-	                        .senderId(th.getSenderId()) 
-	                        .receiverId(th.getReceiverId())
+	                        .senderId(th.getSenderId().getMemId()) 
+	                        .receiverId(th.getReceiverId().getMemId())
 	                        .amount(th.getAmount())
 	                        .transferDate(th.getTransferDate())
 	                        .status(th.getStatus())
@@ -203,8 +204,8 @@ public class MemberServiceImpl implements MemberService{
 	        return transferHistoriesWhenManager.stream()
 	                .map(th -> TransferHistoryDTO.builder()
 	                        .transferCode(th.getTransferCode())
-	                        .senderId(th.getSenderId()) 
-	                        .receiverId(th.getReceiverId())
+	                        .senderId(th.getSenderId().getMemId()) 
+	                        .receiverId(th.getReceiverId().getMemId())
 	                        .amount(th.getAmount())
 	                        .transferDate(th.getTransferDate())
 	                        .status(th.getStatus())

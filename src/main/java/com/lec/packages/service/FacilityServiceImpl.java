@@ -275,58 +275,56 @@ public class FacilityServiceImpl implements FacilityService{
 		}
 
 		TransferHistory transferHistory;
-		if(reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
-			transferHistory = TransferHistory.builder()
-					.transferCode(reservationCode)
-					.payCode(payCode)
-					.amount(totalPrice)
-					.memo(transferHistoryDTO.getMemo())
-					.status("송금성공")
-					.transferDate(LocalDateTime.now())
-					.receiverId(transferHistoryDTO.getReceiverId())
-					.senderId(transferHistoryDTO.getSenderId())
-					.build();
+		if (reservationDTO.getClubCode() == null || reservationDTO.getClubCode().equalsIgnoreCase("")) {
+		    transferHistory = TransferHistory.builder()
+		            .transferCode(reservationCode)
+		            .payCode(payCode)
+		            .amount(totalPrice)
+		            .memo(transferHistoryDTO.getMemo())
+		            .status("송금성공")
+		            .transferDate(LocalDateTime.now())
+		            .receiverId(memberRepository.findById(transferHistoryDTO.getReceiverId())
+		                    .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."))) // String을 Member로 변환
+		            .senderId(memberRepository.findById(transferHistoryDTO.getSenderId())
+		                    .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."))) // String을 Member로 변환
+		            .build();
 		} else {
-			transferHistory = TransferHistory.builder()
-					.transferCode(reservationCode)
-					.payCode(payCode)
-					.amount(totalPrice)
-					.memo(transferHistoryDTO.getMemo())
-					.status("송금성공")
-					.transferDate(LocalDateTime.now())
-					.receiverId(transferHistoryDTO.getReceiverId())
-					.senderId(transferHistoryDTO.getSenderId())
-					.clubCode(reservationDTO.getClubCode())
-					.build();
+		    transferHistory = TransferHistory.builder()
+		            .transferCode(reservationCode)
+		            .payCode(payCode)
+		            .amount(totalPrice)
+		            .memo(transferHistoryDTO.getMemo())
+		            .status("송금성공")
+		            .transferDate(LocalDateTime.now())
+		            .receiverId(memberRepository.findById(transferHistoryDTO.getReceiverId())
+		                    .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."))) // String을 Member로 변환
+		            .senderId(memberRepository.findById(transferHistoryDTO.getSenderId())
+		                    .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."))) // String을 Member로 변환
+		            .clubCode(reservationDTO.getClubCode())
+		            .build();
 		}
 
-	    // Step 5: 데이터베이스에 저장
-	    reservationRepository.save(reservation);
-	    transferHistoryRepository.save(transferHistory);
+		// Step 5: 데이터베이스에 저장
+		reservationRepository.save(reservation);
+		transferHistoryRepository.save(transferHistory);
 
-	    // Step 6: senderId(예약자)의 memMoney 업데이트
-	    Member sender = memberRepository.findById(reservationDTO.getMemId())
-	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-	    sender.setMemMoney(memMoney);
-	    memberRepository.save(sender);
+		// Step 6: senderId(예약자)의 memMoney 업데이트
+		Member sender = memberRepository.findById(transferHistoryDTO.getSenderId())
+		        .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
+		sender.setMemMoney(memMoney);
+		memberRepository.save(sender);
 
-	    // Step 7: receiverId의 memMoney 업데이트
-	    Member receiverMember = transferHistoryDTO.getReceiverId(); // Member 객체
-	    if (receiverMember == null || receiverMember.getMemId() == null) {
-	        throw new IllegalArgumentException("수신자 정보가 유효하지 않습니다.");
-	    }
+		// Step 7: receiverId의 memMoney 업데이트
+		Member receiver = memberRepository.findById(transferHistoryDTO.getReceiverId())
+		        .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
+		BigDecimal updatedReceiverMoney = receiver.getMemMoney().add(totalPrice); // 기존 금액 + totalPrice
+		receiver.setMemMoney(updatedReceiverMoney);
+		memberRepository.save(receiver);
 
-	    Member receiver = memberRepository.findById(receiverMember.getMemId())
-	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + receiverMember.getMemId()));
-
-	    BigDecimal updatedReceiverMoney = receiver.getMemMoney().add(totalPrice); // 기존 금액 + totalPrice
-	    receiver.setMemMoney(updatedReceiverMoney);
-	    memberRepository.save(receiver);
-
-	    // 로그 출력 (선택 사항)
-	    log.info("시설 예약이 완료되었습니다: {}", reservation);
-	    log.info("송금 내역: {}", transferHistory);
-	    log.info("수신자 업데이트된 잔액: {}", updatedReceiverMoney);
+		// 로그 출력 (선택 사항)
+		log.info("예약 정보: {}", reservation);
+		log.info("송금 내역: {}", transferHistory);
+		log.info("수신자 잔액 업데이트 완료: {}", updatedReceiverMoney);
 	}
 
 	@Override
@@ -348,50 +346,53 @@ public class FacilityServiceImpl implements FacilityService{
 		return reservations;
 	}
 
-	// 시설 예약취소
 	@Override
 	@Transactional
 	public void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO) {
-	    // 1. reservationCode로 Reservation 정보 조회
-	    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationDTO.getReservationCode());
-	    if (optionalReservation.isEmpty()) {
-	        throw new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다.");
+	    // 1. 예약 정보 조회
+	    Reservation reservation = reservationRepository.findById(reservationDTO.getReservationCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다."));
+
+	    // 2. TransferHistory 정보 조회
+	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	    // 3. Sender와 Receiver ID 확인
+	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
+	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
 	    }
-	    Reservation reservation = optionalReservation.get();
 
-	    // 예약의 mem_id와 현재 로그인된 사용자 ID가 같은지 확인
-	    if (!reservation.getMemId().equals(memId)) {
-	        throw new IllegalStateException("예약 취소 권한이 없습니다.");
-	    }
+	    Member sender = memberRepository.findById(transferHistory.getSenderId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getSenderId()));
 
-	    // 2. transfer_history에서 payCode가 같은 TransferHistory 가져오기
-	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(
-	            reservation.getPayCode()
-	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
-
-	    // 3. sender_id의 memMoney 업데이트
-	    Member sender = memberRepository.findById(memId)
-	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-
-	    // 4. receiver_id의 memMoney 업데이트
 	    Member receiver = memberRepository.findById(transferHistory.getReceiverId().getMemId())
-	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
+
+	    // 금액 업데이트
+	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
 	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
 
-	    // 5. transfer_history의 상태를 '송금 취소'로 변경
-	    transferHistory.setStatus("송금취소");
+	    // 4. 새로운 TransferHistory 생성
+	    TransferHistory newTransferHistory = TransferHistory.builder()
+	            .transferCode(String.valueOf(System.currentTimeMillis()))
+	            .payCode(UUID.randomUUID().toString())
+	            .amount(transferHistory.getAmount())
+	            .memo(transferHistoryDTO.getMemo())
+	            .status("송금취소")
+	            .transferDate(LocalDateTime.now())
+	            .receiverId(receiver)
+	            .senderId(sender)
+	            .clubCode(reservation.getClubCode())
+	            .build();
 
-	    // 6. reservation의 상태를 '예약취소'로 변경
+	    // 5. 예약 상태 업데이트
 	    reservation.setReservationProgress("예약취소");
-	    
-	    // 7. reservation의 deleteFlag를 '1'로 변경
 	    reservation.setDeleteFlag(true);
 
-	    // 8. 변경된 데이터 저장
+	    // 6. 데이터 저장
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
-	    transferHistoryRepository.save(transferHistory);
+	    transferHistoryRepository.save(newTransferHistory);
 	    reservationRepository.save(reservation);
 	}
 
@@ -399,42 +400,50 @@ public class FacilityServiceImpl implements FacilityService{
 	@Override
 	public void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO) {
-		 // 1. reservationCode로 Reservation 정보 조회
-	    Optional<Reservation> optionalReservation = reservationRepository.findById(reservationDTO.getReservationCode());
-	    if (optionalReservation.isEmpty()) {
-	        throw new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다.");
+		  // 1. 예약 정보 조회
+	    Reservation reservation = reservationRepository.findById(reservationDTO.getReservationCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다."));
+
+	    // 2. TransferHistory 정보 조회
+	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	    // 3. Sender와 Receiver ID 확인
+	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
+	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
 	    }
-	    Reservation reservation = optionalReservation.get();
 
-
-	    // 2. transfer_history에서 payCode가 같은 TransferHistory 가져오기
-	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(
-	            reservation.getPayCode()
-	    ).orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
-
-	    // 3. receiver_id의 memMoney 업데이트
-	    Member receiver = memberRepository.findById(memId)
-	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
-
-	    // 4. sender_id의 memMoney 업데이트
 	    Member sender = memberRepository.findById(transferHistory.getSenderId().getMemId())
-	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
+	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getSenderId()));
 
-	    // 5. transfer_history의 상태를 '송금 취소'로 변경
-	    transferHistory.setStatus("송금취소");
+	    Member receiver = memberRepository.findById(transferHistory.getReceiverId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
-	    // 6. reservation의 상태를 '예약취소'로 변경
+	    // 금액 업데이트
+	    sender.setMemMoney(sender.getMemMoney().subtract(reservation.getPrice()));
+	    receiver.setMemMoney(receiver.getMemMoney().add(reservation.getPrice()));
+
+	    // 4. 새로운 TransferHistory 생성
+	    TransferHistory newTransferHistory = TransferHistory.builder()
+	            .transferCode(String.valueOf(System.currentTimeMillis()))
+	            .payCode(UUID.randomUUID().toString())
+	            .amount(transferHistory.getAmount())
+	            .memo(transferHistoryDTO.getMemo())
+	            .status("송금취소")
+	            .transferDate(LocalDateTime.now())
+	            .receiverId(receiver)
+	            .senderId(sender)
+	            .clubCode(reservation.getClubCode())
+	            .build();
+
+	    // 5. 예약 상태 업데이트
 	    reservation.setReservationProgress("예약취소");
-	    
-	    // 7. reservation의 deleteFlag를 '1'로 변경
 	    reservation.setDeleteFlag(true);
 
-	    // 8. 변경된 데이터 저장
+	    // 6. 데이터 저장
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
-	    transferHistoryRepository.save(transferHistory);
+	    transferHistoryRepository.save(newTransferHistory);
 	    reservationRepository.save(reservation);
 		
 	}
