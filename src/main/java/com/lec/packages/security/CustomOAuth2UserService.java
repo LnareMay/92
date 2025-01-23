@@ -56,7 +56,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String birthday = extractBirthday(clientName, paramMap);
         String name = extractName(clientName, paramMap);
 
-        MemberSecurityDTO memberSecurityDTO = generateDTO(id, email, nickname, picture, phone, gender, birthday, name, true, false, false);
+        MemberSecurityDTO memberSecurityDTO = generateDTO(id, email, nickname, picture, phone, gender, birthday, name, false, true, false);
         log.info("Generated MemberSecurityDTO: {}", memberSecurityDTO);
 
         return memberSecurityDTO;
