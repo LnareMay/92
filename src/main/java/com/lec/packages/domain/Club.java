@@ -34,7 +34,7 @@ public class Club extends BaseEntity{
     @Column(length = 10, name = "CLUB_CODE")
     private String clubCode;
 
-    @Column(nullable = false, length = 10, name = "CLUB_NAME")
+    @Column(nullable = false, length = 20, name = "CLUB_NAME")
     private String clubName;
     
     @JoinColumn(name = "EXERCISE_CODE")
