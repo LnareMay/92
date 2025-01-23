@@ -175,13 +175,15 @@
 										<label for="inputfacilityAddress">Facility Address</label> <br />
 										<input type="text" id="facilityZipcode" name="facilityZipcode"
 											th:value="${facility.facilityZipcode}" placeholder="우편번호" />
-										<input type="button" onclick="searchPostcode()"
-											value="우편번호 찾기" /><br> <input type="text"
-											class="form-control" id="facilityAddress"
-											name="facilityAddress" th:value="${facility.facilityAddress}"
-											placeholder="주소" required /> <input type="text"
-											id="facilityAddressDetail" name="facilityAddressDetail"
-											placeholder="상세주소" required />
+										<input type="button" onclick="searchPostcode()"value="우편번호 찾기" /><br> 
+										<input type="text"
+											   class="form-control" id="facilityAddress"
+											   name="facilityAddress" th:value="${facility.facilityAddress}"
+											   placeholder="주소" required /> 
+										<input type="text"
+											   id="facilityAddressDetail" name="facilityAddressDetail"
+											   th:value="${facility.facilityAddressDetail}"
+											   placeholder="상세주소" required />
 									</div>
 
 

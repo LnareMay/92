@@ -174,6 +174,7 @@ public class FacilityServiceImpl implements FacilityService{
 		return modelMapper.map(facility, FacilityDTO.class);
 	}
 
+	//시설 주소는 수정하지 않음
 	@Override
 	public void modify(FacilityDTO facilityDTO) {
 		
