@@ -3,28 +3,27 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-<!-- meta_tag include -->
-<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title></title>
+	<!-- meta_tag include -->
 
-<!-- 공통 css -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" th:href="@{/css/common.css}">
+	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+	<title></title>
 
-<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
-<!-- Linking CSS files -->
-<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+	<!-- 공통 css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 
-<!-- 공통 js -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-	crossorigin="anonymous"></script>
-<script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3cd1cbb83ed8cd66805a1d9f6fd57a32&libraries=services"></script>
+	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+	<!-- Linking CSS files -->
+	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+
+	<!-- 공통 js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3cd1cbb83ed8cd66805a1d9f6fd57a32&libraries=services"></script>
 
 </head>
 
@@ -34,48 +33,39 @@
 	<div th:insert="~{layouts/header :: header}"></div>
 	<main class="main" id="club_main_pg">
 		<div class="container">
-			<div th:if="${#authentication.principal != 'anonymousUser'}"
-				class="top_wrap">
+			<div th:if="${#authentication.principal != 'anonymousUser'}" class="top_wrap">
 				<div class="profile-section">
 					<!-- 소셜로그인 -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}"
-							alt="프로필 이미지">
+						<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
 					</th:block>
 
 					<!-- 소셜로그인x -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|"
-							alt="프로필 이미지">
+						<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지">
 					</th:block>
 
 					<!-- 프로필이미지x -->
 					<th:block
 						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture.isEmpty()}">
-						<img
-							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-							alt="프로필 이미지">
+						<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지">
 					</th:block>
 
 				</div>
-				<div onclick="location.href='/member/mypage'"
-					style="cursor: pointer">
+				<div onclick="location.href='/member/mypage'" style="cursor: pointer">
 					안녕하세요! <span th:text="${#authentication.principal.memNickname}"></span>님.
 					오늘도 건강한 하루 보내세요.
 				</div>
-				<a class="btn btn-danger"
-					th:if="${#authentication.principal != 'anonymousUser'}"
+				<a class="btn btn-danger" th:if="${#authentication.principal != 'anonymousUser'}"
 					href="/member/logout">로그아웃</a>
 			</div>
 
-			<div th:if="${#authentication.principal == 'anonymousUser'}"
-				class="top_wrap">
+			<div th:if="${#authentication.principal == 'anonymousUser'}" class="top_wrap">
 				<p th:if="${#authentication.principal == 'anonymousUser'}">우리
 					동네에서 운동메이트를 찾아보세요!</p>
-				<a class="btn btn-primary"
-					th:if="${#authentication.principal == 'anonymousUser'}"
+				<a class="btn btn-primary" th:if="${#authentication.principal == 'anonymousUser'}"
 					href="/member/login">로그인</a>
 			</div>
 
@@ -88,15 +78,12 @@
 			<div class="container my_club_container">
 				<!-- Create Card -->
 				<div class="card create">
-					<a href="/club/club_create"><img src="/img/plus_icon.png"
-						alt=""></a>만들기
+					<a href="/club/club_create"><img src="/img/plus_icon.png" alt=""></a>만들기
 				</div>
 
 				<!-- First Card -->
-				<div th:if="${#authentication.principal == 'anonymousUser'}"
-					class="card">
-					<img
-						src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264"
+				<div th:if="${#authentication.principal == 'anonymousUser'}" class="card">
+					<img src="https://coresos-phinf.pstatic.net/a/31e930/e_ba5Ud018svce7agq5a0738m_plny66.jpg?type=cover_a264"
 						alt="Group Image">
 					<div class="card-content">
 						<h3>은혜와진리교회 동탄청년봉사선교회</h3>
@@ -112,57 +99,56 @@
 		<!-- 클럽 테마 탭메뉴 START -->
 		<section id="club_theme" class="container" style="text-align: center">
 			<!-- 로그인 상태이면서 지역 정보가 있는 경우 -->
-			<h2
-				th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet != null}"
+			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet != null}"
 				class="club-location" style="cursor: pointer">
 				<span th:text="${member.memAddressSet}" id="status"></span>
-				<button type="button" class="region_btn" data-bs-toggle="modal"
-					data-bs-target="#mapModal">지역 선택</button>
+				<button type="button" class="region_btn" data-bs-toggle="modal" data-bs-target="#mapModal">지역
+					선택</button>
 			</h2>
 
 			<!-- 로그인 상태이면서 지역 정보가 없는 경우 -->
-<!-- 		<h2
+			<!-- 		<h2
 				th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null}"
 				class="club-location" style="cursor: pointer">
 				<span id="status">지역을 선택해주세요</span>
 				<button type="button" class="region_btn" data-bs-toggle="modal"
 					data-bs-target="#mapModal">지역 선택</button>
 			</h2> -->
-			<h2
-				th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null}" 
-				class="club-location" style="cursor: pointer">			
+			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null}"
+				class="club-location" style="cursor: pointer">
 				<span th:text="${member.memAddress}" id="status"></span>
-				<button type="button" class="region_btn" data-bs-toggle="modal"
-					data-bs-target="#mapModal">지역 선택</button>
+				<button type="button" class="region_btn" data-bs-toggle="modal" data-bs-target="#mapModal">지역
+					선택</button>
+			</h2>
+
+			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null and member.memAddress == null}"
+				class="club-location" style="cursor: pointer">
+				<span id="status">지역을 선택해주세요</span>
+				<button type="button" class="region_btn" data-bs-toggle="modal" data-bs-target="#mapModal">지역
+					선택</button>
 			</h2>
 
 			<!-- 로그아웃 상태 -->
-			<h2 th:if="${#authentication.principal == 'anonymousUser'}"
-				class="club-location" style="cursor: pointer">
+			<h2 th:if="${#authentication.principal == 'anonymousUser' }" class="club-location" style="cursor: pointer">
 				<span id="status">로그인이 필요합니다</span>
-				<button type="button" class="region_btn"
-					onclick="location.href='/member/login'">로그인</button>
+				<button type="button" class="region_btn" onclick="location.href='/member/login'">로그인</button>
 			</h2>
 
 			<!-- 지도 팝업 모달 -->
-			<div class="modal fade" id="mapModal" tabindex="-1"
-				aria-labelledby="mapModalLabel" aria-hidden="true">
+			<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-lg">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="mapModalLabel">위치 선택</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<div id="map" style="width: 100%; height: 400px;"></div>
 							<p id="modalStatus">지도를 로딩중입니다.</p>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">취소</button>
-							<button type="button" class="btn btn-primary"
-								id="confirmLocation">확인</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+							<button type="button" class="btn btn-primary" id="confirmLocation">확인</button>
 						</div>
 					</div>
 				</div>
@@ -178,10 +164,10 @@
 			<!-- 클럽 테마 필터링 버튼 -->
 			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/}?theme=ALL&page=1'|">전체</button>
-				
- 			<button type="button" class="btn" value="THM_SPORTCLUB"
+
+			<button type="button" class="btn" value="THM_SPORTCLUB"
 				th:classappend="${theme == 'THM_SPORTCLUB'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/(theme=THM_SPORTCLUB, address=${address != null ? address : 'ALL'}, page=1)}'|">운동클럽</button>		 	
+				th:onclick="|location.href='@{/(theme=THM_SPORTCLUB, address=${address != null ? address : 'ALL'}, page=1)}'|">운동클럽</button>
 
 			<button type="button" class="btn" value="THM_SPORTJOURNAL"
 				th:classappend="${theme == 'THM_SPORTJOURNAL'} ? 'btn-primary' : 'btn-secondary'"
@@ -214,7 +200,7 @@
 			<button type="button" class="btn" value="THM_EXAM"
 				th:classappend="${theme == 'THM_EXAM'} ? 'btn-primary' : 'btn-secondary'"
 				th:onclick="|location.href='@{/(theme=THM_EXAM, address=${address}, page=1)}'|">입시준비</button>
-		
+
 		</section>
 		<!-- 클럽 테마 탭메뉴 END -->
 
@@ -229,13 +215,12 @@
 
 					<!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="Club Thumbnail"> -->
 					<img th:src="|/view/${club.clubImage1}|" id="clubImage1"
-					onerror="this.src='https://placehold.co/80'">
+						onerror="this.src='https://placehold.co/80'">
 
 					<div class="club-content">
 						<div class="club-title" id="clubName" th:text="${club.clubName}"></div>
 						<div class="club-description" th:text="${club.clubIntroduction}"></div>
-						<input type="hidden" id="clubTheme" name="clubTheme"
-							th:value="${club.clubTheme}" />
+						<input type="hidden" id="clubTheme" name="clubTheme" th:value="${club.clubTheme}" />
 						<div class="club-details">
 							<div>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -256,32 +241,26 @@
 				</li>
 			</ul>
 
-			<nav th:if="${!responseDTO.dtoList.isEmpty()}"
-				aria-label="Page navigation" class="mt-3">
+			<nav th:if="${!responseDTO.dtoList.isEmpty()}" aria-label="Page navigation" class="mt-3">
 				<ul class="pagination justify-content-center">
 					<!-- 이전 페이지 -->
-					<li class="page-item"
-						th:classappend="${responseDTO.page == 1} ? 'disabled'"><a
-						class="page-link"
-						th:href="@{'/'(theme=${theme}, address=${address}, page=${responseDTO.page - 1})}"
-						aria-label="Previous">«</a></li>
+					<li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'"><a class="page-link"
+							th:href="@{'/'(theme=${theme}, address=${address}, page=${responseDTO.page - 1})}"
+							aria-label="Previous">«</a></li>
 
 					<!-- 페이지 번호 -->
-					<th:block
-						th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
-						<li class="page-item"
-							th:classappend="${responseDTO.page == i} ? 'active'">
-							<a class="page-link"
-							th:href="@{'/'(theme=${theme}, address=${address}, page=${i})}">
-								[[${i}]] </a></li>
+					<th:block th:each="i : ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+						<li class="page-item" th:classappend="${responseDTO.page == i} ? 'active'">
+							<a class="page-link" th:href="@{'/'(theme=${theme}, address=${address}, page=${i})}">
+								[[${i}]] </a>
+						</li>
 					</th:block>
 
 					<!-- 다음 페이지 -->
-					<li class="page-item"
-						th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
+					<li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
 						<a class="page-link"
-						th:href="@{'/'(theme=${theme}, address=${address}, page=${responseDTO.page + 1})}"
-						aria-label="Next">»</a>
+							th:href="@{'/'(theme=${theme}, address=${address}, page=${responseDTO.page + 1})}"
+							aria-label="Next">»</a>
 					</li>
 
 				</ul>
@@ -303,7 +282,7 @@
 
 		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
 			currentAddress = document.getElementById("status").textContent;
-		    
+
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(
 					(position) => {
@@ -330,7 +309,7 @@
 								selectedAddress =
 									result.find((region) => region.region_type === "H")?.address_name || "주소를 확인할 수 없습니다.";
 								//document.getElementById("status").textContent = selectedAddress;								
-								
+
 								document.getElementById("modalStatus").textContent = `현재 위치: ${selectedAddress}`;
 							}
 						});
@@ -360,18 +339,18 @@
 		document.getElementById("confirmLocation").addEventListener("click", () => {
 			if (selectedAddress) {
 				document.getElementById("status").textContent = selectedAddress;
-				updateMemAddress(selectedAddress);				
+				updateMemAddress(selectedAddress);
 			}
-				
+
 			// 모달 닫기
 			const modal = bootstrap.Modal.getInstance(document.getElementById("mapModal"));
 			modal.hide();
-			
-				setTimeout(() => {
-			        window.location.reload();
-			    }, 1000); // 1초후 새로고침 
+
+			setTimeout(() => {
+				window.location.reload();
+			}, 1000); // 1초후 새로고침 
 		});
-		
+
 		document.getElementById("mapModal").addEventListener("hidden.bs.modal", () => {
 			selectedAddress = "";
 			document.getElementById("status").textContent = currentAddress;
@@ -395,14 +374,14 @@
 		}
 
 		function printClubList(memRole) {
-			if(memRole == 'anonymousUser'){
+			if (memRole == 'anonymousUser') {
 				return;
 			}
 			else {
 				getClubList().then(data => {
 					let str = "";
-					if(data && data.length > 0) {
-						for(const club of data){
+					if (data && data.length > 0) {
+						for (const club of data) {
 							str += `<div class="card"
 									onclick="location.href='/club/club_detail?clubCode=${club.clubCode}'">
 										<img src="/view/${club.clubImage1}"
