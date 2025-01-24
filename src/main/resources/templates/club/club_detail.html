@@ -265,9 +265,12 @@
 	const isPw = /*[[${clubdto.clubPw}]]*/''
 	
 	// 팝업 열기
-	document.getElementById("openJoinPopup").addEventListener("click", () => {
-		passwordPopup.style.display = "flex";
-	});
+	if(document.getElementById("openJoinPopup")!=null){
+		document.getElementById("openJoinPopup").addEventListener("click", () => {
+				passwordPopup.style.display = "flex";
+			});	
+	}
+	
 
 	// 팝업 내 가입 버튼
 	if (confirmAction) {
