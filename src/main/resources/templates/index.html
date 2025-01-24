@@ -315,7 +315,7 @@
 						});
 
 						// 지도 이동 이벤트 처리
-						/*kakao.maps.event.addListener(map, "dragend", () => {
+						kakao.maps.event.addListener(map, "dragend", () => {
 							const center = map.getCenter();
 							marker.setPosition(center); // 마커 위치 갱신
 							geocoder.coord2RegionCode(center.getLng(), center.getLat(), (result, statusCode) => {
@@ -325,7 +325,7 @@
 									document.getElementById("modalStatus").textContent = `선택된 위치: ${selectedAddress}`;
 								}
 							});
-						});*/
+						});
 					},
 					(error) => {
 						document.getElementById("modalStatus").textContent = `위치 정보를 가져올 수 없습니다: ${error.message}`;

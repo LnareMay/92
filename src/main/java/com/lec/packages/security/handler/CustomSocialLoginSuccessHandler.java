@@ -14,13 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-/*
-  스프링시큐리티는 로그인 성공과 실패를 커스터마이징할 수 있도록 AuthenticationSuccessHandler와
-  AuthenticationFailedHandler인터페이스를 제공한다.
-  
-  실습에서 소셜로그인성공한 후에 특정페이지로 이동하는 방법을 처리해야 하는데 AuthenticationSuccessHandler를
-  이용해서 처리하도록 한다.
-*/
 
 @Log4j2
 @RequiredArgsConstructor
