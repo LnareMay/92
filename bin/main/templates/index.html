@@ -121,7 +121,7 @@
 					선택</button>
 			</h2>
 
-			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null and member.memAddress == null}"
+			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null and (member.memAddress == null or member.memAddress == '')}"
 				class="club-location" style="cursor: pointer">
 				<span id="status">지역을 선택해주세요</span>
 				<button type="button" class="region_btn" data-bs-toggle="modal" data-bs-target="#mapModal">지역
