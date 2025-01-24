@@ -3,32 +3,28 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-<!-- meta_tag include -->
-<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title></title>
+	<!-- meta_tag include -->
 
-<!-- 공통 css -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" th:href="@{/css/common.css}">
+	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+	<title></title>
 
-<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
-<!-- Linking CSS files -->
-<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+	<!-- 공통 css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 
-<!-- 공통 js -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-	crossorigin="anonymous"></script>
-<script
-	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript"
-	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+	<!-- Linking CSS files -->
+	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+
+	<!-- 공통 js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 </head>
 
@@ -49,8 +45,8 @@
 			</div>
 			<div class="btn_wrap">
 				<div class="header" th:if="${member.memIsmanager == false}">
-					<a href="/member/mypage" class="active">나의정보</a> <a
-						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
+					<a href="/member/mypage" class="active">나의정보</a> <a href="/member/reservation">나의시설예약</a> <a
+						href="#">운동캘린더</a>
 				</div>
 
 				<div class="header" th:if="${member.memIsmanager == true}">
@@ -60,16 +56,13 @@
 					<div
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
-						<p
-							style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#authentication.principal.memMoney}"
-								id="memMoney"></span>원 <input type="number" id="memMoney_ip"
-								name="memMoney" class="blind">
+						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
+							<span th:text="${#authentication.principal.memMoney}" id="memMoney"></span>원 <input
+								type="number" id="memMoney_ip" name="memMoney" class="blind">
 						</p>
 					</div>
 					<div style="display: inline-flex; gap: 5px; width: 100%">
-						<button class="btn btn-primary" id="fitpayCharge"
-							style="width: 50%">충전</button>
+						<button class="btn btn-primary" id="fitpayCharge" style="width: 50%">충전</button>
 						<button class="btn btn-success" id="payList" style="width: 50%">내역</button>
 					</div>
 				</div>
@@ -100,192 +93,205 @@
 				<form id="modifyForm" action="/member/modify" method="post">
 
 
-				
+
 
 					<div class="form-group">
 						<label for="memPicture">프로필 사진</label>
 						<!--<img id="profileImage" th:src="|/view/${#authentication.principal.MEM_PICTURE}|" alt="프로필 이미지">-->
 
-					<!-- 소셜로그인 -->
-					<th:block
-						th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-						<img th:src="${#authentication.principal.memPicture}"
-							alt="프로필 이미지">
-					</th:block>
+						<!-- 소셜로그인 -->
+						<th:block
+							th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
+							<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
+						</th:block>
 
-					<!-- 소셜로그인x -->
-					<th:block
-						th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|"
-							alt="프로필 이미지" id="profileImage">
+						<!-- 소셜로그인x -->
+						<th:block
+							th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and !#authentication.principal.memPicture.startsWith('http')}">
+							<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지"
+								id="profileImage">
 							<input type="file" id="memPicture" name="files" class="blind">
-					<input type="hidden" id="currentMemPicture" name="currentMemPicture" th:value="${#authentication.principal.memPicture}">
-					</th:block>
+							<input type="hidden" id="currentMemPicture" name="currentMemPicture"
+								th:value="${#authentication.principal.memPicture}">
+						</th:block>
 
-					<!-- 프로필이미지xx -->
-					<th:block
-						th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture.isEmpty()}">
-						<img
-							src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"
-							alt="프로필 이미지" id="profileImage">
+						<!-- 프로필이미지xx -->
+						<th:block
+							th:if="${#authentication.principal.memPicture == null or #authentication.principal.memPicture.isEmpty()}">
+							<img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png" alt="프로필 이미지"
+								id="profileImage">
 							<input type="file" id="memPicture" name="files" class="blind">
-					<input type="hidden" id="currentMemPicture" name="currentMemPicture" th:value="${#authentication.principal.memPicture}">
-					</th:block>
-					
-					
-					<th:block
-						th:if="${#authentication.principal.memSocial == false}">
-						
-						<div class="form-group">
-							<label for="memId">아이디</label> <input type="text" id="memId"
-								name="memId" th:value="${#authentication.principal.memId}"
-								class="form-control" disabled>
-						</div>
-						
-						<div class="form-group">
-							<label for="memName">이름</label> <input type="text" id="memName"
-								name="memName" th:value="${#authentication.principal.memName}"
-								class="form-control"> <small class="text-danger">이름은
-								2~20자의 한글 또는 영문이어야 합니다.</small>
-						</div>
-						<div class="form-group">
-							<label for="memNickname">닉네임</label> <input type="text"
-								id="memNickname" name="memNickname"
-								th:value="${#authentication.principal.memNickname}"
-								class="form-control"> <small class="text-muted">닉네임은
-								2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.</small>
-						</div>
-						<div class="form-group">
-							<label for="memTell">전화번호</label> <input type="tel" id="memTell"
-								name="memTell" th:value="${#authentication.principal.memTell}"
-								maxlength="11" class="form-control"> <small
-								class="text-danger">전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.</small>
-						</div>
+							<input type="hidden" id="currentMemPicture" name="currentMemPicture"
+								th:value="${#authentication.principal.memPicture}">
+						</th:block>
 
-						<div class="form-group">
-							<label for="memEmail">이메일</label> <input type="email"
-								id="memEmail" name="memEmail"
-								th:value="${#authentication.principal.memEmail}"
-								class="form-control"> <small class="text-danger">유효한
-								이메일 주소를 입력해주세요.</small>
-						</div>
 
-						<div class="form-group">
+						<th:block th:if="${#authentication.principal.memSocial == false}">
 
-							<label for="memBirthday">생년월일</label> <input type="date"
-								id="memBirthday" name="memBirthday"
-								th:value="${#authentication.principal.memBirthday}"
-								class="form-control">
+							<div class="form-group">
+								<label for="memId">아이디</label> <input type="text" id="memId" name="memId"
+									th:value="${#authentication.principal.memId}" class="form-control" disabled>
+							</div>
 
-						</div>
-						
-					</th:block>
+							<div class="form-group">
+								<label for="memName">이름</label> <input type="text" id="memName" name="memName"
+									th:value="${#authentication.principal.memName}" class="form-control"> <small
+									class="text-danger">이름은
+									2~20자의 한글 또는 영문이어야 합니다.</small>
+							</div>
+							<div class="form-group">
+								<label for="memNickname">닉네임</label> <input type="text" id="memNickname"
+									name="memNickname" th:value="${#authentication.principal.memNickname}"
+									class="form-control"> <small class="text-muted">닉네임은
+									2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.</small>
+							</div>
+							<div class="form-group">
+								<label for="memTell">전화번호</label> <input type="tel" id="memTell" name="memTell"
+									th:value="${#authentication.principal.memTell}" maxlength="11" class="form-control">
+								<small class="text-danger">전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.</small>
+							</div>
 
-						
+							<div class="form-group">
+								<label for="memEmail">이메일</label> <input type="email" id="memEmail" name="memEmail"
+									th:value="${#authentication.principal.memEmail}" class="form-control"> <small
+									class="text-danger">유효한
+									이메일 주소를 입력해주세요.</small>
+							</div>
 
-						<input type="hidden" id="memId" name="memId"
-							th:value="${#authentication.principal.memId}"> <input
-							type="text" id="memPw" name="memPw"
-							th:value="${#authentication.principal.memPw}"
+							<div class="form-group">
+
+								<label for="memBirthday">생년월일</label> <input type="date" id="memBirthday"
+									name="memBirthday" th:value="${#authentication.principal.memBirthday}"
+									class="form-control">
+
+							</div>
+
+						</th:block>
+
+
+
+						<input type="hidden" id="memId" name="memId" th:value="${#authentication.principal.memId}">
+						<input type="text" id="memPw" name="memPw" th:value="${#authentication.principal.memPw}"
 							class="form-control blind">
+						<input type="text" id="memName" name="memName" th:value="${#authentication.principal.memName}"
+							class="form-control blind">
+						<input type="text" id="memNickname" name="memNickname"
+							th:value="${#authentication.principal.memNickname}" class="form-control blind">
+						<input type="tel" id="memTell" name="memTell" th:value="${#authentication.principal.memTell}"
+							maxlength="11" class="form-control blind">
+						<input type="email" id="memEmail" name="memEmail"
+							th:value="${#authentication.principal.memEmail}" class="form-control blind">
 
 
 
-						
 						<div class="form-group">
 
 
-							<label for="memExercise">선호하는 운동</label> <select
-								class="form-select" id="memExercise" name="memExercise">
+							<label for="memExercise">선호하는 운동</label> <select class="form-select" id="memExercise"
+								name="memExercise">
 								<!-- 기본 옵션 추가 -->
-								<option value=""
-									th:selected="${#authentication.principal.memExercise == null}">
+								<option value="" th:selected="${#authentication.principal.memExercise == null}">
 									선호하는 운동을 선택하세요</option>
 								<option value="EXE_FOOTBALL"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FOOTBALL'}">축구</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FOOTBALL'}">
+									축구</option>
 								<option value="EXE_BASKET"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BASKET'}">농구</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BASKET'}">
+									농구</option>
 								<option value="EXE_BASEBALL"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BASEBALL'}">야구</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BASEBALL'}">
+									야구</option>
 								<option value="EXE_BADMINTON"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BADMINTON'}">배드민턴</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_BADMINTON'}">
+									배드민턴</option>
 								<option value="EXE_TENNIS"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_TENNIS'}">테니스</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_TENNIS'}">
+									테니스</option>
 								<option value="EXE_FUTSAL"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FUTSAL'}">풋살</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FUTSAL'}">
+									풋살</option>
 								<option value="EXE_FITNESS"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FITNESS'}">헬스</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_FITNESS'}">
+									헬스</option>
 								<option value="EXE_PILATES"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_PILATES'}">필라테스</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_PILATES'}">
+									필라테스</option>
 								<option value="EXE_YOGA"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_YOGA'}">요가</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_YOGA'}">
+									요가</option>
 								<option value="EXE_CLIMB"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_CLIMB'}">암벽등반</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_CLIMB'}">
+									암벽등반</option>
 								<option value="EXE_MOUNT"
-									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_MOUNT'}">등산</option>
+									th:selected="${#authentication.principal.memExercise != null and #authentication.principal.memExercise.EXERCISE_CODE == 'EXE_MOUNT'}">
+									등산</option>
 							</select>
 						</div>
 
 
 						<div class="form-group">
-							<label for="memClub">선호하는 클럽</label> <select class="form-select"
-								id="memClub" name="memClub">
-								<option value=""
-									th:selected="${#authentication.principal.memClub == null}">
+							<label for="memClub">선호하는 클럽</label> <select class="form-select" id="memClub"
+								name="memClub">
+								<option value="" th:selected="${#authentication.principal.memClub == null}">
 									선호하는 클럽을 선택하세요</option>
 								<option value="THM_SPORTCLUB"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_SPORTCLUB'}">운동클럽</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_SPORTCLUB'}">
+									운동클럽</option>
 								<option value="THM_CONTEST"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_CONTEST'}">대회준비</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_CONTEST'}">
+									대회준비</option>
 								<option value="THM_BODYPROFILE"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_BODYPROFILE'}">바디프로필</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_BODYPROFILE'}">
+									바디프로필</option>
 								<option value="THM_RECOVER"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_RECOVER'}">부상/재활</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_RECOVER'}">
+									부상/재활</option>
 								<option value="THM_FOOD"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_FOOD'}">영양제/식단</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_FOOD'}">
+									영양제/식단</option>
 								<option value="THM_SPORTJOURNAL"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_SPORTJOURNAL'}">운동일지</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_SPORTJOURNAL'}">
+									운동일지</option>
 								<option value="THM_EXAM"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_EXAM'}">입시준비</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_EXAM'}">
+									입시준비</option>
 								<option value="THM_DIET"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_DIET'}">체중감량</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_DIET'}">
+									체중감량</option>
 								<option value="THM_FITNESS"
-									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_FITNESS'}">헬스</option>
+									th:selected="${#authentication.principal.memClub != null and #authentication.principal.memClub.EXERCISE_CODE == 'THM_FITNESS'}">
+									헬스</option>
 							</select>
 						</div>
 
 						<div class="form-group">
 							<label for="memIntroduction">자기소개</label>
 							<textarea id="memIntroduction" name="memIntroduction"
-								th:text="${#authentication.principal.memIntroduction}"
-								maxlength="100" class="form-control"></textarea>
+								th:text="${#authentication.principal.memIntroduction}" maxlength="100"
+								class="form-control"></textarea>
 						</div>
 
-						
+
 
 						<div class="form-group">
 
-							<label for="memZipcode">우편번호</label> <input type="text"
-								id="memZipcode" name="memZipcode"
-								th:value="${#authentication.principal.memZipcode}"
-								class="form-control" style="display: inline-block; width: 50%;">
-							<button type="button" class="btn btn-primary"
-								onclick="searchPostCode()">우편번호 찾기</button>
+							<label for="memZipcode">우편번호</label> <input type="text" id="memZipcode" name="memZipcode"
+								th:value="${#authentication.principal.memZipcode}" class="form-control"
+								style="display: inline-block; width: 50%;">
+							<button type="button" class="btn btn-primary" onclick="searchPostCode()">우편번호 찾기</button>
 
 						</div>
 
 						<div class="form-group">
-							<label for="memAddress">주소</label> <input type="text"
-								id="memAddress" name="memAddress"
-								th:value="${#authentication.principal.memAddress}"
-								class="form-control"> <small class="text-danger">주소를
+							<label for="memAddress">주소</label> <input type="text" id="memAddress" name="memAddress"
+								th:value="${#authentication.principal.memAddress}" class="form-control"> <small
+								class="text-danger">주소를
 								입력해주세요.</small>
 						</div>
 
 						<div class="form-group">
-							<label for="memAddressDetail">상세 주소</label> <input type="text"
-								id="memAddressDetail" name="memAddressDetail"
-								th:value="${#authentication.principal.memAddressDetail}"
+							<label for="memAddressDetail">상세 주소</label> <input type="text" id="memAddressDetail"
+								name="memAddressDetail" th:value="${#authentication.principal.memAddressDetail}"
 								class="form-control"> <small class="text-danger">상세
 								주소를 입력해주세요.</small>
 						</div>
@@ -298,8 +304,7 @@
 						</div>
 				</form>
 
-				<form action="/member/remove" method="post"
-					onsubmit="return confirm('정말로 계정을 삭제하시겠습니까?');"
+				<form action="/member/remove" method="post" onsubmit="return confirm('정말로 계정을 삭제하시겠습니까?');"
 					style="display: inline;">
 					<button type="submit" class="btn btn-danger">계정 삭제하기</button>
 				</form>
@@ -314,12 +319,12 @@
 	<script src="/js/upload.js"></script>
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-		  const urlParams = new URLSearchParams(window.location.search);
-		  if (urlParams.has('executeSearch') && urlParams.get('executeSearch') === 'true') {
-		    searchPostCode();
-		  }
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.has('executeSearch') && urlParams.get('executeSearch') === 'true') {
+				searchPostCode();
+			}
 		});
-	
+
 		// 프로필 이미지 클릭 시 파일 선택 창 열기
 		const profileImage = document.getElementById('profileImage');
 		const fileInput = document.getElementById('memPicture');
@@ -341,15 +346,15 @@
 				console.log("파일이 선택되지 않았습니다.");
 				return; // 파일이 없으면 작업 중단
 			}
-			
 
-		    // 파일 확장자 검사
-		    const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-		    const fileExtension = file.name.split('.').pop().toLowerCase();
-		    if (!validExtensions.includes(fileExtension)) {
-		        alert("올바른 이미지 파일을 선택해주세요. (jpg, jpeg, png, gif)");
-		        return;
-		    }
+
+			// 파일 확장자 검사
+			const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+			const fileExtension = file.name.split('.').pop().toLowerCase();
+			if (!validExtensions.includes(fileExtension)) {
+				alert("올바른 이미지 파일을 선택해주세요. (jpg, jpeg, png, gif)");
+				return;
+			}
 
 			const newFileName = file.name; // 선택된 파일 이름
 
@@ -386,7 +391,7 @@
 					alert("이미지 업로드 및 삭제 중 오류가 발생했습니다.");
 				});
 		});
-		
+
 		// 주소
 		function searchPostCode() {
 			new daum.Postcode({
@@ -438,44 +443,44 @@
 
 		// 유효성 검사
 		const modifyForm = document.getElementById('modifyForm');
-		
+
 
 		// 회원가입 폼 제출 이벤트
 		modifyForm.addEventListener('submit', function (e) {
-		    e.preventDefault(); // 기본 제출 이벤트 방지
+			e.preventDefault(); // 기본 제출 이벤트 방지
 
-		    // 필수 입력값 검사
-		    const requiredFields = [
-	        { id: 'memNickname', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,20}$/.test(value), errorMessage: '닉네임은 2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.' },
-	        { id: 'memTell', label: '* 전화번호', validate: (value) => /^010\d{8}$/.test(value), errorMessage: '전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.' },
-	        { id: 'memEmail', label: '* 이메일', validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: '유효한 이메일 주소를 입력해주세요.' },
-	        { id: 'memZipcode', label: '* 우편번호', validate: (value) => /^\d{5}$/.test(value), errorMessage: '우편번호는 5자리 숫자여야 합니다.' },
-	        { id: 'memAddress', label: '* 주소', validate: (value) => value.trim() !== '', errorMessage: '주소를 입력해주세요.' },
-	        { id: 'memAddressDetail', label: '* 상세 주소', validate: (value) => value.trim() !== '', errorMessage: '상세 주소를 입력해주세요.' }
-	    ];
+			// 필수 입력값 검사
+			/*const requiredFields = [
+				{id: 'memNickname', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,20}$/.test(value), errorMessage: '닉네임은 2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.'},
+				{id: 'memTell', label: '* 전화번호', validate: (value) => /^010\d{8}$/.test(value), errorMessage: '전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.'},
+				{id: 'memEmail', label: '* 이메일', validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: '유효한 이메일 주소를 입력해주세요.'},
+				{id: 'memZipcode', label: '* 우편번호', validate: (value) => /^\d{5}$/.test(value), errorMessage: '우편번호는 5자리 숫자여야 합니다.'},
+				{id: 'memAddress', label: '* 주소', validate: (value) => value.trim() !== '', errorMessage: '주소를 입력해주세요.'},
+				{id: 'memAddressDetail', label: '* 상세 주소', validate: (value) => value.trim() !== '', errorMessage: '상세 주소를 입력해주세요.'}
+			];
 
-		    for (const field of requiredFields) {
-		        const input = document.getElementById(field.id);
-		        const errorElement = input.nextElementSibling;
-		        const value = input.value.trim();
+			for (const field of requiredFields) {
+				const input = document.getElementById(field.id);
+				const errorElement = input.nextElementSibling;
+				const value = input.value.trim();
 
-		        if (!value || (field.validate && !field.validate(value))) {
-		            if (errorElement && errorElement.classList.contains('text-danger')) {
-		                errorElement.style.display = 'block';
-		            }
-		            input.focus();
-		            return;
-		        } else {
-		            if (errorElement && errorElement.classList.contains('text-danger')) {
-		                errorElement.style.display = 'none';
-		            }
-		        }
-		    }
+				if (!value || (field.validate && !field.validate(value))) {
+					if (errorElement && errorElement.classList.contains('text-danger')) {
+						errorElement.style.display = 'block';
+					}
+					input.focus();
+					return;
+				} else {
+					if (errorElement && errorElement.classList.contains('text-danger')) {
+						errorElement.style.display = 'none';
+					}
+				}
+			}*/
 
-		    
-		    // 유효성 검사가 모두 통과되었으면 폼 제출
-		    alert('회원수정이 완료되었습니다.');
-		    modifyForm.submit();
+
+			// 유효성 검사가 모두 통과되었으면 폼 제출
+			alert('회원수정이 완료되었습니다.');
+			modifyForm.submit();
 		});
 
 	</script>
