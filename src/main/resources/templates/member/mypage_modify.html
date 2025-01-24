@@ -102,7 +102,7 @@
 						<!-- 소셜로그인 -->
 						<th:block
 							th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and #authentication.principal.memPicture.startsWith('http') and member.memSocial}">
-							<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지">
+							<img th:src="${#authentication.principal.memPicture}" alt="프로필 이미지" id="profileImage">
 						</th:block>
 
 						<!-- 소셜로그인x -->

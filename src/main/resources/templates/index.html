@@ -114,7 +114,7 @@
 				<button type="button" class="region_btn" data-bs-toggle="modal"
 					data-bs-target="#mapModal">지역 선택</button>
 			</h2> -->
-			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null}"
+			<h2 th:if="${#authentication.principal != 'anonymousUser' and member.memAddressSet == null and member.memSocial == false}"
 				class="club-location" style="cursor: pointer">
 				<span th:text="${member.memAddress}" id="status"></span>
 				<button type="button" class="region_btn" data-bs-toggle="modal" data-bs-target="#mapModal">지역
