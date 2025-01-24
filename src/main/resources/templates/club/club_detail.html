@@ -84,7 +84,7 @@
 				style="margin-bottom: 10px"></p>
 
 			<!-- 가입/탈퇴 버튼 -->
-			<span th:if="${!isMember}">
+<!-- 			<span th:if="${!isMember}">
 				<form action="/club/club_join" method="post" onsubmit="return confirmJoin();" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-warning">클럽 가입</button>
@@ -93,13 +93,54 @@
 						<input type="password" id="clubPw" name="clubPw" placeholder="비밀번호를 입력하세요" required/>						
 					</span>
 				</form>
+			</span> -->
+			<span th:if="${!isMember}">				
+				<button type="button" class="btn btn-warning" id="openJoinPopup">클럽 가입</button>				
 			</span>
+			
+			<!-- 비밀번호 입력 팝업 -->
+			<div class="pw-popup" style="display: none;" id="passwordPopup">
+				<div class="pw-popup-content">
+					<span class="close-popup" id="closePopup">&times;</span>
+									
+					<h5 th:if="${!clubdto.clubIsprivate}">클럽 가입 확인</h5>
+					<h5 th:if="${clubdto.clubIsprivate}">비밀번호 입력</h5>
+	
+					<p th:if="${!clubdto.clubIsprivate}" id="popupMessage">클럽을 가입하시겠습니까?</p>
+					<form id="joinForm" action="/club/club_join" method="post">
+						<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+						<div th:if="${clubdto.clubIsprivate}">
+							<input type="password" id="clubPw" name="clubPw" placeholder="비밀번호를 입력하세요"/>
+						</div> 			
+						<div style="text-align: right;">
+							<button type="submit" class="btn btn-primary" id="confirmAction">확인</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
 			<span th:if="${isMember && clubdto.MemId != principal.memId}">
 				<form action="/club/club_joindelete" method="post" onsubmit="return confirm('클럽을 탈퇴하시겠습니까?');" style="display: inline;">
 					<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					<button type="submit" class="btn btn-danger">클럽 탈퇴</button>
 				</form>
 			</span>
+			
+<!-- 		<span th:if="${isMember && clubdto.MemId != principal.memId}">
+			    <button type="button" class="btn btn-danger" id="delJoinPopup">클럽 탈퇴</button>
+			</span>
+			
+			<div class="del-popup" style="display: none;" id="delPopup">
+			    <div class="del-popup-content">
+			        <span class="close-popup" id="closeDelPopup">&times;</span>
+			        <h5>클럽 탈퇴 확인</h5>
+			        <p>클럽을 탈퇴하시겠습니까?</p>
+			        <form id="joindeleteForm" action="/club/club_joindelete" method="post">
+			            <input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+			            <button type="submit" class="btn btn-primary" id="delconfirmAction">확인</button>
+			        </form>
+			    </div>
+			</div> -->
 	
 			<!-- 수정/삭제 버튼 -->
 			<span th:if="${principal != null and clubdto.MemId == principal.memId}">
@@ -212,24 +253,72 @@
 
 	getBoard(clubCode, 1, 3)
 	
-	// 클럽가입
-	function confirmJoin() {
-		const isPrivate = /*[[${clubdto.clubIsprivate}]]*/ false;
-		const isPw = /*[[${clubdto.clubPw}]]*/''
-		
-		if (isPrivate) {
-			const password = document.getElementById('clubPw').value;
-			if (!password) {
-				alert('비밀번호를 입력해주세요.');
-				return false;
-			} else if (password !== isPw) {
-				alert('비밀번호가 일치하지 않습니다.');
-				return false;
-			}
-		}
-		return confirm('클럽을 가입하시겠습니까?');
-	}
+	// 클럽가입/탈퇴 팝업
+	const confirmAction = document.getElementById("confirmAction");
+    const passwordPopup = document.getElementById("passwordPopup");
+	const joinForm = document.getElementById("joinForm")	
+    const delPopup = document.getElementById("delPopup");
+	const delJoinPopup = document.getElementById("delJoinPopup");
+	const closeDelPopup = document.getElementById("closeDelPopup");	
+    
+    const isPrivate = /*[[${clubdto.clubIsprivate}]]*/ false;
+	const isPw = /*[[${clubdto.clubPw}]]*/''
 	
+	// 팝업 열기
+	document.getElementById("openJoinPopup").addEventListener("click", () => {
+		passwordPopup.style.display = "flex";
+	});
+
+	// 팝업 내 가입 버튼
+	if (confirmAction) {
+		confirmAction.addEventListener("click", (event) => {
+			event.preventDefault();
+			
+			if (isPrivate) {		
+				const password = document.getElementById("clubPw").value;
+				if (!password) {
+					alert("비밀번호를 입력해주세요.");
+				} else if (password !== isPw) {
+					alert("비밀번호가 일치하지 않습니다.");
+				} else {
+					joinForm.submit(); 
+					alert("클럽에 성공적으로 가입되었습니다.");
+				}
+			} else {
+				joinForm.submit(); 
+				alert("클럽에 성공적으로 가입되었습니다.");
+			}
+		});
+	} 
+	
+	// 팝업 닫기
+	document.getElementById("closePopup").addEventListener("click", () => {
+		passwordPopup.style.display = "none"
+	});
+	
+	/* 클럽 탈퇴 팝업
+	delJoinPopup.addEventListener("click", () => {
+	       delPopup.style.display = "flex";
+	});
+	
+	const joindeleteForm = document.getElementById("joindeleteForm");
+	   joindeleteForm.addEventListener("submit", (event) => {
+	       const confirmation = confirm("정말 클럽을 탈퇴하시겠습니까?");
+	       if (!confirmation) {
+	           event.preventDefault(); // 폼 제출 방지
+	   }
+	});
+	
+	closeDelPopup.addEventListener("click", () => {
+	       delPopup.style.display = "none";
+	   });
+	   
+	  */
+
+
+	
+
+
 	/* 이미 가입/탈퇴된 회원확인 */
 	 const flashMessage = document.getElementById("flashMessage");
 	 if (flashMessage) {

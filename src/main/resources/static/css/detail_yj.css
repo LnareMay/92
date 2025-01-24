@@ -380,3 +380,76 @@ p.fw-bold {
     z-index: 10; 
 }
 
+/* 클럽상세보기 - 비공개클럽 팝업 */
+.pw-popup, .del-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.pw-popup-content, .del-popup-content {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 10px; /* 둥근 모서리 */
+    width: 400px;
+    max-width: 90%; /* 작은 화면에서도 적절한 크기 */
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+.pw-popup h5,
+.del-popup h5 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.pw-popup .btn,
+.del-popup .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pw-popup .btn-primary,
+.del-popup .btn-primary {
+    background-color: #007bff;
+    color: white;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.pw-popup .btn-primary:hover,
+.del-popup .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.pw-popup .close-popup, 
+.del-popup .close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    color: #aaa;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.pw-popup .close-popup:hover, 
+.del-popup .close-popup:hover {
+    color: #333;
+}
+
