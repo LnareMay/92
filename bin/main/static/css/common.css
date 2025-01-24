@@ -51,6 +51,9 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+html,body{
+	overflow-x:hidden !important;
+}
 
 /* 전체 컨테이너 너비 */
 .container {
