@@ -117,6 +117,10 @@
     uploadModal.show()
   }, false)
 
+  document.querySelector(".closeUploadBtn").addEventListener("click", function(e){
+    uploadModal.hide()    
+  }, false)
+
   document.querySelector(".uploadBtn").addEventListener("click", function(e){
     const formObj = new FormData();
     const fileInput = document.querySelector("input[name='files']")
@@ -140,6 +144,10 @@
     })
 
   },false)
+
+  document.querySelector(".closeUploadBtn").addEventListener("click", function(e){
+    uploadModal.hide()    
+  }, false)
 
   const uploadResult = document.querySelector(".uploadResult")
   function showUploadFile({uuid, fileName, link}){
