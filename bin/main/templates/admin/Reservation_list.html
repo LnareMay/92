@@ -173,8 +173,8 @@
 										class="ReservationProgressTag"
 										th:if="${reservation.reservationProgress=='예약진행중'}">예약진행중</span>
 										<span class="ReservationProgressTag_confirm"
-										th:if="${reservation.reservationProgress=='예약완료'}">예약
-											승인 및 완료 </span> <span class="ReservationProgressTag_refuse"
+										th:if="${reservation.reservationProgress=='예약완료'}">예약완료 </span> 
+										<span class="ReservationProgressTag_refuse"
 										th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>
 										<br /> <small th:text="${reservation.reservationDate}"></small>
 									</td>
