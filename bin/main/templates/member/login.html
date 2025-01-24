@@ -124,9 +124,9 @@
 
 
 				<!-- MEM_PICTURE (File Input) -->
-				<!-- <label for="memPicture" style="width: 100%" class="mt-2">프로필
-					사진</label> <input type="file" id="memPicture" name="files"
-					accept="image/*" class="form-control" /> -->
+				<label for="memPicture" style="width: 100%" class="mt-2">프로필
+					사진</label> <input type="file" id="memPicture" name="memPicture"
+					accept="image/*" class="form-control" />
 
 				<!-- MEM_INTRODUCTION -->
 				<label for="memIntroduction" class="mt-2">자기소개</label>
@@ -291,7 +291,7 @@
 
 	
 	// 프로필 이미지 업로드
-	/* const fileInput = document.querySelector("input[id='memPicture']");
+	const fileInput = document.querySelector("input[name='memPicture']");
 
 	fileInput.addEventListener('change', function (e) {
 	    const formObj = new FormData();
@@ -321,7 +321,7 @@
 	            console.error("업로드 실패:", e);
 	            alert("이미지 업로드에 실패했습니다.");
 	        });
-	}); */
+	});
 	
 	
 	// 애니메이션

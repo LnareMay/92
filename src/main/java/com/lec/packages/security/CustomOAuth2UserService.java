@@ -56,19 +56,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String birthday = extractBirthday(clientName, paramMap);
         String name = extractName(clientName, paramMap);
 
-        MemberSecurityDTO memberSecurityDTO = generateDTO(id, email, nickname, picture, phone, gender, birthday, name, false, true, false);
+        MemberSecurityDTO memberSecurityDTO = generateDTO(id, email, nickname, picture, phone, gender, birthday, name, true, false, false);
         log.info("Generated MemberSecurityDTO: {}", memberSecurityDTO);
 
         return memberSecurityDTO;
     }
 
     @Transactional
-    private MemberSecurityDTO generateDTO(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean manager,boolean social,  boolean delete) {
+    private MemberSecurityDTO generateDTO(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
         Optional<Member> result = memberRepository.findById(id);
 
         if (result.isEmpty()) {
             // 신규 사용자 생성
-            Member newMember = createNewMember(id, email, nickname, picture, phone, gender, birthday, name, manager,social, delete);
+            Member newMember = createNewMember(id, email, nickname, picture, phone, gender, birthday, name, social, manager, delete);
             memberRepository.save(newMember);
             return createMemberSecurityDTO(newMember);
         } else {
@@ -108,7 +108,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
 
-    private Member createNewMember(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name,  boolean manager,boolean social, boolean delete) {
+    private Member createNewMember(String id, String email, String nickname, String picture, String phone, boolean gender, String birthday, String name, boolean social, boolean manager, boolean delete) {
         Member member = Member.builder()
                 .memId(id)
                 .memPw(passwordEncoder.encode(UUID.randomUUID().toString()))
@@ -119,8 +119,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .memName(name)
                 .memGender(gender)
                 .memBirthday(birthday)
-                .memIsmanager(manager)
                 .memSocial(social)
+                .memIsmanager(manager)
                 .deleteFlag(delete)
                 .build();
 

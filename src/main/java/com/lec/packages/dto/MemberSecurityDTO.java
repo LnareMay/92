@@ -42,8 +42,8 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private String memAddressSet;
     private BigDecimal memMoney;
     private boolean memIsmanager;
-    private boolean memSocial;
     private boolean deleteFlag;
+    private boolean memSocial;
 
     private Map<String, Object> props; // SSN(카카오) 로그인 정보
 
@@ -52,7 +52,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
                              exercise_code_table memExercise, exercise_code_table memClub, String memPicture,
                              String memIntroduction, boolean memGender, String memTell, String memEmail,
                              String memBirthday, String memAddress, String memAddressDetail, String memZipcode,
-                             String memAddressSet, BigDecimal memMoney, boolean memIsmanager, boolean memSocial,  boolean deleteFlag,
+                             String memAddressSet, BigDecimal memMoney, boolean memIsmanager, boolean deleteFlag, boolean memSocial,
                              Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
 
@@ -74,8 +74,8 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.memAddressSet = memAddressSet;
         this.memMoney = memMoney;
         this.memIsmanager = memIsmanager;
-        this.memSocial = memSocial;
         this.deleteFlag = deleteFlag;
+        this.memSocial = memSocial;
     }
 
     @Override

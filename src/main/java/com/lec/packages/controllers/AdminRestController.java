@@ -150,7 +150,6 @@ public class AdminRestController {
 										        @RequestParam("facilityStartTime") LocalTime facilityStartTime,
 										        @RequestParam("facilityEndTime") LocalTime facilityEndTime,
 										        @RequestParam("facilityAddress") String facilityAddress,
-										        @RequestParam("facilityAddressDetail") String facilityAddressDetail,
 										        @RequestParam("facilityZipcode") String facilityZipcode,
 										        @RequestParam("facilityDescription") String facilityDescription,
 										        @RequestParam("price") BigDecimal price,
@@ -191,7 +190,6 @@ public class AdminRestController {
 								        		  .facilityName(facilityName)
 								        		  .memId(memId) 
 								        		  .facilityAddress(facilityAddress)
-								        		  .facilityAddressDetail(facilityAddressDetail)
 								        		  .facilityZipcode(facilityZipcode) 
 								        		  .facilityDescription(facilityDescription)
 								        		  .facilityStartTime(facilityStartTime) 
