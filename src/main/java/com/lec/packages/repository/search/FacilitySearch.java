@@ -12,7 +12,7 @@ public interface FacilitySearch {
 	
 	Page<Facility> searchByUser(String userId, Pageable pageable);
 
-	Page<Facility> searchAllImpl(String[] types,String[] keywords,Pageable pageable);
+//	Page<Facility> searchAllImpl(String[] types,String[] keywords,Pageable pageable);
 	
 
 	

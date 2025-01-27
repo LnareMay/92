@@ -52,8 +52,11 @@
 
 			<div class="btn_wrap">
 				<div class="header" th:if="${member.memIsmanager == false}">
-					<a href="/member/mypage" class="active">나의정보</a> <a
-						href="/member/reservation">나의시설예약</a> <a href="#">운동캘린더</a>
+					<a href="/member/mypage" class="active">나의정보</a> 
+					<a href="/member/reservation">나의시설예약</a> 
+					<a href="#">운동캘린더</a>
+					<a href="/club/club_myclub">나의클럽관리</a> 
+					
 				</div>
 				
 				<div class="header" th:if="${member.memIsmanager == true}">

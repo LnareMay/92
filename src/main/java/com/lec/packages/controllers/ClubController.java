@@ -261,4 +261,22 @@ public class ClubController {
 
 		return "redirect:/club/club_board?clubCode="+clubCode;
 	}
+	
+	
+	@GetMapping("/club_myclub")
+	public String clubManage(PageRequestDTO pageRequestDTO
+			, Authentication authentication
+			, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		String username = authentication.getName();
+		
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(username); 
+		
+		model.addAttribute("currentURI", requestURI);
+		model.addAttribute("ownerClubList", ownerClubList);
+		
+		log.info("===ownerClubList:", ownerClubList);
+
+		return "club/club_myclub"; 
+	}
 }

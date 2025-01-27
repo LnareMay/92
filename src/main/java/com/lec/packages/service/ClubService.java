@@ -36,7 +36,7 @@ public interface ClubService {
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
-	PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memberAddress, String clubTheme);
+	PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memAddressSet, String clubTheme);
 	
 	List<ClubDTO> getAllClubs();		
 
@@ -110,6 +110,5 @@ public interface ClubService {
     String addClubResMember(String reservationCode, String clubCode, String memId);
 
     List<ClubBoardDTO> getBoardListByMemID(String username);
-
 
 }
