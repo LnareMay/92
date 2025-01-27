@@ -1,7 +1,9 @@
 package com.lec.packages.service;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Sort;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
+import com.lec.packages.domain.Club_Board_Image;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
@@ -30,7 +33,9 @@ import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
+import com.lec.packages.dto.ClubBoardAllListInterface;
 import com.lec.packages.dto.ClubBoardDTO;
+import com.lec.packages.dto.ClubBoardImageDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.ClubReservationDTO;
@@ -382,14 +387,47 @@ public class ClubServiceImpl implements ClubService {
 	@Override
 	public PageResponseDTO<ClubBoardAllListDTO> listWithAll(PageRequestDTO pageRequestDTO, String clubCode) {
 		
-		String[] types = pageRequestDTO.getTypes();
-		Pageable pageable = pageRequestDTO.getPageable("boardNo");
+		String types = pageRequestDTO.getTypes()[0];
+		Pageable pageable = pageRequestDTO.getPageable("BOARD_NO");
 
-		Page<ClubBoardAllListDTO> result = clubBoardRepository.searchWithAll(types, pageable, clubCode);
+		Page<ClubBoardAllListInterface> result;
+		if(types == null || types.equalsIgnoreCase("ALL")) {
+	        result = clubBoardRepository.searchWithAll(pageable, clubCode);
+	    } else {
+			result = clubBoardRepository.searchWithAll(types, pageable, clubCode);
+		}
+		List<ClubBoardAllListDTO> dtos = new ArrayList<>();
+		result.getContent().forEach(t -> {
+			 LocalDateTime nowDate = LocalDateTime.now();
+            String type = "";
+            if(t.getBoardType().equalsIgnoreCase("Notice")) type = "#공지#";
+            if(t.getBoardType().equalsIgnoreCase("FreeBoard")) type = "자유 게시판";
+            if(t.getBoardType().equalsIgnoreCase("Hello")) type = "가입인사";
+            if(t.getBoardType().equalsIgnoreCase("Reviews")) type = "정산&후기";
+			
+			Optional<Club_Board> clubOptional = clubBoardRepository.findBoardByImages(clubCode, t.getBoardNo());
+			List<ClubBoardImageDTO> listImages = clubOptional.orElseThrow().getImages()
+			                                    .stream()
+			                                    .sorted()
+			                                    .map(boardImage -> ClubBoardImageDTO.builder()
+			                                                        .uuid(boardImage.getUuid())
+			                                                        .ord(boardImage.getOrd())
+			                                                        .boardImage(boardImage.getBoardImage())
+			                                                        .build())
+			                                    .collect(Collectors.toList());
+			
+			ClubBoardAllListDTO dto = ClubBoardAllListDTO.builder().boardNo(t.getBoardNo())
+										.boardText(t.getBoardText()).memId(t.getMemId())
+										.modDate(ChronoUnit.DAYS.between(t.getMODIFYDATE(), nowDate)).replyCount(t.getReplyCount())
+										.type(type).boardImages(listImages)
+										.build();
+			log.info(t.getBoardImages());
+			dtos.add(dto);
+		});
 
 		return PageResponseDTO.<ClubBoardAllListDTO>withAll()
 				.pageRequestDTO(pageRequestDTO)
-				.dtoList(result.getContent())
+				.dtoList(dtos)
 				.total((int)result.getTotalElements())
 				.build();
 	}
