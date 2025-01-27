@@ -12,7 +12,6 @@ import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
-import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,7 +26,6 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	private final ModelMapper modelMapper;
 	private final ReservationRepository reservationRepository;
-	private final MemberRepository memberRepository;
 	
 		//로그인 한 유저가 등록한 시설(facilityCode)의 예약내역 
 //		@Override	

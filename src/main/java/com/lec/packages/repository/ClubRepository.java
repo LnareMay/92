@@ -4,15 +4,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Club;
-import com.lec.packages.domain.Member;
-import com.lec.packages.dto.ClubDTO;
-import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.repository.search.ClubSearch;
 
 public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch {
@@ -38,4 +34,7 @@ public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch 
     Long countByMemId(String memId);
 
     List<Club> findByMemId(String username);
+
+    @Query(value = "select c.* from club c inner join club_member_list cml on c.CLUB_CODE = cml.CLUB_CODE where cml.mem_id =:memId and cml.DELETE_FLAG is false and c.DELETE_FLAG is false", nativeQuery = true)
+    List<Club> getClubListWithMemID(@Param("memId") String memId);
 }

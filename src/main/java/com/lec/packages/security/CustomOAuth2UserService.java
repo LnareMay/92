@@ -162,6 +162,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
+    @SuppressWarnings("unchecked")
     private String extractEmail(String clientName, Map<String, Object> paramMap) {
         if ("kakao".equalsIgnoreCase(clientName)) {
             return extractKakaoAttribute(paramMap, "email");
@@ -174,6 +175,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private String extractNickname(String clientName, Map<String, Object> paramMap) {
         if ("kakao".equalsIgnoreCase(clientName)) {
             return extractKakaoAttribute(paramMap, "nickname");
@@ -186,6 +188,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private String extractProfilePicture(String clientName, Map<String, Object> paramMap) {
         if ("kakao".equalsIgnoreCase(clientName)) {
             return extractKakaoAttribute(paramMap, "profile_image_url");
@@ -198,6 +201,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private String extractPhoneNumber(String clientName, Map<String, Object> paramMap) {
         if ("naver".equalsIgnoreCase(clientName)) {
             Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
@@ -207,6 +211,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private boolean extractGender(String clientName, Map<String, Object> paramMap) {
         if ("naver".equalsIgnoreCase(clientName)) {
             Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
@@ -215,6 +220,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return true; // 기본값: 남성
     }
 
+    @SuppressWarnings("unchecked")
     private String extractBirthday(String clientName, Map<String, Object> paramMap) {
         if ("naver".equalsIgnoreCase(clientName)) {
             Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
@@ -225,6 +231,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private String extractName(String clientName, Map<String, Object> paramMap) {
         if ("naver".equalsIgnoreCase(clientName)) {
             Map<String, Object> response = (Map<String, Object>) paramMap.get("response");
@@ -235,6 +242,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
     private String extractKakaoAttribute(Map<String, Object> paramMap, String attributeKey) {
         Object value = paramMap.get("kakao_account");
         if (value instanceof LinkedHashMap) {

@@ -4,21 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
 import com.lec.packages.dto.ClubDTO;
-import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.ClubReservationDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 
-import jakarta.validation.Valid;
 
 public interface ClubService {
 	

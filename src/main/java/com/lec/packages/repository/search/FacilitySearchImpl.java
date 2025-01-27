@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.QFacility;
-import com.lec.packages.dto.PageRequestDTO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 

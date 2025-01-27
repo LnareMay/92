@@ -1,16 +1,11 @@
 package com.lec.packages.controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,22 +13,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
-import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
@@ -45,9 +33,6 @@ import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.FacilityService;
 import com.lec.packages.service.ReservationService;
 
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -306,6 +291,7 @@ public class AdminController {
 
 	// 승인 거절
 	@GetMapping("/Reservation_refuse/{reservationCode}")
+	@SuppressWarnings("unused")
 	public String refuseReservation(
 	        TransferHistoryDTO transferHistoryDTO,
 	        @PathVariable("reservationCode") String reservationCode,
@@ -316,7 +302,7 @@ public class AdminController {
 	    ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
 
 	    // DTO를 엔티티로 변환하고 상태 변경
-	    Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
+		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
 	            .orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
 
 	    String memId = userDetails.getUsername();
@@ -376,7 +362,7 @@ public class AdminController {
 			@AuthenticationPrincipal UserDetails userDetails) {
 
 		// 예약 정보를 가져오기 위해 서비스 호출
-		ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+		//ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
 
 		// DTO를 엔티티로 변환하고 상태 변경
 		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
