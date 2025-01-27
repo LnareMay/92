@@ -9,11 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import com.lec.packages.domain.Club;
-import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.QClub;
-import com.lec.packages.domain.QClub_Member_List;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPQLQuery;
 
 import lombok.extern.log4j.Log4j2;
@@ -95,24 +92,6 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 //	    log.info("========Clubtheme Query: {}", query.toString());
 
 	    return new PageImpl<>(clubs, pageable, total);
-	}
- 
-  @Override
-	public List<Club> getClubListWithMemID(String memId) {
-		
-		QClub club = QClub.club;
-		QClub_Member_List club_Member_List = QClub_Member_List.club_Member_List;
-		
-		JPQLQuery<Club> query = from(club);
-
-		query.innerJoin(club_Member_List).on(club.clubCode.eq(club_Member_List.clubCode));
-		query.where(club_Member_List.memId.eq(memId), club_Member_List.deleteFlag.isNull().or(club_Member_List.deleteFlag.isFalse()),
-				club.deleteFlag.isNull().or(club.deleteFlag.isFalse()));
-		
-
-		List<Club> clubList = query.fetch();
-	
-		return clubList;
 	}
 
 }
