@@ -135,22 +135,24 @@ public class FacilityServiceImpl implements FacilityService{
 				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
 		
-        // 검색 필터링
+        /* 검색 필터링
         String[] types = {"a", "e", "c", "ae","aec"};
         String[] keywords = new String[3];
         keywords[0] = (facilityAddress != null) ? facilityAddress : "ALL";
         keywords[1] = (exerciseCode != null) ? exerciseCode : "ALL";
         keywords[2] = (facilityIsOnlyClub == null) ? null : (facilityIsOnlyClub ? "true" : "false");
+        */
         
-		Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
-		
+	//	Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
+		Page<Facility> result = facilityRepository.searchAll(facilityAddress, exerciseCode, facilityIsOnlyClub, pageable);
 		List<FacilityDTO> dtoList = result.getContent()
 				  .stream()
 				  .distinct() // 중복 제거
 				  .map(facility -> modelMapper.map(facility, FacilityDTO.class))
 				  .collect(Collectors.toList());
 		
-		log.info("=== Facility Keywords==== : {}, {}, {}", keywords[0], keywords[1], keywords[2]); 
+//		log.info("=== Facility Keywords==== : {}, {}, {}", keywords[0], keywords[1], keywords[2]); 
+		log.info("=== Facility Keywords==== : {}, {}, {}", facilityAddress, exerciseCode, facilityIsOnlyClub); 
 		
 		return PageResponseDTO.<FacilityDTO>withAll()
 				.pageRequestDTO(pageRequestDTO)

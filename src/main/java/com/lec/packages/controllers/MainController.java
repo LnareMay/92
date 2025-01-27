@@ -67,6 +67,9 @@ public class MainController {
                 }
             }
         }
+        
+        address = "ALL".equalsIgnoreCase(address) ? null : address;
+        clubTheme = "ALL".equalsIgnoreCase(clubTheme) ? null : clubTheme;
 
         // 지역 정보 추가
         try {
@@ -80,9 +83,9 @@ public class MainController {
 
         // 클럽 목록 필터링
         PageResponseDTO<ClubDTO> responseDTO;
-        if ("ALL".equalsIgnoreCase(address) && "ALL".equalsIgnoreCase(clubTheme)) {
+        if (address == null && clubTheme == null) {
             responseDTO = clubService.list(pageRequestDTO); // 모든 클럽 조회
-        } else if ("ALL".equalsIgnoreCase(address)) {
+        } else if (address == null) {
             responseDTO = clubService.listByTheme(pageRequestDTO, clubTheme); // 테마 필터링
         } else {
             responseDTO = clubService.listByAddressAndTheme(pageRequestDTO, address, clubTheme); // 주소 및 테마 필터링
@@ -92,6 +95,8 @@ public class MainController {
         model.addAttribute("responseDTO", responseDTO);
         model.addAttribute("theme", clubTheme);
         model.addAttribute("address", address);
+        
+        log.info("====MainController : {}, {}", clubTheme, address);
 
         return "index";
     }

@@ -63,11 +63,8 @@ public class FacilityController {
 	    	
 	    	String currentURI = request.getRequestURI();  
 	    	
-	    	if ("ALL".equals(facilityAddress)) {
-	    		facilityAddress = "";	  
-	    	} if ("ALL".equals(exerciseCode)) {
-	    		exerciseCode = "";	  
-	    	} 
+	    	facilityAddress = "ALL".equalsIgnoreCase(facilityAddress) ? "" : facilityAddress;
+	    	exerciseCode = "ALL".equalsIgnoreCase(exerciseCode) ? "" : exerciseCode;
 	    	
 	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode, facilityIsOnlyClub);
 	

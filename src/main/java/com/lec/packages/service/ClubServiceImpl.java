@@ -154,11 +154,13 @@ public class ClubServiceImpl implements ClubService {
     public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memAddressSet, String clubTheme) {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
 
-        // 검색 필터링
+        /* 검색 필터링
         String[] types = {"address", "theme"};
         String[] keywords = {memAddressSet, clubTheme};
-
-        Page<Club> result = clubRepository.searchAllImpl(types, keywords, pageable);
+         */
+        String address = replaceAddress(memAddressSet);
+        
+        Page<Club> result = clubRepository.searchAll(address, clubTheme, pageable);
 
         Map<String, Integer> membercountmap = membercount();
         List<ClubDTO> dtoList = result.getContent().stream()
@@ -172,7 +174,8 @@ public class ClubServiceImpl implements ClubService {
                                           return clubDTO;
                                       })
                                       .collect(Collectors.toList());
-        log.info("=== Keywords==== : {}, {}", keywords[0], keywords[1]);        
+//      log.info("=== Keywords==== : {}, {}", keywords[0], keywords[1]);        
+        log.info("=== Keywords==== : {}, {}", address, clubTheme);        
 
         return PageResponseDTO.<ClubDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -180,6 +183,24 @@ public class ClubServiceImpl implements ClubService {
                 .total((int) result.getTotalElements())
                 .build();
     }       
+    
+    // 주소 전처리
+    public String replaceAddress(String address) {  	
+    	String[] addressParts = address.split(" ");
+    	String addressRegion = address;
+    	
+    	if(addressParts.length >= 2) {
+    		addressRegion = addressParts[0] + " " + addressParts[1];
+    	}
+    	
+    	String repAddress = addressRegion.replace("특별시", "") 
+									     .replace("광역시", "")
+									     .replace("도", "")
+									     .replace("전라남도", "전남")
+									     .replace("경상북도", "경북")
+									     .trim();      	  	
+		return repAddress;
+    }
     
 	// 클럽상세보기
 	@Override
@@ -637,13 +658,5 @@ public class ClubServiceImpl implements ClubService {
 
 		return dtos;
 	}
-
-
-
-
-
-
-
-
 
 }

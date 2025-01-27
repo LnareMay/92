@@ -26,6 +26,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 		super(Club.class);
 	}
 
+	/*
 	@Override
 	public Page<Club> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
 	    QClub club = QClub.club;
@@ -96,6 +97,7 @@ public class ClubSearchImpl extends QuerydslRepositorySupport implements ClubSea
 
 	    return new PageImpl<>(clubs, pageable, total);
 	}
+	*/
  
   @Override
 	public List<Club> getClubListWithMemID(String memId) {

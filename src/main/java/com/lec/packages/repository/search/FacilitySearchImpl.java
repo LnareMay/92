@@ -41,7 +41,7 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 	}
 
 
-	//검색 및 리스트 
+	/*검색 및 리스트 
 	@Override
 	public Page<Facility> searchAllImpl(String[] types, String[] keywords, Pageable pageable) {
 	    QFacility facility = QFacility.facility;
@@ -113,5 +113,6 @@ public class FacilitySearchImpl extends QuerydslRepositorySupport implements Fac
 
 	    return new PageImpl<>(list, pageable, count);
 	}
+	*/
 	
 }

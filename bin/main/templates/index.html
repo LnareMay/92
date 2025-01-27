@@ -162,16 +162,17 @@
 				th:onclick="|location.href='@{/}?theme=THM_SPORTCLUB&page=1'|">운동클럽</button> -->
 
 			<!-- 클럽 테마 필터링 버튼 -->
-			<button type="button" class="btn" th:classappend="${theme == 'ALL'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/}?theme=ALL&page=1'|">전체</button>
+			<button type="button" class="btn" th:classappend="${theme == 'ALL' || theme == null} ? 'btn-primary' : 'btn-secondary'"
+				th:onclick="|location.href='@{/(theme=ALL, address=${address}, page=1)}'|">전체</button>
+<!-- 			th:onclick="|location.href='@{/}?theme=ALL&page=1'|">전체</button>  -->
 
 			<button type="button" class="btn" value="THM_SPORTCLUB"
 				th:classappend="${theme == 'THM_SPORTCLUB'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/(theme=THM_SPORTCLUB, address=${address != null ? address : 'ALL'}, page=1)}'|">운동클럽</button>
+				th:onclick="|location.href='@{/(theme=THM_SPORTCLUB, address=${address}, page=1)}'|">운동클럽</button>
 
 			<button type="button" class="btn" value="THM_SPORTJOURNAL"
 				th:classappend="${theme == 'THM_SPORTJOURNAL'} ? 'btn-primary' : 'btn-secondary'"
-				th:onclick="|location.href='@{/(theme=THM_SPORTJOURNAL, address=${address == null ? 'ALL' : address}, page=1)}'|">운동일지</button>
+				th:onclick="|location.href='@{/(theme=THM_SPORTJOURNAL, address=${address}, page=1)}'|">운동일지</button>
 
 			<button type="button" class="btn" value="THM_FOOD"
 				th:classappend="${theme == 'THM_FOOD'} ? 'btn-primary' : 'btn-secondary'"
@@ -207,13 +208,12 @@
 		<!-- 클럽 목록 START -->
 		<section id="club_list" class="container">
 			<ul>
-				<li th:if="${!responseDTO.dtoList.isEmpty()}">
-					<p></p>
+				<li th:if="${responseDTO.dtoList.isEmpty()}">
+					<p>클럽이 없습니다.</p>
 				</li>
 				<li class="club-card" th:each="club : ${responseDTO.dtoList}"
 					th:onclick="|location.href='@{/club/club_detail(clubCode=${club.clubCode})}'|">
-
-					<!-- <img src="https://community-api-cdn.kr.karrotmarket.com/v1/resource/images/load?id=kr-community%231866331696668962816" alt="Club Thumbnail"> -->
+					
 					<img th:src="|/view/${club.clubImage1}|" id="clubImage1"
 						onerror="this.src='https://placehold.co/80'">
 
