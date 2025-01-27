@@ -264,17 +264,17 @@
     const isPrivate = /*[[${clubdto.clubIsprivate}]]*/ false;
 	const isPw = /*[[${clubdto.clubPw}]]*/''
 	
-
 	// 팝업 열기
 	if(document.getElementById("openJoinPopup") != null) {
 		console.log(document.getElementById("openJoinPopup"));
 		
-	document.getElementById("openJoinPopup").addEventListener("click", (event) => {
-		event.preventDefault();
-		passwordPopup.style.display = "flex";
-	});
+		document.getElementById("openJoinPopup").addEventListener("click", (event) => {
+			event.preventDefault();
+			passwordPopup.style.display = "flex";
+		});
 		
 	}
+
 
 	// 팝업 내 가입 버튼
 	if (confirmAction) {
