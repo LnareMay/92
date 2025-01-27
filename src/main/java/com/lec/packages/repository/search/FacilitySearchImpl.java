@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.QFacility;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 
 import lombok.extern.log4j.Log4j2;
