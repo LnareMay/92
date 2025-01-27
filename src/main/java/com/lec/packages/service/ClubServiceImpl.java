@@ -22,7 +22,6 @@ import org.springframework.data.domain.Sort;
 
 import com.lec.packages.domain.Club;
 import com.lec.packages.domain.Club_Board;
-import com.lec.packages.domain.Club_Board_Image;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
@@ -398,7 +397,7 @@ public class ClubServiceImpl implements ClubService {
 		}
 		List<ClubBoardAllListDTO> dtos = new ArrayList<>();
 		result.getContent().forEach(t -> {
-			 LocalDateTime nowDate = LocalDateTime.now();
+			LocalDateTime nowDate = LocalDateTime.now();
             String type = "";
             if(t.getBoardType().equalsIgnoreCase("Notice")) type = "#공지#";
             if(t.getBoardType().equalsIgnoreCase("FreeBoard")) type = "자유 게시판";
@@ -421,7 +420,6 @@ public class ClubServiceImpl implements ClubService {
 										.modDate(ChronoUnit.DAYS.between(t.getMODIFYDATE(), nowDate)).replyCount(t.getReplyCount())
 										.type(type).boardImages(listImages)
 										.build();
-			log.info(t.getBoardImages());
 			dtos.add(dto);
 		});
 
@@ -604,7 +602,7 @@ public class ClubServiceImpl implements ClubService {
 	public List<ClubDTO> ownerClubListWithMemId(String username) {
 		List<Club> ownerClubList = clubRepository.findByMemId(username);
 
-		List<ClubDTO> resClubDTOs = new ArrayList();
+		List<ClubDTO> resClubDTOs = new ArrayList<>();
 		ownerClubList.forEach(club -> {
 			ClubDTO dto = ClubDTO.builder().clubCode(club.getClubCode()).clubName(club.getClubName()).build();
 			resClubDTOs.add(dto);
