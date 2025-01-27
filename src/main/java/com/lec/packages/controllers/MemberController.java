@@ -1,7 +1,6 @@
 package com.lec.packages.controllers;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,35 +11,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.lec.packages.domain.ChargeHistory;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
-import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.ChargeHistoryDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
-import com.lec.packages.repository.ChargeHistoryRepository;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
-import com.lec.packages.repository.TransferHistoryRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.MemberService;
 
@@ -62,8 +53,6 @@ public class MemberController {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
-	private final TransferHistoryRepository transferHistoryRepository;
-	private final ChargeHistoryRepository chargeHistoryRepository;
 
 	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,

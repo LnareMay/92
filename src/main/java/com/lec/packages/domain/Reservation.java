@@ -2,20 +2,14 @@ package com.lec.packages.domain;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 
 import jakarta.persistence.Id;
 
 import jakarta.persistence.JoinColumn;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -88,7 +82,6 @@ public class Reservation extends BaseEntity{
 //	    private LocalDateTime createDate;
 	    
 		public void setFormattedCreateDate(String format) {
-			// TODO Auto-generated method stub
 			
 		}
 

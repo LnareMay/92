@@ -3,7 +3,6 @@ package com.lec.packages.security.handler;
 import java.io.IOException;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.lec.packages.dto.MemberSecurityDTO;

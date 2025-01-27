@@ -4,12 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,11 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.lec.packages.domain.Member;
 import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
-import com.lec.packages.dto.ClubMemberDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.repository.MemberRepository;
-import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.KakaoApiService;
 import com.lec.packages.service.MemberService;

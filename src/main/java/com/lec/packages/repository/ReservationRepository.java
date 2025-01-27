@@ -13,8 +13,6 @@ import org.springframework.data.repository.query.Param;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.ClubReservationInterface;
-import com.lec.packages.dto.MemberSecurityDTO;
-import com.lec.packages.dto.ReservationDTO;
 
 public interface ReservationRepository extends JpaRepository<Reservation, String>{
 

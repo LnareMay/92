@@ -3,11 +3,8 @@ package com.lec.packages.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.lec.packages.dto.ChargeHistoryDTO;
 import com.lec.packages.dto.MemberJoinDTO;
-import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 
 public interface MemberService {

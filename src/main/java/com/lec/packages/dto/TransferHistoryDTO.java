@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.lec.packages.domain.Member;
-
 @Data
 @Builder
 @NoArgsConstructor
