@@ -9,9 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Club;
-import com.lec.packages.repository.search.ClubSearch;
 
-public interface ClubRepository extends JpaRepository<Club, String>, ClubSearch {
+public interface ClubRepository extends JpaRepository<Club, String> {
 	
     // deleteFlag가 1이 아닌 클럽만 가져오는 기본 메서드
     List<Club> findByDeleteFlagFalse();
