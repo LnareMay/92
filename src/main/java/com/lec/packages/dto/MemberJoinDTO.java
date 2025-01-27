@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 
 import com.lec.packages.domain.exercise_code_table;
 
-
-import lombok.Builder;
 import lombok.Data;
 
 @Data

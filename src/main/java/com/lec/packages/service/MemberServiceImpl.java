@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,6 @@ import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.domain.exercise_code_table;
 import com.lec.packages.dto.ChargeHistoryDTO;
 import com.lec.packages.dto.MemberJoinDTO;
-import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.ChargeHistoryRepository;
 import com.lec.packages.repository.ExerciseRepository;
@@ -44,7 +41,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public void join(MemberJoinDTO memberJoinDTO, String storedFileName) /*throws MidExistException*/ {
-		String mid = memberJoinDTO.getMemId();
+//		String mid = memberJoinDTO.getMemId();
 //		boolean exist = memberRepository.existsById(mid);
 //		if(exist) {
 //			throw new MidExistException("동일한 아이디가 존재합니다.");

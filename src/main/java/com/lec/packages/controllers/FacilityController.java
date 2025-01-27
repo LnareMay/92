@@ -4,13 +4,9 @@ package com.lec.packages.controllers;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,27 +15,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.lec.packages.domain.Member;
-import com.lec.packages.domain.Reservation;
-import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
-import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
-import com.lec.packages.repository.MemberRepository;
-import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.FacilityService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -51,8 +39,6 @@ public class FacilityController {
 	
     private final FacilityService facilityService;
     private final ClubService clubService;
-    private final CustomUserDetailsService customUserDetailsService;
-    private final MemberRepository memberRepository;
 	    
 	    @GetMapping("/main")
 	    public String ListFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 

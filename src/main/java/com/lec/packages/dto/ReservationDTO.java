@@ -5,10 +5,7 @@ import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -70,7 +67,6 @@ public class ReservationDTO {
     }
 
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

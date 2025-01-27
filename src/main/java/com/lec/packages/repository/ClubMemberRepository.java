@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
-import com.lec.packages.dto.ClubDTO;
 
 
 public interface ClubMemberRepository extends JpaRepository<Club_Member_List, ClubMemberKeyClass> {

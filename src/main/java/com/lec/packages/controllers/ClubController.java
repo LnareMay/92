@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Member;
-import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubDTO;

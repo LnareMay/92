@@ -22,15 +22,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.lec.packages.dto.MemberJoinDTO;
-import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
-import com.lec.packages.service.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -45,9 +40,6 @@ public class UpDownController {
 
 	@Value("${com.lec.upload.path}")
 	private String uploadPath;
-	
-	 private MemberService memberService;
-	 private MemberSecurityDTO memberSecurityDTO;
 
 
 	 @Operation(summary = "File Upload Post", description = "POST 방식으로 파일 업로드!!")
@@ -104,7 +96,6 @@ public class UpDownController {
 		public ResponseEntity<Resource> viewFileGET(@RequestBody @PathVariable("fileName") String fileName) {
 			
 			Resource resource = new FileSystemResource(uploadPath + File.separator + fileName);
-			String resourceName = resource.getFilename();
 			HttpHeaders headers = new HttpHeaders();
 			
 			try {
