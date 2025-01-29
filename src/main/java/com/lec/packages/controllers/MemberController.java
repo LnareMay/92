@@ -368,5 +368,24 @@ public class MemberController {
 
 		return "member/email-template";
 	}
+	
+	// 운동캘린더 조
+	@GetMapping("/member_planner")
+	public String plannerGet(HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof MemberSecurityDTO) {
+			MemberSecurityDTO dto = (MemberSecurityDTO) authentication.getPrincipal();
+
+			// Member 객체를 가져오는 로직 추가
+			Optional<Member> memberOptional = memberRepository.findById(dto.getMemId());
+			if (memberOptional.isPresent()) {
+				model.addAttribute("member", memberOptional.get());
+			}
+		}
+		return "member/member_planner";
+	}
 
 }
