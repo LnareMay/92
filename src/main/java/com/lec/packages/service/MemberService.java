@@ -37,6 +37,8 @@ public interface MemberService {
 	List<TransferHistoryDTO> getTransferHistorieWhenManager(String memId);
 
 	List<ChargeHistoryDTO> getChargeHistories(String memId);
+
+	boolean processFindPassword(String memId, String memName);
 	
 	
 	

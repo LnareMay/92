@@ -119,9 +119,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .memName(name)
                 .memGender(gender)
                 .memBirthday(birthday)
-                .memSocial(social)
                 .memIsmanager(manager)
                 .deleteFlag(delete)
+                .memSocial(social)
                 .build();
 
         if (member.getRoleSet() == null) {
@@ -153,8 +153,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 member.getMemAddressSet(),
                 member.getMemMoney(),
                 member.isMemIsmanager(),
-                member.isMemSocial(),
                 member.isDeleteFlag(),
+                member.isMemSocial(),
                 member.getRoleSet()
                         .stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))

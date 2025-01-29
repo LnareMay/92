@@ -95,11 +95,12 @@ public class Member extends BaseEntity{
     @Column(name = "MEM_ISMANAGER", columnDefinition = "TINYINT(1)")
     private boolean memIsmanager;
 
+    @Column(name = "DELETE_FLAG", columnDefinition = "TINYINT(1)")
+    private boolean deleteFlag;
+    
     @Column(name = "MEM_SOCIAL", columnDefinition = "TINYINT(1)")
     private boolean memSocial;
     
-    @Column(name = "DELETE_FLAG", columnDefinition = "TINYINT(1)")
-    private boolean deleteFlag;
 
     @ElementCollection(fetch = FetchType.LAZY)
 	private Set<MemberRole> roleSet = new HashSet<>();

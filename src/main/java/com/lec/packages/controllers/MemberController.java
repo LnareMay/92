@@ -54,15 +54,25 @@ public class MemberController {
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
 
-	@GetMapping({ "/login", "/login/{error}/{logout}", "/login/{logout}" })
-	public void loginGet(@RequestParam(name = "error", defaultValue = "") @PathVariable Optional<String> error,
-			@RequestParam(name = "logout", defaultValue = "") @PathVariable Optional<String> logout) {
+	@GetMapping({"/login/{logout}" })
+	public void loginGet(@RequestParam(name = "logout", defaultValue = "") @PathVariable Optional<String> logout,
+			Model model) {
 		log.info("login get ................... ");
 		log.info("logout ................... " + logout);
 
 		if (logout != null) {
 			log.info("user logout ................... ");
 		}
+
+	}
+
+	@GetMapping("/login")
+	public void loginErrorGet(@RequestParam(name = "error", required = false) String error,Model model) {
+		if (error != null) {
+	        model.addAttribute("errorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
+	    }	
+		
+
 	}
 
 	@GetMapping("/join")
@@ -173,10 +183,10 @@ public class MemberController {
 			// 보안 컨텍스트 갱신
 			SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-			redirectAttributes.addFlashAttribute("result", "나의 정보 수정 성공");
+			redirectAttributes.addFlashAttribute("message", "나의 정보 수정 성공했습니다.");
 		} catch (Exception e) {
 			log.error("회원 정보 수정 실패", e);
-			redirectAttributes.addFlashAttribute("error", "회원 정보 수정 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("message", "회원 정보 수정 중 오류가 발생했습니다.");
 			return "redirect:/member/mypage_modify";
 		}
 
@@ -204,10 +214,10 @@ public class MemberController {
 			// 보안 컨텍스트 초기화
 			SecurityContextHolder.clearContext();
 
-			redirectAttributes.addFlashAttribute("success", "계정이 성공적으로 삭제되었습니다.");
+			redirectAttributes.addFlashAttribute("message", "계정이 성공적으로 삭제되었습니다.");
 			return "redirect:/member/login"; // 로그인 페이지로 이동
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "계정 삭제 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("message", "계정 삭제 중 오류가 발생했습니다.");
 			return "redirect:/member/mypage";
 		}
 	}
@@ -215,44 +225,41 @@ public class MemberController {
 	// 마이페이지 나의 시설 예약 조회
 	@GetMapping("/reservation")
 	public String reservationGet(HttpServletRequest request, Model model) {
-	    // 현재 요청 URI를 모델에 추가
-	    String requestURI = request.getRequestURI();
-	    model.addAttribute("currentURI", requestURI);
+		// 현재 요청 URI를 모델에 추가
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
 
-	    // 인증 정보 가져오기
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication == null || !(authentication.getPrincipal() instanceof MemberSecurityDTO)) {
-	        model.addAttribute("error", "로그인 정보가 필요합니다.");
-	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
-	    }
+		// 인증 정보 가져오기
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !(authentication.getPrincipal() instanceof MemberSecurityDTO)) {
+			model.addAttribute("error", "로그인 정보가 필요합니다.");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
 
-	    // 로그인한 사용자 정보 가져오기
-	    MemberSecurityDTO memberSecurity = (MemberSecurityDTO) authentication.getPrincipal();
-	    String memId = memberSecurity.getMemId(); // 현재 로그인한 사용자의 ID
+		// 로그인한 사용자 정보 가져오기
+		MemberSecurityDTO memberSecurity = (MemberSecurityDTO) authentication.getPrincipal();
+		String memId = memberSecurity.getMemId(); // 현재 로그인한 사용자의 ID
 
-	    // 사용자 정보 가져오기
-	    Member member = memberRepository.findById(memId)
-	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-	    model.addAttribute("member", member); // 사용자 정보를 모델에 추가
+		// 사용자 정보 가져오기
+		Member member = memberRepository.findById(memId)
+				.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+		model.addAttribute("member", member); // 사용자 정보를 모델에 추가
 
-	    // 예약 정보 가져오기
-	    List<Reservation> reservations = reservationRepository.findByMemId(memId);
-	    if (!reservations.isEmpty()) {
-	        model.addAttribute("reservations", reservations); // 예약 목록을 모델에 추가
-	    } else {
-	        model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
-	    }
+		// 예약 정보 가져오기
+		List<Reservation> reservations = reservationRepository.findByMemId(memId);
+		if (!reservations.isEmpty()) {
+			model.addAttribute("reservations", reservations); // 예약 목록을 모델에 추가
+		} else {
+			model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
+		}
 
-	    // 보안 컨텍스트 갱신 (선택 사항, 필요하면 유지)
-	    UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memId);
-	    Authentication newAuth = new UsernamePasswordAuthenticationToken(
-	            updatedUser,
-	            updatedUser.getPassword(),
-	            updatedUser.getAuthorities()
-	    );
-	    SecurityContextHolder.getContext().setAuthentication(newAuth);
+		// 보안 컨텍스트 갱신 (선택 사항, 필요하면 유지)
+		UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memId);
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, updatedUser.getPassword(),
+				updatedUser.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-	    return "member/reservation"; // 반환할 뷰 이름
+		return "member/reservation"; // 반환할 뷰 이름
 	}
 
 	// 금액 충전
@@ -332,6 +339,34 @@ public class MemberController {
 		} else {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 정보가 필요합니다.");
 		}
+	}
+
+	// 비밀번호 찾기
+	@GetMapping("/find_pw")
+	public String findPwGet(HttpServletRequest request, Model model) {
+
+		return "member/find_pw";
+	}
+
+	@PostMapping("/find_pw")
+	public String findPassword(@RequestParam("memId") String memId, @RequestParam("memName") String memName,
+			RedirectAttributes redirectAttributes) {
+		boolean success = memberService.processFindPassword(memId, memName);
+
+		if (success) {
+			redirectAttributes.addFlashAttribute("message", "임시 비밀번호가 이메일로 전송되었습니다.");
+			return "redirect:/member/login";
+		} else {
+			redirectAttributes.addFlashAttribute("message", "해당하는 회원 정보를 찾을 수 없습니다.");
+			return "redirect:/member/find_pw";
+		}
+
+	}
+	
+	@GetMapping("/email-template")
+	public String getEmailTemplate(HttpServletRequest request, Model model) {
+
+		return "member/email-template";
 	}
 
 }

@@ -68,6 +68,9 @@ dependencies {
 	
 	// 이미지.thumbnail
 	implementation 'net.coobird:thumbnailator:0.4.20'
+	
+	// 임시 비밀번호 이메일 전송
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
@@ -77,6 +80,7 @@ tasks.named('test') {
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
 }
+
 
 def querydslDir = "$buildDir/generated/querydsl"
 
