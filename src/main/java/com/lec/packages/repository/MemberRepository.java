@@ -24,5 +24,7 @@ public interface MemberRepository extends JpaRepository<Member, String>{
 		       "LEFT JOIN FETCH m.memClub c " +
 		       "WHERE m.memEmail = :memEmail and m.memSocial = true")
 	Optional<Member> findByMemEmail(@Param("memEmail") String memEmail);
+
+	Optional<Member> findByMemIdAndMemName(String memId, String memName);
 	
 }

@@ -90,7 +90,7 @@ public class CustomSecurityConfig {
 				.requestMatchers(HttpMethod.DELETE, "/admin/remove/**").hasRole("ADMIN").requestMatchers("/admin/**")
 				.hasRole("ADMIN")
 				// 로그인 및 정적 리소스는 모두 허용
-				.requestMatchers("/member/login","/member/checkId", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
+				.requestMatchers("/member/login","/member/checkId","/member/find_pw", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
 				.permitAll()
 				// 나머지 요청은 인증된 사용자만 접근 가능
 				.anyRequest().authenticated());
