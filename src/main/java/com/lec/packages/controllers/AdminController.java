@@ -38,7 +38,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Controller
-@RequestMapping("/admin")
+@RequestMapping({"/admin","/api/admin"})
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -331,7 +331,7 @@ public class AdminController {
 	}
 
 
-	// 예약 취소 리스트(확인용)
+	// 예약 취소 리스트
 	@GetMapping("/Reservation_Refuselist")
 	public String ListReservationRefusPage(PageRequestDTO pageRequestDTO, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -382,7 +382,7 @@ public class AdminController {
 		return "redirect:/admin/Reservation_list";
 	}
 
-	// 예약 승인 리스트(확인용)
+	// 예약 승인 리스트
 	@GetMapping("/Reservation_Confirmlist")
 	public String ListReservationConfirmPage(PageRequestDTO pageRequestDTO, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -406,22 +406,7 @@ public class AdminController {
 
 		return "admin/Reservation_confirmlist";
 	}
-	
-//	@GetMapping("/calendar")
-//	public String Calendar(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-//
-//		String userId = userDetails.getUsername();
-//		
-//		// Member 객체를 가져오는 로직 추가 [관리자정보]
-//		Optional<Member> managerOptional = memberRepository.findById(userId);
-//		if (managerOptional.isPresent()) {
-//			model.addAttribute("manager", managerOptional.get());
-//		}
-//		
-//		model.addAttribute("userId", userId);
-//
-//		return "admin/calendar";
-//	}
+
 	
 	// 캘린더 페이지 보여주기
     @GetMapping("/calendar")
@@ -460,6 +445,32 @@ public class AdminController {
         }
         
         return events;
+    }
+    
+
+    @GetMapping("/revenue")
+    public String showRevenu(@AuthenticationPrincipal UserDetails userDetails
+    						, Model model
+    						,PageRequestDTO pageRequestDTO) {
+      
+    	String memId = userDetails.getUsername();
+        
+    	PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,
+				pageRequestDTO);
+
+		model.addAttribute("memId", memId);
+		model.addAttribute("reservations", responseDTO.getDtoList());
+		model.addAttribute("totalPages", responseDTO.getTotal());
+		model.addAttribute("pageNumber", pageRequestDTO.getPage());
+		model.addAttribute("pageSize", pageRequestDTO.getSize());
+        
+        // Member 객체를 가져오는 로직 추가 [관리자정보]
+        Optional<Member> managerOptional = memberRepository.findById(memId);
+        if (managerOptional.isPresent()) {
+            model.addAttribute("manager", managerOptional.get());
+        }
+        
+        return "admin/Admin_Revenue";
     }
 
 
