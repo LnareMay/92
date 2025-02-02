@@ -202,7 +202,7 @@
 										th:if="${reservation.reservationProgress=='예약완료'}">예약완료 </span> 
 										<span class="ReservationProgressTag_refuse"
 										th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>
-										<br /> <small th:text="${reservation.reservationDate}"></small>
+										<br /> <small>고객 예약일:</small> <small th:text="${reservation.reservationDate}"></small>
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
 									<td th:text="${reservation.reservationCode}"></td>

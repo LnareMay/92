@@ -201,7 +201,7 @@
 									<td><a th:text="${reservation.facilityName}"></a><span
 										class="ReservationProgressTag_confirm"
 										th:if="${reservation.reservationProgress=='예약완료'}">예약승인
-											및 완료</span> <br /> <small th:text="${reservation.reservationDate}"></small>
+											및 완료</span> <br /> <small>고객 예약일:</small><small th:text="${reservation.reservationDate}"></small>
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
 									<td th:text="${reservation.reservationCode}"></td>

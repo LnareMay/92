@@ -128,7 +128,7 @@
 								</a>
 								<ul class="nav nav-treeview active">
 									<li class="nav-item">
-										<a href="/admin/revene" class="nav-link active">
+										<a href="/admin/revenue" class="nav-link active">
 											<i class="far fa-circle nav-icon"></i>
 											<p>매출 상세</p>
 										</a>
@@ -283,12 +283,17 @@
 					</button>
 				</div>
 			</div>
+			
 			<div class="card-body">
 				<div class="chart">
-					<canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+					<canvas id="barChart"style="height:500px; width:100%;">
+					</canvas>
 				</div>
 			</div>
 		</div>
+		
+		
+		
 		  
       </div>
 
@@ -320,40 +325,63 @@
 <script src="/plugins/jquery/jquery.min.js"></script>
 <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/plugins/chart.js/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/dist/js/adminlte.min.js"></script>
 
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-	    var barChartCanvas = document.getElementById('barChart').getContext('2d');
-	    var barChartData = {
-	        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-	        datasets: [
-	            {
-	                label: 'Digital Goods',
-	                backgroundColor: 'rgba(60,141,188,0.9)',
-	                borderColor: 'rgba(60,141,188,0.8)',
-	                data: [28, 48, 40, 19, 86, 27, 90]
-	            },
-	            {
-	                label: 'Electronics',
-	                backgroundColor: 'rgba(210,214,222,1)',
-	                borderColor: 'rgba(210,214,222,1)',
-	                data: [65, 59, 80, 81, 56, 55, 40]
-	            }
-	        ]
-	    };
+<script th:inline="javascript">
+    const dailyLabels = /*[[${dailyLabels}]]*/ [];
+    const dailyData = /*[[${dailyData}]]*/ [];
+</script>
 
-	    new Chart(barChartCanvas, {
+<script>
+	
+	document.addEventListener("DOMContentLoaded", function () {
+	    const ctx = document.getElementById('barChart').getContext('2d');
+
+	    // 서버에서 전달된 데이터를 가져오기
+	    const labels = dailyLabels; // 서버에서 전달된 dailyLabels 사용
+	    const amounts = dailyData;  // 서버에서 전달된 dailyData 사용
+
+	    // 디버깅: 서버에서 전달된 데이터 확인
+	    console.log("Labels from server:", labels);
+	    console.log("Amounts from server:", amounts);
+
+	    if (labels.length === 0 || amounts.length === 0) {
+	        console.warn("No data available for the chart.");
+	        return;
+	    }
+
+	    // 데이터의 최대값 계산
+	    const maxAmount = Math.max(...amounts);
+	    const suggestedMax = maxAmount + 100000; // 최대값에 10만 원 추가
+
+	    // 차트 생성
+	    new Chart(ctx, {
 	        type: 'bar',
-	        data: barChartData,
+	        data: {
+	            labels: labels,
+	            datasets: [{
+	                label: '일자별 매출액 (원)',
+	                data: amounts,
+	                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+	                borderColor: 'rgba(54, 162, 235, 1)',
+	                borderWidth: 1
+	            }]
+	        },
 	        options: {
 	            responsive: true,
-	            maintainAspectRatio: false,
-	            datasetFill: false
+	            scales: {
+	                y: {
+	                    beginAtZero: true,
+	                    suggestedMax: suggestedMax, // Y축 최대값 설정
+	                    ticks: {
+	                        callback: value => value + '원' // 값에 "원" 단위 추가
+	                    }
+	                }
+	            }
 	        }
 	    });
 	});
-
 
 </script>
 </body>
