@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.dto.SalesDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.TransferHistoryRepository;
 
@@ -30,17 +31,10 @@ public class RevenueServiceImpl implements RevenueService{
 	private final ModelMapper modelMapper;
 	
 	@Override
-	public PageResponseDTO<TransferHistoryDTO> getTransferHistoryByMemId(String memId, PageRequestDTO pageRequestDTO) {
-		
-		Pageable pageable = pageRequestDTO.getPageable("transferCode");	
-		Page<TransferHistory> result = transferHistoryRepository.findTransferHistoriesByMemId(memId, pageable);
-		
-		List<TransferHistoryDTO> dtoList = result.getContent()
-												 .stream()
-												 .map(transfer -> modelMapper.map(transfer,TransferHistoryDTO.class))
-												 .collect(Collectors.toList());
-		
-		return null;
+	public List<SalesDTO> getSalesData(String memId) {
+        return transferHistoryRepository.findSalesDetailsByMemId(memId);
 	}
+	
+	
 
 }

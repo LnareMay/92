@@ -1,10 +1,13 @@
 package com.lec.packages.controllers;
 
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
@@ -25,6 +29,7 @@ import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.dto.SalesDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.FacilityRepository;
 import com.lec.packages.repository.MemberRepository;
@@ -32,6 +37,7 @@ import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.FacilityService;
 import com.lec.packages.service.ReservationService;
+import com.lec.packages.service.RevenueService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +53,8 @@ public class AdminController {
 	private final ReservationService reservationService;
 	private final ReservationRepository reservationRepository;
 	private final MemberRepository memberRepository;
-	 private final CustomUserDetailsService customUserDetailsService;
+	private final CustomUserDetailsService customUserDetailsService;
+	private final RevenueService revenueService; 
 
 	@GetMapping("/main")
 	public String adminMainPage(@AuthenticationPrincipal UserDetails userDetails, PageRequestDTO pageRequestDTO,
@@ -454,15 +461,26 @@ public class AdminController {
     						,PageRequestDTO pageRequestDTO) {
       
     	String memId = userDetails.getUsername();
-        
-    	PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,
-				pageRequestDTO);
+      
+    	PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,pageRequestDTO);
 
+    	List<SalesDTO> salesData = revenueService.getSalesData(memId);
+
+    	//차트에 필요한 데이터 분리(일자별 매출합계)
+    	Map<String,BigDecimal> dailySales 
+    	= salesData.stream()
+    	           .collect(Collectors.groupingBy(dto -> dto.getTransferDate()
+    	        		   			  .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+    	        		   			  		  Collectors.mapping(SalesDTO::getAmount,Collectors.reducing(BigDecimal.ZERO,BigDecimal::add))));
+    	
+    	List<String> dailyLabels = new ArrayList<>(dailySales.keySet());
+    	
 		model.addAttribute("memId", memId);
 		model.addAttribute("reservations", responseDTO.getDtoList());
-		model.addAttribute("totalPages", responseDTO.getTotal());
-		model.addAttribute("pageNumber", pageRequestDTO.getPage());
-		model.addAttribute("pageSize", pageRequestDTO.getSize());
+		model.addAttribute("dailyLabels",new ObjectMapper().writeValueAsString(dailyLabels));
+		model.addAttribute("dailyData",new ArrayList<>(dailySales.values()));
+		
+
         
         // Member 객체를 가져오는 로직 추가 [관리자정보]
         Optional<Member> managerOptional = memberRepository.findById(memId);

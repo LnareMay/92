@@ -285,7 +285,11 @@
 			</div>
 			<div class="card-body">
 				<div class="chart">
-					<canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+					<canvas id="barChart" 
+					        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"
+					        th:data-labels="${dailyLabels}"
+					        th:data-amounts="${dailyData}">
+					</canvas>
 				</div>
 			</div>
 		</div>
@@ -323,38 +327,36 @@
 <script src="/dist/js/adminlte.min.js"></script>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-	    var barChartCanvas = document.getElementById('barChart').getContext('2d');
-	    var barChartData = {
-	        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-	        datasets: [
-	            {
-	                label: 'Digital Goods',
-	                backgroundColor: 'rgba(60,141,188,0.9)',
-	                borderColor: 'rgba(60,141,188,0.8)',
-	                data: [28, 48, 40, 19, 86, 27, 90]
-	            },
-	            {
-	                label: 'Electronics',
-	                backgroundColor: 'rgba(210,214,222,1)',
-	                borderColor: 'rgba(210,214,222,1)',
-	                data: [65, 59, 80, 81, 56, 55, 40]
-	            }
-	        ]
-	    };
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('barChart').getContext('2d');
+    const labels = JSON.parse(document.getElementById('barChart').dataset.labels);
+    const amounts = JSON.parse(document.getElementById('barChart').dataset.amounts);
 
-	    new Chart(barChartCanvas, {
-	        type: 'bar',
-	        data: barChartData,
-	        options: {
-	            responsive: true,
-	            maintainAspectRatio: false,
-	            datasetFill: false
-	        }
-	    });
-	});
-
-
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '일자별 매출액 (원)',
+                data: amounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => value + '원'
+                    }
+                }
+            }
+        }
+    });
+});
 </script>
 </body>
 </html>
