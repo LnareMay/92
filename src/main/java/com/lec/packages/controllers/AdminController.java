@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -455,39 +456,90 @@ public class AdminController {
     }
     
 
+//    @GetMapping("/revenue")
+//    public String showRevenu(@AuthenticationPrincipal UserDetails userDetails
+//    						, Model model
+//    						,PageRequestDTO pageRequestDTO) {
+//      
+//    	String memId = userDetails.getUsername();
+//      
+//    	PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,pageRequestDTO);
+//
+//    	List<SalesDTO> salesData = revenueService.getSalesData(memId);
+//
+//    	//차트에 필요한 데이터 분리(일자별 매출합계)
+//    	Map<String,BigDecimal> dailySales 
+//    	= salesData.stream()
+//    	           .collect(Collectors.groupingBy(dto -> dto.getTransferDate()
+//    	        		   			  .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+//    	        		   			  		  Collectors.mapping(SalesDTO::getAmount,Collectors.reducing(BigDecimal.ZERO,BigDecimal::add))));
+//    	
+//    	List<String> dailyLabels = new ArrayList<>(dailySales.keySet());
+//    	
+//		model.addAttribute("memId", memId);
+//		model.addAttribute("reservations", responseDTO.getDtoList());
+//		model.addAttribute("dailyLabels",dailyLabels);
+//		model.addAttribute("dailyData",new ArrayList<>(dailySales.values()));
+//		
+//
+//        
+//        // Member 객체를 가져오는 로직 추가 [관리자정보]
+//        Optional<Member> managerOptional = memberRepository.findById(memId);
+//        if (managerOptional.isPresent()) {
+//            model.addAttribute("manager", managerOptional.get());
+//        }
+//        
+//        return "admin/Admin_Revenue";
+//    }
+
     @GetMapping("/revenue")
-    public String showRevenu(@AuthenticationPrincipal UserDetails userDetails
-    						, Model model
-    						,PageRequestDTO pageRequestDTO) {
-      
-    	String memId = userDetails.getUsername();
-      
-    	PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,pageRequestDTO);
+    public String showRevenu(@AuthenticationPrincipal UserDetails userDetails,
+                             Model model,
+                             PageRequestDTO pageRequestDTO) {
 
-    	List<SalesDTO> salesData = revenueService.getSalesData(memId);
+        String memId = userDetails.getUsername();
+        PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId, pageRequestDTO);
 
-    	//차트에 필요한 데이터 분리(일자별 매출합계)
-    	Map<String,BigDecimal> dailySales 
-    	= salesData.stream()
-    	           .collect(Collectors.groupingBy(dto -> dto.getTransferDate()
-    	        		   			  .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-    	        		   			  		  Collectors.mapping(SalesDTO::getAmount,Collectors.reducing(BigDecimal.ZERO,BigDecimal::add))));
-    	
-    	List<String> dailyLabels = new ArrayList<>(dailySales.keySet());
-    	
-		model.addAttribute("memId", memId);
-		model.addAttribute("reservations", responseDTO.getDtoList());
-		model.addAttribute("dailyLabels",new ObjectMapper().writeValueAsString(dailyLabels));
-		model.addAttribute("dailyData",new ArrayList<>(dailySales.values()));
-		
-
+        // 매출 데이터 가져오기
+        List<SalesDTO> salesData = revenueService.getSalesData(memId);
+        System.out.println("Sales Data: " + salesData);
         
-        // Member 객체를 가져오는 로직 추가 [관리자정보]
-        Optional<Member> managerOptional = memberRepository.findById(memId);
-        if (managerOptional.isPresent()) {
-            model.addAttribute("manager", managerOptional.get());
-        }
+        // 날짜 범위 생성 (지난 7일)
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysAgo = today.minusDays(6);
+        List<String> dailyLabels = sevenDaysAgo.datesUntil(today.plusDays(1))
+                                               .map(LocalDate::toString)
+                                               .collect(Collectors.toList());
+
+        // 매출 데이터를 날짜별로 매핑
+        Map<String, BigDecimal> dailySalesMap = salesData.stream()
+            .collect(Collectors.groupingBy(
+                dto -> dto.getTransferDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                Collectors.mapping(SalesDTO::getAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+            ));
+
+        // 날짜별 매출 데이터 생성 (없는 날짜는 0으로 채움)
+        List<BigDecimal> dailyData = dailyLabels.stream()
+                                                .map(date -> dailySalesMap.getOrDefault(date, BigDecimal.ZERO))
+                                                .collect(Collectors.toList());
         
+        System.out.println("Daily Sales Map: " + dailySalesMap);
+        System.out.println("Daily Labels: " + dailyLabels);
+        System.out.println("Daily Data: " + dailyData);
+        
+        
+     // Member 객체를 가져오는 로직 추가 [관리자정보]
+      Optional<Member> managerOptional = memberRepository.findById(memId);
+      if (managerOptional.isPresent()) {
+          model.addAttribute("manager", managerOptional.get());
+      }
+        
+
+        model.addAttribute("memId", memId);
+        model.addAttribute("reservations", responseDTO.getDtoList());
+        model.addAttribute("dailyLabels", dailyLabels);
+        model.addAttribute("dailyData", dailyData);
+
         return "admin/Admin_Revenue";
     }
 
