@@ -1,6 +1,7 @@
 package com.lec.packages.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -88,6 +89,12 @@ public class ReservationServiceImpl implements ReservationService {
 				           .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
 				           .collect(Collectors.toList());
 	    
+	}
+
+
+	@Override
+	public Optional<Reservation> getFacilityNameByCode(String reservationCode) {
+		return reservationRepository.findByReservationCode(reservationCode);
 	}
 
 
