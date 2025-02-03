@@ -111,4 +111,6 @@ public interface ClubService {
 
     List<ClubBoardDTO> getBoardListByMemID(String username);
 
+	String getClubNameByCode(String clubCode);
+
 }

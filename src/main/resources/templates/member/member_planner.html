@@ -79,11 +79,49 @@
 	min-width: 1000px;
 	min-height: 600px;
 }
+
+/* 로딩 화면 스타일 */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 로딩 스피너 스타일 */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 
 </head>
 
 <body>
+<!-- 로딩 화면 -->
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <p>일정을 불러오는 중...</p>
+</div>
 
 	<div th:insert="~{layouts/header :: header}"></div>
 
@@ -206,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         id: event.id,  // `id` 키가 맞는지 확인
                         title: event.title, // ✅ 일정 제목이 날짜 칸에 표시됨
                         start: event.start, // ✅ FullCalendar에서 날짜 인식 확인
+                        color: event.color,
                         extendedProps: {
                             planText: event.planText,
                             planIschk: event.planIschk,
@@ -216,6 +255,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }));
                     console.log("📌 변환된 이벤트 데이터:", formattedEvents); // ✅ 변환된 데이터 확인
                     successCallback(formattedEvents);
+                 // ✅ 모든 데이터가 로드된 후 로딩 화면 숨기기
+                    document.getElementById("loadingOverlay").style.display = "none";
+                 
                 })
                 .catch(error => {
                     console.error("🚨 이벤트 로딩 오류:", error);
@@ -242,7 +284,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 planName: info.event.title, 
                 planDate: correctedPlanDate, // ✅ KST 기준 날짜 사용
                 planText: info.event.extendedProps.planText,
-                planIschk: info.event.extendedProps.planIschk 
+                planIschk: info.event.extendedProps.planIschk
+                
             };
 
             console.log("📌 변환된 이벤트 데이터:", selectedEvent); 
@@ -404,6 +447,7 @@ $(document).on("change", ".event-checkbox", function () {
                 planDate: planDate,
                 planName: planName,
                 planText: planText,
+                // color: event.color,
                 planIschk: false
             }),
             success: function () {
@@ -412,7 +456,31 @@ $(document).on("change", ".event-checkbox", function () {
                 location.reload(); // 새로고침
             }
         });
-    }
+    };
+    
+    // 클럽일정 가져오기
+    /* function convertReservationsToPlans() {
+    let memId = document.getElementById("popupMemId").value; // 현재 로그인한 사용자 ID
+
+    $.ajax({
+        type: "POST",
+        url: "/planner/convertReservations",
+        data: { memId: memId },
+        success: function (response) {
+            alert(response); // 성공 메시지 출력
+            // location.reload(); // 새로고침
+        },
+        error: function (xhr, status, error) {
+            alert("오류 발생: " + xhr.responseText);
+        }
+    });
+};
+
+window.onload = function () {
+    convertReservationsToPlans();
+}; */
+
+
 
     // 일정 상세보기
     function showDetail(event) {
