@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.lec'
@@ -56,12 +55,6 @@ dependencies {
 	
 	// thymeleaf-layout
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
-	
-	// querydsl
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-   	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'		
    	
  	// swagger 최신버전
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
@@ -79,27 +72,4 @@ tasks.named('test') {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
-}
-
-
-def querydslDir = "$buildDir/generated/querydsl"
-
-querydsl {
-   jpa = true
-   querydslSourcesDir = querydslDir
-}
-
-sourceSets {
-   main.java.srcDir querydslDir
-}
-
-compileQuerydsl{
-   options.annotationProcessorPath = configurations.querydsl
-}
-
-configurations {
-   compileOnly {
-      extendsFrom annotationProcessor
-   }
-   querydsl.extendsFrom compileClasspath
 }
