@@ -16,7 +16,7 @@ import com.lec.packages.dto.TransferHistoryDTO;
 public interface FacilityService {
 
 	String register(FacilityDTO facilityDTO);
-	PageResponseDTO<FacilityDTO> listByUser(String userId, PageRequestDTO pageRequestDTO);
+	PageResponseDTO<FacilityDTO> listByUser(String memId, PageRequestDTO pageRequestDTO);
 
 	FacilityDTO getFacilityByCode(String facilityCode);
 	void modify(FacilityDTO facilityDTO);
