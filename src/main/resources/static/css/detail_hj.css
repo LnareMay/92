@@ -802,6 +802,7 @@ z-index:5;
     /* margin-left: 270px; */
     padding: 20px;
     width:100%;
+    max-width:960px;
 }
 
 #mypage_pg .header {
@@ -1093,6 +1094,31 @@ z-index:5;
 }
 #findpw_pg #findPwForm .btn_wrap{
 	
+}
+
+/* 운동캘린더 */
+.fc-direction-ltr{
+	min-width:800px !important;
+}
+.fc .fc-daygrid-day-number,.fc-theme-standard td{
+	cursor:pointer;
+}
+.fc .fc-col-header-cell-cushion{
+	text-decoration:auto;
+	color:#333;
+}
+.fc .fc-daygrid-day-top a{
+	color:#333;
+}
+.fc-day-sun a{
+	color:red !important;
+}
+.fc-day-sat a{
+	color:blue !important;
+}
+.popup .popup-buttons{
+	display:flex;
+	gap:10px;
 }
 
 

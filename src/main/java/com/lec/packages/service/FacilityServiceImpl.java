@@ -78,10 +78,10 @@ public class FacilityServiceImpl implements FacilityService{
 	
 	//유저별 시설 목록 보기
 	@Override
-	public PageResponseDTO<FacilityDTO> listByUser(String userId, PageRequestDTO pageRequestDTO){
+	public PageResponseDTO<FacilityDTO> listByUser(String memId, PageRequestDTO pageRequestDTO){
 		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
-		Page<Facility> result = facilityRepository.searchByUser(userId, pageable);
+		Page<Facility> result = facilityRepository.searchByUser(memId, pageable);
 		
 		List<FacilityDTO> dtoList = result.getContent()
 										  .stream()
@@ -417,8 +417,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().subtract(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().add(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()

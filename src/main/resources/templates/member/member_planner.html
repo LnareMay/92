@@ -36,7 +36,7 @@
 
 .popup h3 {
 	margin-top: 0;
-	font-size:20px;
+	font-size: 20px;
 }
 
 .popup .close {
@@ -69,11 +69,11 @@
 }
 
 .fc-direction-ltr {
-    direction: ltr;
-    text-align: left;
-    width: 100%;
-    min-width: 1000px;
-    min-height: 600px;
+	direction: ltr;
+	text-align: left;
+	width: 100%;
+	min-width: 1000px;
+	min-height: 600px;
 }
 </style>
 
@@ -92,9 +92,8 @@
 
 			<div class="btn_wrap">
 				<div class="header" th:if="${member.memIsmanager == false}">
-					<a href="/member/mypage">나의정보</a> <a
-						href="/member/reservation">나의시설예약</a> <a
-						href="/member/member_planner" class="active">운동캘린더</a> <a
+					<a href="/member/mypage">나의정보</a> <a href="/member/reservation">나의시설예약</a>
+					<a href="/member/member_planner" class="active">운동캘린더</a> <a
 						href="/club/club_myclub">나의클럽관리</a>
 
 				</div>
@@ -129,8 +128,8 @@
 
 
 		</div>
-		<div class="wrap">
-			<h2>운동 캘린더</h2>
+		<div class="main">
+			<h2 class="blind">운동 캘린더</h2>
 			<div id="calendar"></div>
 		</div>
 
@@ -140,18 +139,39 @@
 			<span class="close" onclick="closePopup()">X</span>
 			<h3 id="popupDate"></h3>
 			<ul id="eventList" class="event-list"></ul>
-			<button onclick="addEvent()" class="btn btn-primary">+ 일정 추가</button>
+			<button onclick="addEventPopup()" class="btn btn-primary">+ 일정 추가</button>
 		</div>
+
+		<!-- 일정 추가 팝업 -->
+		<div id="eventAddPopup" class="popup">
+			<div class="popup-content">
+			<span class="close" onclick="closeAddPopup()">X</span>
+				<h3>일정 추가</h3>
+				<input type="hidden" id="popupMemId" value="">
+				<p id="popupDateDisplay"></p>
+				<p><label style="margin-top:10px;">제목:</label> <input type="text" class="form-control" id="popupPlanName"
+					placeholder="일정 제목 입력"> </p>
+				<p><label style="margin-top:10px;">내용:</label>
+				<textarea id="popupPlanText" class="form-control" placeholder="일정 내용을 입력하세요"></textarea></p>
+				<div class="popup-buttons">
+					<button onclick="addEvent()" class="btn btn-primary">등록</button>
+					<!-- <button onclick="closeAddPopup()" class="btn btn-secondary">취소</button> -->
+				</div>
+			</div>
+		</div>
+
 
 		<!-- 일정 상세보기 팝업 -->
 		<div id="eventDetailPopup" class="popup">
 			<span class="close" onclick="closeDetailPopup()">X</span>
 			<h3 id="detailTitle"></h3>
 			<p id="detailContent"></p>
-
+			
+			<div class="popup-buttons">
 			<button id="listEventButton" class="btn btn-primary">목록 보기</button>
 			<!-- <button id="completeEventButton">일정 완료</button> -->
 			<button id="deleteEventButton" class="btn btn-danger">삭제</button>
+			</div>
 		</div>
 	</main>
 
@@ -339,31 +359,55 @@ $(document).on("change", ".event-checkbox", function () {
 });
 
 
-    // 일정 추가
-    function addEvent() {
+    // 일정 추가 팝업 열기
+    function addEventPopup() {
         let memId = document.getElementById("loggedInMemId").value;
         let planDate = document.getElementById("popupDate").innerText.replace("📅 ", "").replace(" 일정", "");
-        let planName = prompt("일정 제목을 입력하세요:");
-        let planText = prompt("일정 내용을 입력하세요:");
 
-        if (planName) {
-            $.ajax({
-                type: "POST",
-                url: "/planner/add",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    memId: memId,
-                    planDate: planDate,
-                    planName: planName,
-                    planText: planText,
-                    planIschk: false
-                }),
-                success: function () {
-                    alert("운동 일정이 추가되었습니다!");
-                    location.reload(); // 새로고침
-                }
-            });
+        document.getElementById("popupMemId").value = memId;
+        document.getElementById("popupDateDisplay").innerText = "날짜: " + planDate;
+        document.getElementById("popupPlanName").value = "";
+        document.getElementById("popupPlanText").value = "";
+
+        document.getElementById("eventAddPopup").style.display = "block";
+    }
+
+    // 팝업 닫기
+    function closeAddPopup() {
+        document.getElementById("eventAddPopup").style.display = "none";
+    }
+
+    
+    
+    // 일정 추가 AJAX 요청
+    function addEvent() {
+        let memId = document.getElementById("popupMemId").value;
+        let planDate = document.getElementById("popupDate").innerText.replace("📅 ", "").replace(" 일정", "");
+        let planName = document.getElementById("popupPlanName").value;
+        let planText = document.getElementById("popupPlanText").value;
+
+        if (planName.trim() === "") {
+            alert("일정 제목을 입력하세요.");
+            return;
         }
+
+        $.ajax({
+            type: "POST",
+            url: "/planner/add",
+            contentType: "application/json",
+            data: JSON.stringify({
+                memId: memId,
+                planDate: planDate,
+                planName: planName,
+                planText: planText,
+                planIschk: false
+            }),
+            success: function () {
+                alert("운동 일정이 추가되었습니다!");
+                closePopup(); // 팝업 닫기
+                location.reload(); // 새로고침
+            }
+        });
     }
 
     // 일정 상세보기
