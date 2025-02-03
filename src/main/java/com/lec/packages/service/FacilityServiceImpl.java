@@ -417,8 +417,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().subtract(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().add(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()

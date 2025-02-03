@@ -369,7 +369,7 @@ public class MemberController {
 		return "member/email-template";
 	}
 	
-	// 운동캘린더 조
+	// 운동캘린더 조회
 	@GetMapping("/member_planner")
 	public String plannerGet(HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
