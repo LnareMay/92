@@ -10,14 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Facility;
-import com.lec.packages.repository.search.FacilitySearch;
 
-public interface FacilityRepository extends JpaRepository<Facility,String> , FacilitySearch{
+
+public interface FacilityRepository extends JpaRepository<Facility,String>{
 	
     boolean existsByFacilityCode(String facilityCode);
   
     Optional<Facility> findByFacilityCode(@Param("facilityCode") String facilityCode);
 
+    //유저별 시설 목록 보기
+    @Query("SELECT f FROM Facility f WHERE f.memId=:memId")
+    Page<Facility> searchByUser(@Param("memId") String memId,Pageable pageable);
     
     List<Facility> findByMemId(String memId);
     

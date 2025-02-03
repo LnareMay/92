@@ -78,10 +78,10 @@ public class FacilityServiceImpl implements FacilityService{
 	
 	//유저별 시설 목록 보기
 	@Override
-	public PageResponseDTO<FacilityDTO> listByUser(String userId, PageRequestDTO pageRequestDTO){
+	public PageResponseDTO<FacilityDTO> listByUser(String memId, PageRequestDTO pageRequestDTO){
 		
 		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
-		Page<Facility> result = facilityRepository.searchByUser(userId, pageable);
+		Page<Facility> result = facilityRepository.searchByUser(memId, pageable);
 		
 		List<FacilityDTO> dtoList = result.getContent()
 										  .stream()
