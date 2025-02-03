@@ -459,7 +459,8 @@ p.fw-bold {
 	width: 450px;
 }
 
-.myclub-list-item {
+.myclub-list-item,
+.myclub-member-item {
     text-decoration: none;
     color: #333;
     margin: 10px 0;
@@ -474,3 +475,18 @@ p.fw-bold {
 	width: 450px;	
 }
 
+.clubbutton {
+	background: white;
+	border: none;
+}
+
+.mem {
+	width: 80px;
+}
+
+.delbtn {
+	height: 30px;
+	align-items: center;
+	display: flex;
+	font-size:12px;
+}

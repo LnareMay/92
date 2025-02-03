@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +30,6 @@ import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
-import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardAllListInterface;
@@ -47,6 +47,7 @@ import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.dto.ClubReservationInterface;
+import com.lec.packages.dto.MemberJoinDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -322,10 +323,8 @@ public class ClubServiceImpl implements ClubService {
 	
 	// 클럽탈퇴
 		@Override
-		public void joindelete(String memId, String clubCode) {
-
-		    ClubMemberKeyClass keyClass = new ClubMemberKeyClass(memId, clubCode);		    
-		    Club_Member_List clubMember = clubMemberRepository.findById(keyClass)
+		public void joindelete(String memId, String clubCode) {	    
+		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
 		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
 		    clubMember.setDeleteFlag(true);
@@ -347,6 +346,14 @@ public class ClubServiceImpl implements ClubService {
 	public PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO) {
 		Pageable pageable = pageRequestDTO.getPageable("clubCode");
 		Page<Member> result = clubMemberRepository.findMemberAll(clubCode, pageable);
+	
+		// 회원, 클럽별 신고수 가져오기
+		Map<String, Integer> reportCountMap = reportCount(clubCode);
+		
+		for (Member member : result.getContent()) {
+			String key = member.getMemId() + clubCode;
+			member.setReportCount(reportCountMap.getOrDefault(key, 0));
+		}
 		
 		return PageResponseDTO.<Member>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -354,7 +361,25 @@ public class ClubServiceImpl implements ClubService {
                 .total((int) result.getTotalElements())
                 .build();
 	}
+	
+	// 신고수 가져오기
+	@Override
+	public Map<String, Integer> reportCount(String clubCode) {
+		List<Object[]> reportCounts = clubMemberRepository.findReportCount(clubCode);
 
+		Map<String, Integer> reportCountMap = new HashMap<>();
+		for (Object[] obj : reportCounts) {
+			String memId = (String) obj[0];
+			String clubCodeKey = (String) obj[1];
+			Integer reportCount = (Integer) obj[2];
+			
+			String key = memId + clubCodeKey;
+			reportCountMap.put(key, reportCount);
+		}
+		
+		return reportCountMap;				
+	}
+	
 	@Override
 	public List<Member> findMemberDetails(String clubCode) {
 		return clubMemberRepository.findMemberDetails(clubCode); 

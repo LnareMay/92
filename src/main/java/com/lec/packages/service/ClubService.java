@@ -33,6 +33,7 @@ public interface ClubService {
 	Map<String, Integer> membercount();
 	List<Member> findMemberDetails(String clubCode);
 	PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO);
+	Map<String, Integer> reportCount(String clubCode);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);

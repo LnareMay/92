@@ -23,6 +23,9 @@ public class ClubMemberDTO {
     @NotEmpty
     private int boardCount;
     
+    @NotEmpty
+    private int reportCount;
+    
     private boolean deleteFlag;
     
     private LocalDateTime CREATEDATE;

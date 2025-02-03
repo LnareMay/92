@@ -39,6 +39,9 @@ public class Club_Member_List extends BaseEntity {
     @Column(name = "BOARD_COUNT")
     private int boardCount;
     
+    @Column(name = "REPORT_COUNT")
+    private int reportCount;
+    
     @Column(name = "DELETE_FLAG")
     private boolean deleteFlag;    
     

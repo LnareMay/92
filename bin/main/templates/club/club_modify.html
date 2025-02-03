@@ -26,7 +26,7 @@
             <input type="hidden" name="clubCode" id="clubCode" th:value="${clubdto.clubCode}"/>
             
             <label for="club-name">클럽명	</label>
-            	<input type="text" name="clubName" id="clubName" th:value="${clubdto.clubName}" ></input>
+            	<input type="text" name="clubName" id="clubName" th:value="${clubdto.clubName}" maxlength="20"></input>
             	
             <label for="club-name">클럽방장</label>
             	<input type="text" name="memId" id="memId" th:value="${#authentication.principal.memId}" readonly></input>
@@ -169,6 +169,10 @@
 	        selectedThemes = selectedThemes.filter(theme => theme !== button.value);
 	        button.classList.remove('selected');
 	    } else {
+	    	if (selectedThemes.length >= 4) {
+				alert('최대 4개의 테마만 선택할 수 있습니다');
+				return;
+			}
 	        selectedThemes.push(button.value);
 	        button.classList.add('selected');
 	    }

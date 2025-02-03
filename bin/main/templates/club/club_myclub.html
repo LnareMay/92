@@ -78,16 +78,30 @@
 				</div>
 				<ul class="myclub-list-group">
 					<li class="myclub-list-item" th:each="club : ${ownerClubList}">
-						<span th:text="${club.clubName}"></span>
+						<button th:text="${club.clubName}" class="clubbutton"
+							th:data-clubcode="${club.clubCode}"></button>
 					</li>
 				</ul>
 			</aside>	
 			
 			<div class="myclub-member">
-				<div id="myclub-memberlist">
+				<div id="myclub-memberlist" >
 					<div class="header">		
 						<h6>회원목록</h6>		
+						<p>아이디 &nbsp;&nbsp;&nbsp;&nbsp; 닉네임 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 신고</p>
 					</div>
+					<ul class="myclub-member-group" th:if="${responseDTO != null}">
+						<li class="myclub-member-item" th:each="clubmember : ${responseDTO.dtoList}">
+							<span th:text="${clubmember.memId}" class="mem"></span>
+							<span th:text="${clubmember.memNickname}" class="mem"></span>
+							<span th:text="${clubmember.reportCount}" class="mem"></span>
+							<span class="mem"></span>							
+							<form action="/club/club_joindelete" method="post" style="display: inline;">
+<!-- 							<input type="hidden" name="clubCode" th:value="${ownerClubList.clubCode}" /> -->
+								<button type="submit" class="btn btn-danger delbtn">탈퇴</button>
+							</form>
+						</li>
+					</ul>
 				</div>			
 			</div>		
 		</div>
@@ -96,4 +110,21 @@
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script>
+	
+	document.querySelectorAll(".clubbutton").forEach(button => {
+		const selectClub = "[[${clubCode}]]";
+		const clubCode = button.getAttribute("data-clubcode");
+		
+		if (clubCode === selectClub) button.style.color = "#007bff";
+		
+		button.addEventListener("click", function() {
+			if (clubCode) {
+				window.location.href = `/club/club_myclub?clubCode=${clubCode}`;
+			}
+		});		
+		
+	});
+	
+</script>
 </html>

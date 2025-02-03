@@ -265,18 +265,25 @@ public class ClubController {
 	
 	@GetMapping("/club_myclub")
 	public String clubManage(PageRequestDTO pageRequestDTO
+			, @RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
 		String username = authentication.getName();
 		
 		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(username); 
+
+		PageResponseDTO<Member> responseDTO = null;
+		if (clubCode != null) {
+			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
+		}		
 		
+		model.addAttribute("responseDTO", responseDTO);
+		model.addAttribute("clubCode", clubCode);		
 		model.addAttribute("currentURI", requestURI);
 		model.addAttribute("ownerClubList", ownerClubList);
-		
-		log.info("===ownerClubList:", ownerClubList);
 
 		return "club/club_myclub"; 
 	}
+
 }
