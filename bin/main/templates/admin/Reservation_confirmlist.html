@@ -136,12 +136,7 @@
 										<p>매출 상세</p>
 									</a>
 								</li>
-								<li class="nav-item">
-									<a href="/admin/calendar" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										 <p>시설 예약 현황</p>
-									  </a>
-								  </li>
+								
 							   </ul>
 						   </li>
 		</aside>
@@ -200,8 +195,8 @@
 									<td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td>
 									<td><a th:text="${reservation.facilityName}"></a><span
 										class="ReservationProgressTag_confirm"
-										th:if="${reservation.reservationProgress=='예약완료'}">예약승인
-											및 완료</span> <br /> <small>고객 예약일:</small><small th:text="${reservation.reservationDate}"></small>
+										th:if="${reservation.reservationProgress=='예약완료'}">예약완료</span> <br /> 
+										 <small>예약생성일:</small> <small th:text="${reservation.formattedCreateDate}"></small>
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
 									<td th:text="${reservation.reservationCode}"></td>
@@ -210,6 +205,7 @@
 										</br> <small
 										th:with="duration=${T(java.time.Duration).between(reservation.reservationStartTime, reservation.reservationEndTime)}"
 										th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
+										<small>예약일:</small><small th:text="${reservation.reservationDate}"></small>
 									</td>
 									<td th:text="${reservation.count}"></td>
 									<td class="project-actions text-right"><a
@@ -217,7 +213,8 @@
 										class="btn btn-primary btn-sm"> <i class="fas fa-folder"></i>
 											View
 									</a> <a class="btn btn-success btn-sm"
-										onclick="return confirm('예약 확정 하시겠습니까?')"> <i
+											th:href="@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}"
+											onclick="return confirm('예약 확정 하시겠습니까?')"> <i
 											class="fa fa-check-circle" aria-hidden="true"></i> confirm
 									</a> <a class="btn btn-danger btn-sm"
 										th:href="@{/admin/Reservation_refuse/{reservationCode}(reservationCode=${reservation.reservationCode})}"

@@ -19,7 +19,7 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     Optional<Facility> findByFacilityCode(@Param("facilityCode") String facilityCode);
 
     //유저별 시설 목록 보기
-    @Query("SELECT f FROM Facility f WHERE f.memId=:memId")
+    @Query("SELECT f FROM Facility f WHERE f.memId= :memId ORDER BY f.facilityCode ASC")
     Page<Facility> searchByUser(@Param("memId") String memId,Pageable pageable);
     
     List<Facility> findByMemId(String memId);

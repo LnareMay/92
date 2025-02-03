@@ -136,12 +136,7 @@
 										<p>매출 상세</p>
 									</a>
 								</li>
-								<li class="nav-item">
-									<a href="/admin/calendar" class="nav-link">
-										 <i class="far fa-circle nav-icon"></i>
-										 <p>시설 예약 현황</p>
-									 </a>
-								  </li>
+								
 							  </ul>
 						   </li>
 		</aside>
@@ -194,9 +189,8 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="facility , stat : ${facilities}"
-									th:if="${facility.deleteFlag == false}">
-									<td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td>
+								<tr th:each="facility : ${facilities}">
+									 <td th:text="${facility.number}"></td>
 									<td><a th:text="${facility.facilityName}"></a> <br /> <small
 										th:text="${facility.formattedCreateDate}"></small></td>
 									<td th:text="${facility.memId}"></td>

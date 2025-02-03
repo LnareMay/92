@@ -161,20 +161,32 @@ public class AdminController {
 	public String ListFaciltyPage(PageRequestDTO pageRequestDTO, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 
-		String userId = userDetails.getUsername();
+		String memId = userDetails.getUsername();
 
-		PageResponseDTO<FacilityDTO> responseDTO = facilityService.listByUser(userId, pageRequestDTO);
-		log.info("............................." + responseDTO);
+		PageResponseDTO<FacilityDTO> responseDTO = facilityService.listByUser(memId, pageRequestDTO);
+		
+	    // 삭제되지 않은 시설만 필터링(soft Delete)
+	    List<FacilityDTO> filteredList = responseDTO.getDtoList()
+	    											.stream()
+										            .filter(facility -> !facility.isDeleteFlag())
+										            .collect(Collectors.toList());
+		
+	    // 넘버링 계산(물리적/softDelete방식으로 삭제했을 때 넘버링)
+	    int startNumber = (pageRequestDTO.getPage() - 1) * pageRequestDTO.getSize() + 1;
+	    for (int i = 0; i < filteredList.size(); i++) {
+	        filteredList.get(i).setNumber(startNumber + i);
+	    }
 
-		model.addAttribute("userId", userId);
+		model.addAttribute("memId", memId);
 
-		model.addAttribute("facilities", responseDTO.getDtoList());
+	   //model.addAttribute("facilities", responseDTO.getDtoList());
+		model.addAttribute("facilities", filteredList); // 필터링된 리스트를 전달
 		model.addAttribute("totalPages", responseDTO.getTotal());
 		model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
 		model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
 
 		// Member 객체를 가져오는 로직 추가 [관리자정보]
-		Optional<Member> managerOptional = memberRepository.findById(userId);
+		Optional<Member> managerOptional = memberRepository.findById(memId);
 		if (managerOptional.isPresent()) {
 			model.addAttribute("manager", managerOptional.get());
 		}
@@ -195,7 +207,7 @@ public class AdminController {
 //	     // 모든 시설의 예약 정보를 담을 리스트
 //	     List<ReservationDTO> allReservations = new ArrayList<>();
 //	     
-//	     // 각 시설의 예약 정보 조회 --> 凸성능 쓰레기凸
+//	     // 각 시설의 예약 정보 조회 
 //	     for (FacilityDTO facility : facilityDTOs) {
 //	         PageResponseDTO<ReservationDTO> responseDTO = 
 //	             reservationService.getReservationByFacilityCode(facility.getFacilityCode(), pageRequestDTO);
