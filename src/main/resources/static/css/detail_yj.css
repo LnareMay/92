@@ -482,6 +482,9 @@ p.fw-bold {
 
 .mem {
 	width: 75px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .delbtn {
@@ -492,9 +495,9 @@ p.fw-bold {
 }
 
 .clubmem {
+	width: 220px;
 	display: flex;
 	justify-content: space-between;
-	
 }
 
 .report-from {

@@ -292,49 +292,48 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽가입시 이미가입되어있는 회원인지 확인
-		@Override
-		public boolean isJoinMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinMember(String memId, String clubCode) {
 			
-			List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
+		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
 
-		    return joinMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));			
-		}
+	    return joinMembers.stream()
+	            .anyMatch(member -> member.getMemId().equals(memId));			
+	}
 	
 	// 클럽탈퇴
-		@Override
-		public void joindelete(String memId, String clubCode) {	    
-		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
-		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+	@Override
+	public void joindelete(String memId, String clubCode) {	    
+	    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+	            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
-		    clubMember.setDeleteFlag(true);
-		    clubMemberRepository.save(clubMember);
-		}
+	    clubMember.setDeleteFlag(true);
+	    clubMemberRepository.save(clubMember);
+	}
 		
-		// 클럽회원 신고
-		@Override
-		public int clubReport(String memId, String clubCode) {	  
-			
-		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
-		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+	// 클럽회원 신고
+	@Override
+	public int clubReport(String memId, String clubCode) {	  
+		
+		Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
-		    int reportNo = clubMember.getReportCount() + 1;
-		    clubMember.setReportCount(reportNo);
-		    int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
+		int reportNo = clubMember.getReportCount() + 1;
+		clubMember.setReportCount(reportNo);
+		int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
 		    
-
-		    return resultReportNo;
-		}
+		return resultReportNo;
+	}
 
 	// 클럽탈퇴시 이미탈퇴되어있는 회원인지 확인
-		@Override
-		public boolean isJoinDeleteMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinDeleteMember(String memId, String clubCode) {
 
-		    List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
+		List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
 
-		    return deletedMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));
-		}	
+		return deletedMembers.stream()
+					.anyMatch(member -> member.getMemId().equals(memId));
+	}	
 		
     // 클럽멤버 목록조회 
 	@Override

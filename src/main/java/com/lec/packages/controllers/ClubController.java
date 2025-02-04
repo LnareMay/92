@@ -114,6 +114,7 @@ public class ClubController {
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
 	
+	// 회원탈퇴
 	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_joindelete")
 	public String clubJoinDelete(@RequestParam(value = "clubCode", required = false) String clubCode
@@ -282,6 +283,7 @@ public class ClubController {
 		return "club/club_myclub"; 
 	}
 
+	// 신고 3회이상 회원 탈퇴
 	@PostMapping("/club_myclubjoindel")
 	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
 								,@RequestParam(value = "memId") String memId) {
