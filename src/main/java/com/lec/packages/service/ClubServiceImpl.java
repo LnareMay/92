@@ -619,7 +619,7 @@ public class ClubServiceImpl implements ClubService {
 		List<ClubDTO> dtoClub = new ArrayList<>();
 		myClubList.forEach(club -> {
 			ClubDTO dto = ClubDTO.builder().clubCode(club.getClubCode()).clubIntroduction(club.getClubIntroduction()).clubName(club.getClubName())
-						.clubImage1(club.getClubImage1()).memberCount(club.getMembers().size()).build();
+						.clubImage1(club.getClubImage1()).memberCount(club.getMembers().stream().filter(mem -> !mem.isDeleteFlag()).collect(Collectors.toList()).size()).build();
 			dtoClub.add(dto);
 		});
 
