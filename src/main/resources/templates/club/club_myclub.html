@@ -74,20 +74,46 @@
 			</div>
 			<aside class="myclub-list">
 				<div class="header">
-					<h6>클럽목록</h6>		
+					<h6>클럽목록</h6>	
+					<p style="font-size:15px;">조회할 클럽을 선택해주세요</p>	
 				</div>
 				<ul class="myclub-list-group">
 					<li class="myclub-list-item" th:each="club : ${ownerClubList}">
-						<span th:text="${club.clubName}"></span>
+						<button th:text="${club.clubName}" class="clubbutton"
+							th:data-clubcode="${club.clubCode}"></button>
 					</li>
 				</ul>
 			</aside>	
 			
 			<div class="myclub-member">
-				<div id="myclub-memberlist">
+				<div id="myclub-memberlist" >
 					<div class="header">		
-						<h6>회원목록</h6>		
+						<h6>회원목록</h6>								
+						<span class="myclub-member-item" style="margin:0px">
+							<span class="mem">아이디</span>
+							<span class="mem">이름</span>
+							<span class="mem">닉네임</span>
+							<span style="width:130px;">전화번호</span>
+							<span class="mem">신고</span>
+						</span>
+
 					</div>
+					<ul class="myclub-member-group" th:if="${responseDTO != null}">
+						<li class="myclub-member-item" th:each="clubmember : ${responseDTO.dtoList}"							
+								th:if="${clubmember.memId != memId}">						
+							<span th:text="${clubmember.memId}" class="mem"></span>
+							<span th:text="${clubmember.memName}" class="mem"></span>
+							<span th:text="${clubmember.memNickname}" class="mem"></span>
+							<span th:text="${clubmember.memTell}" style="width:130px;"></span>
+							<span th:text="${clubmember.reportCount}" class="mem"></span>			
+							<form action="/club/club_myclubjoindel" method="post" th:if="${clubmember.reportCount >= 3}"
+								  th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 탈퇴시키겠습니까?\');'" style="display: inline;">
+		 						<input type="hidden" name="clubCode" th:value="${clubCode}" />
+		 						<input type="hidden" name="memId" th:value="${clubmember.memId}" />
+								<button type="submit" class="btn btn-danger delbtn">탈퇴</button>
+							</form>
+						</li>
+					</ul>
 				</div>			
 			</div>		
 		</div>
@@ -96,4 +122,21 @@
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script>
+	
+	document.querySelectorAll(".clubbutton").forEach(button => {
+		const selectClub = "[[${clubCode}]]";
+		const clubCode = button.getAttribute("data-clubcode");
+		
+		if (clubCode === selectClub) button.style.color = "#007bff";
+		
+		button.addEventListener("click", function() {
+			if (clubCode) {
+				window.location.href = `/club/club_myclub?clubCode=${clubCode}`;
+			}
+		});		
+		
+	});
+	
+</script>
 </html>

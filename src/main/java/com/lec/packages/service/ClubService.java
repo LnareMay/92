@@ -18,7 +18,6 @@ import com.lec.packages.dto.PageResponseDTO;
 public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
-//	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
@@ -33,6 +32,8 @@ public interface ClubService {
 	Map<String, Integer> membercount();
 	List<Member> findMemberDetails(String clubCode);
 	PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO);
+	Map<String, Integer> reportCount(String clubCode);
+	int clubReport(String memId, String clubCode);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);

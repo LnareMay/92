@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -146,6 +147,8 @@ public class Member extends BaseEntity{
 	    }
 	}
 
+	@Transient // DB에는 저장되지않게 설정
+	private int reportCount;
 
     
 }

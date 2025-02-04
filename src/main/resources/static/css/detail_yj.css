@@ -456,10 +456,11 @@ p.fw-bold {
 /*마이페이지 - 나의클럽관리*/
 .myclub-list {
 	padding: 30px 20px;	
-	width: 450px;
+	width: 300px;
 }
 
-.myclub-list-item {
+.myclub-list-item,
+.myclub-member-item {
     text-decoration: none;
     color: #333;
     margin: 10px 0;
@@ -469,8 +470,33 @@ p.fw-bold {
 }
 
 .myclub-member {
-	border-left: 1px solid #ddd;
+	border-left: 1px solid #eee;
 	padding: 30px 20px;
-	width: 450px;	
+	width: 550px;	
 }
 
+.clubbutton {
+	background: white;
+	border: none;
+}
+
+.mem {
+	width: 75px;
+}
+
+.delbtn {
+	height: 30px;
+	align-items: center;
+	display: flex;
+	font-size:12px;
+}
+
+.clubmem {
+	display: flex;
+	justify-content: space-between;
+	
+}
+
+.report-from {
+	margin-left: 0px;
+}
