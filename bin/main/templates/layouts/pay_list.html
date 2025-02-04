@@ -1,11 +1,57 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<style>
+/* 로딩 화면 스타일 */
+#payloadingOverlay {
+     position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 로딩 스피너 스타일 */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+	
+
 <div th:fragment="pay_list" id="pay_list">
-	<div class="container">
+
+
+	<div class="container" style="position:relative;">
 		<!-- 어두운 배경 오버레이 추가 -->
 		<div id="overlay"></div>
 
-		<div id="pay_list_popup" class="popup_style" style="display: none;">
+		<div id="pay_list_popup" class="popup_style" style="display:none;">
+			<!-- 로딩 화면 -->
+			<div id="payloadingOverlay">
+			    <div class="spinner"></div>
+			    <p>내역을 불러오는 중...</p>
+			</div>
+			<div id="pay_list_popup_wrap" style="display:none;">
 			<div class="tabs">
 				<button th:if="${member.memIsmanager == false}" type="button"
 					class="tab-button active" data-tab="transferHistoryList">송금내역</button>
@@ -27,9 +73,6 @@
 				<!-- 송금내역 리스트가 여기에 추가됩니다 -->
 			</ul>
 
-
-
-
 			<!-- 충전내역 -->
 			<div id="chargeHistoryList" class="tab-content">
 				<div class="month-tab"></div>
@@ -38,6 +81,8 @@
 				</ul>
 			</div>
 			<button type="button" id="closePopup" class="close-button">닫기</button>
+			</div>
+			
 		</div>
 
 
@@ -46,13 +91,17 @@
 		async function fetchData() {
 		    try {
 		        // 로딩 메시지 추가
+		        document.getElementById("pay_list_popup").style.display = "block";
+		        document.getElementById("payloadingOverlay").style.display = "block";
+		        
 		        const payListPopup = document.getElementById("pay_list_popup");
+		        const payListPopupWrap = document.getElementById("pay_list_popup_wrap");
 		        const overlay = document.getElementById("overlay");
 		
-		        const loadingMessage = document.createElement("p");
+		        /* const loadingMessage = document.createElement("p");
 		        loadingMessage.textContent = "로딩 중...";
 		        loadingMessage.id = "loadingMessage";
-		        payListPopup.appendChild(loadingMessage);
+		        payListPopup.appendChild(loadingMessage); */
 		
 		        // 송금 내역 요청
 		        const transferResponse = await fetch("/member/pay_list/transfer", {
@@ -76,10 +125,12 @@
 		        const chargeData = await chargeResponse.json();
 		
 		        // 로딩 메시지 제거
-		        const loadingMessageElement = document.getElementById("loadingMessage");
+		        /* const loadingMessageElement = document.getElementById("loadingMessage");
 		        if (loadingMessageElement) {
 		            payListPopup.removeChild(loadingMessageElement);
-		        }
+		        } */
+		        document.getElementById("payloadingOverlay").style.display = "none";
+		        payListPopupWrap.style.display="block";
 		
 		        // 송금 내역 추가
 		        const transferList = document.getElementById("transferHistoryList");
@@ -171,6 +222,7 @@
 		function closePopup() {
 		    document.getElementById("pay_list_popup").style.display = "none";
 		    document.getElementById("overlay").style.display = "none";
+		    document.getElementById("pay_list_popup_wrap").style.display="none";
 		}
 		
 		// 탭전환

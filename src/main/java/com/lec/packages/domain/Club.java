@@ -44,7 +44,7 @@ public class Club extends BaseEntity{
     @Column(nullable = false, columnDefinition = "TEXT", name = "CLUB_INTRODUCTION")
     private String clubIntroduction;
 
-    @Column(length = 50, name = "CLUB_THEME")
+    @Column(length = 100, name = "CLUB_THEME")
     private String clubTheme;
 
     @Column(name = "CLUB_IMAGE_1")
