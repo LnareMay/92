@@ -11,9 +11,10 @@ import org.springframework.data.repository.query.Param;
 
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 
 
-public interface ClubMemberRepository extends JpaRepository<Club_Member_List, String> {
+public interface ClubMemberRepository extends JpaRepository<Club_Member_List, ClubMemberKeyClass> {
 
 	@Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
 	List<Object[]> countByClubCode();

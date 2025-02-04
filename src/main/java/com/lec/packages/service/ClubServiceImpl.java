@@ -330,6 +330,21 @@ public class ClubServiceImpl implements ClubService {
 		    clubMember.setDeleteFlag(true);
 		    clubMemberRepository.save(clubMember);
 		}
+		
+		// 클럽회원 신고
+		@Override
+		public int clubReport(String memId, String clubCode) {	  
+			
+		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+		    
+		    int reportNo = clubMember.getReportCount() + 1;
+		    clubMember.setReportCount(reportNo);
+		    int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
+		    
+
+		    return resultReportNo;
+		}
 
 	// 클럽탈퇴시 이미탈퇴되어있는 회원인지 확인
 		@Override
@@ -379,6 +394,8 @@ public class ClubServiceImpl implements ClubService {
 		
 		return reportCountMap;				
 	}
+	
+
 	
 	@Override
 	public List<Member> findMemberDetails(String clubCode) {

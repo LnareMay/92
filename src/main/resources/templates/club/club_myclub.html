@@ -74,7 +74,8 @@
 			</div>
 			<aside class="myclub-list">
 				<div class="header">
-					<h6>클럽목록</h6>		
+					<h6>클럽목록</h6>	
+					<p style="font-size:15px;">조회할 클럽을 선택해주세요</p>	
 				</div>
 				<ul class="myclub-list-group">
 					<li class="myclub-list-item" th:each="club : ${ownerClubList}">
@@ -91,13 +92,14 @@
 						<p>아이디 &nbsp;&nbsp;&nbsp;&nbsp; 닉네임 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 신고</p>
 					</div>
 					<ul class="myclub-member-group" th:if="${responseDTO != null}">
-						<li class="myclub-member-item" th:each="clubmember : ${responseDTO.dtoList}">
+						<li class="myclub-member-item" th:each="clubmember : ${responseDTO.dtoList}">								
 							<span th:text="${clubmember.memId}" class="mem"></span>
 							<span th:text="${clubmember.memNickname}" class="mem"></span>
 							<span th:text="${clubmember.reportCount}" class="mem"></span>
 							<span class="mem"></span>							
-							<form action="/club/club_joindelete" method="post" style="display: inline;">
-<!-- 							<input type="hidden" name="clubCode" th:value="${ownerClubList.clubCode}" /> -->
+							<form action="/club/club_myclubjoindel" method="post" th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 탈퇴시키겠습니까?\');'" style="display: inline;">
+	 							<input type="hidden" name="clubCode" th:value="${clubCode}" />
+	 							<input type="hidden" name="memId" th:value="${clubmember.memId}" />
 								<button type="submit" class="btn btn-danger delbtn">탈퇴</button>
 							</form>
 						</li>

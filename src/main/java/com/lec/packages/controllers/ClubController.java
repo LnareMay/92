@@ -124,7 +124,7 @@ public class ClubController {
 			, Authentication authentication
 			, HttpServletRequest request
 			, RedirectAttributes redirectAttributes) {
-		String memId = authentication.getName();
+		String memId = authentication.getName(); // 로그인한 회원ID
 
 		if(clubService.isJoinDeleteMember(memId, clubCode)) {
 			redirectAttributes.addFlashAttribute("message", "이미 탈퇴된 회원입니다.");
@@ -262,7 +262,6 @@ public class ClubController {
 		return "redirect:/club/club_board?clubCode="+clubCode;
 	}
 	
-	
 	@GetMapping("/club_myclub")
 	public String clubManage(PageRequestDTO pageRequestDTO
 			, @RequestParam(value = "clubCode", required = false) String clubCode
@@ -285,5 +284,28 @@ public class ClubController {
 
 		return "club/club_myclub"; 
 	}
+
+	@PostMapping("/club_myclubjoindel")
+	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
+								,@RequestParam(value = "memId") String memId) {
+
+		clubService.joindelete(memId, clubCode);
+		return "redirect:/club/myclub";
+	}
+	
+	// 신고
+	@PostMapping("/club_report")
+	public String clubReport(@RequestParam(value = "clubCode") String clubCode
+								,@RequestParam(value = "memId") String memId
+								, RedirectAttributes redirectAttributes
+								, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+		clubService.clubReport(memId, clubCode);
+		log.info("신고 완료");
+		
+		return "redirect:/club/club_member?clubCode=" + clubCode;
+	}	
 
 }

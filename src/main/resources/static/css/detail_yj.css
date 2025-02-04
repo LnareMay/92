@@ -490,3 +490,7 @@ p.fw-bold {
 	display: flex;
 	font-size:12px;
 }
+
+.clubmem {
+	display: flex;
+}

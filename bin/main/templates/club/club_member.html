@@ -44,8 +44,14 @@
 										<img th:src="|/view/${clubmember.memPicture}|" alt="프로필이미지" class="rounded-circle me-3"
                            	 				 onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 			                           <div>
-			                               <p class="mb-1 fw-bold"> [[${clubmember.memNickname}]]
-											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span></p>
+										<div class="mb-1 fw-bold clubmem"> [[${clubmember.memNickname}]]  
+											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span> 
+											<form action="/club/club_report" method="post" th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 신고하시겠습니까?\');'" style="display: inline;">
+					 							<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+					 							<input type="hidden" name="memId" th:value="${clubmember.memId}" />
+												<button type="submit" class="btn btn-danger delbtn">신고</button>
+											</form>
+										</div>
 			                                <small class="text-muted" th:if="${clubmember.memAddressSet != null}" 
                             					   th:text="${clubmember.memAddressSet}"></small>
 			                           </div>

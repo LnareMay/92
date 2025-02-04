@@ -34,6 +34,7 @@ public interface ClubService {
 	List<Member> findMemberDetails(String clubCode);
 	PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO);
 	Map<String, Integer> reportCount(String clubCode);
+	int clubReport(String memId, String clubCode);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
