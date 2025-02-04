@@ -42,4 +42,8 @@ public interface ClubRepository extends JpaRepository<Club, String> {
 
     @Query(value = "select c.* from club c inner join club_member_list cml on c.CLUB_CODE = cml.CLUB_CODE where cml.mem_id =:memId and cml.DELETE_FLAG is false and c.DELETE_FLAG is false", nativeQuery = true)
     List<Club> getClubListWithMemID(@Param("memId") String memId);
+    
+    // clubCode로 clubName 가져오기
+    @Query("SELECT c.clubName FROM Club c WHERE c.clubCode = :clubCode")
+    String findClubNameByClubCode(@Param("clubCode") String clubCode);
 }

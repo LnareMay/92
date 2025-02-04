@@ -712,5 +712,10 @@ public class ClubServiceImpl implements ClubService {
 
 		return dtos;
 	}
+	
+	// 클럽 코드로 이름 가져오기
+	public String getClubNameByCode(String clubCode) {
+        return clubRepository.findClubNameByClubCode(clubCode);
+    }
 
 }
