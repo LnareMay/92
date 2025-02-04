@@ -80,20 +80,6 @@ public class ClubServiceImpl implements ClubService {
 
 		return clubCode;
 	}
-	
-	/* 클럽수정 이미지변경
-	@Override
-	public void updateImages(String clubCode, ClubDTO clubDTO) {
-		Optional<Club> optionalClub = clubRepository.findById(clubCode);
-		if (optionalClub.isPresent()) {
-			Club club = optionalClub.get();
-			club.setClubImage1(clubDTO.getClubImage1());
-			club.setClubImage2(clubDTO.getClubImage2());
-			club.setClubImage3(clubDTO.getClubImage3());
-			club.setClubImage4(clubDTO.getClubImage4());
-			clubRepository.save(club);
-		}
-	}  */
 
 	// 클럽코드생성
 	@Override
@@ -159,12 +145,7 @@ public class ClubServiceImpl implements ClubService {
     public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memAddressSet, String clubTheme) {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
 
-        /* 검색 필터링
-        String[] types = {"address", "theme"};
-        String[] keywords = {memAddressSet, clubTheme};
-         */
-        String address = replaceAddress(memAddressSet);
-        
+        String address = replaceAddress(memAddressSet);        
         Page<Club> result = clubRepository.searchAll(address, clubTheme, pageable);
 
         Map<String, Integer> membercountmap = membercount();
@@ -178,8 +159,7 @@ public class ClubServiceImpl implements ClubService {
                                       }
                                           return clubDTO;
                                       })
-                                      .collect(Collectors.toList());
-//      log.info("=== Keywords==== : {}, {}", keywords[0], keywords[1]);        
+                                      .collect(Collectors.toList());    
         log.info("=== Keywords==== : {}, {}", address, clubTheme);        
 
         return PageResponseDTO.<ClubDTO>withAll()
@@ -380,16 +360,12 @@ public class ClubServiceImpl implements ClubService {
 	// 신고수 가져오기
 	@Override
 	public Map<String, Integer> reportCount(String clubCode) {
-		List<Object[]> reportCounts = clubMemberRepository.findReportCount(clubCode);
+		List<Club_Member_List> reportCounts = clubMemberRepository.findReportCount(clubCode);
 
 		Map<String, Integer> reportCountMap = new HashMap<>();
-		for (Object[] obj : reportCounts) {
-			String memId = (String) obj[0];
-			String clubCodeKey = (String) obj[1];
-			Integer reportCount = (Integer) obj[2];
-			
-			String key = memId + clubCodeKey;
-			reportCountMap.put(key, reportCount);
+		for (Club_Member_List cm : reportCounts) {
+			String key = cm.getMemId() + cm.getClubCode();			
+			reportCountMap.put(key, cm.getReportCount());
 		}
 		
 		return reportCountMap;				

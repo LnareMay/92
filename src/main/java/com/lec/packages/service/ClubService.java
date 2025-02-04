@@ -18,7 +18,6 @@ import com.lec.packages.dto.PageResponseDTO;
 public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
-//	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);

@@ -76,10 +76,6 @@ public class ClubController {
 		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
 											  .stream()
 											  .limit(3)
-/*											  .peek(m -> {
-												  if (m.getMemPicture() == null || m.getMemPicture().isEmpty())
-													  m.setMemPicture("/img/upload/img_profile.png");
-											  }) */
 											  .collect(Collectors.toList());
         model.addAttribute("clubmembers", clubmembers);
         
@@ -268,19 +264,20 @@ public class ClubController {
 			, Authentication authentication
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
-		String username = authentication.getName();
+		String memId = authentication.getName();
 		
-		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(username); 
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId); 
 
 		PageResponseDTO<Member> responseDTO = null;
 		if (clubCode != null) {
 			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
-		}		
-		
+		}				
 		model.addAttribute("responseDTO", responseDTO);
 		model.addAttribute("clubCode", clubCode);		
 		model.addAttribute("currentURI", requestURI);
 		model.addAttribute("ownerClubList", ownerClubList);
+		model.addAttribute("memId", memId);
+
 
 		return "club/club_myclub"; 
 	}
@@ -293,7 +290,7 @@ public class ClubController {
 		return "redirect:/club/myclub";
 	}
 	
-	// 신고
+	// 클럽 회원 신고
 	@PostMapping("/club_report")
 	public String clubReport(@RequestParam(value = "clubCode") String clubCode
 								,@RequestParam(value = "memId") String memId

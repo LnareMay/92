@@ -44,12 +44,17 @@
 										<img th:src="|/view/${clubmember.memPicture}|" alt="프로필이미지" class="rounded-circle me-3"
                            	 				 onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 			                           <div>
-										<div class="mb-1 fw-bold clubmem"> [[${clubmember.memNickname}]]  
-											<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span> 
-											<form action="/club/club_report" method="post" th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 신고하시겠습니까?\');'" style="display: inline;">
+										<div class="mb-1 fw-bold clubmem"> 
+											<span> [[${clubmember.memNickname}]]  
+												<span th:if="${clubmember.memId == clubdto.memId}" class="text-warning small">⭐</span>
+											</span>  
+											<form action="/club/club_report" method="post" class="report-from"
+												  th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 신고하시겠습니까?\');'" style="display: inline;">
 					 							<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					 							<input type="hidden" name="memId" th:value="${clubmember.memId}" />
-												<button type="submit" class="btn btn-danger delbtn">신고</button>
+												<button type="submit" class="btn btn-danger delbtn">
+						 							<i class="fas fa-bell fa-shake"></i> 												
+												</button>
 											</form>
 										</div>
 			                                <small class="text-muted" th:if="${clubmember.memAddressSet != null}" 
