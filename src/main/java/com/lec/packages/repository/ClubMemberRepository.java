@@ -28,8 +28,8 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
             + "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND m.deleteFlag = false AND cm.deleteFlag = true")
     List<Member> findDeleteMember(@Param("clubCode") String clubCode);
     
-    
-    @Query("SELECT cm FROM Club_Member_List cm WHERE cm.memId = :memId AND cm.clubCode = :clubCode")
+    // 가입한 회원 조회
+    @Query("SELECT cm FROM Club_Member_List cm WHERE cm.memId = :memId AND cm.clubCode = :clubCode AND cm.deleteFlag = false ")
     Optional<Club_Member_List> findJoinMember(@Param("memId") String memId, @Param("clubCode") String clubCode);
     
     // 클럽가입 회원 상세조회

@@ -1,9 +1,5 @@
 package com.lec.packages.domain;
 
-import java.util.List;
-
-import org.hibernate.annotations.BatchSize;
-
 import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 
 import jakarta.persistence.Column;
@@ -13,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,9 +35,6 @@ public class Club_Member_List extends BaseEntity {
     @JoinColumn(name = "CLUB_CODE")
     @Column(length = 10, name = "CLUB_CODE")
     private String clubCode;
-    
-    @Column(name = "BOARD_COUNT")
-    private int boardCount;
     
     @Column(name = "REPORT_COUNT")
     private int reportCount;

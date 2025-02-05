@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 
