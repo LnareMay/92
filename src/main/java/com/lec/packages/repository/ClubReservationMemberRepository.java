@@ -37,4 +37,6 @@ public interface ClubReservationMemberRepository
 	                                @Param("clubCode") String clubCode, 
 	                                @Param("memId") String memId);
 
+	Optional<Reservation_Member_List> findByClubCodeAndMemId(String clubCode, String memId);
+
 }
