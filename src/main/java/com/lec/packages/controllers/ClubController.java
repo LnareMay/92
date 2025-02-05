@@ -128,9 +128,11 @@ public class ClubController {
 			return "redirect:/club/club_detail?clubCode=" + clubCode;
 		}
 		
-		clubService.joindelete(memId, clubCode);		
+		clubService.joindelete(memId, clubCode);	
+		clubService.removeClubResMember(clubCode, memId);
 		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 탈퇴되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
+			
 	}
 		
 	@GetMapping("/club_member")
@@ -289,6 +291,8 @@ public class ClubController {
 								,@RequestParam(value = "memId") String memId) {
 
 		clubService.joindelete(memId, clubCode);
+		clubService.removeClubResMember(clubCode, memId);
+		
 		return "redirect:/club/myclub";
 	}
 	

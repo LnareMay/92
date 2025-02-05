@@ -47,4 +47,8 @@ public class Reservation_Member_List extends BaseEntity{
     
     @Column(name = "RESERVATION_DATE" , nullable = false)
     private Date reservationDate;
+    
+    public void removeClubResMember(boolean deleteFlag) {
+		this.deleteFlag = true;		
+	}
 }

@@ -310,6 +310,12 @@ public class ClubServiceImpl implements ClubService {
 	    clubMember.setDeleteFlag(true);
 	    clubMemberRepository.save(clubMember);
 	}
+	
+	// 회원이 가입한 클럽 목록조회
+	@Override
+	public List<String>	findJoinClubCodeByMemId(String memId) {
+		return clubMemberRepository.findJoinClubCodeByMemId(memId);
+	}
 		
 	// 클럽회원 신고
 	@Override
@@ -716,5 +722,17 @@ public class ClubServiceImpl implements ClubService {
 	public String getClubNameByCode(String clubCode) {
         return clubRepository.findClubNameByClubCode(clubCode);
     }
+
+	// 클럽 일정에 참가한 회원 취소
+	@Override
+	public void removeClubResMember(String clubCode, String memId) {
+		Optional<Reservation_Member_List> optionalResMember = clubReservationMemberRepository.findByClubCodeAndMemId(clubCode, memId);
+		
+		if (optionalResMember.isPresent()) {
+			Reservation_Member_List resMemberList = optionalResMember.get();
+			resMemberList.setDeleteFlag(true);
+			clubReservationMemberRepository.save(resMemberList);			
+		}	
+	}
 
 }
