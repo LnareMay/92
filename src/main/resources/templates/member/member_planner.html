@@ -249,7 +249,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             planText: event.planText,
                             planIschk: event.planIschk,
                             planNo: event.planNo,  // ✅ 상세정보에서 사용될 `planNo`
-                            memId: event.memId      // ✅ 사용자 ID 추가 (필요시)
+                            memId: event.memId,      // ✅ 사용자 ID 추가 (필요시)
+                    		reservationCode: event.reservationCode,
+                    		clubCode : event.clubCode
                         }
                        
                     }));
@@ -280,13 +282,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }).replace(/\. /g, '-').replace('.', ''); // ✅ KST 기준으로 날짜 변환
 
             let selectedEvent = {
-                planNo: info.event.id,  
-                planName: info.event.title, 
-                planDate: correctedPlanDate, // ✅ KST 기준 날짜 사용
-                planText: info.event.extendedProps.planText,
-                planIschk: info.event.extendedProps.planIschk
-                
-            };
+           	    planNo: info.event.id,  
+           	    planName: info.event.title, 
+           	    planDate: correctedPlanDate, 
+           	    planText: info.event.extendedProps.planText,
+           	    planIschk: info.event.extendedProps.planIschk,
+           	    reservationCode: info.event.extendedProps.reservationCode, // ✅ 추가
+           	    clubCode: info.event.extendedProps.clubCode, // ✅ 추가
+           	    memId: info.event.extendedProps.memId // ✅ 추가
+           	};
+
 
             console.log("📌 변환된 이벤트 데이터:", selectedEvent); 
             showDetail(selectedEvent); 
@@ -482,25 +487,29 @@ window.onload = function () {
 
 
 
-    // 일정 상세보기
-    function showDetail(event) {
-        document.getElementById("detailTitle").innerText = event.planName;
-        document.getElementById("detailContent").innerText = event.planText;
-       /*  document.getElementById("completeEventButton").onclick = function() {
-            completeEvent(event.planNo);
-        }; */
-        document.getElementById("deleteEventButton").onclick = function() {
-            deleteEvent(event.planNo);
-        };
+// 일정 상세 보기
+let selectedEvent = {}; // ✅ 전역 변수 선언
 
-        document.getElementById("eventDetailPopup").style.display = "block";
-        // ✅ 목록 보기 버튼 클릭 시 해당 날짜의 일정 목록을 다시 불러옴
-        document.getElementById("listEventButton").onclick = function() {
-            console.log("📌 목록 보기 버튼 클릭 - 해당 날짜:", event.planDate);
-            closeDetailPopup();
-            openPopup(event.planDate); // ✅ 해당 날짜의 일정 목록을 불러옴
-        };
-    }
+function showDetail(event) {
+    selectedEvent = event; // ✅ 전역 변수에 event 데이터 저장
+
+    document.getElementById("detailTitle").innerText = event.planName;
+    document.getElementById("detailContent").innerText = event.planText;
+
+    document.getElementById("deleteEventButton").onclick = function() {
+        console.log(selectedEvent.planNo, selectedEvent.reservationCode, selectedEvent.clubCode, selectedEvent.memId);
+        deleteEvent(selectedEvent.planNo, selectedEvent.reservationCode, selectedEvent.clubCode, selectedEvent.memId);
+    };
+
+    document.getElementById("eventDetailPopup").style.display = "block";
+
+    document.getElementById("listEventButton").onclick = function() {
+        console.log("📌 목록 보기 버튼 클릭 - 해당 날짜:", event.planDate);
+        closeDetailPopup();
+        openPopup(event.planDate);
+    };
+}
+
 
     // 일정 완료 처리
     /* function completeEvent(planNo) {
@@ -523,19 +532,31 @@ window.onload = function () {
         });
     } */
 
-    // 일정 삭제
-    function deleteEvent(planNo) {
+ // DELETE 요청을 body에 데이터 포함해서 보내기
+    function deleteEvent(planNo, reservationCode, clubCode, memId) {
         if (confirm("정말 삭제하시겠습니까?")) {
-            $.ajax({
-                type: "DELETE",
-                url: `/planner/delete?planNo=${planNo}`,
-                success: function () {
-                    alert("운동 일정이 삭제되었습니다!");
-                    location.reload(); // 새로고침
-                }
-            });
+        	$.ajax({
+        	    type: "DELETE",
+        	    url: "/planner/delete",
+        	    contentType: "application/json",
+        	    data: JSON.stringify({
+        	        planNo: Number(planNo),  // ✅ 숫자로 변환 후 전송
+        	        reservationCode: reservationCode,
+        	        clubCode: clubCode,
+        	        memId: memId
+        	    }),
+        	    success: function () {
+        	        alert("운동 일정이 삭제되었습니다!");
+        	        location.reload();
+        	    },
+        	    error: function (xhr) {
+        	        alert("🚨 삭제 실패: " + xhr.responseText);
+        	    }
+        	});
+
         }
     }
+
 
     // 팝업 닫기
     function closePopup() {

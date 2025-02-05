@@ -25,6 +25,7 @@ import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Member_Planner;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
@@ -45,6 +46,7 @@ import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.repository.ClubReservationMemberRepository;
+import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.dto.ClubReservationInterface;
 
@@ -67,6 +69,7 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubMemberRepository clubMemberRepository;
 	private final ReservationRepository reservationRepository;
 	private final ClubReservationMemberRepository clubReservationMemberRepository;
+	private final MemberPlannerRepository memberPlannerRepository;
 	
 	
 	// 클럽생성
@@ -659,10 +662,23 @@ public class ClubServiceImpl implements ClubService {
 		keyClass.setClubCode(clubCode);
 		keyClass.setMemId(memId);
 
-		Optional<Reservation_Member_List> optional = clubReservationMemberRepository.findById(keyClass);
+		List<Reservation_Member_List> optional = clubReservationMemberRepository.findByMemId(keyClass.getMemId());
 		if(!optional.isEmpty()) {
 			return "exist";
 		}
+		
+		// 기존에 있는지 확인 (일정 취소했다가 다시 추가하는 경우)
+		Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemIAndDeleteFlagTrue(reservationCode, memId);
+
+	    if (existingPlanner.isPresent()) {
+	        Member_Planner planner = existingPlanner.get();
+	        
+	        if (planner.getDeleteFlag()) { // 기존 데이터가 삭제된 상태라면 복구
+	            planner.setDeleteFlag(false);
+	            memberPlannerRepository.save(planner);
+	        }
+
+	    }
 
 		Date reservationDate = reservation.getReservationDate();
 		LocalTime reservationTime = reservation.getReservationStartTime();
@@ -671,12 +687,21 @@ public class ClubServiceImpl implements ClubService {
 														.clubCode(clubCode).memId(memId).reservationTime(reservationTime)
 														.reservationDate(reservationDate).build();
 		Reservation_Member_List result = clubReservationMemberRepository.save(reservation_Member_List);
+		
+		
 		if(result != null) {
 			return "success";
 		}
 
 		return "fail";
 	}
+	
+	@Override
+	public String removeClubResMember(String reservationCode, String clubCode, String memId) {
+	    int updatedRows = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
+	    return updatedRows > 0 ? "success" : "fail";
+	}
+
 
 	@Override
 	public List<ClubBoardDTO> getBoardListByMemID(String username) {

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalTime;
 
+import org.springframework.data.jpa.repository.Query;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +32,7 @@ public class Member_Planner extends BaseEntity {
 	@Id
 	@Column(nullable = false, name = "PLAN_NO")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int planNo;
+	private Integer planNo;
 	
 	@JoinColumn(name = "MEM_ID")
 	@Column(name = "MEM_ID", length = 100)
@@ -57,6 +59,9 @@ public class Member_Planner extends BaseEntity {
 	private String reservationCode;
 
 	@Column(name = "DELETE_FLAG")
-	private boolean deleteFlag;
+	private Boolean deleteFlag = false;
+	
+
+
 
 }

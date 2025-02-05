@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberPlannerDTO {
-	private int planNo;
+	private Integer planNo;
 
 	private String memId;
 
@@ -31,5 +31,5 @@ public class MemberPlannerDTO {
 
 	private String reservationCode;
 
-	private boolean deleteFlag;
+	private Boolean deleteFlag;
 }

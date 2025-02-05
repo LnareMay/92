@@ -43,30 +43,36 @@ public class MemberPlannerService {
 	}
 
 	// 특정 회원의 모든 일정 조회
-	public List<Member_Planner> getAllPlanners(String memId) {
+	public List<Member_Planner> findNonClubPlannersByMemId(String memId) {
 		return memberPlannerRepository.findByMemId(memId);
 	}
 
 	// 일정 삭제
-	public void deletePlanner(int planNo) {
-		Member_Planner member_planner = memberPlannerRepository.findById(planNo)
-				.orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다."));
+	public boolean deletePlanner(Integer planNo) {
+	    try {
+	        Member_Planner member_planner = memberPlannerRepository.findById(planNo)
+	                .orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다."));
 
-		member_planner.setDeleteFlag(true);
-		memberPlannerRepository.save(member_planner);
+	        member_planner.setDeleteFlag(true);
+	        memberPlannerRepository.save(member_planner);
+	        return true; // ✅ 삭제 성공 시 true 반환
+	    } catch (Exception e) {
+	        System.err.println("🚨 일정 삭제 중 오류 발생: " + e.getMessage());
+	        return false; // ❌ 삭제 실패 시 false 반환
+	    }
 	}
 
-	public Member_Planner getPlannerById(int planNo) {
-		Member_Planner planner = memberPlannerRepository.findById(planNo)
-				.orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다. planNo: " + planNo));
 
-		planner.setDeleteFlag(false); // ✅ 해당 일정의 deleteFlag를 false로 변경
-		return memberPlannerRepository.save(planner); // ✅ 변경된 planner를 저장 후 반환
+	public Member_Planner getPlannerById(Integer planNo) {
+		return memberPlannerRepository.findByPlanNoAndDeleteFlagFalse(planNo)
+				.orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다. planNo: " + planNo));
 	}
 
 	public List<Reservation_Member_List> getClubReservations(String memId) {
-		return clubReservationMemberRepository.findByMemId(memId);
+		return clubReservationMemberRepository.findClubReservationsWithDetails(memId);
 	}
+	
+	
 
 	
 

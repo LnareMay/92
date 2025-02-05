@@ -403,6 +403,7 @@
 			console.log(response.data);
 			if(response.data == "success") {
 				printResList();
+				alert("일정에 참가되었습니다.")
 				return;
 			} else if(response.data == "exist") {
 				alert("이미 참가한 일정입니다.")

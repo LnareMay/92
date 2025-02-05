@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface MemberPlannerRepository extends JpaRepository<Member_Planner, Integer> {
 
     // 특정 회원이 등록한 일정 조회
-	@Query("SELECT m FROM Member_Planner m WHERE m.memId = :memId and m.deleteFlag = false")
+	@Query("SELECT m FROM Member_Planner m WHERE m.memId = :memId and m.deleteFlag = false and m.planIsclub = false")
     List<Member_Planner> findByMemId(@Param("memId") String memId);
 
     // 특정 회원의 특정 날짜 일정 조회
@@ -22,6 +22,13 @@ public interface MemberPlannerRepository extends JpaRepository<Member_Planner, I
     List<Member_Planner> findByMemIdAndPlanDate(@Param("memId") String memId,@Param("planDate") Date planDate);
     
     @Query("SELECT m FROM Member_Planner m WHERE m.planNo = :planNo and m.deleteFlag = false")
-    Optional<Member_Planner> findById(@Param("planNo") int planNo);
+    Optional<Member_Planner> findByPlanNoAndDeleteFlagFalse(@Param("planNo") Integer planNo);
+
+    @Query("SELECT m FROM Member_Planner m WHERE m.reservationCode = :reservationCode AND m.memId = :memId and m.deleteFlag = false")
+    Optional<Member_Planner> findByReservationCodeAndMemId(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
+    
+    @Query("SELECT m FROM Member_Planner m WHERE m.reservationCode = :reservationCode AND m.memId = :memId and m.deleteFlag = true")
+    Optional<Member_Planner> findByReservationCodeAndMemIAndDeleteFlagTrue(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
+
 
 }

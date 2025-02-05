@@ -113,4 +113,6 @@ public interface ClubService {
 
 	String getClubNameByCode(String clubCode);
 
+	String removeClubResMember(String reservationCode, String clubCode, String memId);
+
 }
