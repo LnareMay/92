@@ -92,6 +92,7 @@ public class CustomSecurityConfig {
 				// 로그인 및 정적 리소스는 모두 허용
 				.requestMatchers("/member/login","/member/checkId","/member/find_pw", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
 				.permitAll()
+				.requestMatchers(HttpMethod.DELETE, "/planner/delete").permitAll()
 				// 나머지 요청은 인증된 사용자만 접근 가능
 				.anyRequest().authenticated());
 

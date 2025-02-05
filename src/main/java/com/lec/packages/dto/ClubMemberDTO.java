@@ -23,10 +23,7 @@ public class ClubMemberDTO {
     @NotEmpty
     private int boardCount;
     
-    @NotEmpty
-    private int reportCount;
-    
-    private boolean deleteFlag;
+    private Boolean deleteFlag;
     
     private LocalDateTime CREATEDATE;
     private LocalDateTime MODIFYDATE;
