@@ -20,9 +20,6 @@ public class ClubMemberDTO {
     @NotEmpty
     private String memId;
     
-    @NotEmpty
-    private int boardCount;
-    
     private Boolean deleteFlag;
     
     private LocalDateTime CREATEDATE;

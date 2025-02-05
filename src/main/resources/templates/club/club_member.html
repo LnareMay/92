@@ -22,7 +22,7 @@
 <body>
 	<div th:insert="~{/layouts/header :: header}"></div>
 	    <main class="container my-5">
-
+			<div id="flashMessage" th:attr="data-message=${message}" style="display: none;"></div>
 	    	<section>
 	    		<a th:href="@{/club/club_detail(clubCode=${clubdto.clubCode})}" class="more-link"> < 클럽 </a>
 				<div class="d-flex align-items-center">
@@ -53,7 +53,7 @@
 					 							<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 					 							<input type="hidden" name="memId" th:value="${clubmember.memId}" />
 												<button type="submit" class="btn btn-danger delbtn">
-						 							<i class="fas fa-bell fa-shake"></i> 												
+						 							<i class="fas fa-bell"></i> 												
 												</button>
 											</form>
 										</div>
@@ -89,4 +89,16 @@
   
     <div th:insert="~{layouts/footer :: footer}"></div>
 </body>
+<script>
+	const flashMessage = document.getElementById("flashMessage");
+	if (flashMessage) {
+		const message = flashMessage.getAttribute("data-message");
+		if (message) {
+			alert(message);
+		}
+	}
+	
+	const report = 0;
+	
+</script>
 </html>

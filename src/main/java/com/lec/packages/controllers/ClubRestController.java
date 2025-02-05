@@ -473,8 +473,12 @@ public class ClubRestController {
 		log.info(reservationCode);
 		log.info(clubCode);
 
+		// 클럽 가입여부 확인
+		if (!clubService.isJoinMember(clubCode, user.getUsername())) {
+			return "notMember";
+		}
+		
 		String addResult = clubService.addClubResMember(reservationCode, clubCode, user.getUsername());
-
 		return addResult;
 	}
 
