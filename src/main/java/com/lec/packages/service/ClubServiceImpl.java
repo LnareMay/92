@@ -49,7 +49,6 @@ import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.dto.ClubReservationInterface;
-import com.lec.packages.dto.MemberJoinDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -281,17 +280,16 @@ public class ClubServiceImpl implements ClubService {
 		Club club = clubRepository.findById(clubCode)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 클럽입니다."));
 		// 비공개 클럽일때
-		if (club.isClubIsprivate()) {
-			if (club.getClubPw() == null || !club.getClubPw().equals(clubPw)) {
+		if (club.isClubIsprivate() && (club.getClubPw() == null || !club.getClubPw().equals(clubPw))) {
 				throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-			}
 		}
 		
 		Club_Member_List clubMember = new Club_Member_List();
 		clubMember.setMemId(memId);
 		clubMember.setClubCode(clubCode);
+		clubMember.setDeleteFlag(false);
 		
-	    clubMemberRepository.save(clubMember);		
+		clubMemberRepository.save(clubMember);			
 	}
 	
 	// 클럽가입시 이미가입되어있는 회원인지 확인

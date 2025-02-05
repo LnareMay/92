@@ -26,9 +26,7 @@
 	<div th:insert="~{/layouts/header :: header}"></div>
 
  	<main class="container my-4">
- 		<div id="flashMessage" th:if="${message != null}" th:data-message="${message}" style="display: none;">
-		</div>
-		</th:if>
+ 		<div id="flashMessage" th:if="${message != null}" th:data-message="${message}" style="display: none;"></div>
  	<section>
         <!-- 대표이미지 -->		
 			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -108,7 +106,7 @@
 	
 					<p th:if="${!clubdto.clubIsprivate}" id="popupMessage">클럽을 가입하시겠습니까?</p>
 					<form id="joinForm" action="/club/club_join" method="post">
-						<input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
+						<input type="hidden" name="clubCode" id="joinClubCode" th:value="${clubdto.clubCode}" />
 						<div th:if="${clubdto.clubIsprivate}">
 							<input type="password" id="clubPw" name="clubPw" placeholder="비밀번호를 입력하세요"/>
 						</div> 			
@@ -161,8 +159,9 @@
                     <section class="clubsection">
                       <div class="section-header mb-3">
                         <h6>멤버 [[${clubdto.memberCount}]]</h6>
-                        <a th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}"
-                          class="more-link">더보기</a>
+                        <a th:if="${isMember}" class="more-link"
+						   th:href="@{/club/club_member(clubCode=${clubdto.clubCode})}">더보기</a>
+                        <a th:unless="${isMember}" class="more-link" th:onclick="openJoinPopup()">더보기</a>
                       </div>
                       <div class="d-flex flex-column">
                         <div class="d-flex align-items-center mb-3"
@@ -254,6 +253,7 @@
 	getBoard(clubCode, 1, 3)
 	
 	// 클럽가입/탈퇴 팝업
+	const openJoinButton = document.getElementById("openJoinPopup");
 	const confirmAction = document.getElementById("confirmAction");
     const passwordPopup = document.getElementById("passwordPopup");
 	const joinForm = document.getElementById("joinForm")	
@@ -265,17 +265,20 @@
 	const isPw = /*[[${clubdto.clubPw}]]*/''
 	
 	// 팝업 열기
-	if(document.getElementById("openJoinPopup") != null) {
-		console.log(document.getElementById("openJoinPopup"));
+	if(openJoinButton != null) {
+		console.log(openJoinButton);
 		
-		document.getElementById("openJoinPopup").addEventListener("click", (event) => {
+		openJoinButton.addEventListener("click", (event) => {
 			event.preventDefault();
 			passwordPopup.style.display = "flex";
 		});
-		
+	}	
+	
+	function openJoinPopup(clubCode) {
+		document.getElementById("joinClubCode").vale = clubCode;
+		passwordPopup.style.display = "flex";
 	}
-
-
+	
 	// 팝업 내 가입 버튼
 	if (confirmAction) {
 		confirmAction.addEventListener("click", (event) => {
@@ -298,29 +301,6 @@
 	document.getElementById("closePopup").addEventListener("click", () => {
 		passwordPopup.style.display = "none"
 	});
-	
-	/* 클럽 탈퇴 팝업
-	delJoinPopup.addEventListener("click", () => {
-	       delPopup.style.display = "flex";
-	});
-	
-	const joindeleteForm = document.getElementById("joindeleteForm");
-	   joindeleteForm.addEventListener("submit", (event) => {
-	       const confirmation = confirm("정말 클럽을 탈퇴하시겠습니까?");
-	       if (!confirmation) {
-	           event.preventDefault(); // 폼 제출 방지
-	   }
-	});
-	
-	closeDelPopup.addEventListener("click", () => {
-	       delPopup.style.display = "none";
-	   });
-	   
-	  */
-
-
-	
-
 
 	/* 이미 가입/탈퇴된 회원확인 */
 	 const flashMessage = document.getElementById("flashMessage");
@@ -404,6 +384,9 @@
 			} else if(response.data == "exist") {
 				alert("이미 참가한 일정입니다.")
 				return;
+			} else if(response.data == "notMember") {
+				alert("클럽 가입 후 일정에 참가할 수 있습니다.")
+				openJoinPopup(clubCode);
 			}
 		} else {
 			return
