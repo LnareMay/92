@@ -719,8 +719,14 @@ public class ClubServiceImpl implements ClubService {
 	
 	@Override
 	public String removeClubResMember(String reservationCode, String clubCode, String memId) {
-	    int updatedRows = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
-	    return updatedRows > 0 ? "success" : "fail";
+	    int updatedRowsClubList = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
+	    Optional<Member_Planner> memberPlannerOptional = memberPlannerRepository.findByReservationCodeAndMemId(reservationCode, memId);
+	    memberPlannerOptional.ifPresent(planner -> {
+	        planner.setDeleteFlag(true); // ✅ deleteFlag를 true로 변경
+	        memberPlannerRepository.save(planner); // ✅ 변경된 값 저장
+	    });
+
+	    return updatedRowsClubList > 0 ? "success" : "fail";
 	}
 
 

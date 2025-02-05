@@ -160,24 +160,18 @@ public class MemberPlannerController {
 	            return ResponseEntity.badRequest().body("🚨 삭제할 일정이 없습니다.");
 	        }
 
-	        System.out.println("🛠️ [삭제 진행] 일정 번호: " + planNo);
-	        boolean plannerDeleted = memberPlannerService.deletePlanner(planNo);
-	        System.out.println("🛠️ [삭제 완료] memberPlanner 삭제 여부: " + plannerDeleted);
-
 	        boolean clubMemberRemoved = true; // 기본값 설정
 	        if (clubCode != null && !clubCode.trim().isEmpty()) {
 	            System.out.println("🛠️ [삭제 진행] 예약 코드: " + reservationCode + ", 클럽 코드: " + clubCode);
 	            clubMemberRemoved = clubService.removeClubResMember(reservationCode, clubCode, memId).equals("success");
 	            System.out.println("🛠️ [삭제 완료] 클럽 멤버 삭제 여부: " + clubMemberRemoved);
-	        }
-
-	        if (plannerDeleted && clubMemberRemoved) {
-	            return ResponseEntity.ok("✅ 클럽 일정이 삭제되었습니다.");
-	        } else if (!plannerDeleted) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 일정 삭제 실패");
 	        } else {
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("🚨 클럽 예약 멤버 삭제 실패");
+	        	boolean plannerDeleted = memberPlannerService.deletePlanner(planNo);
 	        }
+	        
+	        return ResponseEntity.ok("✅ 클럽 일정이 삭제되었습니다.");
+
+	        
 	    } catch (Exception e) {
 	        System.out.println("❌ [에러 발생] " + e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 삭제 중 오류 발생: " + e.getMessage());
