@@ -107,3 +107,8 @@ com:
   lec:
     upload:
       path: ./src/main/resources/static/img/upload/
+
+00Data:
+  admin:
+    memId: 00Data
+    keyString: 76a1a34a775a4e9e80ab69f035c7e7ac
