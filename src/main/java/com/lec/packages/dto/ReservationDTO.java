@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import jakarta.validation.constraints.NotNull;
@@ -85,5 +86,12 @@ public class ReservationDTO {
 				this.facilityName = facilityName;
 				this.createDate = createDate;
 		}
+	
+    //createDate 포멧팅
+    public String getFormattedCreateDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return createDate != null ? createDate.format(formatter) : "";
+    }
+    
 
 }

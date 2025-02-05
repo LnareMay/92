@@ -124,12 +124,7 @@
 										<p>매출 상세</p>
 									</a>
 								</li>
-								<li class="nav-item">
-									<a href="/admin/calendar" class="nav-link">
-										 <i class="far fa-circle nav-icon"></i>
-										 <p>시설 예약 현황</p>
-									 </a>
-								 </li>
+								
 							 </ul>
 						 </li>
                     </ul>
@@ -165,6 +160,16 @@
                             <div class="card card-primary">
                                 <div class="card-body p-0">
                                     <div id="calendar"></div>
+									<div id="reservationDetailModal" 
+										style="display: none;  position: absolute; top:50%; left:50%;
+											   transform:translate(-50%,-50%); background: papayawhip; 
+											   padding: 20px; border-radius: 8px; z-index:1050;">
+										<h3 id="modalTitle"></h3>
+										<hr>
+										<p><strong>시작시간:</strong><span id="modalStart"></span></p>
+										<p><strong>종료시간:</strong><span id="modalEnd"></span></p>
+										 <button onclick="closeModal()">닫기</button>
+									</v>
                                 </div>
                             </div>
                         </div>
@@ -195,6 +200,23 @@
     
     <!-- Calendar Initialize Script -->
     <script>
+		
+		function openModal() {
+		    var reservationDetailModal = document.getElementById('reservationDetailModal');
+		    reservationDetailModal.style.display = "block";
+		}
+		// 모달 닫기 함수
+		function closeModal() {
+			if (event) event.stopPropagation(); // 이벤트 전파 방지
+			 var reservationDetailModal = document.getElementById('reservationDetailModal');
+			 
+			 if (reservationDetailModal) {
+				 reservationDetailModal.style.display = "none";
+			  } else {
+				console.error("모달 요소를 찾을 수 없습니다.");
+			}
+		}
+		
         $(function() {
             var Calendar = FullCalendar.Calendar;
             var calendarEl = document.getElementById('calendar');
@@ -214,13 +236,23 @@
 				       meridiem: 'short' // 'short'로 설정하면 AM/PM 형식으로 표시
 				   },
 			    eventClick: function(info) {
-			        // 이벤트 클릭시 동작
+					openModal(); // 모달 열기 함수 호출
+					var reservationDetailModal = document.getElementById('reservationDetailModal');
+					reservationDetailModal.style.display="block";
+					document.getElementById('modalTitle').innerText = info.event.title;
+					document.getElementById('modalStart').innerText = info.event.start.toLocaleString();
+					document.getElementById('modalEnd').innerText=info.event.end ? info.event.end.toLocaleString(): '없음';
 			        console.log(info.event.title);
+					
+					
 			    }
+				
+				
 			});
 
             calendar.render();
         });
+
     </script>
 	
 </body>

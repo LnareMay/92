@@ -1,140 +1,130 @@
 $(function () {
-  'use strict'
+  'use strict';
 
   var ticksStyle = {
-    fontColor: '#495057',
-    fontStyle: 'bold'
-  }
+    color: '#495057', // 텍스트 색상
+    weight: 'bold' // 텍스트 굵기 (Chart.js 3.x 이상에서는 weight 사용)
+  };
 
-  var mode      = 'index'
-  var intersect = true
+  var mode = 'index';
+  var intersect = true;
 
-  var $salesChart = $('#sales-chart')
-  var salesChart  = new Chart($salesChart, {
-    type   : 'bar',
-    data   : {
-      labels  : ['JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-      datasets: [
-        {
-          backgroundColor: '#007bff',
-          borderColor    : '#007bff',
-          data           : [1000, 2000, 3000, 2500, 2700, 2500, 3000]
-        },
-        {
-          backgroundColor: '#ced4da',
-          borderColor    : '#ced4da',
-          data           : [700, 1700, 2700, 2000, 1800, 1500, 2000]
-        }
-      ]
-    },
-    options: {
-      maintainAspectRatio: false,
-      tooltips           : {
-        mode     : mode,
-        intersect: intersect
-      },
-      hover              : {
-        mode     : mode,
-        intersect: intersect
-      },
-      legend             : {
-        display: false
-      },
-      scales             : {
-        yAxes: [{
-          // display: false,
-          gridLines: {
-            display      : true,
-            lineWidth    : '4px',
-            color        : 'rgba(0, 0, 0, .2)',
-            zeroLineColor: 'transparent'
-          },
-          ticks    : $.extend({
-            beginAtZero: true,
+  const dailyLabels = /*[[${dailyLabels}]]*/ [];
+  const dailyData = /*[[${dailyData}]]*/ [];
+  const lastWeekData = /*[[${lastWeekData}]]*/ [];
+  const monthlyLabels = /*[[${monthlyLabels}]]*/ [];
+  const monthlyData = /*[[${monthlyData}]]*/ [];
 
-            // Include a dollar sign in the ticks
-            callback: function (value, index, values) {
-              if (value >= 1000) {
-                value /= 1000
-                value += 'k'
-              }
-              return '$' + value
-            }
-          }, ticksStyle)
-        }],
-        xAxes: [{
-          display  : true,
-          gridLines: {
-            display: false
-          },
-          ticks    : ticksStyle
-        }]
-      }
-    }
-  })
+  const labels = dailyLabels;
+  const dailyAmounts = dailyData;
+  const lastWeekAmounts = lastWeekData;
 
-  var $visitorsChart = $('#visitors-chart')
-  var visitorsChart  = new Chart($visitorsChart, {
-    data   : {
-      labels  : ['18th', '20th', '22nd', '24th', '26th', '28th', '30th'],
-      datasets: [{
-        type                : 'line',
-        data                : [100, 120, 170, 167, 180, 177, 160],
-        backgroundColor     : 'transparent',
-        borderColor         : '#007bff',
-        pointBorderColor    : '#007bff',
-        pointBackgroundColor: '#007bff',
-        fill                : false
-        // pointHoverBackgroundColor: '#007bff',
-        // pointHoverBorderColor    : '#007bff'
-      },
-        {
-          type                : 'line',
-          data                : [60, 80, 70, 67, 80, 77, 100],
-          backgroundColor     : 'tansparent',
-          borderColor         : '#ced4da',
-          pointBorderColor    : '#ced4da',
-          pointBackgroundColor: '#ced4da',
-          fill                : false
-          // pointHoverBackgroundColor: '#ced4da',
-          // pointHoverBorderColor    : '#ced4da'
-        }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      tooltips           : {
-        mode     : mode,
-        intersect: intersect
-      },
-      hover              : {
-        mode     : mode,
-        intersect: intersect
-      },
-      legend             : {
-        display: false
-      },
-      scales             : {
-        yAxes: [{
-          // display: false,
-          gridLines: {
-            display      : true,
-            lineWidth    : '4px',
-            color        : 'rgba(0, 0, 0, .2)',
-            zeroLineColor: 'transparent'
-          },
-          ticks    : $.extend({
-            beginAtZero : true,
-            suggestedMax: 200
-          }, ticksStyle)
-        }],
-        xAxes: [{
-          display  : true,
-          gridLines: {
-            display: false
-          },
-          ticks    : ticksStyle
-        }]
-      }
-    }
-  })
-})
+  const maxdailyAmount = Math.max(...dailyAmounts);
+  const maxlastWeekAmount = Math.max(...lastWeekAmounts);
+  const maxAmount = Math.max(maxdailyAmount, maxlastWeekAmount);
+  
+  const suggestedMaxAmount = maxAmount + 100000; // 최대값에 여유 추가
+
+  const ctx_line = document.getElementById('lineChart').getContext('2d');
+
+  const monthlyLabel = monthlyLabels; 
+  const monthlyAmounts = monthlyData;
+
+  console.log("Labels from server:", monthlyLabel);
+  console.log("Amounts from server:", monthlyAmounts);
+
+  if (monthlyLabel.length === 0 || monthlyAmounts.length === 0) {
+	console.warn("No data available for the chart.");
+	return;
+	}
+
+	const maxMonthlyAmount = Math.max(...monthlyAmounts);
+	const suggestedMaxMonthly = maxMonthlyAmount + 100000;
+
+	new Chart(ctx_line, {
+		type: 'line',
+		data: {
+			labels: monthlyLabel,
+			datasets: [{
+				label: '월별 매출액 (원)', // 오타 수정 (abel → label)
+				data: monthlyAmounts,
+				backgroundColor: 'rgba(54, 162, 235, 0.5)',
+				borderColor: 'rgba(54, 162, 235, 1)',
+				borderWidth: 1
+			}]
+		},
+		options: {
+			responsive: true,
+			scales: {
+				y: {
+					beginAtZero: true,
+					suggestedMax: suggestedMaxMonthly,
+					ticks: { // ticks 내부로 callback 이동
+						callback(value) {
+							return value.toLocaleString() + '원'; 
+						}
+					}
+				}
+			}
+		}
+	});
+
+	var $visitorsChart = $('#visitors-chart');
+	new Chart($visitorsChart, {
+	  type: 'line',
+	  data: {
+	    labels: labels,
+	    datasets: [
+	      {
+	        label: '이번 주 매출',
+	        data: dailyAmounts,
+	        backgroundColor: 'transparent',
+	        borderColor: '#007bff',
+	        pointBorderColor: '#007bff',
+	        pointBackgroundColor: '#007bff',
+	        fill: false
+	      },
+	      {
+	        label: '지난 주 매출',
+	        data: lastWeekAmounts,
+	        backgroundColor: 'transparent',
+	        borderColor: '#ced4da',
+	        pointBorderColor: '#ced4da',
+	        pointBackgroundColor: '#ced4da',
+	        fill: false
+	      }
+	    ]
+	  },
+	  options: {
+	    responsive: true,
+	    plugins: {
+	      tooltip: {
+	        callbacks: {
+	          label(context) {
+	            let value = context.raw || 0;
+	            return value.toLocaleString() + '원';
+	          }
+	        }
+	      },
+	      legend: {
+	        display: true,
+	        labels: {
+	          color:'#495057', 
+	          font:{
+	            weight:'bold'
+	         }}
+	      }
+	    },
+	    scales:{
+	      y:{
+	        beginAtZero:true,
+	        ticks:{
+	          callback:function(value){
+	            return value.toLocaleString()+'원';
+	          }
+	        }
+	      }
+	    }
+	  }
+	});
+});

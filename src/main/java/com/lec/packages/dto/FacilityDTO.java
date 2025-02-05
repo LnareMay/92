@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FacilityDTO {
     
-	
+	private int number; // 넘버링 필드 추가
     private String facilityCode;
 
     @NotNull

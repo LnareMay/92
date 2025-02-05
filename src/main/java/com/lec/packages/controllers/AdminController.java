@@ -2,10 +2,14 @@ package com.lec.packages.controllers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,12 +68,80 @@ public class AdminController {
 		String userId = userDetails.getUsername();
 
 		PageResponseDTO<FacilityDTO> responseFacilityDTO = facilityService.listByUser(userId, pageRequestDTO);
-		PageResponseDTO<ReservationDTO> responseReservationDTO = reservationService.getAllReservationsForUser(userId,
-				pageRequestDTO);
+		PageResponseDTO<ReservationDTO> responseReservationDTO = reservationService.getAllReservationsForUser(userId,pageRequestDTO);
+		
+		//매출데이터 가져오기 
+		List<SalesDTO> salesData=revenueService.getSalesData(userId);
+		
+		//날짜 범위 생성(현재날짜와 지난 7일)
+		LocalDate today=LocalDate.now();
+		LocalDate sevenDaysAgo=today.minusDays(6);
+		
+		LocalDate lastWeekStart = today.minusWeeks(1).minusDays(6);
+		LocalDate lastWeekEnd=today.minusWeeks(1);
+		
+		 //날짜 범위 생성(지난 5개월)
+        LocalDate fiveMonthsAgo = today.minusMonths(4); 
+		
+        
+		List<String> dailyLabels = sevenDaysAgo.datesUntil(today.plusDays(1))
+											   .map(LocalDate::toString)
+											   .collect(Collectors.toList());
+		
+		List<String>lastWeekLabels = lastWeekStart.datesUntil(today.plusDays(1))
+				.map(LocalDate::toString)
+				.collect(Collectors.toList());
+		
+		List<String> monthlyLabels = fiveMonthsAgo.withDayOfMonth(1) // 시작 날짜를 해당 달의 첫 번째 날로 설정
+				 .datesUntil(today.plusMonths(1).withDayOfMonth(1), Period.ofMonths(1))
+				 .map(date -> date.format(DateTimeFormatter.ofPattern("yyyy-MM")))
+				 .collect(Collectors.toList());
 
+		
+		
+		//매출 데이터를 날짜별로 매핑 
+		Map<String,BigDecimal> dailySalesMap=salesData.stream()
+													  .collect(Collectors.groupingBy(
+															  dto -> dto.getTransferDate()
+															  			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+															  Collectors.mapping(SalesDTO::getAmount,Collectors.reducing(BigDecimal.ZERO,BigDecimal::add))
+													));
+		
+        //매출 데이터를 월별로 매핑 
+        Map<String, BigDecimal> monthlySalesMap = salesData.stream()
+                .collect(Collectors.groupingBy(
+                    dto -> dto.getTransferDate().format(DateTimeFormatter.ofPattern("yyyy-MM")),
+                    Collectors.mapping(SalesDTO::getAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                ));
+		
+		//날짜별 매출 데이터 생성(데이터가 없는 날짜엔 0으로 채움)
+		List<BigDecimal> dailyData=dailyLabels.stream()
+											  .map(date->dailySalesMap.getOrDefault(date, BigDecimal.ZERO))
+											  .collect(Collectors.toList());
+		
+		List<BigDecimal> lastWeekData=lastWeekLabels.stream()
+													.map(date->dailySalesMap.getOrDefault(date, BigDecimal.ZERO))
+													.collect(Collectors.toList());
+		
+		 // 월별 매출 데이터 생성 (없는 날짜는 0으로 채움)
+        List<BigDecimal> monthlyData = monthlyLabels.stream()
+                                                .map(date -> monthlySalesMap.getOrDefault(date, BigDecimal.ZERO))
+                                                .collect(Collectors.toList());
+		
+		
+		
 		model.addAttribute("userId", userId);
 		model.addAttribute("facilities", responseFacilityDTO.getDtoList());
 		model.addAttribute("reservations", responseReservationDTO.getDtoList());
+		model.addAttribute("dailyLabels", dailyLabels);
+	    model.addAttribute("dailyData", dailyData);
+	    model.addAttribute("lastWeekData", lastWeekData);
+	    model.addAttribute("lastWeekLabels", lastWeekLabels);
+	    model.addAttribute("monthlyLabels", monthlyLabels);
+        model.addAttribute("monthlyData", monthlyData);
+
+		
+		
 		// Member 객체를 가져오는 로직 추가 [관리자정보]
 		Optional<Member> managerOptional = memberRepository.findById(userId);
 		if (managerOptional.isPresent()) {
@@ -161,20 +233,32 @@ public class AdminController {
 	public String ListFaciltyPage(PageRequestDTO pageRequestDTO, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 
-		String userId = userDetails.getUsername();
+		String memId = userDetails.getUsername();
 
-		PageResponseDTO<FacilityDTO> responseDTO = facilityService.listByUser(userId, pageRequestDTO);
-		log.info("............................." + responseDTO);
+		PageResponseDTO<FacilityDTO> responseDTO = facilityService.listByUser(memId, pageRequestDTO);
+		
+	    // 삭제되지 않은 시설만 필터링(soft Delete)
+	    List<FacilityDTO> filteredList = responseDTO.getDtoList()
+	    											.stream()
+										            .filter(facility -> !facility.isDeleteFlag())
+										            .collect(Collectors.toList());
+		
+	    // 넘버링 계산(물리적/softDelete방식으로 삭제했을 때 넘버링)
+	    int startNumber = (pageRequestDTO.getPage() - 1) * pageRequestDTO.getSize() + 1;
+	    for (int i = 0; i < filteredList.size(); i++) {
+	        filteredList.get(i).setNumber(startNumber + i);
+	    }
 
-		model.addAttribute("userId", userId);
+		model.addAttribute("memId", memId);
 
-		model.addAttribute("facilities", responseDTO.getDtoList());
+	   //model.addAttribute("facilities", responseDTO.getDtoList());
+		model.addAttribute("facilities", filteredList); // 필터링된 리스트를 전달
 		model.addAttribute("totalPages", responseDTO.getTotal());
 		model.addAttribute("pageNumber", pageRequestDTO.getPage()); // 현재 페이지 번호
 		model.addAttribute("pageSize", pageRequestDTO.getSize()); // 한 페이지당 항목 수
 
 		// Member 객체를 가져오는 로직 추가 [관리자정보]
-		Optional<Member> managerOptional = memberRepository.findById(userId);
+		Optional<Member> managerOptional = memberRepository.findById(memId);
 		if (managerOptional.isPresent()) {
 			model.addAttribute("manager", managerOptional.get());
 		}
@@ -195,7 +279,7 @@ public class AdminController {
 //	     // 모든 시설의 예약 정보를 담을 리스트
 //	     List<ReservationDTO> allReservations = new ArrayList<>();
 //	     
-//	     // 각 시설의 예약 정보 조회 --> 凸성능 쓰레기凸
+//	     // 각 시설의 예약 정보 조회 
 //	     for (FacilityDTO facility : facilityDTOs) {
 //	         PageResponseDTO<ReservationDTO> responseDTO = 
 //	             reservationService.getReservationByFacilityCode(facility.getFacilityCode(), pageRequestDTO);
@@ -249,8 +333,7 @@ public class AdminController {
 
 		String memId = userDetails.getUsername();
 
-		PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,
-				pageRequestDTO);
+		PageResponseDTO<ReservationDTO> responseDTO = reservationService.getAllReservationsForUser(memId,pageRequestDTO);
 
 		model.addAttribute("memId", memId);
 		model.addAttribute("reservations", responseDTO.getDtoList());
@@ -507,25 +590,50 @@ public class AdminController {
         // 날짜 범위 생성 (지난 7일)
         LocalDate today = LocalDate.now();
         LocalDate sevenDaysAgo = today.minusDays(6);
+        
+        //날짜 범위 생성(지난 5개월)
+        LocalDate fiveMonthsAgo = today.minusMonths(4); 
+        
         List<String> dailyLabels = sevenDaysAgo.datesUntil(today.plusDays(1))
                                                .map(LocalDate::toString)
                                                .collect(Collectors.toList());
 
+        List<String> monthlyLabels = fiveMonthsAgo.withDayOfMonth(1) // 시작 날짜를 해당 달의 첫 번째 날로 설정
+                								 .datesUntil(today.plusMonths(1).withDayOfMonth(1), Period.ofMonths(1))
+                								 .map(date -> date.format(DateTimeFormatter.ofPattern("yyyy-MM")))
+                								 .collect(Collectors.toList());
+       
         // 매출 데이터를 날짜별로 매핑
         Map<String, BigDecimal> dailySalesMap = salesData.stream()
             .collect(Collectors.groupingBy(
                 dto -> dto.getTransferDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 Collectors.mapping(SalesDTO::getAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
             ));
-
+        
+        //매출 데이터를 월별로 매핑 
+        Map<String, BigDecimal> monthlySalesMap = salesData.stream()
+                .collect(Collectors.groupingBy(
+                    dto -> dto.getTransferDate().format(DateTimeFormatter.ofPattern("yyyy-MM")),
+                    Collectors.mapping(SalesDTO::getAmount, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                ));
+        
         // 날짜별 매출 데이터 생성 (없는 날짜는 0으로 채움)
         List<BigDecimal> dailyData = dailyLabels.stream()
                                                 .map(date -> dailySalesMap.getOrDefault(date, BigDecimal.ZERO))
                                                 .collect(Collectors.toList());
         
+        // 월별 매출 데이터 생성 (없는 날짜는 0으로 채움)
+        List<BigDecimal> monthlyData = monthlyLabels.stream()
+                                                .map(date -> monthlySalesMap.getOrDefault(date, BigDecimal.ZERO))
+                                                .collect(Collectors.toList());
+        
         System.out.println("Daily Sales Map: " + dailySalesMap);
         System.out.println("Daily Labels: " + dailyLabels);
         System.out.println("Daily Data: " + dailyData);
+        
+        System.out.println("monthly Sales Map: " + monthlySalesMap);
+        System.out.println("monthly Labels: " + monthlyLabels);
+        System.out.println("monthly Data: " + monthlyData);
         
         
      // Member 객체를 가져오는 로직 추가 [관리자정보]
@@ -539,6 +647,8 @@ public class AdminController {
         model.addAttribute("reservations", responseDTO.getDtoList());
         model.addAttribute("dailyLabels", dailyLabels);
         model.addAttribute("dailyData", dailyData);
+        model.addAttribute("monthlyLabels", monthlyLabels);
+        model.addAttribute("monthlyData", monthlyData);
 
         return "admin/Admin_Revenue";
     }
