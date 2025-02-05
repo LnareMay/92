@@ -18,6 +18,10 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
 
 	@Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
 	List<Object[]> countByClubCode();
+	
+    // 회원이 가입한 클럽 목록 조회
+	@Query("SELECT cm.clubCode FROM Club_Member_List cm WHERE cm.memId = :memId AND cm.deleteFlag = false")
+    List<String> findJoinClubCodeByMemId(@Param("memId") String memId);
     
     // 탈퇴된 회원 조회
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
@@ -43,4 +47,5 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
     // 클럽별 회원 신고 수 
     @Query("SELECT cm FROM Club_Member_List cm WHERE cm.clubCode = :clubCode")
     List<Club_Member_List> findReportCount(@Param("clubCode") String clubCode);
+    
 }

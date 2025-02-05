@@ -28,6 +28,7 @@ public interface ClubService {
 	boolean isJoinMember(String memId, String clubCode); 
 	void joindelete(String memId, String clubCode);
 	boolean isJoinDeleteMember(String memId, String clubCode);
+	List<String> findJoinClubCodeByMemId(String memId);
 
 	Map<String, Integer> membercount();
 	List<Member> findMemberDetails(String clubCode);
@@ -107,11 +108,13 @@ public interface ClubService {
 
     List<ClubReservationDTO> getClubResList(String clubCode);
 
-
     String addClubResMember(String reservationCode, String clubCode, String memId);
+    void removeClubResMember(String clubCode, String memId);
 
     List<ClubBoardDTO> getBoardListByMemID(String username);
 
 	String getClubNameByCode(String clubCode);
+
+	String removeClubResMember(String reservationCode, String clubCode, String memId);
 
 }

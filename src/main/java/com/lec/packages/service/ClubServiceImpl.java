@@ -26,6 +26,7 @@ import com.lec.packages.domain.Club_Board;
 import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.Club_Member_List;
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Member_Planner;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
@@ -45,6 +46,7 @@ import com.lec.packages.repository.ClubBoardRepository;
 import com.lec.packages.repository.ClubMemberRepository;
 import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.repository.ClubReservationMemberRepository;
+import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.dto.ClubReservationInterface;
 import com.lec.packages.dto.MemberJoinDTO;
@@ -68,6 +70,7 @@ public class ClubServiceImpl implements ClubService {
 	private final ClubMemberRepository clubMemberRepository;
 	private final ReservationRepository reservationRepository;
 	private final ClubReservationMemberRepository clubReservationMemberRepository;
+	private final MemberPlannerRepository memberPlannerRepository;
 	
 	
 	// 클럽생성
@@ -292,49 +295,54 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽가입시 이미가입되어있는 회원인지 확인
-		@Override
-		public boolean isJoinMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinMember(String memId, String clubCode) {
 			
-			List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
+		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
 
-		    return joinMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));			
-		}
+	    return joinMembers.stream()
+	            .anyMatch(member -> member.getMemId().equals(memId));			
+	}
 	
 	// 클럽탈퇴
-		@Override
-		public void joindelete(String memId, String clubCode) {	    
-		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
-		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+	@Override
+	public void joindelete(String memId, String clubCode) {	    
+	    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+	            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
-		    clubMember.setDeleteFlag(true);
-		    clubMemberRepository.save(clubMember);
-		}
+	    clubMember.setDeleteFlag(true);
+	    clubMemberRepository.save(clubMember);
+	}
+	
+	// 회원이 가입한 클럽 목록조회
+	@Override
+	public List<String>	findJoinClubCodeByMemId(String memId) {
+		return clubMemberRepository.findJoinClubCodeByMemId(memId);
+	}
 		
-		// 클럽회원 신고
-		@Override
-		public int clubReport(String memId, String clubCode) {	  
-			
-		    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
-		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+	// 클럽회원 신고
+	@Override
+	public int clubReport(String memId, String clubCode) {	  
+		
+		Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
-		    int reportNo = clubMember.getReportCount() + 1;
-		    clubMember.setReportCount(reportNo);
-		    int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
+		int reportNo = clubMember.getReportCount() + 1;
+		clubMember.setReportCount(reportNo);
+		int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
 		    
-
-		    return resultReportNo;
-		}
+		return resultReportNo;
+	}
 
 	// 클럽탈퇴시 이미탈퇴되어있는 회원인지 확인
-		@Override
-		public boolean isJoinDeleteMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinDeleteMember(String memId, String clubCode) {
 
-		    List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
+		List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
 
-		    return deletedMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));
-		}	
+		return deletedMembers.stream()
+					.anyMatch(member -> member.getMemId().equals(memId));
+	}	
 		
     // 클럽멤버 목록조회 
 	@Override
@@ -677,10 +685,23 @@ public class ClubServiceImpl implements ClubService {
 		keyClass.setClubCode(clubCode);
 		keyClass.setMemId(memId);
 
-		Optional<Reservation_Member_List> optional = clubReservationMemberRepository.findById(keyClass);
+		List<Reservation_Member_List> optional = clubReservationMemberRepository.findByMemId(keyClass.getMemId());
 		if(!optional.isEmpty()) {
 			return "exist";
 		}
+		
+		// 기존에 있는지 확인 (일정 취소했다가 다시 추가하는 경우)
+		Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemIAndDeleteFlagTrue(reservationCode, memId);
+
+	    if (existingPlanner.isPresent()) {
+	        Member_Planner planner = existingPlanner.get();
+	        
+	        if (planner.getDeleteFlag()) { // 기존 데이터가 삭제된 상태라면 복구
+	            planner.setDeleteFlag(false);
+	            memberPlannerRepository.save(planner);
+	        }
+
+	    }
 
 		Date reservationDate = reservation.getReservationDate();
 		LocalTime reservationTime = reservation.getReservationStartTime();
@@ -689,12 +710,21 @@ public class ClubServiceImpl implements ClubService {
 														.clubCode(clubCode).memId(memId).reservationTime(reservationTime)
 														.reservationDate(reservationDate).build();
 		Reservation_Member_List result = clubReservationMemberRepository.save(reservation_Member_List);
+		
+		
 		if(result != null) {
 			return "success";
 		}
 
 		return "fail";
 	}
+	
+	@Override
+	public String removeClubResMember(String reservationCode, String clubCode, String memId) {
+	    int updatedRows = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
+	    return updatedRows > 0 ? "success" : "fail";
+	}
+
 
 	@Override
 	public List<ClubBoardDTO> getBoardListByMemID(String username) {
@@ -717,5 +747,17 @@ public class ClubServiceImpl implements ClubService {
 	public String getClubNameByCode(String clubCode) {
         return clubRepository.findClubNameByClubCode(clubCode);
     }
+
+	// 클럽 일정에 참가한 회원 취소
+	@Override
+	public void removeClubResMember(String clubCode, String memId) {
+		Optional<Reservation_Member_List> optionalResMember = clubReservationMemberRepository.findByClubCodeAndMemId(clubCode, memId);
+		
+		if (optionalResMember.isPresent()) {
+			Reservation_Member_List resMemberList = optionalResMember.get();
+			resMemberList.setDeleteFlag(true);
+			clubReservationMemberRepository.save(resMemberList);			
+		}	
+	}
 
 }
