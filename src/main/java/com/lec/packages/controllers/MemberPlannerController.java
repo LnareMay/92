@@ -99,7 +99,7 @@ public class MemberPlannerController {
 	            }
 	            
 	            Map<String, Object> map = new HashMap<>();
-	            map.put("id", existingPlanner.get().getPlanNo());
+	            map.put("id", res.getMemId()+res.getReservationCode());
                 map.put("title", "[클럽] " + clubName);
                 map.put("start", res.getReservationDate().toString());
                 map.put("planText", "장소 : " + facilityName + "\n시간 :" + startTime + "~" + endTime);
@@ -154,11 +154,6 @@ public class MemberPlannerController {
 	        String reservationCode = (String) requestData.get("reservationCode");
 	        String clubCode = (String) requestData.get("clubCode");
 	        String memId = (String) requestData.get("memId");
-
-	        if (planNo == null) {
-	            System.out.println("❌ [에러] planNo가 null입니다.");
-	            return ResponseEntity.badRequest().body("🚨 삭제할 일정이 없습니다.");
-	        }
 
 	        boolean clubMemberRemoved = true; // 기본값 설정
 	        if (clubCode != null && !clubCode.trim().isEmpty()) {
