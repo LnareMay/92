@@ -33,6 +33,7 @@ import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.security.CustomUserDetailsService;
+import com.lec.packages.service.ClubService;
 import com.lec.packages.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +54,8 @@ public class MemberController {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
+	
+	private final ClubService clubService;
 
 	@GetMapping({"/login/{logout}" })
 	public void loginGet(@RequestParam(name = "logout", defaultValue = "") @PathVariable Optional<String> logout,
@@ -202,6 +205,15 @@ public class MemberController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			String username = authentication.getName(); // 현재 사용자 ID
 
+			// 회원이 가입한 클럽 목록 조회
+			List<String> clubCodes = clubService.findJoinClubCodeByMemId(username);
+					
+			// 회원이 가입한 클럽 탈퇴, 참여한 일정 삭제
+			for (String clubCode : clubCodes) {
+				clubService.joindelete(username, clubCode);	
+				clubService.removeClubResMember(clubCode, username);
+			}
+			
 			// 회원 삭제 처리 (DELETE_FLAG를 1로 설정)
 			memberService.remove(username);
 

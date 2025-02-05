@@ -114,6 +114,7 @@ public class ClubController {
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
 	
+	// 회원탈퇴
 	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_joindelete")
 	public String clubJoinDelete(@RequestParam(value = "clubCode", required = false) String clubCode
@@ -127,9 +128,11 @@ public class ClubController {
 			return "redirect:/club/club_detail?clubCode=" + clubCode;
 		}
 		
-		clubService.joindelete(memId, clubCode);		
+		clubService.joindelete(memId, clubCode);	
+		clubService.removeClubResMember(clubCode, memId);
 		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 탈퇴되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
+			
 	}
 		
 	@GetMapping("/club_member")
@@ -282,11 +285,14 @@ public class ClubController {
 		return "club/club_myclub"; 
 	}
 
+	// 신고 3회이상 회원 탈퇴
 	@PostMapping("/club_myclubjoindel")
 	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
 								,@RequestParam(value = "memId") String memId) {
 
 		clubService.joindelete(memId, clubCode);
+		clubService.removeClubResMember(clubCode, memId);
+		
 		return "redirect:/club/myclub";
 	}
 	
