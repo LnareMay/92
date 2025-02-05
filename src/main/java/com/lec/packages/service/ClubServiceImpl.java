@@ -685,7 +685,7 @@ public class ClubServiceImpl implements ClubService {
 		keyClass.setClubCode(clubCode);
 		keyClass.setMemId(memId);
 
-		List<Reservation_Member_List> optional = clubReservationMemberRepository.findByMemId(keyClass.getMemId());
+		List<Reservation_Member_List> optional = clubReservationMemberRepository.findByMemId(keyClass.getMemId(),keyClass.getClubCode());
 		if(!optional.isEmpty()) {
 			return "exist";
 		}

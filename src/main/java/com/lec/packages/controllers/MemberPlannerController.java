@@ -84,7 +84,7 @@ public class MemberPlannerController {
 	                Member_Planner newPlanner = Member_Planner.builder()
 	                        .memId(res.getMemId())
 	                        .planDate(res.getReservationDate())
-	                        .planNo(existingPlanner.get().getPlanNo())
+	                        // planNo(existingPlanner.get().getPlanNo())
 	                        .planName("[클럽] " + clubName)
 	                        .planText("장소 : " + facilityName + "\n시간 :" + startTime + "~" + endTime)
 	                        .planIschk(false)

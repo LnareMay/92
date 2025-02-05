@@ -16,8 +16,8 @@ import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 public interface ClubReservationMemberRepository
 		extends JpaRepository<Reservation_Member_List, ClubReservationMemberKeyClass> {
 
-	@Query("SELECT m FROM Reservation_Member_List m WHERE m.memId = :memId and m.deleteFlag is null")
-	List<Reservation_Member_List> findByMemId(@Param("memId") String memId);
+	@Query("SELECT m FROM Reservation_Member_List m WHERE m.memId = :memId and m.deleteFlag is null and m.clubCode = :clubCode")
+	List<Reservation_Member_List> findByMemId(@Param("memId") String memId,@Param("clubCode") String clubCode);
 
 	@Query("SELECT r FROM Reservation_Member_List r "
 			+ "JOIN FETCH Reservation res ON r.reservationCode = res.reservationCode " + "WHERE r.memId = :memId and r.deleteFlag is null")
@@ -29,6 +29,8 @@ public interface ClubReservationMemberRepository
 	@Query("SELECT r FROM Reservation_Member_List r where r.reservationCode= :reservationCode and r.memId = :memId and r.clubCode = :clubCode and r.deleteFlag is null")
 	Optional<Reservation_Member_List> findResClubMemListWithDetails(@Param("reservationCode") String reservationCode, @Param("clubCode") String clubCode,
 			@Param("memId") String memId);
+	
+	Optional<Reservation_Member_List> findByClubCodeAndMemId(String clubCode,String memId);
 	
 	@Modifying
 	@Transactional
