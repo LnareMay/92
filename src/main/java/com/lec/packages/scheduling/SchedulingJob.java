@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,22 +25,20 @@ public class SchedulingJob {
 
     @Scheduled(fixedDelay = 1000)
     public void getSetClubFromJsonFile() {
-        //log.info(Thread.currentThread().getName() + " getSetClubFromJsonFile " + LocalDateTime.now());
         String jsonPath = "./KS_AREA_ACCTO_SPORTS_CLUB_CRSTAT_INFO_202407.json";
     }
 
     @Scheduled(fixedDelay = 10000)
     public void getSetFacilityFromAPI() {
-        //log.info("getSetFacilityFromAPI");
         
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
 
-        String urlString = "https://openapi.gg.go.kr/PublicLivelihood?" 
-                            + "serviceKey=" + apiKey
+        String urlString = "https://openapi.gg.go.kr/PublicTrainingFacilitySoccer?" 
+                            + "KEY=" + apiKey
                             + "&Type=json"
-                            + "&pSize=150";
+                            + "&pSize=1000";
         
         try {
             URL url = new URL(urlString);
@@ -57,13 +54,12 @@ public class SchedulingJob {
             if(urlConnection != null) urlConnection.disconnect();
         }
 
-        //slog.info(result);
+        log.info(result);
     }
 
     private InputStream getNetworkConnection(HttpURLConnection urlConnection) throws IOException{
-        urlConnection.setConnectTimeout(3000);
-        urlConnection.setReadTimeout(3000);
-        urlConnection.setRequestMethod("GET");
+        
+        urlConnection.setRequestMethod("POST");
 
         if(urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException("OPEN API ERROR" + urlConnection.getResponseCode());
@@ -77,8 +73,9 @@ public class SchedulingJob {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
-        while (br.readLine() != null) {
-            sbResult.append(br.readLine() + "\n\r");
+        String brString;
+        while ((brString = br.readLine()) != null) {
+            sbResult.append(brString);
         }
 
         br.close();
