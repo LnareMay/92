@@ -26,13 +26,13 @@ public class SchedulingJob {
 
     @Scheduled(fixedDelay = 1000)
     public void getSetClubFromJsonFile() {
-        log.info(Thread.currentThread().getName() + " getSetClubFromJsonFile " + LocalDateTime.now());
+        //log.info(Thread.currentThread().getName() + " getSetClubFromJsonFile " + LocalDateTime.now());
         String jsonPath = "./KS_AREA_ACCTO_SPORTS_CLUB_CRSTAT_INFO_202407.json";
     }
 
     @Scheduled(fixedDelay = 10000)
     public void getSetFacilityFromAPI() {
-        log.info("getSetFacilityFromAPI");
+        //log.info("getSetFacilityFromAPI");
         
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
@@ -57,7 +57,7 @@ public class SchedulingJob {
             if(urlConnection != null) urlConnection.disconnect();
         }
 
-        log.info(result);
+        //slog.info(result);
     }
 
     private InputStream getNetworkConnection(HttpURLConnection urlConnection) throws IOException{
