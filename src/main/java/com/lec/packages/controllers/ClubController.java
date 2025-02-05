@@ -76,10 +76,6 @@ public class ClubController {
 		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
 											  .stream()
 											  .limit(3)
-/*											  .peek(m -> {
-												  if (m.getMemPicture() == null || m.getMemPicture().isEmpty())
-													  m.setMemPicture("/img/upload/img_profile.png");
-											  }) */
 											  .collect(Collectors.toList());
         model.addAttribute("clubmembers", clubmembers);
         
@@ -118,22 +114,25 @@ public class ClubController {
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
 	}
 	
+	// 회원탈퇴
 	@PreAuthorize("hasRole('USER')")	
 	@PostMapping("/club_joindelete")
 	public String clubJoinDelete(@RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication
 			, HttpServletRequest request
 			, RedirectAttributes redirectAttributes) {
-		String memId = authentication.getName();
+		String memId = authentication.getName(); // 로그인한 회원ID
 
 		if(clubService.isJoinDeleteMember(memId, clubCode)) {
 			redirectAttributes.addFlashAttribute("message", "이미 탈퇴된 회원입니다.");
 			return "redirect:/club/club_detail?clubCode=" + clubCode;
 		}
 		
-		clubService.joindelete(memId, clubCode);		
+		clubService.joindelete(memId, clubCode);	
+		clubService.removeClubResMember(clubCode, memId);
 		redirectAttributes.addFlashAttribute("message", "클럽에 성공적으로 탈퇴되었습니다.");
 		return "redirect:/club/club_detail?clubCode=" + clubCode;
+			
 	}
 		
 	@GetMapping("/club_member")
@@ -262,21 +261,54 @@ public class ClubController {
 		return "redirect:/club/club_board?clubCode="+clubCode;
 	}
 	
-	
 	@GetMapping("/club_myclub")
 	public String clubManage(PageRequestDTO pageRequestDTO
+			, @RequestParam(value = "clubCode", required = false) String clubCode
 			, Authentication authentication
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
-		String username = authentication.getName();
+		String memId = authentication.getName();
 		
-		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(username); 
-		
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId); 
+
+		PageResponseDTO<Member> responseDTO = null;
+		if (clubCode != null) {
+			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
+		}				
+		model.addAttribute("responseDTO", responseDTO);
+		model.addAttribute("clubCode", clubCode);		
 		model.addAttribute("currentURI", requestURI);
 		model.addAttribute("ownerClubList", ownerClubList);
-		
-		log.info("===ownerClubList:", ownerClubList);
+		model.addAttribute("memId", memId);
+
 
 		return "club/club_myclub"; 
 	}
+
+	// 신고 3회이상 회원 탈퇴
+	@PostMapping("/club_myclubjoindel")
+	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
+								,@RequestParam(value = "memId") String memId) {
+
+		clubService.joindelete(memId, clubCode);
+		clubService.removeClubResMember(clubCode, memId);
+		
+		return "redirect:/club/myclub";
+	}
+	
+	// 클럽 회원 신고
+	@PostMapping("/club_report")
+	public String clubReport(@RequestParam(value = "clubCode") String clubCode
+								,@RequestParam(value = "memId") String memId
+								, RedirectAttributes redirectAttributes
+								, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+	    model.addAttribute("currentURI", requestURI);
+
+		clubService.clubReport(memId, clubCode);
+		log.info("신고 완료");
+		
+		return "redirect:/club/club_member?clubCode=" + clubCode;
+	}	
+
 }

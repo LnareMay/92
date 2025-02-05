@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +31,6 @@ import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
-import com.lec.packages.domain.primaryKeyClasses.ClubMemberKeyClass;
 import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardAllListInterface;
@@ -49,6 +49,7 @@ import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.dto.ClubReservationInterface;
+import com.lec.packages.dto.MemberJoinDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -82,20 +83,6 @@ public class ClubServiceImpl implements ClubService {
 
 		return clubCode;
 	}
-	
-	/* 클럽수정 이미지변경
-	@Override
-	public void updateImages(String clubCode, ClubDTO clubDTO) {
-		Optional<Club> optionalClub = clubRepository.findById(clubCode);
-		if (optionalClub.isPresent()) {
-			Club club = optionalClub.get();
-			club.setClubImage1(clubDTO.getClubImage1());
-			club.setClubImage2(clubDTO.getClubImage2());
-			club.setClubImage3(clubDTO.getClubImage3());
-			club.setClubImage4(clubDTO.getClubImage4());
-			clubRepository.save(club);
-		}
-	}  */
 
 	// 클럽코드생성
 	@Override
@@ -161,12 +148,7 @@ public class ClubServiceImpl implements ClubService {
     public PageResponseDTO<ClubDTO> listByAddressAndTheme(PageRequestDTO pageRequestDTO, String memAddressSet, String clubTheme) {
         Pageable pageable = pageRequestDTO.getPageable("clubCode");
 
-        /* 검색 필터링
-        String[] types = {"address", "theme"};
-        String[] keywords = {memAddressSet, clubTheme};
-         */
-        String address = replaceAddress(memAddressSet);
-        
+        String address = replaceAddress(memAddressSet);        
         Page<Club> result = clubRepository.searchAll(address, clubTheme, pageable);
 
         Map<String, Integer> membercountmap = membercount();
@@ -180,8 +162,7 @@ public class ClubServiceImpl implements ClubService {
                                       }
                                           return clubDTO;
                                       })
-                                      .collect(Collectors.toList());
-//      log.info("=== Keywords==== : {}, {}", keywords[0], keywords[1]);        
+                                      .collect(Collectors.toList());    
         log.info("=== Keywords==== : {}, {}", address, clubTheme);        
 
         return PageResponseDTO.<ClubDTO>withAll()
@@ -314,42 +295,68 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽가입시 이미가입되어있는 회원인지 확인
-		@Override
-		public boolean isJoinMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinMember(String memId, String clubCode) {
 			
-			List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
+		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
 
-		    return joinMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));			
-		}
+	    return joinMembers.stream()
+	            .anyMatch(member -> member.getMemId().equals(memId));			
+	}
 	
 	// 클럽탈퇴
-		@Override
-		public void joindelete(String memId, String clubCode) {
-
-		    ClubMemberKeyClass keyClass = new ClubMemberKeyClass(memId, clubCode);		    
-		    Club_Member_List clubMember = clubMemberRepository.findById(keyClass)
-		            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+	@Override
+	public void joindelete(String memId, String clubCode) {	    
+	    Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+	            .orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
 		    
-		    clubMember.setDeleteFlag(true);
-		    clubMemberRepository.save(clubMember);
-		}
+	    clubMember.setDeleteFlag(true);
+	    clubMemberRepository.save(clubMember);
+	}
+	
+	// 회원이 가입한 클럽 목록조회
+	@Override
+	public List<String>	findJoinClubCodeByMemId(String memId) {
+		return clubMemberRepository.findJoinClubCodeByMemId(memId);
+	}
+		
+	// 클럽회원 신고
+	@Override
+	public int clubReport(String memId, String clubCode) {	  
+		
+		Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
+				.orElseThrow(() -> new IllegalArgumentException("해당 클럽 멤버를 찾을 수 없습니다."));
+		    
+		int reportNo = clubMember.getReportCount() + 1;
+		clubMember.setReportCount(reportNo);
+		int resultReportNo =  clubMemberRepository.save(clubMember).getReportCount();
+		    
+		return resultReportNo;
+	}
 
 	// 클럽탈퇴시 이미탈퇴되어있는 회원인지 확인
-		@Override
-		public boolean isJoinDeleteMember(String memId, String clubCode) {
+	@Override
+	public boolean isJoinDeleteMember(String memId, String clubCode) {
 
-		    List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
+		List<Member> deletedMembers = clubMemberRepository.findDeleteMember(clubCode);
 
-		    return deletedMembers.stream()
-		            .anyMatch(member -> member.getMemId().equals(memId));
-		}	
+		return deletedMembers.stream()
+					.anyMatch(member -> member.getMemId().equals(memId));
+	}	
 		
     // 클럽멤버 목록조회 
 	@Override
 	public PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO) {
 		Pageable pageable = pageRequestDTO.getPageable("clubCode");
 		Page<Member> result = clubMemberRepository.findMemberAll(clubCode, pageable);
+	
+		// 회원, 클럽별 신고수 가져오기
+		Map<String, Integer> reportCountMap = reportCount(clubCode);
+		
+		for (Member member : result.getContent()) {
+			String key = member.getMemId() + clubCode;
+			member.setReportCount(reportCountMap.getOrDefault(key, 0));
+		}
 		
 		return PageResponseDTO.<Member>withAll()
                 .pageRequestDTO(pageRequestDTO)
@@ -357,7 +364,23 @@ public class ClubServiceImpl implements ClubService {
                 .total((int) result.getTotalElements())
                 .build();
 	}
+	
+	// 신고수 가져오기
+	@Override
+	public Map<String, Integer> reportCount(String clubCode) {
+		List<Club_Member_List> reportCounts = clubMemberRepository.findReportCount(clubCode);
 
+		Map<String, Integer> reportCountMap = new HashMap<>();
+		for (Club_Member_List cm : reportCounts) {
+			String key = cm.getMemId() + cm.getClubCode();			
+			reportCountMap.put(key, cm.getReportCount());
+		}
+		
+		return reportCountMap;				
+	}
+	
+
+	
 	@Override
 	public List<Member> findMemberDetails(String clubCode) {
 		return clubMemberRepository.findMemberDetails(clubCode); 
@@ -604,7 +627,7 @@ public class ClubServiceImpl implements ClubService {
 		List<ClubDTO> dtoClub = new ArrayList<>();
 		myClubList.forEach(club -> {
 			ClubDTO dto = ClubDTO.builder().clubCode(club.getClubCode()).clubIntroduction(club.getClubIntroduction()).clubName(club.getClubName())
-						.clubImage1(club.getClubImage1()).memberCount(club.getMembers().size()).build();
+						.clubImage1(club.getClubImage1()).memberCount(club.getMembers().stream().filter(mem -> !mem.isDeleteFlag()).collect(Collectors.toList()).size()).build();
 			dtoClub.add(dto);
 		});
 
@@ -724,5 +747,17 @@ public class ClubServiceImpl implements ClubService {
 	public String getClubNameByCode(String clubCode) {
         return clubRepository.findClubNameByClubCode(clubCode);
     }
+
+	// 클럽 일정에 참가한 회원 취소
+	@Override
+	public void removeClubResMember(String clubCode, String memId) {
+		Optional<Reservation_Member_List> optionalResMember = clubReservationMemberRepository.findByClubCodeAndMemId(clubCode, memId);
+		
+		if (optionalResMember.isPresent()) {
+			Reservation_Member_List resMemberList = optionalResMember.get();
+			resMemberList.setDeleteFlag(true);
+			clubReservationMemberRepository.save(resMemberList);			
+		}	
+	}
 
 }

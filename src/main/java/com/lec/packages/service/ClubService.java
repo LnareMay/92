@@ -18,7 +18,6 @@ import com.lec.packages.dto.PageResponseDTO;
 public interface ClubService {
 	
 	String create(ClubDTO clubDTO);
-//	void updateImages(String clubCode, ClubDTO clubDTO);
 	
 	String generateClubCode();
 	ClubDTO detail(String clubCode);
@@ -29,10 +28,13 @@ public interface ClubService {
 	boolean isJoinMember(String memId, String clubCode); 
 	void joindelete(String memId, String clubCode);
 	boolean isJoinDeleteMember(String memId, String clubCode);
+	List<String> findJoinClubCodeByMemId(String memId);
 
 	Map<String, Integer> membercount();
 	List<Member> findMemberDetails(String clubCode);
 	PageResponseDTO<Member> findMemberAll(String clubCode, PageRequestDTO pageRequestDTO);
+	Map<String, Integer> reportCount(String clubCode);
+	int clubReport(String memId, String clubCode);
 	
 	PageResponseDTO<ClubDTO> list(PageRequestDTO pageRequestDTO);
 	PageResponseDTO<ClubDTO> listByTheme(PageRequestDTO pageRequestDTO, String clubTheme);
@@ -106,8 +108,8 @@ public interface ClubService {
 
     List<ClubReservationDTO> getClubResList(String clubCode);
 
-
     String addClubResMember(String reservationCode, String clubCode, String memId);
+    void removeClubResMember(String clubCode, String memId);
 
     List<ClubBoardDTO> getBoardListByMemID(String username);
 

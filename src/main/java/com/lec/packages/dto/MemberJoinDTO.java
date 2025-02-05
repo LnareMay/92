@@ -30,7 +30,7 @@ public class MemberJoinDTO {
 	private boolean deleteFlag;
 	private boolean memSocial;
 
-	
+	private int reportCount;
 	
 }
 

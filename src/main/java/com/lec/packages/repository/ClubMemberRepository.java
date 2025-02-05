@@ -1,6 +1,7 @@
 package com.lec.packages.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,40 +18,34 @@ public interface ClubMemberRepository extends JpaRepository<Club_Member_List, Cl
 
 	@Query("SELECT cm.clubCode, COUNT(cm) FROM Club_Member_List cm WHERE cm.deleteFlag = false GROUP BY cm.clubCode")
 	List<Object[]> countByClubCode();
+	
+    // 회원이 가입한 클럽 목록 조회
+	@Query("SELECT cm.clubCode FROM Club_Member_List cm WHERE cm.memId = :memId AND cm.deleteFlag = false")
+    List<String> findJoinClubCodeByMemId(@Param("memId") String memId);
     
     // 탈퇴된 회원 조회
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
-            + "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = true")
+            + "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND m.deleteFlag = false AND cm.deleteFlag = true")
     List<Member> findDeleteMember(@Param("clubCode") String clubCode);
+    
+    
+    @Query("SELECT cm FROM Club_Member_List cm WHERE cm.memId = :memId AND cm.clubCode = :clubCode")
+    Optional<Club_Member_List> findJoinMember(@Param("memId") String memId, @Param("clubCode") String clubCode);
     
     // 클럽가입 회원 상세조회
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
-    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false ORDER BY cm.CREATEDATE")
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND m.deleteFlag = false AND cm.deleteFlag = false "
+    		+ "ORDER BY cm.CREATEDATE")
     List<Member> findMemberDetails(@Param("clubCode") String clubCode);
     
     // 클럽가입 회원 목록조회 페이징
     @Query("SELECT m FROM Club c JOIN FETCH Club_Member_List cm ON c.clubCode = cm.clubCode "
-    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND cm.deleteFlag = false ORDER BY cm.CREATEDATE")
+    		+ "JOIN FETCH Member m ON cm.memId = m.memId WHERE c.clubCode = :clubCode AND m.deleteFlag = false AND cm.deleteFlag = false "
+    		+ "ORDER BY cm.CREATEDATE")
     Page<Member> findMemberAll(@Param("clubCode") String clubCode, Pageable pageable);
     
-    /*
-    @Query("SELECT cm FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode order by CREATEDATE")
-    Page<Club_Member_List> findActiveClubMember(@Param("clubCode") String clubCode,  Pageable pageable);	
-     
-    @Query("SELECT m.memPicture FROM Member m WHERE m.memId = :memId")
-	List<String> findPicturesByMemberId(@Param("memId") String memId);
-
-     */
-    
-    /*
-    @Query("SELECT m.memPicture FROM Club_Member_List cm JOIN Member m ON m.memId = cm.memId WHERE cm.clubCode = :clubCode") 
-    List<String> findMemberPicture(@Param("clubCode") String clubCode);
-    
-    @Query("SELECT m.memPicture FROM Member m WHERE m.memId = :memId")
-    Optional<String> findMemberPictureByMemId(@Param("memId") String memId);
-    
-	@Query("SELECT COALESCE(COUNT(cm), 0) FROM Club_Member_List cm WHERE cm.deleteFlag = false AND cm.clubCode = :clubCode"
-	) Optional<Integer> countByClubCode(@Param("clubCode") String clubCode);
-     */
+    // 클럽별 회원 신고 수 
+    @Query("SELECT cm FROM Club_Member_List cm WHERE cm.clubCode = :clubCode")
+    List<Club_Member_List> findReportCount(@Param("clubCode") String clubCode);
     
 }
