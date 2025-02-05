@@ -340,7 +340,7 @@ option[value=""][disabled] {
         // 날짜 선택 Flatpickr 초기화
         flatpickr("#reservationDate", {
             dateFormat: "Y-m-d", // 날짜 형식 (YYYY-MM-DD)
-            minDate: "today", // 오늘 이후만 선택 가능
+            minDate: new Date().fp_incr(1), // 오늘 이후만 선택 가능
             allowInput: true, // 사용자가 직접 입력 가능
             locale: "ko" // 한국어 설정
         });
