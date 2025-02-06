@@ -182,7 +182,6 @@ public class ClubServiceImpl implements ClubService {
     	
     	String repAddress = addressRegion.replace("특별시", "") 
 									     .replace("광역시", "")
-									     .replace("도", "")
 									     .replace("전라남도", "전남")
 									     .replace("경상북도", "경북")
 									     .trim();      	  	
