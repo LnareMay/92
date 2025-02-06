@@ -69,15 +69,16 @@
 		</div>
 
 		<div class="container d-flex">
-			<div th:if="${ownerClubList.isEmpty()}">
-				<p>아직 만든 클럽이 없습니다.</p>
-			</div>
 			<aside class="myclub-list">
 				<div class="header">
 					<h6>클럽목록</h6>	
 					<p style="font-size:15px;">조회할 클럽을 선택해주세요</p>	
 				</div>
 				<ul class="myclub-list-group">
+					<li th:if="${ownerClubList.isEmpty()}" style="margin-top:10px">
+						<p>아직 만든 클럽이 없습니다.
+						<a href="/club/club_create"><img src="/img/plus_icon.png" style="width:20px; height:20px;"></a></p>
+					</li>		
 					<li class="myclub-list-item" th:each="club : ${ownerClubList}">
 						<button th:text="${club.clubName}" class="clubbutton"
 							th:data-clubcode="${club.clubCode}"></button>

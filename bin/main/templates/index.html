@@ -344,11 +344,7 @@
 
 			// 모달 닫기
 			const modal = bootstrap.Modal.getInstance(document.getElementById("mapModal"));
-			modal.hide();
-
-			setTimeout(() => {
-				window.location.reload();
-			}, 1000); // 1초후 새로고침 
+			modal.hide();			
 		});
 
 		document.getElementById("mapModal").addEventListener("hidden.bs.modal", () => {
@@ -364,9 +360,13 @@
 				},
 				body: JSON.stringify({memAddressSet: address}),
 			})
-				.then((response) => response.json())
-				.then((data) => {
-					console.log("Update Success:", data);
+				.then(response => response.text())
+				.then(updatedAddress => {
+					console.log("Update Success:", updatedAddress);
+					document.getElementById("status").textContent = updatedAddress;
+					
+					let newUrl = `/?address=${updatedAddress}&theme=ALL&page=1`;
+					window.location.replace(newUrl);
 				})
 				.catch((error) => {
 					console.error("Update Error:", error);

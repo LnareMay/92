@@ -4,9 +4,9 @@
 	<div class="container">
 		<div class="toggle-buttons">
 			<!-- 클럽 버튼 -->
-			 <button class="toggle-button life"
+			<button class="toggle-button life"
 				th:classappend="${currentURI.startsWith('/facility/') ? 'selected' : ''}"
-				onclick="location.href='/facility/main'">시설예약</button>				
+				onclick="location.href='/facility/main'">시설예약</button>
 			<button class="toggle-button life"
 				th:classappend="${currentURI == '/' || currentURI.startsWith('/member/') || currentURI.startsWith('/club/') || currentURI.startsWith('/clubByaddress') ? 'selected' : ''}"
 				onclick="location.href='/'">클럽</button>
@@ -21,18 +21,54 @@
   </div> -->
 		<div class="logo-menu">
 			<!--   <button class="menu-button">≡</button> -->
-			<span class="logo" onclick="location.href='/'" style="cursor:pointer">FITLINK</span>
+			<span class="logo" onclick="location.href='/'"
+				style="cursor: pointer">FITLINK</span>
 		</div>
+
+		<!-- 날씨 -->
+		<div id="weather">
+			<span></span> <span></span>
+		</div>
+		
+		<script>
+		// 날씨 가져오기 
+		const API_KEY = "a74d20a06c48d4cfefc8e013886b562b";
+		
+		function onGeoOk(position) {
+		    const lat = position.coords.latitude;
+		    const lon = position.coords.longitude;
+		    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+		
+		    fetch(url)
+		        .then(response => response.json())
+		        .then(data => {
+		            const weather = document.querySelector("#weather span:first-of-type");
+		            const city = document.querySelector("#weather span:last-of-type");
+		            city.innerText = data.name;
+		            weather.innerText = `${data.weather[0].main} / ${data.main.temp}°C`;
+		        })
+		        .catch(error => console.error("🚨 날씨 정보를 가져오는데 실패했습니다:", error));
+		}
+		
+		function onGeoError() {
+		    alert("Can't find your location. No weather data available.");
+		}
+		
+		// 사용자의 현재 위치 요청 (성공하면 onGeoOk 실행, 실패하면 onGeoError 실행)
+		navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+		
+		</script>
 
 		<ul>
 			<li class="nav-item dropdown"><a
-				class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#none"
-				role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
+				class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+				href="#none" role="button" aria-haspopup="true"
+				aria-expanded="false">마이페이지</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="/member/mypage">나의정보</a> <a class="dropdown-item"
-						href="/member/reservation">나의시설예약</a><a
-						class="dropdown-item" href="/member/member_planner">운동캘린더</a>
-						<a class="dropdown-item" href="/club/club_myclub">나의클럽관리</a>
+					<a class="dropdown-item" href="/member/mypage">나의정보</a> <a
+						class="dropdown-item" href="/member/reservation">나의시설예약</a><a
+						class="dropdown-item" href="/member/member_planner">운동캘린더</a> <a
+						class="dropdown-item" href="/club/club_myclub">나의클럽관리</a>
 					<div class="dropdown-divider"></div>
 					<!-- 로그인 상태에 따라 변경 -->
 					<a class="dropdown-item"
