@@ -1,6 +1,7 @@
 package com.lec.packages.controllers;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,7 @@ public class MemberController {
 	private final CustomUserDetailsService customUserDetailsService;
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	private final ClubService clubService;
 
@@ -165,7 +168,7 @@ public class MemberController {
 
 	@PostMapping("/modify")
 	public String mypageModifyPost(MemberJoinDTO memberJoinDTO, HttpServletRequest request,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes, Principal principal) {
 		HttpSession session = request.getSession();
 		String storedFileName = (String) session.getAttribute("storedFileName");
 		if (storedFileName == null) {
@@ -173,8 +176,21 @@ public class MemberController {
 		}
 
 		try {
+			
+//			// 기존 사용자 정보 가져오기
+//		    Optional<Member> existingMember = memberRepository.findById(principal.getName());
+//		    
+//			// 비밀번호 필드가 비어 있으면 기존 비밀번호 유지
+//		    if (memberJoinDTO.getMemPw() == null || memberJoinDTO.getMemPw().isEmpty()) {
+//		    	memberJoinDTO.setMemPw(existingMember.get().getMemPw()); // 기존 비밀번호 유지
+//		    } else {
+//		        // 새 비밀번호가 입력되었으면 암호화 후 저장
+//		    	memberJoinDTO.setMemPw(passwordEncoder.encode(memberJoinDTO.getMemPw()));
+//		    }
+		    
 			// 회원 정보 수정
 			memberService.modify(memberJoinDTO, storedFileName);
+			
 
 			// 수정된 사용자 정보 가져오기
 			UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memberJoinDTO.getMemId());
