@@ -1,14 +1,17 @@
 package com.lec.packages.repository;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
@@ -58,5 +61,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 			+ "FROM Reservation r WHERE r.reservationCode = :reservationCode")
 	List<Object[]> findFacilityAndTimesByCode(@Param("reservationCode") String reservationCode);
 
-	List<Reservation> findAllByDeleteFlag(boolean deleteFlag);
+	// List<Reservation> findAllByDeleteFlag(boolean deleteFlag);
+	
+	 // Bulk Update를 활용한 빠른 삭제
+    @Modifying
+    @Transactional
+    @Query("UPDATE Reservation r SET r.deleteFlag = true WHERE r.reservationDate < :today AND r.deleteFlag = false")
+    int markOldReservationsAsDeleted(@Param("today") LocalDate today);
 }

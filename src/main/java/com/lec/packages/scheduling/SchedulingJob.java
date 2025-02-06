@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.repository.FacilityRepository;
@@ -39,12 +40,17 @@ public class SchedulingJob {
     @Autowired
     private FacilityRepository facilityRepository;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(cron = "0 0 12 * * ?")
+    @Transactional
     public void removeReservationRecord() {
-        LocalDate date = LocalDate.now();
+        LocalDate today = LocalDate.now();
+        int updatedCount = reservationRepository.markOldReservationsAsDeleted(today);
 
-        List<Reservation> reservations = reservationRepository.findAllByDeleteFlag(false);
-        
+        if (updatedCount > 0) {
+            System.out.println("✅ " + updatedCount + "개의 예약이 삭제되었습니다.");
+        } else {
+            System.out.println("📌 삭제할 예약 없음.");
+        }
     }
 
     @Scheduled(fixedDelay = 1000)
