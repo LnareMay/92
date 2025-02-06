@@ -295,13 +295,12 @@ public class ClubServiceImpl implements ClubService {
 	// 클럽가입시 이미가입되어있는 회원인지 확인
 	@Override
 	public boolean isJoinMember(String memId, String clubCode) {
-			
 		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
-
-	    return joinMembers.stream()
-	            .anyMatch(member -> member.getMemId().equals(memId));			
+		
+		return joinMembers.stream()
+				.anyMatch(member -> member.getMemId().equals(memId));
 	}
-	
+
 	// 클럽탈퇴
 	@Override
 	public void joindelete(String memId, String clubCode) {	    
