@@ -206,7 +206,7 @@ public class MainController {
         // 실제 데이터베이스 업데이트 로직 호출
         memberService.updateMemAddressSet(member.getMemId(), memAddressSet);
 
-        return ResponseEntity.ok("memSocial 업데이트 성공");
+        return ResponseEntity.ok(memAddressSet);
     }
 
 }

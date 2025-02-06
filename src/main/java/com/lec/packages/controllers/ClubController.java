@@ -59,7 +59,7 @@ public class ClubController {
         model.addAttribute("currentURI", requestURI);
 		return "club/club_create"; 
 	}
-	
+
 	@GetMapping({"/club_detail", "/club_modify"})
 	public void clubDetail(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
@@ -92,7 +92,8 @@ public class ClubController {
 
         model.addAttribute("clubdto", clubDTO);
 	}
-		
+	
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/club_remove")
 	public String clubRemove(@RequestParam(value = "clubCode", required = false) String clubCode
 			, HttpServletRequest request
@@ -143,6 +144,7 @@ public class ClubController {
 			
 	}
 		
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_member")
 	public String clubMember(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO

@@ -182,7 +182,6 @@ public class ClubServiceImpl implements ClubService {
     	
     	String repAddress = addressRegion.replace("특별시", "") 
 									     .replace("광역시", "")
-									     .replace("도", "")
 									     .replace("전라남도", "전남")
 									     .replace("경상북도", "경북")
 									     .trim();      	  	
@@ -295,13 +294,12 @@ public class ClubServiceImpl implements ClubService {
 	// 클럽가입시 이미가입되어있는 회원인지 확인
 	@Override
 	public boolean isJoinMember(String memId, String clubCode) {
-			
 		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
-
-	    return joinMembers.stream()
-	            .anyMatch(member -> member.getMemId().equals(memId));			
+		
+		return joinMembers.stream()
+				.anyMatch(member -> member.getMemId().equals(memId));
 	}
-	
+
 	// 클럽탈퇴
 	@Override
 	public void joindelete(String memId, String clubCode) {	    
