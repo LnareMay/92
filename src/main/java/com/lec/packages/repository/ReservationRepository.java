@@ -58,4 +58,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 			+ "FROM Reservation r WHERE r.reservationCode = :reservationCode")
 	List<Object[]> findFacilityAndTimesByCode(@Param("reservationCode") String reservationCode);
 
+	List<Reservation> findAllByDeleteFlag(boolean deleteFlag);
 }
