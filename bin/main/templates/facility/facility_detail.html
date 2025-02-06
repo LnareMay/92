@@ -181,8 +181,7 @@ option[value=""][disabled] {
 			<!-- 예약 form start  -->
 			<form class="booking-form" action="/facility/submit-booking"
 				method="POST">
-
-				
+			
 				<div th:if="${facility.facilityIsOnlyClub}"
 					style="color: red; font-weight: bold;">
 					<span>✅ 해당 시설은 클럽장만 예약할 수 있는 시설입니다</span>
@@ -295,9 +294,9 @@ option[value=""][disabled] {
 				</div>
 				<button th:if="${!facility.facilityIsOnlyClub}" type="submit"
 					class="btn btn-primary">예약하기</button>
-				<button th:if="${facility.facilityIsOnlyClub && isClubOwner}"
-					type="submit" class="btn btn-primary">예약하기</button>
+				<button id="reserButton" type="submit" class="btn btn-primary" style="display: none;">예약하기</button>
 				<hr />
+
 				<!-- 시설명  -->
 				<div class="form-group">
 					<label for="facilityName">시설명:</label> <span
@@ -323,11 +322,7 @@ option[value=""][disabled] {
 						th:text="${facility.facilityStartTime + ' ~ ' + facility.facilityEndTime}"></span>
 				</div>
 
-
-
-
 			</form>
-		</div>
 
 	</div>
 
@@ -711,19 +706,26 @@ option[value=""][disabled] {
 	if(facilityIsOnlyClub == true && isClubOwner == true) {
 		let str = "";
 		getClubList().then(data => {
-			str = '<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;" onchange="(selectBoxChange(this.value))">'
-			data.forEach(club => {
-				str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
-			});
-			str += '</select>'
-			document.querySelector(".changeToClub").textContent = "예약할 클럽"
-			document.querySelector("#memId").classList.add("blind")
-			document.querySelector(".resInfo").innerHTML += str
+			console.log("클럽리스트:", data);
+			if (data.length === 0) {
+				str = `<label for="memId" class="changeToClub">예약할 클럽: </label>
+						<p>생성한 클럽이 없습니다.</p>`;
+				document.getElementById("reserButton").style.display = "none";
+			} else {
+				str = `<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;" onchange="(selectBoxChange(this.value))">`
+				data.forEach(club => {
+					str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
+				});
+				str += `</select>`
+				
+				document.getElementById("reserButton").style.display = "block";
+			}
+	<!--		document.querySelector(".changeToClub").textContent = "예약할 클럽";-->
+			document.querySelector("#memId").classList.add("blind");
+			document.querySelector(".resInfo").innerHTML = str;
 		})
-
 	}
-    
-	
+
     // 내야할 금액 확인 및 폼 제출 제어
     const form = document.querySelector("form");
 

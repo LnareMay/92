@@ -203,6 +203,7 @@
 <script src="/js/gd.js"></script>
 <script layout:fragment="script" th:inline="javascript">
 	const clubCode = /*[[${clubdto.clubCode}]]*/''
+	const isMember = /*[[${isMember}]]*/'';
 	const boardList = document.querySelector("#divBoard");
 
 	const boardInfo = document.querySelector(".boardInfo")
@@ -212,9 +213,13 @@
 
 		let str = ''
 		str += `<div class="section-header mb-3">
-				    <h6>게시글 ${data.total}</h6>
-				    <a href="/club/club_board?clubCode=${clubCode}&type=ALL" class="more-link">더보기</a>
-				</div>`
+				    <h6>게시글 ${data.total}</h6>`;
+			if (isMember) {
+				str += `<a href="/club/club_board?clubCode=${clubCode}&type=ALL" class="more-link">더보기</a>`
+			} else {
+				str += `<a class="more-link" onclick="openJoinPopup()">더보기</a>`			
+			}			   
+		str += `</div>`;
 		if(data.dtoList && data.dtoList.length > 0) {
 			for(const dto of data.dtoList) {
 				str += `<div>
