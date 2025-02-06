@@ -82,6 +82,9 @@ public class MemberServiceImpl implements MemberService {
 
 			// 기존 memSocial 값 유지
 			boolean existingMemSocial = member.isMemSocial();
+			
+			// 기존 비밀번호 값
+			String existingMemPw = member.getMemPw();
 
 			// `memExercise` 영속 상태 설정
 			if (memberJoinDTO.getMemExercise() != null) {
@@ -108,7 +111,6 @@ public class MemberServiceImpl implements MemberService {
 			member.setMemName(memberJoinDTO.getMemName());
 			member.setMemNickname(memberJoinDTO.getMemNickname());
 			member.setMemPicture(storedFileName);
-			member.changePassword(passwordEncoder.encode(memberJoinDTO.getMemPw()));
 			member.setMemIntroduction(memberJoinDTO.getMemIntroduction());
 			member.setMemTell(memberJoinDTO.getMemTell());
 			member.setMemBirthday(memberJoinDTO.getMemBirthday());
@@ -119,6 +121,16 @@ public class MemberServiceImpl implements MemberService {
 
 			// 기존 memSocial 값 유지
 			member.setMemSocial(existingMemSocial);
+			
+			// ✅ 기존 비밀번호 유지 로직 추가
+			// ✅ 비밀번호 변경 여부 확인
+	        if (memberJoinDTO.getMemPw() == null || memberJoinDTO.getMemPw().trim().isEmpty()) {
+	            // 사용자가 비밀번호를 변경하지 않은 경우 기존 비밀번호 유지
+	            member.setMemPw(existingMemPw);
+	        } else {
+	            // 사용자가 새로운 비밀번호를 입력한 경우 암호화하여 저장
+	            member.setMemPw(passwordEncoder.encode(memberJoinDTO.getMemPw()));
+	        }
 
 			// 저장
 			memberRepository.save(member);
