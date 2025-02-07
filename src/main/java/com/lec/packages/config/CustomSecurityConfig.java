@@ -93,6 +93,7 @@ public class CustomSecurityConfig {
 				.requestMatchers("/member/login","/member/checkId","/member/find_pw", "/member/join", "/css/**", "/js/**", "/img/**", "/view/**","/")
 				.permitAll()
 				.requestMatchers(HttpMethod.DELETE, "/planner/delete").permitAll()
+				.requestMatchers("/api/weather**").permitAll()
 				// 나머지 요청은 인증된 사용자만 접근 가능
 				.anyRequest().authenticated());
 
