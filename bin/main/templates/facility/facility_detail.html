@@ -294,7 +294,8 @@ option[value=""][disabled] {
 				</div>
 				<button th:if="${!facility.facilityIsOnlyClub}" type="submit"
 					class="btn btn-primary">예약하기</button>
-				<button id="reserButton" type="submit" class="btn btn-primary" style="display: none;">예약하기</button>
+				<button th:if="${facility.facilityIsOnlyClub && isClubOwner}" id="reserButton" style="display: none;"
+					type="submit" class="btn btn-primary">예약하기</button>
 				<hr />
 
 				<!-- 시설명  -->
@@ -323,7 +324,7 @@ option[value=""][disabled] {
 				</div>
 
 			</form>
-
+		</div>
 	</div>
 
 
@@ -706,23 +707,21 @@ option[value=""][disabled] {
 	if(facilityIsOnlyClub == true && isClubOwner == true) {
 		let str = "";
 		getClubList().then(data => {
-			console.log("클럽리스트:", data);
 			if (data.length === 0) {
-				str = `<label for="memId" class="changeToClub">예약할 클럽: </label>
-						<p>생성한 클럽이 없습니다.</p>`;
+				str = `<p>생성한 클럽이 없습니다.</p>`;
 				document.getElementById("reserButton").style.display = "none";
 			} else {
 				str = `<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;" onchange="(selectBoxChange(this.value))">`
 				data.forEach(club => {
 					str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
-				});
+			});
 				str += `</select>`
 				
 				document.getElementById("reserButton").style.display = "block";
 			}
-	<!--		document.querySelector(".changeToClub").textContent = "예약할 클럽";-->
+			document.querySelector(".changeToClub").textContent = "예약할 클럽";
 			document.querySelector("#memId").classList.add("blind");
-			document.querySelector(".resInfo").innerHTML = str;
+			document.querySelector(".resInfo").innerHTML += str;
 		})
 	}
 
