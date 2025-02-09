@@ -182,7 +182,6 @@ public class ClubServiceImpl implements ClubService {
     	
     	String repAddress = addressRegion.replace("특별시", "") 
 									     .replace("광역시", "")
-									     .replace("도", "")
 									     .replace("전라남도", "전남")
 									     .replace("경상북도", "경북")
 									     .trim();      	  	
@@ -295,13 +294,12 @@ public class ClubServiceImpl implements ClubService {
 	// 클럽가입시 이미가입되어있는 회원인지 확인
 	@Override
 	public boolean isJoinMember(String memId, String clubCode) {
-			
 		List<Member> joinMembers = clubMemberRepository.findMemberDetails(clubCode);
-
-	    return joinMembers.stream()
-	            .anyMatch(member -> member.getMemId().equals(memId));			
+		
+		return joinMembers.stream()
+				.anyMatch(member -> member.getMemId().equals(memId));
 	}
-	
+
 	// 클럽탈퇴
 	@Override
 	public void joindelete(String memId, String clubCode) {	    
@@ -719,8 +717,14 @@ public class ClubServiceImpl implements ClubService {
 	
 	@Override
 	public String removeClubResMember(String reservationCode, String clubCode, String memId) {
-	    int updatedRows = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
-	    return updatedRows > 0 ? "success" : "fail";
+	    int updatedRowsClubList = clubReservationMemberRepository.updateReservationMemberFlag(reservationCode, clubCode, memId);
+	    Optional<Member_Planner> memberPlannerOptional = memberPlannerRepository.findByReservationCodeAndMemId(reservationCode, memId);
+	    memberPlannerOptional.ifPresent(planner -> {
+	        planner.setDeleteFlag(true); // ✅ deleteFlag를 true로 변경
+	        memberPlannerRepository.save(planner); // ✅ 변경된 값 저장
+	    });
+
+	    return updatedRowsClubList > 0 ? "success" : "fail";
 	}
 
 

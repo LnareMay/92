@@ -291,6 +291,7 @@
 				} else if (password !== isPw) {
 					alert("비밀번호가 일치하지 않습니다.");
 				} 
+					joinForm.submit();
 			} else {
 				joinForm.submit(); 
 			}
@@ -372,6 +373,14 @@
 			alert("이미 모집 완료된 일정입니다.")
 			return
 		}
+		
+		// 가입여부 확인
+		const joinStatus = await axios.get(`/club/checkJoinStatus/${clubCode}`);
+		if(!joinStatus.data) {
+			alert("클럽 가입 후 일정에 참가할 수 있습니다.")
+			openJoinPopup(clubCode);
+			return ;
+		}
 
 		const yesNo = confirm("해당 일정에 참가하시겠습니까?")
 		if(yesNo) {
@@ -384,13 +393,8 @@
 			} else if(response.data == "exist") {
 				alert("이미 참가한 일정입니다.")
 				return;
-			} else if(response.data == "notMember") {
-				alert("클럽 가입 후 일정에 참가할 수 있습니다.")
-				openJoinPopup(clubCode);
-			}
-		} else {
-			return
-		}
+			} 
+		} 
 	}
 
 </script>

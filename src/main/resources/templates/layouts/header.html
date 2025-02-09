@@ -1,12 +1,12 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<header th:fragment="header" class="header">
-	<div class="container">
+<header th:fragment="header" class="header" style="position: relative;">
+	<div class="container" style="padding:0 20px;">
 		<div class="toggle-buttons">
 			<!-- 클럽 버튼 -->
-			 <button class="toggle-button life"
+			<button class="toggle-button life"
 				th:classappend="${currentURI.startsWith('/facility/') ? 'selected' : ''}"
-				onclick="location.href='/facility/main'">시설예약</button>				
+				onclick="location.href='/facility/main'">시설예약</button>
 			<button class="toggle-button life"
 				th:classappend="${currentURI == '/' || currentURI.startsWith('/member/') || currentURI.startsWith('/club/') || currentURI.startsWith('/clubByaddress') ? 'selected' : ''}"
 				onclick="location.href='/'">클럽</button>
@@ -21,27 +21,160 @@
   </div> -->
 		<div class="logo-menu">
 			<!--   <button class="menu-button">≡</button> -->
-			<span class="logo" onclick="location.href='/'" style="cursor:pointer">FITLINK</span>
+			<span class="logo" onclick="location.href='/'"
+				style="cursor: pointer; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">FITLINK</span>
 		</div>
 
-		<ul>
-			<li class="nav-item dropdown"><a
-				class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#none"
-				role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
-				<div class="dropdown-menu">
-					<a class="dropdown-item" href="/member/mypage">나의정보</a> <a class="dropdown-item"
-						href="/member/reservation">나의시설예약</a><a
-						class="dropdown-item" href="/member/member_planner">운동캘린더</a>
-						<a class="dropdown-item" href="/club/club_myclub">나의클럽관리</a>
-					<div class="dropdown-divider"></div>
-					<!-- 로그인 상태에 따라 변경 -->
-					<a class="dropdown-item"
-						th:if="${#authentication.principal != 'anonymousUser'}"
-						href="/member/logout">로그아웃</a> <a class="dropdown-item"
-						th:if="${#authentication.principal == 'anonymousUser'}"
-						href="/member/login">로그인</a>
-				</div></li>
-		</ul>
+
+		<div class="flex-wrap" style="display: flex; gap: 40px; align-items: center;position:relative;">
+			<div>
+				<!-- <h4>현재 날씨</h4> -->
+				<div id="current-weather" style="display:flex;align-items: center;
+"></div>
+				<div id="current-date" style="display: none;"></div>
+				<!-- <h4>이번 주 날씨</h4> -->
+				<div class="weather" id="weather-container" style="position:absolute;left: -500px;z-index: 100;"></div>
+			</div>
+			<script>
+			// 날씨 가져오기 
+			document.addEventListener('DOMContentLoaded', function () {
+    const weatherContainer = document.getElementById('weather-container');
+    const currentWeather = document.getElementById('current-weather');
+    const currentDateEl = document.getElementById('current-date');
+
+    // ✅ 사용자의 위치를 가져오는 함수
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    fetchWeather(lat, lon);
+                },
+                (error) => {
+                    console.error('위치 정보를 가져올 수 없습니다:', error);
+                    fetchWeatherByIP(); // 위치 권한을 거부했을 경우 IP 기반 위치 조회
+                }
+            );
+        } else {
+            console.error('Geolocation을 지원하지 않는 브라우저입니다.');
+            fetchWeatherByIP(); // Geolocation이 지원되지 않는 경우 IP 기반 조회
+        }
+    }
+
+    // ✅ OpenWeather API에서 날씨 데이터를 가져오는 함수
+    function fetchWeather(lat, lon) {
+        fetch(`/api/weather?lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => displayWeather(data))
+            .catch(error => console.error('날씨 정보를 가져오지 못했습니다:', error));
+    }
+
+    // ✅ IP 기반 위치 조회 (위치 권한이 없을 때 대체)
+    function fetchWeatherByIP() {
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                console.log("IP 기반 위치 데이터:", data);
+                fetchWeather(data.latitude, data.longitude);
+            })
+            .catch(error => {
+                console.error('IP 위치 정보를 가져오지 못했습니다:', error);
+                fetchWeather(37.5665, 126.9780); // 기본값: 서울
+            });
+    }
+
+    // ✅ OpenWeather API 데이터를 화면에 표시하는 함수
+    function displayWeather(data) {
+        // 날짜별로 날씨 정보를 집계
+        const weatherMap = {};
+        data.list.forEach(item => {
+            const date = new Date(item.dt * 1000);
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            const formattedDate = date.toLocaleDateString('ko-KR', options);
+
+            if (!weatherMap[formattedDate]) {
+                weatherMap[formattedDate] = {
+                    tempSum: 0,
+                    count: 0,
+                    weatherDescription: item.weather[0].description,
+                    iconCode: item.weather[0].icon
+                };
+            }
+            weatherMap[formattedDate].tempSum += item.main.temp;
+            weatherMap[formattedDate].count += 1;
+        });
+
+        // 평균 온도 계산 및 출력
+        const weatherItems = Object.keys(weatherMap).map(date => {
+            const weatherInfo = weatherMap[date];
+            const averageTemp = (weatherInfo.tempSum / weatherInfo.count).toFixed(1);
+            const iconUrl = `http://openweathermap.org/img/wn/${weatherInfo.iconCode}@2x.png`;
+
+            return `
+                <div class="weather-item">
+                    <div class="day">${date}</div>
+                    <div class="temp">${averageTemp}°C</div>
+                    <img src="${iconUrl}" alt="날씨 아이콘" class="weather-icon"/>
+                    <div>${weatherInfo.weatherDescription}</div>
+                </div>
+            `;
+        }).join('');
+
+        weatherContainer.innerHTML = weatherItems;
+
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('ko-KR', options);
+
+        // 현재 날씨 정보 표시
+        const cityName = data.city.name;
+        const currentItem = data.list[0];
+        currentWeather.innerHTML = `
+            <img src="http://openweathermap.org/img/wn/${currentItem.weather[0].icon}@2x.png" alt="날씨 아이콘" class="weather-icon"/>
+            <div>
+            <div class="current-location">${cityName}</div> 
+            <div class="current-temp">${currentItem.main.temp}°C</div>
+            <div class="current-description">${currentItem.weather[0].description}</div>
+        	</div>
+        	<div style="margin-left:20px;">▼</div>
+            `;
+        currentDateEl.innerHTML = `<div>${formattedDate}</div>`;
+    }
+
+    getUserLocation(); // ✅ 페이지 로드 시 사용자 위치 가져오기
+});
+			$(document).ready(function(){
+				$("#weather-container").hide();
+				$("#current-weather").click(function(){
+					$("#weather-container").toggle();
+				});
+			});
+
+			</script>
+
+			<ul>
+				<li class="nav-item dropdown"><a
+					class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+					href="#none" role="button" aria-haspopup="true"
+					aria-expanded="false">마이페이지</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/member/mypage">나의정보</a> <a
+							class="dropdown-item" href="/member/reservation">나의시설예약</a><a
+							class="dropdown-item" href="/member/member_planner">운동캘린더</a> <a
+							class="dropdown-item" href="/club/club_myclub">나의클럽관리</a>
+						<div class="dropdown-divider"></div>
+						<!-- 로그인 상태에 따라 변경 -->
+						<a class="dropdown-item"
+							th:if="${#authentication.principal != 'anonymousUser'}"
+							href="/member/logout">로그아웃</a> <a class="dropdown-item"
+							th:if="${#authentication.principal == 'anonymousUser'}"
+							href="/member/login">로그인</a>
+					</div></li>
+			</ul>
+		</div>
+		<!-- 날씨 -->
+
 	</div>
 </header>
 </html>

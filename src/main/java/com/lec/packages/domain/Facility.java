@@ -95,6 +95,12 @@ public class Facility extends BaseEntity{
 	    @Column(name = "FACILITY_END_TIME")
 	    private LocalTime  facilityEndTime;
 
+		@Column(name = "FACILITY_LAT", columnDefinition = "DECIMAL", precision = 15, scale = 10)
+		private BigDecimal facilityLat;
+		
+		@Column(name = "FACILITY_LONGT", columnDefinition = "DECIMAL", precision = 15, scale = 10)
+		private BigDecimal facilityLongt;
+
 	    @Column(name = "DELETE_FLAG")
 	    private boolean deleteFlag;
 	    

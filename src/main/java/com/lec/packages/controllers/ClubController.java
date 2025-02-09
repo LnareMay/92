@@ -59,7 +59,7 @@ public class ClubController {
         model.addAttribute("currentURI", requestURI);
 		return "club/club_create"; 
 	}
-	
+
 	@GetMapping({"/club_detail", "/club_modify"})
 	public void clubDetail(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
@@ -92,7 +92,8 @@ public class ClubController {
 
         model.addAttribute("clubdto", clubDTO);
 	}
-		
+	
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/club_remove")
 	public String clubRemove(@RequestParam(value = "clubCode", required = false) String clubCode
 			, HttpServletRequest request
@@ -143,6 +144,7 @@ public class ClubController {
 			
 	}
 		
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_member")
 	public String clubMember(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
@@ -279,7 +281,8 @@ public class ClubController {
 		String memId = authentication.getName();
 		
 		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId); 
-
+		log.info("ownerClubList: {}", ownerClubList);
+		
 		PageResponseDTO<Member> responseDTO = null;
 		if (clubCode != null) {
 			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
@@ -290,19 +293,21 @@ public class ClubController {
 		model.addAttribute("ownerClubList", ownerClubList);
 		model.addAttribute("memId", memId);
 
-
 		return "club/club_myclub"; 
 	}
 
 	// 신고 3회이상 회원 탈퇴
 	@PostMapping("/club_myclubjoindel")
 	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
-								,@RequestParam(value = "memId") String memId) {
-
+								,@RequestParam(value = "memId") String memId
+								,HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		
 		clubService.joindelete(memId, clubCode);
 		clubService.removeClubResMember(clubCode, memId);
+		model.addAttribute("currentURI", requestURI);
 		
-		return "redirect:/club/myclub";
+		return "redirect:/club/club_myclub?clubCode=" + clubCode;
 	}
 	
 	// 클럽 회원 신고

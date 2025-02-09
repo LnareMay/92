@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lec.packages.domain.Club;
+import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.dto.ClubBoardAllListDTO;
 import com.lec.packages.dto.ClubBoardDTO;
 import com.lec.packages.dto.ClubBoardReplyDTO;
@@ -51,6 +52,7 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.UploadFileDTO;
 import com.lec.packages.dto.UploadResultDTO;
 import com.lec.packages.repository.ClubRepository;
+import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.service.ClubService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,6 +75,9 @@ public class ClubRestController {
     
     @Autowired
     private ClubRepository clubRepository;  
+    
+    @Autowired
+    private ClubReservationMemberRepository clubReservationMemberRepository;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public List<UploadResultDTO> uploadFile(@ModelAttribute UploadFileDTO uploadFileDTO){
@@ -468,17 +473,12 @@ public class ClubRestController {
 									, @AuthenticationPrincipal User user) {
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
-
-		log.info("do addClubResMember");
-		log.info(reservationCode);
-		log.info(clubCode);
-
-		// 클럽 가입여부 확인
-		if (!clubService.isJoinMember(clubCode, user.getUsername())) {
-			return "notMember";
-		}
-		
-		String addResult = clubService.addClubResMember(reservationCode, clubCode, user.getUsername());
+	    
+	    log.info("do addClubResMember");
+	    log.info(reservationCode);
+	    log.info(clubCode);
+	    
+	 	String addResult = clubService.addClubResMember(reservationCode, clubCode, user.getUsername());							
 		return addResult;
 	}
 
@@ -492,5 +492,12 @@ public class ClubRestController {
 		List<ClubBoardDTO> dtos = clubService.getBoardListByMemID(user.getUsername());
 
 		return dtos;
+	}
+	
+	@GetMapping("/checkJoinStatus/{clubCode}")
+	public ResponseEntity<Boolean> checkJoinStatus(@PathVariable("clubCode") String clubCode, 
+	                                               @AuthenticationPrincipal User user) {
+	    boolean isJoin = clubService.isJoinMember(user.getUsername(), clubCode);
+	    return ResponseEntity.ok(isJoin);
 	}
 }

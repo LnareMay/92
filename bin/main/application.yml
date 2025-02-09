@@ -112,3 +112,7 @@ com:
   admin:
     memId: 00Data
     keyString: 76a1a34a775a4e9e80ab69f035c7e7ac
+
+weather:
+  api:
+    key: a74d20a06c48d4cfefc8e013886b562b
