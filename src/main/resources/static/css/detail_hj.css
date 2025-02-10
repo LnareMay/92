@@ -260,7 +260,8 @@ ul {
 }
 
 #facility_main_pg button.search-btn, 
-#facility_main_pg button.region-btn {
+#facility_main_pg button.region-btn,
+#facility_main_pg button.public-btn {
 	background-color: #1a73e8;
 	color: white;
 	border: none;
@@ -272,12 +273,13 @@ ul {
 	white-space: nowrap;
 }
 
-#facility_main_pg button.region-btn {
+#facility_main_pg button.region-btn,#facility_main_pg button.public-btn  {
 	margin-left: 10px;
 }
 
 #facility_main_pg button.search-btn:hover,
-#facility_main_pg button.region-btn:hover {
+#facility_main_pg button.region-btn:hover,
+#facility_main_pg button.public-btn:hover {
 	background-color: #1669c7;
 }
 
@@ -438,6 +440,7 @@ ul {
 	overflow: hidden;
 	z-index: 100 !important;
 	pointer-events: auto;
+	cursor:pointer;
 }
 #facility_main_pg .card>div.img_wrap{
 	height:200px;
