@@ -32,5 +32,6 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     Page<Facility> searchAll(@Param("address") String facilityAddress, @Param("exerciseCode") String exerciseCode,
     					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);
   
+    List<Facility> findAll();
 
 }

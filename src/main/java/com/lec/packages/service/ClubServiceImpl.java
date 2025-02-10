@@ -675,16 +675,16 @@ public class ClubServiceImpl implements ClubService {
 	public String addClubResMember(String reservationCode, String clubCode, String memId) {
 		Optional<Reservation> resOptional = reservationRepository.findById(reservationCode);
 		Reservation reservation = resOptional.orElseThrow();
-		ClubReservationMemberKeyClass keyClass = new ClubReservationMemberKeyClass();
-		keyClass.setReservationCode(reservationCode);
-		keyClass.setClubCode(clubCode);
-		keyClass.setMemId(memId);
-
-		List<Reservation_Member_List> optional = clubReservationMemberRepository.findByMemId(keyClass.getMemId(),keyClass.getClubCode());
-		if(!optional.isEmpty()) {
-			return "exist";
-		}
 		
+		Date reservationDate = reservation.getReservationDate();
+		LocalTime reservationTime = reservation.getReservationStartTime();
+
+		// 클럽 일정참가에 있는지 여부확인
+    	boolean existingRes = clubReservationMemberRepository.findExistRes(reservationCode, memId);
+    	if (existingRes) {
+        	return "exist";
+    	}	
+    	
 		// 기존에 있는지 확인 (일정 취소했다가 다시 추가하는 경우)
 		Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemIAndDeleteFlagTrue(reservationCode, memId);
 
@@ -695,23 +695,13 @@ public class ClubServiceImpl implements ClubService {
 	            planner.setDeleteFlag(false);
 	            memberPlannerRepository.save(planner);
 	        }
-
-	    }
-
-		Date reservationDate = reservation.getReservationDate();
-		LocalTime reservationTime = reservation.getReservationStartTime();
-
+	    }	
 		Reservation_Member_List reservation_Member_List = Reservation_Member_List.builder().reservationCode(reservationCode)
 														.clubCode(clubCode).memId(memId).reservationTime(reservationTime)
 														.reservationDate(reservationDate).build();
-		Reservation_Member_List result = clubReservationMemberRepository.save(reservation_Member_List);
-		
-		
-		if(result != null) {
-			return "success";
-		}
-
-		return "fail";
+			clubReservationMemberRepository.save(reservation_Member_List);	
+			
+		return "success";
 	}
 	
 	@Override

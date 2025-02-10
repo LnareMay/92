@@ -259,7 +259,8 @@ ul {
 	margin-left: 5px;
 }
 
-#facility_main_pg button.search-btn {
+#facility_main_pg button.search-btn, 
+#facility_main_pg button.region-btn {
 	background-color: #1a73e8;
 	color: white;
 	border: none;
@@ -271,7 +272,12 @@ ul {
 	white-space: nowrap;
 }
 
-#facility_main_pg button.search-btn:hover {
+#facility_main_pg button.region-btn {
+	margin-left: 10px;
+}
+
+#facility_main_pg button.search-btn:hover,
+#facility_main_pg button.region-btn:hover {
 	background-color: #1669c7;
 }
 
@@ -295,7 +301,7 @@ ul {
 	position: fixed; /* 검색창보다 뒤에 있어야 하므로 z-index를 조절 */
 }
 
-#facility_main_pg .modal {
+#facility_main_pg .search-modal {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -430,6 +436,8 @@ ul {
 	border-radius: 8px;
 	border-color: #fff;
 	overflow: hidden;
+	z-index: 100 !important;
+	pointer-events: auto;
 }
 #facility_main_pg .card>div.img_wrap{
 	height:200px;

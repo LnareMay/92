@@ -38,7 +38,8 @@ public interface ClubRepository extends JpaRepository<Club, String> {
     // 클럽 방장인지 체크
     Long countByMemId(String memId);
 
-    List<Club> findByMemId(String username);
+    @Query("SELECT c FROM Club c WHERE c.memId = :memId AND c.deleteFlag = false ")
+    List<Club> findByMemId(@Param("memId") String username);
 
     @Query(value = "select c.* from club c inner join club_member_list cml on c.CLUB_CODE = cml.CLUB_CODE where cml.mem_id =:memId and cml.DELETE_FLAG is false and c.DELETE_FLAG is false", nativeQuery = true)
     List<Club> getClubListWithMemID(@Param("memId") String memId);

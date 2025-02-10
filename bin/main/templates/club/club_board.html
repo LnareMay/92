@@ -55,7 +55,8 @@
 					
 	 
 						 <div class="mb-3 col-1">
-							<a class="btn" th:href="|@{/club/club_board_write(clubCode = ${param.clubCode})}|"><i class="fas fa-plus"></i></a>
+							<a class="btn" th:if="${isMember}" th:href="|@{/club/club_board_write(clubCode = ${param.clubCode})}|" >
+							<i class="fas fa-plus"></i></a>
 						 </div>
 					</div>
 					

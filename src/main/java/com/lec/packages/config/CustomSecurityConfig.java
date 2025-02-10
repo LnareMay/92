@@ -85,7 +85,7 @@ public class CustomSecurityConfig {
 		http.authorizeRequests(auth -> auth
 				// 클럽 및 시설 관련 URL은 모두 허용
 				.requestMatchers("/club/club_detail", "/club/club_detail**").permitAll()
-				.requestMatchers("/facility/facility_main", "/facility/main/**").permitAll()
+				.requestMatchers("/facility/facility_main", "/facility/main/**", "/facility/all", "/facility/all/**").permitAll()
 				// 관리자 전용 URL
 				.requestMatchers(HttpMethod.DELETE, "/admin/remove/**").hasRole("ADMIN").requestMatchers("/admin/**")
 				.hasRole("ADMIN")
