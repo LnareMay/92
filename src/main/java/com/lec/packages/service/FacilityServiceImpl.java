@@ -445,8 +445,10 @@ public class FacilityServiceImpl implements FacilityService{
 		
 	}
 
-
-
-
+	// 모든 시설 검색
+	@Override
+	public List<Facility> getAllFacility() {
+		return facilityRepository.findAll();
+	}
 
 }

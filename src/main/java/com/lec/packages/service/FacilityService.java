@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -31,16 +32,6 @@ public interface FacilityService {
 	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 	void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 
-
-
-
-
-	
-	 
-
-
-
-
-	
+	List<Facility> getAllFacility();
 
 }

@@ -24,6 +24,9 @@ public interface ClubReservationMemberRepository
 
 	@Query("SELECT COUNT(m) > 0 FROM Member_Planner m WHERE m.reservationCode = :reservationCode and m.memId = :memId and m.deleteFlag is null")
 	boolean existsByReservationCode(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
+	
+	@Query("SELECT COUNT(r) > 0 FROM Reservation_Member_List r WHERE r.reservationCode = :reservationCode and r.memId = :memId and r.deleteFlag is null")
+	boolean findExistRes(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
 
 	@Query("SELECT r FROM Reservation_Member_List r where r.reservationCode= :reservationCode and r.memId = :memId and r.clubCode = :clubCode and r.deleteFlag is null")
 	Optional<Reservation_Member_List> findResClubMemListWithDetails(@Param("reservationCode") String reservationCode, @Param("clubCode") String clubCode,

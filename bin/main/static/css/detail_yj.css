@@ -503,3 +503,79 @@ p.fw-bold {
 .report-from {
 	margin-left: 0px;
 }
+
+.region-btn {
+    border: 1px solid #007bff;
+    padding: 5px 15px;
+    background: white;
+    cursor: pointer;
+}
+
+/* 시설위치모달 */
+#mapModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 0 !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    max-width: 850px !important; 
+    width: 85%;
+    max-height: 550px !important; 
+    height: 550px !important;
+    z-index: 999 !important;
+}
+
+#mapModal .modal-dialog {
+    max-width: 100% !important;
+    width: 100%;
+    height: 100% !important;
+    margin: 0 !important; 
+    display: flex;
+    flex-direction: column;
+}
+
+#mapModal .modal-body {
+	padding: 25px !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#mapModal .modal-content {
+    height: 100% !important;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+#mapModal #map {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.modal-backdrop {
+    display: none !important;
+}
+
+.modal-footer .btn-primary {
+    background-color: #1a73e8 !important; 
+    border-color: #1669c7 !important;
+    color: white !important;
+}
+
+html {
+    overflow-y: scroll; 
+}
+
+body.modal-open {
+    padding-right: var(--scrollbar-width, 0px) !important; 
+    overflow: hidden !important;
+}
+
+body:not(.modal-open) {
+    padding-right: 0px !important;
+}
+

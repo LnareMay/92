@@ -4,11 +4,13 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.service.FacilityService;
 
@@ -29,5 +31,13 @@ public class FacilityRestController {
         List<Reservation> localTimes = facilityService.getReservationTimeList(facilityCode, reservationDate);
 
         return localTimes;
+    }
+    
+    // 모든 시설가져오기
+    @GetMapping("/all")
+    public ResponseEntity<List<Facility>> getAllFacility() {
+    	List<Facility> facility = facilityService.getAllFacility();
+    	
+    	return ResponseEntity.ok(facility);
     }
 }
