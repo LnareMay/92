@@ -52,7 +52,7 @@ public class FacilityController {
 	    	facilityAddress = "ALL".equalsIgnoreCase(facilityAddress) ? "" : facilityAddress;
 	    	exerciseCode = "ALL".equalsIgnoreCase(exerciseCode) ? "" : exerciseCode;
 	    	
-	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listAllFacility(pageRequestDTO, facilityAddress, exerciseCode, facilityIsOnlyClub);
+	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listPrivateFacility(pageRequestDTO, facilityAddress, exerciseCode, facilityIsOnlyClub);
 	
 	    	log.info("............................."+responseDTO);
 	    		    	
@@ -64,6 +64,33 @@ public class FacilityController {
 	    	
 	    	return "facility/facility_main";		 
 	    }
+	    
+	    // 공공시설 조회
+	    @GetMapping("/main_public")
+	    public String ListPublicFaciltyPage(HttpServletRequest request,PageRequestDTO pageRequestDTO 
+	    		, Model model
+	    		, @RequestParam(value = "facilityAddress", required = false, defaultValue = "ALL") String facilityAddress
+                , @RequestParam(value = "exerciseCode", required = false, defaultValue = "ALL") String exerciseCode
+                , @RequestParam(value = "facilityIsOnlyClub", required = false) Boolean facilityIsOnlyClub) {
+	    	
+	    	String currentURI = request.getRequestURI();  
+	    	
+	    	facilityAddress = "ALL".equalsIgnoreCase(facilityAddress) ? "" : facilityAddress;
+	    	exerciseCode = "ALL".equalsIgnoreCase(exerciseCode) ? "" : exerciseCode;
+	    	
+	    	PageResponseDTO<FacilityDTO> responseDTO = facilityService.listPublicFacility(pageRequestDTO, facilityAddress, exerciseCode, facilityIsOnlyClub);
+	
+	    	log.info("............................."+responseDTO);
+	    		    	
+	    	 model.addAttribute("currentURI", currentURI); // requestURI를 모델에 추가
+	    	 model.addAttribute("responseDTO",responseDTO);	
+			 model.addAttribute("facilityAddress", facilityAddress); 
+			 model.addAttribute("exerciseCode", exerciseCode); 
+			 model.addAttribute("facilityIsOnlyClub", facilityIsOnlyClub); 
+	    	
+	    	return "facility/facility_main_public";		 
+	    }
+	    
 	    
 	    // 시설 검색조회
 	    @PostMapping("/main/search")
@@ -82,6 +109,25 @@ public class FacilityController {
 	        log.info("facilityIsOnlyClub: {}", facilityIsOnlyClub);
 
 	        return "redirect:/facility/main";
+	    }
+	    
+	 // 공공시설 검색조회
+	    @PostMapping("/main_public/search")
+	    public String searchPublicFacility(PageRequestDTO pageRequestDTO,
+	                                 @RequestParam(value = "facilityAddress", required = false) String facilityAddress,
+	                                 @RequestParam(value = "exerciseCode", required = false) String exerciseCode,
+	                                 @RequestParam(value = "facilityIsOnlyClub", required = false) Boolean facilityIsOnlyClub, 
+	                                 RedirectAttributes redirectAttributes) {
+	    	
+	        redirectAttributes.addAttribute("facilityAddress", facilityAddress);
+	        redirectAttributes.addAttribute("exerciseCode", exerciseCode);
+	        redirectAttributes.addAttribute("facilityIsOnlyClub", facilityIsOnlyClub);
+	        
+	        log.info("facilityAddress: {}", facilityAddress);
+	        log.info("exerciseCode: {}", exerciseCode);
+	        log.info("facilityIsOnlyClub: {}", facilityIsOnlyClub);
+
+	        return "redirect:/facility/main_public";
 	    }
 	    
 	    @GetMapping("/detail/{facilityCode}")

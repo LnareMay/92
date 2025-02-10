@@ -27,10 +27,21 @@ public interface FacilityService {
 	PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 			,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub);
 
+	PageResponseDTO<FacilityDTO> listPrivateFacility(PageRequestDTO pageRequestDTO, String facilityAddress,
+			String exerciseCode, Boolean facilityIsOnlyClub);
+	
+	PageResponseDTO<FacilityDTO> listPublicFacility(PageRequestDTO pageRequestDTO, String facilityAddress,
+			String exerciseCode, Boolean facilityIsOnlyClub);
+	
     List<Reservation> getReservationTimeList(String facilityCode, Date reservationDate);
 	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 	void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 
+
 	List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius);
+
+	List<Facility> getAllFacility();
+	List<Facility> getPublicFacility();
+	
 
 }

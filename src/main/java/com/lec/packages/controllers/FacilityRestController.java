@@ -47,5 +47,12 @@ public class FacilityRestController {
     	return ResponseEntity.ok(facility);
     }
     
-    
+    // 공공 시설가져오기
+    @GetMapping("/public")
+    public ResponseEntity<List<Facility>> getPublicFacility() {
+    	List<Facility> facility = facilityService.getPublicFacility();
+    	
+    	return ResponseEntity.ok(facility);
+    }
+
 }

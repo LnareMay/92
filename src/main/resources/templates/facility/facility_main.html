@@ -167,24 +167,7 @@
 
 			<!-- 검색 버튼 -->
 			<button type="submit" class="search-btn" >검색하기</button>
-			<button type="button" class="region-btn"  data-bs-toggle="modal" data-bs-target="#mapModal">
-				<i class="bi bi-geo-alt"></i></button>
-			
-				<div id="mapModal" class="modal fade" tabindex="-1" inert>
-				    <div class="modal-dialog modal-lg">
-				        <div class="modal-content">
-				            <div class="modal-header">
-				                <h5 class="modal-title">시설 위치</h5>
-				                <button type="button" id="close-btn" class="btn-close" data-bs-dismiss="modal"></button>
-				            </div>
-				            <div class="modal-body">
-				                <div id="map" style="width: 100%; height: 400px;"></div>
-				                <!--<p id="currentAddress" style="text-align: center; padding: 10px;">현재 위치: 불러오는 중...</p>-->
-				            </div>
-				        </div>
-				    </div>
-				</div>
-			
+			<button type="button" class="public-btn" onclick="location.href='/facility/main_public'" >공공시설</button>
 		</form>
 
 		<!-- 시설 목록 START -->
@@ -403,22 +386,11 @@
 			});
 		} 
 
+
 		let map;
 		let userMarker; //사용자 위치 마커
 		let userLat, userLng;
 		
-		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
-		    initMap(); 
-			document.getElementById("mapModal").removeAttribute("inert");
-		});
-		
-		document.getElementById("mapModal").addEventListener("hidden.bs.modal", () => {
-			document.getElementById("mapModal").style.display = "none";
-			document.getElementById("mapModal").setAttribute("inert", "");
-			document.getElementById("mapModal").removeAttribute("aria-hidden");
-			document.querySelector(".search-btn").focus();
-		});
-	
 		function initMap() {
 			map = new kakao.maps.Map(document.getElementById("map"), {
 				center: new kakao.maps.LatLng(37.5665, 126.9780),
