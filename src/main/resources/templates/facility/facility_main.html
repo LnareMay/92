@@ -404,9 +404,7 @@
 		} 
 
 		let map;
-		let geocoder;
 		let userMarker; //사용자 위치 마커
-		let markers = []; // 시설 위치 마커
 		let userLat, userLng;
 		
 		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
@@ -426,7 +424,6 @@
 				center: new kakao.maps.LatLng(37.5665, 126.9780),
 				level: 4
 			});			
-			geocoder = new kakao.maps.services.Geocoder();
 			
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(position => {
@@ -446,13 +443,45 @@
 						        { offset: new kakao.maps.Point(16, 32) } // 중심 위치
 						    ) 
 					});
-					fetchFacilities();
+					fetchFacilities(userLat, userLng);
 				});
 			} else {
 				alert("위치 정보를 가져올 수 없습니다.")
 			}
+		}		
+		
+		function fetchFacilities(lat, longt) {
+			fetch(`/facility/search?lat=${lat}&longt=${longt}&radius=5`)
+				.then(res => res.json())
+				.then(facilities=> {
+					facilities.forEach(facility => addFacilityMarker(facility));
+			})
 		}
 		
+		function addFacilityMarker(facility) {
+			let coords = new kakao.maps.LatLng(facility.facilityLat, facility.facilityLongt);
+			
+			let marker = new kakao.maps.Marker({
+				map: map,
+				position: coords
+			});
+			
+			let infowindow = new kakao.maps.InfoWindow({
+				content: `<div style="padding: 5px; font-size: 11px; font-weight: bold; color: #333;">
+							${facility.facilityName}<br>
+							<span style="font-size: 10px; color: #666;">${facility.facilityAddress}</span>
+						  </div>`
+			});
+			
+			kakao.maps.event.addListener(marker, 'mouseover', () => {
+				infowindow.open(map, marker);
+			});
+
+			kakao.maps.event.addListener(marker, 'mouseout', () => {
+				infowindow.close();
+			});
+		}
+
 		window.addEventListener("resize", () => {
 		    if (map) {
 		        map.relayout(); // 지도 크기 변경 적용
@@ -463,77 +492,7 @@
 		            userMarker.setPosition(userLocation); // 사용자 마커 위치 업데이트
 		        }
 		    }
-		});
-		
-		function fetchFacilities() {
-			fetch("/facility/all", {
-				method: "GET",
-				headers: {
-					"Accept": "application/json",
-					"Content-Type": "application/json",
-				},
-			})
-			.then(res => res.json())
-			.then(facilities=> {
-				facilities.forEach((facility, index) => {
-					console.log(`${index} 시설명: ${facility.facilityName}, 주소: ${facility.facilityAddress}`);
-					setTimeout(() => {
-						geocodeAddress(facility);
-					}, index * 200);
-				});
-			}); 
-		}
-		
-		function geocodeAddress(facility) {
-			if (!facility.facilityAddress || facility.facilityAddress.trim() === "") {
-			    console.error("주소 정보가 없습니다:", facility);
-			    return; 
-			}
-
-			geocoder.addressSearch(facility.facilityAddress, (result, status) => {
-			    if (status === kakao.maps.services.Status.OK) {
-					let facilityLat = result[0].y;
-					let facilityLng = result[0].x;
-					let distance = getDistance(userLat, userLng, facilityLat, facilityLng);
-					
-					if (distance <= 5) { // 5km이내 시설만
-						let coords = new kakao.maps.LatLng(facilityLat, facilityLng);
-						let marker = new kakao.maps.Marker({
-							map: map, 
-							position: coords
-						});
-						
-						markers.push(marker);
-						
-						let infowindow = new kakao.maps.InfoWindow({
-							content: `<div style="padding: 5px; font-size: 11px; font-weight: bold; color: #333;">
-										${facility.facilityName}<br>
-										<span style="font-size: 10px; color: #666;">${facility.facilityAddress}</span>
-									</div>`
-						});
-						kakao.maps.event.addListener(marker, 'mouseover', () => {
-							infowindow.open(map, marker);
-						});
-						kakao.maps.event.addListener(marker, 'mouseout', () => {
-							infowindow.close();
-						});
-					}
-				}
-			})
-		}
-		
-		function getDistance(lat1, lon1, lat2, lon2) {
-			function toRad(value) {return value * Math.PI / 180;}
-			let R = 6371;
-			let dLat = toRad(lat2 - lat1);
-			let dLon = toRad(lon2 - lon1);
-			let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-					Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-					Math.sin(dLon / 2) * Math.sin(dLon / 2);
-			let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-			return R * c;
-		}
-		
+		});		
 
 </script>
 

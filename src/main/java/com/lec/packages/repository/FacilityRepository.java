@@ -1,5 +1,6 @@
 package com.lec.packages.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,9 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     Page<Facility> searchAll(@Param("address") String facilityAddress, @Param("exerciseCode") String exerciseCode,
     					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);
   
-    List<Facility> findAll();
-
+    // 공공데이터 위치기반 시설
+    @Query("SELECT f FROM Facility f WHERE f.facilityLat IS NOT NULL AND f.facilityLongt IS NOT NULL "
+    		+ "AND FUNCTION('ST_Distance_Sphere', POINT(f.facilityLongt, f.facilityLat), POINT(:longt, :lat)) <= :radius * 1000")
+    List<Facility> findFacilityWithRadius(@Param("lat") BigDecimal lat, @Param("longt") BigDecimal longt, @Param("radius") double radius);
+    
 }

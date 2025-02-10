@@ -444,11 +444,14 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservationRepository.save(reservation);
 		
 	}
-
-	// 모든 시설 검색
+	
 	@Override
-	public List<Facility> getAllFacility() {
-		return facilityRepository.findAll();
+	public List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius) {
+		List<Facility> facilities = facilityRepository.findFacilityWithRadius(userLat, userLng, radius);
+		
+		return facilities.stream()
+					   .map(facility -> modelMapper.map(facility, FacilityDTO.class))
+					   .collect(Collectors.toList());
 	}
 
 }

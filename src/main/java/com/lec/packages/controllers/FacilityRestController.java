@@ -1,5 +1,6 @@
 package com.lec.packages.controllers;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -8,10 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Reservation;
+import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.service.FacilityService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,10 +36,16 @@ public class FacilityRestController {
     }
     
     // 모든 시설가져오기
-    @GetMapping("/all")
-    public ResponseEntity<List<Facility>> getAllFacility() {
-    	List<Facility> facility = facilityService.getAllFacility();
+    @GetMapping("/search")
+    public ResponseEntity<List<FacilityDTO>> getFacilityWithRadius(
+    		  @RequestParam(name = "lat") BigDecimal lat
+    		, @RequestParam(name = "longt") BigDecimal longt
+    		, @RequestParam(name = "radius", defaultValue = "5") double radius) {
+    	
+    	List<FacilityDTO> facility = facilityService.getFacilityWithRadius(lat, longt, radius);
     	
     	return ResponseEntity.ok(facility);
     }
+    
+    
 }
