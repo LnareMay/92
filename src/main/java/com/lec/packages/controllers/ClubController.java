@@ -180,6 +180,14 @@ public class ClubController {
 		PageResponseDTO<ClubBoardAllListDTO> boardDTO = clubService.listWithAll(pageRequestDTO, clubCode);
         log.info(boardDTO);
 		model.addAttribute("responseDTO", boardDTO);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
+		model.addAttribute("principal", principal);
+		
+		String memId = principal.getMemId();
+		boolean isMember = clubService.isJoinMember(memId, clubCode);
+		model.addAttribute("isMember", isMember);
 
 		return "club/club_board"; 
 	}
