@@ -12,7 +12,7 @@ import com.lec.packages.domain.Club_Board_Reply;
 import com.lec.packages.domain.primaryKeyClasses.ClubBoardReplyKeyClass;
 
 public interface ClubBoardReplyRepository extends JpaRepository<Club_Board_Reply, ClubBoardReplyKeyClass>{
-    @Query(value = "select * from club_board_reply sbr where sbr.club_code = :clubCode and sbr.board_no = :boardNo and sbr.delete_flag IS NOT NULL order by sbr.reply_no desc limit 1", nativeQuery = true)
+    @Query(value = "select * from club_board_reply sbr where sbr.club_code = :clubCode and sbr.board_no = :boardNo and sbr.delete_flag IS NULL order by sbr.reply_no desc limit 1", nativeQuery = true)
     Optional<Club_Board_Reply> findReplyNoByKey(@Param("clubCode") String clubCode, @Param("boardNo") int boardNO);
 
     @Query("select sbr from Club_Board_Reply sbr where sbr.boardNo = :boardNo and sbr.clubCode = :clubCode and sbr.deleteFlag is null")
