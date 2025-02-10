@@ -490,7 +490,6 @@ public class ClubServiceImpl implements ClubService {
 		int lastReplyNo = 0;
 		if(lastReply.isPresent()){
 			Club_Board_Reply temp = lastReply.orElseThrow();
-			log.info(temp);
 			lastReplyNo = temp.getReplyNo();
 			temp = null;
 		}
