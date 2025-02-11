@@ -47,24 +47,6 @@ public class ReservationServiceImpl implements ReservationService {
 //								  .build();
 //		}
 
-	 	//로그인 한 유저가 등록한 시설의 예약 불러오기
-	    @Override
-	    public PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
-	       
-		  Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
-	      Page<Reservation> result = reservationRepository.findAllReservationsWithUser(memId, pageable);
-	       
-	      List<ReservationDTO> dtoList = result.getContent()
-			        			               .stream()
-						                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
-								               .collect(Collectors.toList());
-	    
-	        return PageResponseDTO.<ReservationDTO>withAll()
-					              .pageRequestDTO(pageRequestDTO)
-					              .dtoList(dtoList)
-					              .total(result.getTotalPages())
-					              .build();
-	    }
 
 	    
 	//예약코드로 시설 예약 정보 불러오기
@@ -96,6 +78,99 @@ public class ReservationServiceImpl implements ReservationService {
 	public Optional<Reservation> getFacilityNameByCode(String reservationCode) {
 		return reservationRepository.findByReservationCode(reservationCode);
 	}
+
+	
+ 	//로그인 한 유저가 등록한 시설의 모든 예약 불러오기
+    @Override
+    public PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
+       
+	  Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
+      Page<Reservation> result = reservationRepository.findAllReservationsWithUser(memId, pageable);
+       
+      List<ReservationDTO> dtoList = result.getContent()
+		        			               .stream()
+					                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+							               .collect(Collectors.toList());
+    
+        return PageResponseDTO.<ReservationDTO>withAll()
+				              .pageRequestDTO(pageRequestDTO)
+				              .dtoList(dtoList)
+				              .total(result.getTotalPages())
+				              .build();
+    }
+    
+	@Override
+	public List<ReservationDTO> getAllReservationsForUser(String memId) {
+		
+		 List<Reservation> reservations = reservationRepository.findAllReservationsWithUserToList(memId);
+		    
+		    return reservations.stream()
+					           .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+					           .collect(Collectors.toList());
+	}
+
+    //로그인 한 유저가 등록한 시설들의 예약완료 상태 예약만 불러오기
+	@Override
+	public PageResponseDTO<ReservationDTO> getConfirmReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
+		
+		 Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
+	     Page<Reservation> result = reservationRepository.findConfirmReservationsWithUser(memId, pageable);
+	       
+	     List<ReservationDTO> dtoList = result.getContent()
+			        			               .stream()
+						                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+								               .collect(Collectors.toList());
+	    
+	        return PageResponseDTO.<ReservationDTO>withAll()
+					              .pageRequestDTO(pageRequestDTO)
+					              .dtoList(dtoList)
+					              .total(result.getTotalPages())
+					              .build();
+	 
+	}
+
+	//로그인 한 유저가 등록한 시설들의 예약취소 상태 예약만 불러오기
+	@Override
+	public PageResponseDTO<ReservationDTO> getRefuseReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
+		
+		Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
+	    Page<Reservation> result = reservationRepository.findRefuseReservationsWithUser(memId, pageable);
+	       
+	    List<ReservationDTO> dtoList = result.getContent()
+			        			               .stream()
+						                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+								               .collect(Collectors.toList());
+	    
+	     return PageResponseDTO.<ReservationDTO>withAll()
+					              .pageRequestDTO(pageRequestDTO)
+					              .dtoList(dtoList)
+					              .total(result.getTotalPages())
+					              .build();
+	 
+	}
+
+
+	//로그인 한 유저가 등록한 시설들의 예약진행중 상태 예약만 불러오기
+	@Override
+	public PageResponseDTO<ReservationDTO> getInprogressReservationsForUser(String memId,PageRequestDTO pageRequestDTO) {
+		Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
+	    Page<Reservation> result = reservationRepository.findInprogressReservationsWithUser(memId, pageable);
+	       
+	    List<ReservationDTO> dtoList = result.getContent()
+			        			               .stream()
+						                       .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+								               .collect(Collectors.toList());
+	    
+	     return PageResponseDTO.<ReservationDTO>withAll()
+					              .pageRequestDTO(pageRequestDTO)
+					              .dtoList(dtoList)
+					              .total(result.getTotalPages())
+					              .build();
+	 
+	}
+
+
+
 
 
 
