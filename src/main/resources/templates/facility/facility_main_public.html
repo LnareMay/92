@@ -34,27 +34,6 @@
 		<!--    <div class="search-bar">-->
 		<form action="/facility/main_public/search" method="post" class="search-bar">
 
-			<!-- 유형 -->
-			<div class="search-item">
-				<label>예약유형</label>
-				<div id="reser-select" class="search-placeholder">
-					<span>개인/클럽</span>
-				</div>
-
-				<!-- 모달: 예약유형 선택 -->
-				<div id="reser-modal" class="modal search-modal">
-					<div class="modal-content">
-						<h3>예약 유형 선택</h3>
-						<div id="reser-buttons" class="button-grid">
-							<button type="button" data-reser="클럽전용" value="true">클럽전용</button>
-							<button type="button" data-reser="개인" value="false">개인</button>
-						</div>
-						<button type="button" id="close-btn" data-modal="reser-modal">닫기</button>
-					</div>
-				</div>
-				<input type="hidden" id="facilityIsOnlyClub" name="facilityIsOnlyClub" />
-			</div>
-
 			<!-- 지역 -->
 			<div class="search-item">
 				<label>지역</label>
@@ -128,43 +107,6 @@
 				</div>
 				<input type="hidden" id="exerciseCode" name="exerciseCode" />
 			</div>
-
-			<!--  날짜 
-						<div class="search-item">
-						    <label>날짜</label>
-						    <div id="date-select" class="date-placeholder">
-						        <span>대여 날짜는 언제인가요?</span>
-						    </div>
-						    모달: 날짜 선택
-						    <div id="date-modal" class="modal">
-						        <div class="modal-content">
-						            <h3>날짜 선택</h3>
-						            <div class="calendar-container">
-						                <div class="calendar-header">
-						                    <span id="calendar-prev" class="calendar-nav">&lt;</span>
-						                    <span id="calendar-month-year">2025년 01월</span>
-						                    <span id="calendar-next" class="calendar-nav">&gt;</span>
-						                </div>
-						                <table class="calendar">
-						                    <thead>
-						                        <tr>
-						                            <th>일</th>
-						                            <th>월</th>
-						                            <th>화</th>
-						                            <th>수</th>
-						                            <th>목</th>
-						                            <th>금</th>
-						                            <th>토</th>
-						                        </tr>
-						                    </thead>
-						                    <tbody id="calendar-body">
-						                        달력 날짜가 JavaScript에서 동적으로 삽입됩니다
-						                    </tbody>
-						                </table>
-						            </div>
-						        </div>
-						    </div>
-						</div> -->
 
 			<!-- 검색 버튼 -->
 			<button type="submit" class="search-btn">검색하기</button>
@@ -265,7 +207,7 @@
 
 	let map;
 	let userMarker; //사용자 위치 마커
-	let userLat, userLng;
+	let userLat, userLng;	
 
 	document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
 		initMap();
@@ -275,42 +217,42 @@
 		map = new kakao.maps.Map(document.getElementById("map"), {
 			center: new kakao.maps.LatLng(37.5665, 126.9780),
 			level: 9
-		});
-
+		});		
+			
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(position => {
 				userLat = position.coords.latitude;
 				userLng = position.coords.longitude;
-
+					
 				let userLocation = new kakao.maps.LatLng(userLat, userLng);
 				map.setCenter(userLocation);
-
+				
 				new kakao.maps.Marker({
-					map: map,
+					map: map, 
 					position: userLocation,
 					title: "내 위치",
 					image: new kakao.maps.MarkerImage(
-						"https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-						new kakao.maps.Size(32, 32), // 아이콘 크기
-						{offset: new kakao.maps.Point(16, 32)} // 중심 위치
-					)
+					        "https://maps.google.com/mapfiles/ms/icons/red-dot.png",  
+					        new kakao.maps.Size(32, 32), // 아이콘 크기
+					        { offset: new kakao.maps.Point(16, 32) } // 중심 위치
+					    ) 
 				});
 				fetchFacilities(userLat, userLng);
 			});
 		} else {
 			alert("위치 정보를 가져올 수 없습니다.")
 		}
-	}
-
+	}		
+		
 	function fetchFacilities(lat, longt) {
 		console.log("보내는 lat, longt:", lat, longt);
 		fetch(`/facility/search?lat=${lat}&longt=${longt}&radius=15`) // 15km
 			.then(res => res.json())
-			.then(facilities => {
+			.then(facilities=> {
 				console.log(facilities);
 				facilities.forEach(facility => addFacilityMarker(facility));
-			})
-	}
+		})
+	} 
 
 	function addFacilityMarker(facility) {
 		let coords = new kakao.maps.LatLng(facility.facilityLat, facility.facilityLongt);
@@ -334,8 +276,15 @@
 		kakao.maps.event.addListener(marker, 'mouseout', () => {
 			infowindow.close();
 		});
+		
+		kakao.maps.event.addListener(marker, 'click', () => {
+			const facilityCode = facility.facilityCode;
+			
+			let detailPage = `/facility/detail/${facilityCode}`;
+			window.location.href = detailPage;
+		});
+		
 	}
-
 
 	window.addEventListener("resize", () => {
 		if (map) {
@@ -449,12 +398,6 @@
 	             sportModal.style.display = "none"; 
 	         });
 	     });
-		
-		// 예약유형 모달 열기
-		reserSelect.addEventListener("click", () => {
-			closeModals();
-			reserModal.style.display = "block";
-		});
 		
 		document.querySelectorAll("#reser-buttons button").forEach(button => {
 		    button.addEventListener("click", (event) => {

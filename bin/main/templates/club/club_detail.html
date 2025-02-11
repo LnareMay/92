@@ -69,7 +69,7 @@
 				<div>
 					<h5 class="fw-bold mb-1" id="clubName"
 						th:text="${clubdto.clubName}"></h5>
-                <p class="text-muted mb-0 boardInfo">회원 [[${clubdto.memberCount}]] · </p>
+                <p class="text-muted mb-0 boardInfo">멤버 [[${clubdto.memberCount}]] · </p>
 
 				</div>
 			</div>
@@ -144,7 +144,7 @@
 			<span th:if="${principal != null and clubdto.MemId == principal.memId}">
 			    <a th:href="@{/club/club_modify(clubCode=${clubdto.clubCode})}" class="btn btn-success" style="display: inline;">클럽 수정</a>
 			
-			    <form action="/club/club_remove" method="post" onsubmit="return confirm('클럽을 삭제하시겠습니까?');" style="display: inline;">
+			    <form action="/club/club_remove" method="post" onsubmit="return confirmClubDelete()" style="display: inline;">
 			        <input type="hidden" name="clubCode" th:value="${clubdto.clubCode}" />
 			        <button type="submit" class="btn btn-danger">클럽 삭제</button>
 			    </form>
@@ -400,6 +400,13 @@
 				return;
 			} 
 		} 
+	}
+	
+	function confirmClubDelete() {
+		if (confirm("클럽을 삭제하시겠습니까?")) {
+			localStorage.setItem("flashMessage", "클럽 삭제가 성공적으로 완료되었습니다");
+			return true;
+		} return false;
 	}
 
 </script>
