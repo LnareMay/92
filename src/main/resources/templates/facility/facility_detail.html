@@ -234,7 +234,7 @@ option[value=""][disabled] {
 				<h4>결제하기</h4>
 				<div id="paymentOptions">
 					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> <span
-						id="memMoney" th:text="${#authentication.principal.memMoney}"></span>원
+						id="memMoney" th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 3, 'COMMA')}"></span>원
 					<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 					
 					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
@@ -261,9 +261,13 @@ option[value=""][disabled] {
 					<h5>FITPAY 충전</h5>
 					<div class="d-flex align-items-center mb-3">
 
-						<label for="chargeAmount" class="form-label me-2">충전 금액:</label> <input
-							type="number" id="chargeAmount" class="form-control me-2"
-							placeholder="금액 입력" style="width: 150px;">
+						<label for="chargeAmount" class="form-label me-2">충전 금액:</label> 						<!-- 가짜 입력 필드 (보여지는 부분) -->
+						<input type="text" id="chargeAmountDisplay" class="form-control me-2" 
+						       placeholder="금액 입력" style="width: 150px;">
+
+						<!-- 진짜 입력 필드 (숨어있는 부분, 서버로 전송) -->
+						<input type="number" id="chargeAmount" name="chargeAmount" class="form-control me-2" 
+						       style="width: 150px; display:none">
 					</div>
 
 					<div>
@@ -348,8 +352,11 @@ option[value=""][disabled] {
     const facilityStartTime =  /*[[${facility.facilityStartTime}]]*/"9:00";	//서버에서 받지 못했을 때 기본 값 9:00
     const facilityEndTime =  /*[[${facility.facilityEndTime}]]*/"22:00"; //서버에서 받지 못했을 때 기본 값 22:00
     const pricePerHour = parseFloat(/*[[${facility.price}]]*/ "10000");
+	const pricePerHourFormatted = pricePerHour.toLocaleString();
     let memMoney = parseFloat(/*[[${#authentication.principal.memMoney}]]*/ "10000"); // 사용자 잔액
+	let memMoneyFormatted = memMoney.toLocaleString();
     let totalPaid = 0;
+	let totalPaidFormatted = totalPaid.toLocaleString();
 	const isClubOwner = /*[[${isClubOwner}]]*/"";
 	const facilityIsOnlyClub = /*[[${facility.facilityIsOnlyClub}]]*/"";
 	const facilityCode = /*[[${facility.facilityCode}]]*/"";
@@ -384,29 +391,34 @@ option[value=""][disabled] {
 		})
 	}
     
-    // 최종 결제 금액 계산
-    function calculateTotalPrice() {
-        const startTime = document.getElementById("reservationStartTime").value;
-        const endTime = document.getElementById("reservationEndTime").value;
+	// 최종 결제 금액 계산
+	function calculateTotalPrice() {
+	    const startTime = document.getElementById("reservationStartTime").value;
+	    const endTime = document.getElementById("reservationEndTime").value;
 
-        if (startTime && endTime) {
-            const start = new Date(`1970-01-01T${startTime}`);
-            const end = new Date(`1970-01-01T${endTime}`);
-            const duration = (end - start) / (1000 * 60 * 60); // 시간 차 계산
-            const totalPrice = duration * pricePerHour;
-            document.querySelectorAll(".totalPrice").forEach((element) => {
-                element.textContent = totalPrice;
-            });
-			document.getElementById("remainingAmount").textContent =totalPrice;
-			
-			return totalPrice;
-        }
-		return 0;
-    }
+	    if (startTime && endTime) {
+	        const start = new Date(`1970-01-01T${startTime}`);
+	        const end = new Date(`1970-01-01T${endTime}`);
+	        const duration = (end - start) / (1000 * 60 * 60); // 시간 차 계산
+	        const totalPrice = duration * pricePerHour;
+
+	        // 천 단위 콤마 추가
+	        const formattedPrice = totalPrice.toLocaleString();
+
+	        document.querySelectorAll(".totalPrice").forEach((element) => {
+	            element.textContent = formattedPrice;
+	        });
+	        document.getElementById("remainingAmount").textContent = formattedPrice;
+
+	        return totalPrice;
+	    }
+	    return 0;
+	}
+
     
     document.getElementById("reservationStartTime").addEventListener("change", function(){
     	document.querySelectorAll(".totalPrice").forEach((element) => {
-            element.textContent = pricePerHour;
+            element.textContent = pricePerHourFormatted;
         });
     });
     document.getElementById("reservationEndTime").addEventListener("change", calculateTotalPrice, calculateAmountToPay);
@@ -415,23 +427,47 @@ option[value=""][disabled] {
    function calculateAmountToPay() {
 	   document.getElementById("remainingAmount").textContent -= totalPaid;
     };
-    document.getElementById("remainingAmount").textContent = pricePerHour;
+    document.getElementById("remainingAmount").textContent = pricePerHourFormatted;
      
-	const useFitpay = document.querySelector('#useFitpay');
-	useFitpay.addEventListener('keyup', function(e) {
-	    let value = e.target.value;
-		
-	    // 입력값에서 쉼표 제거 후 숫자로 변환
-	    value = value.replaceAll(',', '');
-	    if (isNaN(value) || value==='') {
-	        useFitpay.value = '';
-			return;
-	    } 
-		const numericValue = parseInt(value,10);
-		useFitpay.value = numericValue.toLocaleString('ko-KR');
-		
-	});
 	
+	// 금액 입력시 천단위
+	const useFitpay = document.querySelector('#useFitpay');
+		useFitpay.addEventListener('keyup', function(e) {
+		    let value = e.target.value;
+			
+		    // 입력값에서 쉼표 제거 후 숫자로 변환
+		    value = value.replaceAll(',', '');
+		    if (isNaN(value) || value==='') {
+		        useFitpay.value = '';
+				return;
+		    } 
+			const numericValue = parseInt(value,10);
+			useFitpay.value = numericValue.toLocaleString('ko-KR');
+			
+		});
+		
+		const displayInput = document.getElementById("chargeAmountDisplay");
+	   const realInput = document.getElementById("chargeAmount");
+
+	   displayInput.addEventListener("input", function () {
+	       let value = displayInput.value.replaceAll(',', ''); // 쉼표 제거
+	       
+	       if (isNaN(value) || value === '') {
+	           realInput.value = "";
+	           displayInput.value = "";
+	           return;
+	       }
+
+	       const numericValue = parseInt(value, 10);
+	       
+	       // 실제 input에는 숫자 값 저장 (쉼표 없음)
+	       realInput.value = numericValue;
+	       
+	       // 가짜 input에는 쉼표 포함된 값 표시
+	       displayInput.value = numericValue.toLocaleString('ko-KR');
+	   });
+				
+
     // 금액 초기화 함수
     function reset(){
     	 const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
@@ -441,16 +477,17 @@ option[value=""][disabled] {
         const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
         
         const remainingAmount = totalPrice;
+		const remainingAmountFormatted = totalPrice.toLocaleString();
         
      	// '전액 사용' 버튼 활성/비활성화
         const useFullAmountButton = document.getElementById("useFullAmount");
         useFullAmountButton.disabled = false; // 버튼 활성화
 
         // UI 초기화
-        document.getElementById("memMoney_ip").value = memMoney;
-        document.getElementById("memMoney").textContent = memMoney;
-        document.getElementById("totalPaid").textContent = totalPaid;
-        document.getElementById("remainingAmount").textContent = totalPrice;
+        document.getElementById("memMoney_ip").value = memMoneyFormatted;
+        document.getElementById("memMoney").textContent = memMoneyFormatted;
+        document.getElementById("totalPaid").textContent = totalPaidFormatted;
+        document.getElementById("remainingAmount").textContent = remainingAmountFormatted;
         document.getElementById("useFitpay").value = "";
         return;
     	    
@@ -464,7 +501,7 @@ option[value=""][disabled] {
     document.getElementById("useFitpayButton").addEventListener("click", () => {
     	// reset();
         const useFitpayInput = parseFloat(document.getElementById("useFitpay").value.replaceAll(',',''));
-
+		
         if (isNaN(useFitpayInput) || useFitpayInput < 0) {
             alert("올바른 금액을 입력해주세요.");
             return;
@@ -482,14 +519,15 @@ option[value=""][disabled] {
         
 		const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
         const remainingAmount = Math.max(totalPrice - totalPaid, 0);
+		const remainingAmountFormatted = remainingAmount.toLocaleString();
         document.getElementById("memMoney_ip").value = memMoney;
         
 
         // UI 업데이트
-        document.getElementById("memMoney").textContent = memMoney;
-        document.getElementById("totalPaid").textContent = totalPaid;
+        document.getElementById("memMoney").textContent = memMoneyFormatted;
+        document.getElementById("totalPaid").textContent = (totalPrice - remainingAmount).toLocaleString();
         document.getElementById("useFitpay").value = "";
-        document.getElementById("remainingAmount").textContent = remainingAmount;
+        document.getElementById("remainingAmount").textContent = remainingAmountFormatted;
     });
 
 
@@ -526,10 +564,9 @@ option[value=""][disabled] {
 	        }
 
           // UI 업데이트
-          document.getElementById("memMoney").textContent = memMoney;
-          document.getElementById("totalPaid").textContent = totalPaid;
-          document.getElementById("useFitpay").value = "";
-          document.getElementById("remainingAmount").textContent = remainingAmount;
+          document.getElementById("memMoney").textContent = memMoneyFormatted;
+          document.getElementById("totalPaid").textContent = calculateTotalPrice().toLocaleString();
+	      document.getElementById("remainingAmount").textContent = 0;
     });
 
     
@@ -617,7 +654,6 @@ option[value=""][disabled] {
 		if (fitpayOptions.style.display === "none" || !fitpayOptions.style.display) {
 			// fitpayOptions 표시 및 배경 어둡게
 			fitpayOptions.style.display = "block";
-			overlay.style.display = "block";
 		} else {
 			// fitpayOptions 숨김 및 배경 밝게
 			fitpayOptions.style.display = "none";
@@ -629,9 +665,11 @@ option[value=""][disabled] {
 	document.getElementById("overlay").addEventListener("click", function () {
 		document.getElementById("fitpayOptions").style.display = "none";
 		this.style.display = "none";
+		realInput.value = "";
+		displayInput.value = "";
 	});
 
-    
+	
     
     $(function () {
     	$('.charge-btn').off("click").on("click", function (event) {
@@ -677,8 +715,8 @@ option[value=""][disabled] {
     	            // alert("결제가 성공했습니다!");
     	            memMoney += money; // 충전 금액 추가
     	            $("#memMoney_ip").val(memMoney);
-    	            $("#memMoney").text(memMoney.toLocaleString());
-
+    	            $("#memMoney").val(memMoney);
+					
     	            // 서버로 충전 금액 전송
     	            $.ajax({
     	                type: "GET",
