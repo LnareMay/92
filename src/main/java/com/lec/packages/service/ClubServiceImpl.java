@@ -631,7 +631,7 @@ public class ClubServiceImpl implements ClubService {
 
 	@Override
 	public boolean checkClubOwner(String username) {
-		long clubCount = clubRepository.countByMemId(username);
+		long clubCount = clubRepository.countByMemIdAndDeleteFlag(username, false);
 
 		boolean isClubOwner = false;
 		if(clubCount > 0) {
