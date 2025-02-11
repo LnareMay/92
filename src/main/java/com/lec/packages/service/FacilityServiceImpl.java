@@ -94,37 +94,8 @@ public class FacilityServiceImpl implements FacilityService{
 				   			  .total(result.getTotalPages())
 				   			  .build();
 	}
-	
-	//시설 목록
-	/*
-	@Override
-	public PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO) {
-		
-		String[] types = pageRequestDTO.getTypes();
-		String[] keywords = pageRequestDTO.getKeywords();
-		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
-		
-				
-		
-		Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
 
-		
-		List<FacilityDTO> dtoList = result.getContent()
-										  .stream()
-										  .distinct() // 중복 제거
-										  .map(facility -> modelMapper.map(facility, FacilityDTO.class))
-										  .collect(Collectors.toList());
-	
-		
-		return PageResponseDTO.<FacilityDTO>withAll()
-				.pageRequestDTO(pageRequestDTO)
-				.dtoList(dtoList)
-				.total(result.getTotalPages())
-				.build();
-	}
-	*/
-	
-	// 시설목록 새로만듬
+	// 시설목록 
 	@Override
 	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		

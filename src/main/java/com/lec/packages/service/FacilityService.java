@@ -41,7 +41,6 @@ public interface FacilityService {
 
 	List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius);
 
-//	List<Facility> getAllFacility();
 	List<Facility> getPublicFacility();
 	
 
