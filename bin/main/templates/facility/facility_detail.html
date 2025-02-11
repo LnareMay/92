@@ -216,9 +216,8 @@ option[value=""][disabled] {
 						name="reservationEndTime" type="time" required disabled></select>
 					<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 
-					<label id="countLabel" for="count">예약 인원</label> <input
-						type="number" id="count" name="count" placeholder="예약 인원을 입력해주세요."
-						required>
+					<label id="countLabel" for="count">예약 인원</label> 
+					<input type="number" id="count" name="count" min="0" placeholder="예약 인원을 입력해주세요." required>
 				</div>
 
 
@@ -242,8 +241,8 @@ option[value=""][disabled] {
 						충전하기</button>
 				</div>
 				<div>
-					<input type="number" id="useFitpay" class="form-control me-2"
-						placeholder="사용할 금액 입력"
+					<input type="text" id="useFitpay" class="form-control me-2"
+						placeholder="사용할 금액 입력" min="0"
 						style="width: 150px; display: inline-block">
 						
 						<button class="btn btn-secondary" id="useFitpayButton"
@@ -418,6 +417,21 @@ option[value=""][disabled] {
     };
     document.getElementById("remainingAmount").textContent = pricePerHour;
      
+	const useFitpay = document.querySelector('#useFitpay');
+	useFitpay.addEventListener('keyup', function(e) {
+	    let value = e.target.value;
+		
+	    // 입력값에서 쉼표 제거 후 숫자로 변환
+	    value = value.replaceAll(',', '');
+	    if (isNaN(value) || value==='') {
+	        useFitpay.value = '';
+			return;
+	    } 
+		const numericValue = parseInt(value,10);
+		useFitpay.value = numericValue.toLocaleString('ko-KR');
+		
+	});
+	
     // 금액 초기화 함수
     function reset(){
     	 const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
@@ -444,14 +458,12 @@ option[value=""][disabled] {
     
     // 취소 버튼 누를시, 다시 원상복귀
     document.getElementById("deleteAmount").addEventListener("click",reset);
-    		
    
-    
     
  // '사용' 버튼 클릭 이벤트
     document.getElementById("useFitpayButton").addEventListener("click", () => {
     	// reset();
-        const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
+        const useFitpayInput = parseFloat(document.getElementById("useFitpay").value.replaceAll(',',''));
 
         if (isNaN(useFitpayInput) || useFitpayInput < 0) {
             alert("올바른 금액을 입력해주세요.");
@@ -750,6 +762,8 @@ option[value=""][disabled] {
 	function selectBoxChange(value) {
 		// document.querySelector("#senderId").value = value
 	}
+	
+
 
 </script>
 

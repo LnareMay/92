@@ -51,7 +51,7 @@ public class ReservationServiceImpl implements ReservationService {
 	    @Override
 	    public PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO) {
 	       
-		  Pageable pageable = pageRequestDTO.getPageable("reservationCode");
+		  Pageable pageable = pageRequestDTO.getPageable("CREATEDATE");	//정렬기준 전달 
 	      Page<Reservation> result = reservationRepository.findAllReservationsWithUser(memId, pageable);
 	       
 	      List<ReservationDTO> dtoList = result.getContent()
