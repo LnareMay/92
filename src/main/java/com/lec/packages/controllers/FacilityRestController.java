@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.service.FacilityService;
@@ -35,12 +36,12 @@ public class FacilityRestController {
         return localTimes;
     }
     
-    // 모든 시설가져오기
+    // 위치기반 공공시설가져오기
     @GetMapping("/search")
     public ResponseEntity<List<FacilityDTO>> getFacilityWithRadius(
     		  @RequestParam(name = "lat") BigDecimal lat
     		, @RequestParam(name = "longt") BigDecimal longt
-    		, @RequestParam(name = "radius", defaultValue = "5") double radius) {
+    		, @RequestParam(name = "radius") double radius) {
     	
     	List<FacilityDTO> facility = facilityService.getFacilityWithRadius(lat, longt, radius);
     	

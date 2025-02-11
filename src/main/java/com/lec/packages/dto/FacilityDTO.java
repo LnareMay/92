@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,5 +82,8 @@ public class FacilityDTO {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm:ss");
         return createDate != null ? createDate.format(formatter) : "";
     }
+    
+	private BigDecimal facilityLat;
+	private BigDecimal facilityLongt;
     
 }

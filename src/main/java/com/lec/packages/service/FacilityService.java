@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
+import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.FacilityDTO;
 import com.lec.packages.dto.PageRequestDTO;
@@ -40,7 +41,7 @@ public interface FacilityService {
 
 	List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius);
 
-	List<Facility> getAllFacility();
+//	List<Facility> getAllFacility();
 	List<Facility> getPublicFacility();
 	
 
