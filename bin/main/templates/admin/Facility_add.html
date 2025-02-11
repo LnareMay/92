@@ -389,9 +389,9 @@
 		flatpickr(".timepicker", {
 			enableTime : true, // Enable time selection
 			noCalendar : true, // Disable calendar
-			dateFormat : "H:i", // Format: Hours:Minutes (24-hour format)
+			dateFormat : "H:00", // Format: Hours:Minutes (24-hour format)
 			time_24hr : true, // Use 24-hour clock
-			minuteIncrement : 10
+			minuteIncrement : 60
 		// Set minute intervals to 10 minutes
 		});
 	</script>
@@ -427,7 +427,7 @@
 
 					// Add event listeners to validate on input change
 					startTimeInput.addEventListener('change', validateTime);
-					endTimeInput.addEventListener('change', validateTime);
+					endTimeInput.addEventListener('change', validateTime); 
 				});
 	</script>
 
