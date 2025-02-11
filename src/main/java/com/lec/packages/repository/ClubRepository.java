@@ -36,7 +36,7 @@ public interface ClubRepository extends JpaRepository<Club, String> {
     Page<Club> searchAll(@Param("address") String address, @Param("clubTheme") String clubTheme, Pageable pageable);
     
     // 클럽 방장인지 체크
-    Long countByMemId(String memId);
+    Long countByMemIdAndDeleteFlag(String memId, Boolean deleteFlag);
 
     @Query("SELECT c FROM Club c WHERE c.memId = :memId AND c.deleteFlag = false ")
     List<Club> findByMemId(@Param("memId") String username);
