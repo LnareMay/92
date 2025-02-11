@@ -23,6 +23,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -244,11 +246,14 @@ public class AdminRestController {
   	@CrossOrigin(origins = "*", exposedHeaders = "Location")
   	@PostMapping(value = "/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   	public ResponseEntity<?> facilityModify(
+  			@AuthenticationPrincipal UserDetails userDetails,
   	        @ModelAttribute FacilityDTO facilityDTO,
   	        @RequestPart(value = "newFiles[]", required = false) List<MultipartFile> files,
   	        @RequestParam(value = "existingFiles[]", required = false) List<String> existingFiles,
   	        @RequestParam(value = "deletedFiles[]", required = false) List<String> deletedFiles,
   	        @RequestParam(value = "removedNewFiles[]", required = false) List<String> removedNewFiles) {
+  		
+  		String memId = userDetails.getUsername();
 
   	    try {
   	        // 1. 시설 정보 가져오기

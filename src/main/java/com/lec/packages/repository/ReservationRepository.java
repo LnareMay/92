@@ -33,11 +33,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
 	List<Reservation> findByFacilityCode(String facilityCode);
 
-	// 사용자의 모든 시설에 대한 예약 조회 (서브쿼리 사용)
 	@Query("SELECT r FROM Reservation r "
-			+ "WHERE r.facilityCode IN (SELECT f.facilityCode FROM Facility f WHERE f.memId = :memId) "
-			+ "ORDER BY r.reservationDate DESC")
+		       + "JOIN Facility f ON r.facilityCode = f.facilityCode "
+		       + "WHERE f.memId = :memId "
+		       + "ORDER BY r.CREATEDATE DESC")
 	Page<Reservation> findAllReservationsWithUser(@Param("memId") String memId, Pageable pageable);
+
 
 	// 시설 예약 내역 클럽원 현재 인원 수
 	@Query(value = "select r.*, count(rml.MEM_ID) as nowMemCount from reservation r left join reservation_member_list rml on r.club_code = rml.CLUB_CODE and r.RESERVATION_CODE = rml.RESERVATION_CODE where r.club_code =:clubCode and r.RESERVATION_DATE > Now() and rml.DELETE_FLAG is not true group by r.RESERVATION_CODE", nativeQuery = true)
