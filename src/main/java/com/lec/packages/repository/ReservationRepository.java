@@ -33,11 +33,42 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
 	List<Reservation> findByFacilityCode(String facilityCode);
 
+	//유저의 시설 중 모든 예약 상태 예약 목록 노출
 	@Query("SELECT r FROM Reservation r "
 		       + "JOIN Facility f ON r.facilityCode = f.facilityCode "
 		       + "WHERE f.memId = :memId "
 		       + "ORDER BY r.CREATEDATE DESC")
 	Page<Reservation> findAllReservationsWithUser(@Param("memId") String memId, Pageable pageable);
+	
+	//유저의 시설 중 모든 예약 상태 예약 목록 리스트로 뽑기
+	@Query("SELECT r FROM Reservation r "
+			+ "JOIN Facility f ON r.facilityCode = f.facilityCode "
+			+ "WHERE f.memId = :memId ")
+	List<Reservation> findAllReservationsWithUserToList(@Param("memId") String memId);
+	
+	//유저의 시설 중 예약완료 상태 예약 목록 노출
+	@Query("SELECT r FROM Reservation r "
+		       + "JOIN Facility f ON r.facilityCode = f.facilityCode "
+		       + "WHERE f.memId = :memId "
+		       + "AND r.reservationProgress = '예약완료' "
+		       + "ORDER BY r.CREATEDATE DESC")
+	Page<Reservation> findConfirmReservationsWithUser(@Param("memId") String memId, Pageable pageable);
+	
+	//유저의 시설 중 예약취소 상태 예약 목록 노출
+	@Query("SELECT r FROM Reservation r "
+			+ "JOIN Facility f ON r.facilityCode = f.facilityCode "
+			+ "WHERE f.memId = :memId "
+			+ "AND r.reservationProgress = '예약취소' "
+			+ "ORDER BY r.CREATEDATE DESC")
+	Page<Reservation> findRefuseReservationsWithUser(@Param("memId") String memId, Pageable pageable);
+	
+	//유저의 시설 중 예약진행중 상태 예약 목록 노출
+	@Query("SELECT r FROM Reservation r "
+			+ "JOIN Facility f ON r.facilityCode = f.facilityCode "
+			+ "WHERE f.memId = :memId "
+			+ "AND r.reservationProgress = '예약진행중' "
+			+ "ORDER BY r.CREATEDATE DESC")
+	Page<Reservation> findInprogressReservationsWithUser(@Param("memId") String memId, Pageable pageable);
 
 
 	// 시설 예약 내역 클럽원 현재 인원 수

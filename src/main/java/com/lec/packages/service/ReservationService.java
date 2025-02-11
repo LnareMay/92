@@ -14,6 +14,10 @@ public interface ReservationService {
 	// PageResponseDTO<ReservationDTO> getReservationByFacilityCode(String facilityCode, PageRequestDTO pageRequestDTO);
 
 	PageResponseDTO<ReservationDTO> getAllReservationsForUser(String memId, PageRequestDTO pageRequestDTO);
+	List<ReservationDTO> getAllReservationsForUser(String memId);
+	PageResponseDTO<ReservationDTO> getConfirmReservationsForUser(String memId, PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ReservationDTO> getRefuseReservationsForUser(String memId, PageRequestDTO pageRequestDTO);
+	PageResponseDTO<ReservationDTO> getInprogressReservationsForUser(String memId, PageRequestDTO pageRequestDTO);
 
 	ReservationDTO getReservationByCode(String reservationCode);
 

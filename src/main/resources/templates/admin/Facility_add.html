@@ -183,13 +183,13 @@
 								<div class="card-body">
 
 									<div class="form-group">
-										<label for="facilityName">Facility Name</label> <input
+										<label for="facilityName">시설명</label> <input
 											type="text" class="form-control" id="facilityName"
 											name="facilityName" required>
 									</div>
 
 									<div class="form-group">
-										<label for="inputfacilityAddress">Facility Address</label> <br />
+										<label for="inputfacilityAddress">시설주소</label> <br />
 										<input type="text" id="facilityZipcode" name="facilityZipcode"
 											placeholder="우편번호" /> <input type="button"
 											onclick="searchPostcode()" value="우편번호 찾기" /><br> <input
@@ -201,7 +201,7 @@
 
 
 									<div class="form-group">
-										<label for="inputDescription">Facility Description</label>
+										<label for="inputDescription">시설 설명</label>
 										<textarea id="facilityDescription" name="facilityDescription"
 											class="form-control" rows="4"></textarea>
 									</div>
@@ -218,7 +218,7 @@
 							<!-- /.card -->
 							<div class="card card-secondary">
 								<div class="card-header">
-									<h3 class="card-title">Budget</h3>
+									<h3 class="card-title">가격</h3>
 									<div class="card-tools">
 										<button type="button" class="btn btn-tool"
 											data-card-widget="collapse" data-toggle="tooltip"
@@ -258,9 +258,9 @@
 
 									<!-- Price Input -->
 									<div class="form-group">
-										<label for="price">시간 당 가격</label> <input type="number"
-											id="price" name="price" value="${facilityDTO.price}"
-											class="form-control">
+										<label for="price">시간 당 가격</label> 
+										<input type="text" id="formattedPrice" class="form-control">
+										<input type="hidden" id="price" name="price">
 									</div>
 
 								</div>
@@ -428,6 +428,22 @@
 					// Add event listeners to validate on input change
 					startTimeInput.addEventListener('change', validateTime);
 					endTimeInput.addEventListener('change', validateTime); 
+				});
+				
+				
+				const formattedPrice = document.querySelector('#formattedPrice');
+				const hiddenPrice = document.querySelector('#price');
+
+				formattedPrice.addEventListener('keyup', function (e) {
+				    let value = e.target.value.replaceAll(',', ''); // 쉼표 제거
+				    if (isNaN(value) || value === '') {
+				        formattedPrice.value = ''; // 표시용 필드 초기화
+				        hiddenPrice.value = ''; // 숨겨진 필드 초기화
+				        return;
+				    }
+				    const numericValue = parseInt(value, 10);
+				    formattedPrice.value = numericValue.toLocaleString('ko-KR'); // 쉼표 추가 포맷
+				    hiddenPrice.value = numericValue; // 실제 숫자 값 저장
 				});
 	</script>
 

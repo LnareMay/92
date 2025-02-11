@@ -110,7 +110,7 @@
 								<li class="nav-item">
 									<a href="/admin/Reservation_list" class="nav-link active"> 
 										<i class="far fa-circle nav-icon"></i>
-										<p>예약 목록</p>
+										<p>예약 목록 > 진행중인 예약</p>
 								</a>
 							</li>
 								<li class="nav-item">
@@ -182,20 +182,18 @@
 							<thead>
 								<tr>
 									<th style="width: 1%">#</th>
-									<th style="width: 20%">Facility Name</th>
-									<th>Facility Price</th>
-									<th style="width: 20%">Reservation Code</th>
-									<th style="width: 20%">Reservation Start Time ~ End Time</th>
-									<th style="width: 5%">Person Count</th>
+									<th style="width: 20%">시설명</th>
+									<th>가격</th>
+									<th style="width: 10%">예약코드</th>
+									<th style="width: 20%">예약시간</th>
+									<th style="width: 12%">상태</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="reservation , stat : ${reservations}"
 									th:if="${reservation.reservationProgress=='예약진행중'}">
 									<td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td>
-									<td><a th:text="${reservation.facilityName}"></a><span
-										class="ReservationProgressTag_confirm"
-										th:if="${reservation.reservationProgress=='예약완료'}">예약완료</span> <br /> 
+									<td><a th:text="${reservation.facilityName}"></a> <br /> 
 										 <small>예약생성일:</small> <small th:text="${reservation.formattedCreateDate}"></small>
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
@@ -207,7 +205,10 @@
 										th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
 										<small>예약일:</small><small th:text="${reservation.reservationDate}"></small>
 									</td>
-									<td th:text="${reservation.count}"></td>
+									<td>
+										<span class="ReservationProgressTag"
+											  th:if="${reservation.reservationProgress=='예약진행중'}">예약진행중</span>
+									</td>
 									<td class="project-actions text-right"><a
 										th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}"
 										class="btn btn-primary btn-sm"> <i class="fas fa-folder"></i>
@@ -226,13 +227,14 @@
 							</tbody>
 						</table>
 						<!-- 페이지네이션 추가 -->
-						<nav aria-label="Page navigation" class="mt-3">
+						<nav aria-label="Page navigation" class="mt-3"
+							th:if="${not #lists.isEmpty(reservations)}">
 							<ul class="pagination justify-content-center">
 								<!-- 이전 페이지 버튼 -->
 								<li class="page-item"
 									th:classappend="${pageNumber == 1} ? 'disabled'"><a
 									class="page-link"
-									th:href="@{/admin/Reservation_confirm(page=${pageNumber - 1})}"
+									th:href="@{/admin/Reservation_InProgresslist(page=${pageNumber - 1})}"
 									aria-label="Previous"> « </a></li>
 
 								<!-- 페이지 번호 -->
@@ -240,14 +242,14 @@
 									th:each="page : ${#numbers.sequence(1, totalPages)}"
 									th:classappend="${page == pageNumber} ? 'active'"><a
 									class="page-link"
-									th:href="@{/admin/Reservation_confirm(page=${page})}"
+									th:href="@{/admin/Reservation_InProgresslist(page=${page})}"
 									th:text="${page}"></a></li>
 
 								<!-- 다음 페이지 버튼 -->
 								<li class="page-item"
 									th:classappend="${pageNumber == totalPages} ? 'disabled'">
 									<a class="page-link"
-									th:href="@{/admin/Reservation_confirm(page=${pageNumber + 1})}"
+									th:href="@{/admin/Reservation_InProgresslist(page=${pageNumber + 1})}"
 									aria-label="Next"> » </a>
 								</li>
 							</ul>
