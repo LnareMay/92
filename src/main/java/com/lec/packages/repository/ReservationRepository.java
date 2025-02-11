@@ -72,7 +72,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
 
 	// 시설 예약 내역 클럽원 현재 인원 수
-	@Query(value = "select r.*, count(rml.MEM_ID) as nowMemCount from reservation r left join reservation_member_list rml on r.club_code = rml.CLUB_CODE and r.RESERVATION_CODE = rml.RESERVATION_CODE where r.club_code =:clubCode and r.RESERVATION_DATE > Now() and rml.DELETE_FLAG is not true group by r.RESERVATION_CODE", nativeQuery = true)
+	@Query(value = "select r.*, count(rml.MEM_ID) as nowMemCount from reservation r left join reservation_member_list rml on r.club_code = rml.CLUB_CODE and r.RESERVATION_CODE = rml.RESERVATION_CODE where r.club_code =:clubCode and r.RESERVATION_DATE > Now() and rml.DELETE_FLAG is not true and r.RESERVATION_PROGRESS = '예약완료' group by r.RESERVATION_CODE", nativeQuery = true)
 	List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode,
