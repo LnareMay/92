@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 span.ReservationProgressTag {
-    position: absolute;
+    position: relative;
     background-color: #ffc107;
     color: #fff;
     border-radius: 3px;

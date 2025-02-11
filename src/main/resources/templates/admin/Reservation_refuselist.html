@@ -107,16 +107,18 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/admin/Reservation_list"
-									class="nav-link active"> <i class="far fa-circle nav-icon"></i>
+								<li class="nav-item">
+									<a href="/admin/Reservation_list" class="nav-link active"> 
+										<i class="far fa-circle nav-icon"></i>
 										<p>예약 목록</p>
-								</a></li>
+								</a>
+							</li>
 								<li class="nav-item">
 									<a href="/admin/calendar" class="nav-link"> 
 										<i class="far fa-circle nav-icon"></i>
 										<p>시설 예약 현황</p>
-									</a>
-								</li>
+								</a>
+							</li>
 							</ul>
 						</li>
 						<li class="nav-item has-treeview ">
@@ -135,8 +137,8 @@
 									</a>
 								</li>
 								
-							    </ul>
-							 </li>
+							   </ul>
+						   </li>
 		</aside>
 
 		<!-- Content Wrapper. Contains page content -->
@@ -180,21 +182,19 @@
 							<thead>
 								<tr>
 									<th style="width: 1%">#</th>
-									<th style="width: 20%">Facility Name</th>
-									<th>Facility Price</th>
-									<th style="width: 20%">Reservation Code</th>
-									<th style="width: 20%">Reservation Start Time ~ End Time</th>
-									<th style="width: 5%">Person Count</th>
+									<th style="width: 20%">시설명</th>
+									<th>가격</th>
+									<th style="width: 10%">예약코드</th>
+									<th style="width: 20%">예약시간</th>
+									<th style="width: 12%">상태</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="reservation , stat : ${reservations}"
 									th:if="${reservation.reservationProgress=='예약취소'}">
 									<td th:text="${(pageNumber - 1) * pageSize + stat.index + 1}">1</td>
-									<td><a th:text="${reservation.facilityName}"></a><span
-										class="ReservationProgressTag_refuse"
-										th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>
-										<br /> <small>예약생성일:</small> <small th:text="${reservation.formattedCreateDate}"></small>
+									<td><a th:text="${reservation.facilityName}"></a><br /> 
+										 <small>예약생성일:</small> <small th:text="${reservation.formattedCreateDate}"></small>
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
 									<td th:text="${reservation.reservationCode}"></td>
@@ -205,14 +205,21 @@
 										th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
 										<small>예약일:</small><small th:text="${reservation.reservationDate}"></small>
 									</td>
-									<td th:text="${reservation.count}"></td>
+									<td>
+										<span class="ReservationProgressTag"
+											  th:if="${reservation.reservationProgress=='예약진행중'}">예약진행중</span>
+										<span class="ReservationProgressTag_confirm"
+											 th:if="${reservation.reservationProgress=='예약완료'}">예약완료 </span> 
+										<span class="ReservationProgressTag_refuse"
+											 th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>
+									</td>
 									<td class="project-actions text-right"><a
 										th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}"
 										class="btn btn-primary btn-sm"> <i class="fas fa-folder"></i>
 											View
 									</a> <a class="btn btn-success btn-sm"
-										th:href="@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}"
-										onclick="return confirm('예약 확정 하시겠습니까?')"> <i
+											th:href="@{/admin/Reservation_confirm/{reservationCode}(reservationCode=${reservation.reservationCode})}"
+											onclick="return confirm('예약 확정 하시겠습니까?')"> <i
 											class="fa fa-check-circle" aria-hidden="true"></i> confirm
 									</a> <a class="btn btn-danger btn-sm"
 										th:href="@{/admin/Reservation_refuse/{reservationCode}(reservationCode=${reservation.reservationCode})}"
@@ -230,7 +237,7 @@
 								<li class="page-item"
 									th:classappend="${pageNumber == 1} ? 'disabled'"><a
 									class="page-link"
-									th:href="@{/admin/Reservation_refuse(page=${pageNumber - 1})}"
+									th:href="@{/admin/Reservation_confirm(page=${pageNumber - 1})}"
 									aria-label="Previous"> « </a></li>
 
 								<!-- 페이지 번호 -->
@@ -238,14 +245,14 @@
 									th:each="page : ${#numbers.sequence(1, totalPages)}"
 									th:classappend="${page == pageNumber} ? 'active'"><a
 									class="page-link"
-									th:href="@{/admin/Reservation_refuse(page=${page})}"
+									th:href="@{/admin/Reservation_confirm(page=${page})}"
 									th:text="${page}"></a></li>
 
 								<!-- 다음 페이지 버튼 -->
 								<li class="page-item"
 									th:classappend="${pageNumber == totalPages} ? 'disabled'">
 									<a class="page-link"
-									th:href="@{/admin/Reservation_refuse(page=${pageNumber + 1})}"
+									th:href="@{/admin/Reservation_confirm(page=${pageNumber + 1})}"
 									aria-label="Next"> » </a>
 								</li>
 							</ul>
