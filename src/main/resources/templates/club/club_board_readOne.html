@@ -71,7 +71,7 @@
               </div>
               <div class="my-4">
                 <div class="float-end">
-                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE})}" class="text-decoration-none">
+                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE},type='ALL')}" class="text-decoration-none">
                     <button class="btn btn-primary submitBtn">목록</button>
                   </a>
                   <a th:href="@{/club/club_board_modify(clubCode=${dto.CLUB_CODE},boardNo=${dto.BOARD_NO})}" class="text-decoration-none">
