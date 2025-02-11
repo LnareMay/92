@@ -31,7 +31,7 @@
 	    <main class="container mt-4" id="facility_main_pg">
         <!-- 검색창 -->
 <!--    <div class="search-bar">-->
-		<form action="/facility/main/search" method="post" class="search-bar">
+		<form action="/facility/main_public/search" method="post" class="search-bar">
 		
 			<!-- 유형 -->
 			<div class="search-item">
@@ -167,7 +167,25 @@
 
 			<!-- 검색 버튼 -->
 			<button type="submit" class="search-btn" >검색하기</button>
-			<button type="button" class="public-btn" onclick="location.href='/facility/main_public'" >공공시설</button>
+			<button type="button" class="public-btn" onclick="location.href='/facility/main'" >사설시설</button>
+			<button type="button" class="region-btn"  data-bs-toggle="modal" data-bs-target="#mapModal">
+				<i class="bi bi-geo-alt"></i></button>
+			
+				<div id="mapModal" class="modal fade" tabindex="-1" inert>
+				    <div class="modal-dialog modal-lg">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <h5 class="modal-title">시설 위치</h5>
+				                <button type="button" id="close-btn" class="btn-close" data-bs-dismiss="modal"></button>
+				            </div>
+				            <div class="modal-body">
+				                <div id="map" style="width: 100%; height: 400px;"></div>
+				                <!--<p id="currentAddress" style="text-align: center; padding: 10px;">현재 위치: 불러오는 중...</p>-->
+				            </div>
+				        </div>
+				    </div>
+				</div>
+			
 		</form>
 
 		<!-- 시설 목록 START -->
@@ -175,11 +193,11 @@
 		<div class="container mt-4">
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
 				<div class="col" th:each="facility : ${responseDTO.dtoList}">
-					 <div class="card h-100"  th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${facility.facilityCode})}'|">
-						<div class="img_wrap">
+					 <div class="card h-100" style="padding-top:40px;" th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${facility.facilityCode})}'|">
+						<!-- <div class="img_wrap">
 							<img class="card-img-top" th:src="|/view/${facility.facilityImage1}|" id="facilityImage1" alt="Product Image"
 							onerror="this.src='https://placehold.co/80'">
-						</div>
+						</div> -->
 						<div class="card-body">
 							<div class="tag">
 								<td th:switch="${facility.exerciseCode}">
@@ -212,7 +230,7 @@
 			        <!-- 이전 페이지 버튼 -->
 			        <li class="page-item" th:classappend="${responseDTO.page == 1} ? 'disabled'">
 			            <a class="page-link" aria-label="Previous"
- 						 th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page-1}|}">
+ 						 th:href="@{|/facility/main_public?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page-1}|}">
 			                «
 			            </a>
 			           <!-- th:href="@{'/facility/main'(facilityAddress=${facilityAddress}, exerciseCode=${exerciseCode}, page=${responseDTO.page - 1})}"> -->
@@ -224,14 +242,14 @@
 				        <li class="page-item" 
 				            th:classappend="${responseDTO.page == i} ? 'active'">
 				            <a class="page-link" 
-							th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${i}|}">[[${i}]]</a>
+							th:href="@{|/facility/main_public?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${i}|}">[[${i}]]</a>
 				        </li>
 				    </th:block>
 			
 			        <!-- 다음 페이지 버튼 -->
 			        <li class="page-item" th:classappend="${responseDTO.page == responseDTO.end} ? 'disabled'">
 			            <a class="page-link" aria-label="Next"
-						th:href="@{|/facility/main?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page + 1}|}">
+						th:href="@{|/facility/main_public?facilityAddress=${facilityAddress}&exerciseCode=${exerciseCode}&page=${responseDTO.page + 1}|}">
 			                »
 			            </a>
 			        </li>
@@ -386,8 +404,136 @@
 			});
 		} 
 
+		let map;
+		let geocoder;
+		let userMarker; //사용자 위치 마커
+		let markers = []; // 시설 위치 마커
+		let userLat, userLng;
 		
+		document.getElementById("mapModal").addEventListener("shown.bs.modal", () => {
+		    initMap(); 
+			document.getElementById("mapModal").removeAttribute("inert");
+		});
+		
+		document.getElementById("mapModal").addEventListener("hidden.bs.modal", () => {
+			document.getElementById("mapModal").style.display = "none";
+			document.getElementById("mapModal").setAttribute("inert", "");
+			document.getElementById("mapModal").removeAttribute("aria-hidden");
+			document.querySelector(".search-btn").focus();
+		});
 	
+		function initMap() {
+			map = new kakao.maps.Map(document.getElementById("map"), {
+				center: new kakao.maps.LatLng(37.5665, 126.9780),
+				level: 4
+			});			
+			geocoder = new kakao.maps.services.Geocoder();
+			
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(position => {
+					userLat = position.coords.latitude;
+					userLng = position.coords.longitude;
+					
+					let userLocation = new kakao.maps.LatLng(userLat, userLng);
+					map.setCenter(userLocation);
+					
+					new kakao.maps.Marker({
+						map: map, 
+						position: userLocation,
+						title: "내 위치",
+						image: new kakao.maps.MarkerImage(
+						        "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",  
+						        new kakao.maps.Size(32, 32), // 아이콘 크기
+						        { offset: new kakao.maps.Point(16, 32) } // 중심 위치
+						    ) 
+					});
+					fetchFacilities();
+				});
+			} else {
+				alert("위치 정보를 가져올 수 없습니다.")
+			}
+		}
+		
+		window.addEventListener("resize", () => {
+		    if (map) {
+		        map.relayout(); // 지도 크기 변경 적용
+		        let userLocation = new kakao.maps.LatLng(userLat, userLng);
+		        map.setCenter(userLocation); // 지도 중심을 사용자 위치로 재설정
+		        
+		        if (userMarker) {
+		            userMarker.setPosition(userLocation); // 사용자 마커 위치 업데이트
+		        }
+		    }
+		});
+		
+		function fetchFacilities() {
+			fetch("/facility/public", {
+				method: "GET",
+				headers: {
+					"Accept": "application/json",
+					"Content-Type": "application/json",
+				},
+			})
+			.then(res => res.json())
+			.then(facilities=> {
+				facilities.forEach((facility, index) => {
+					console.log(`${index} 시설명: ${facility.facilityName}, 주소: ${facility.facilityAddress}`);
+					setTimeout(() => {
+						geocodeAddress(facility);
+					}, index * 200);
+				});
+			}); 
+		}
+		
+		function geocodeAddress(facility) {
+			if (!facility.facilityAddress || facility.facilityAddress.trim() === "") {
+			    console.error("주소 정보가 없습니다:", facility);
+			    return; 
+			}
+
+			geocoder.addressSearch(facility.facilityAddress, (result, status) => {
+			    if (status === kakao.maps.services.Status.OK) {
+					let facilityLat = result[0].y;
+					let facilityLng = result[0].x;
+					let distance = getDistance(userLat, userLng, facilityLat, facilityLng);
+					
+					if (distance <= 5) { // 5km이내 시설만
+						let coords = new kakao.maps.LatLng(facilityLat, facilityLng);
+						let marker = new kakao.maps.Marker({
+							map: map, 
+							position: coords
+						});
+						
+						markers.push(marker);
+						
+						let infowindow = new kakao.maps.InfoWindow({
+							content: `<div style="padding: 5px; font-size: 11px; font-weight: bold; color: #333;">
+										${facility.facilityName}<br>
+										<span style="font-size: 10px; color: #666;">${facility.facilityAddress}</span>
+									</div>`
+						});
+						kakao.maps.event.addListener(marker, 'mouseover', () => {
+							infowindow.open(map, marker);
+						});
+						kakao.maps.event.addListener(marker, 'mouseout', () => {
+							infowindow.close();
+						});
+					}
+				}
+			})
+		}
+		
+		function getDistance(lat1, lon1, lat2, lon2) {
+			function toRad(value) {return value * Math.PI / 180;}
+			let R = 6371;
+			let dLat = toRad(lat2 - lat1);
+			let dLon = toRad(lon2 - lon1);
+			let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+					Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+					Math.sin(dLon / 2) * Math.sin(dLon / 2);
+			let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			return R * c;
+		}
 		
 
 </script>

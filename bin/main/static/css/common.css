@@ -268,7 +268,36 @@ main {
 	gap:20px;
 }
 
+.weather-item div{
+	font-size:13px;
+	color:#999;
+}
 
+.now_weather_wrap div{
+	font-size: 11px;
+    color: #999;
+    line-height: 14px;
+}
+#current-weather{
+	display:flex;
+	align-items: center;
+	border: 1px solid #ddd; 
+	border-radius: 30px;
+	padding: 0 20px 0 10px;
+	cursor:pointer;
+	transition: all 0.2s;
+}
+#current-weather:hover{
+	background-color: #ffaa00;
+}
+#current-weather:hover div>div{
+	color: #fff;
+}
+
+/* 관리자 */
+.user-panel img {
+    height: 100% !important;
+}
 
 /* footer */
 /* 공통 스타일 */
