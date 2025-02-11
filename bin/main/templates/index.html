@@ -399,7 +399,17 @@
 			}
 		}
 
-		printClubList(memRole)
+		printClubList(memRole);
+				
+		document.addEventListener("DOMContentLoaded", function() {
+		const flashMessage = localStorage.getItem("flashMessage");
+		
+			if (flashMessage !== null) {
+				alert(flashMessage);
+				localStorage.removeItem("flashMessage");
+			}
+		})
+		
 	</script>
 
 

@@ -96,11 +96,9 @@ public class ClubController {
 	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/club_remove")
 	public String clubRemove(@RequestParam(value = "clubCode", required = false) String clubCode
-			, HttpServletRequest request
-			, RedirectAttributes redirectAttributes) {
+			, HttpServletRequest request) {
 		clubService.remove(clubCode);
 		
-		redirectAttributes.addFlashAttribute("message", "클럽 삭제 성공");
 		return "redirect:/";
 	}
 	
