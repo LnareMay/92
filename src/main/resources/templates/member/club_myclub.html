@@ -6,7 +6,7 @@
 	<!-- meta_tag include -->
 
 	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-	<title></title>
+	<title>나의클럽관리</title>
 
 	<!-- 공통 css -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
@@ -54,9 +54,10 @@
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
 						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 3, 'COMMA')}"
-								id="memMoney"></span>원 <input type="number" id="memMoney_ip" name="memMoney"
-								class="blind">
+							<span th:if="${#authentication.principal.memMoney == 0}">0</span>
+							<span th:unless="${#authentication.principal.memMoney == 0}"
+								th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 3, 'COMMA')}"></span>원
+							<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 						</p>
 					</div>
 					<div style="display: inline-flex; gap: 5px; width: 100%">

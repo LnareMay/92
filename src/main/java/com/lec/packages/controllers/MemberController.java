@@ -182,7 +182,7 @@ public class MemberController {
 		HttpSession session = request.getSession();
 		String storedFileName = (String) session.getAttribute("storedFileName");
 		if (storedFileName == null) {
-			storedFileName = "";
+			storedFileName = memberJoinDTO.getMemPicture();
 		}
 
 		try {

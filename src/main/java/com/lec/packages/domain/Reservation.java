@@ -70,6 +70,9 @@ public class Reservation extends BaseEntity{
 	    @Column(name = "PRICE", columnDefinition = "DECIMAL", precision = 50, scale = 0)
 	    private BigDecimal price;
 	    
+	    @Column(name = "memo", columnDefinition = "TEXT")
+	    private String memo;
+	    
 	 	@Column(name = "RESERVATION_PROGRESS", length = 20)
 	 	private String reservationProgress;
 
@@ -84,6 +87,8 @@ public class Reservation extends BaseEntity{
 		public void setFormattedCreateDate(String format) {
 			
 		}
+
+		
 
 	    
 	    
