@@ -384,8 +384,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
@@ -436,8 +436,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
@@ -485,8 +485,8 @@ public class FacilityServiceImpl implements FacilityService{
 	                        .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
 	                
 	                // 금액 업데이트 (환불 처리)
-	                sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-	                receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+	                sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	                receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
 	                
 	                // 새로운 송금 취소 내역 추가
 	                TransferHistory newTransferHistory = TransferHistory.builder()
@@ -539,8 +539,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().subtract(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().add(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().subtract(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().add(transferHistory.getAmount()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
@@ -556,8 +556,8 @@ public class FacilityServiceImpl implements FacilityService{
 	            .build();
 
 	    // 5. 예약 상태 업데이트
-	    reservation.setMemo("관리자의 승인으로 인한 예약확인");
-	    reservation.setReservationProgress("예약확인");
+	    reservation.setMemo("관리자의 승인으로 인한 예약완료");
+	    reservation.setReservationProgress("예약완료");
 	    reservation.setDeleteFlag(false);
 
 	    // 6. 데이터 저장
