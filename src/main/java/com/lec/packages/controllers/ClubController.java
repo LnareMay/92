@@ -31,6 +31,7 @@ import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
+import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.service.ClubService;
 
 import jakarta.servlet.http.Cookie;
@@ -51,6 +52,7 @@ public class ClubController {
 	
 	@Autowired
 	private final ClubService clubService;
+	private final MemberRepository memberRepository;
 	
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/club_create")
@@ -278,83 +280,85 @@ public class ClubController {
 		return "redirect:/club/club_board?clubCode="+clubCode;
 	}
 	
-	@GetMapping("/club_myclub")
-	public String clubManage(PageRequestDTO pageRequestDTO
-			, @RequestParam(value = "clubCode", required = false) String clubCode
-			, Authentication authentication
-			, HttpServletRequest request, Model model) {
-		String requestURI = request.getRequestURI();
-		String memId = authentication.getName();
-		
-		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId); 
-		log.info("ownerClubList: {}", ownerClubList);
-		
-		PageResponseDTO<Member> responseDTO = null;
-		if (clubCode != null) {
-			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
-		}				
-		model.addAttribute("responseDTO", responseDTO);
-		model.addAttribute("clubCode", clubCode);		
-		model.addAttribute("currentURI", requestURI);
-		model.addAttribute("ownerClubList", ownerClubList);
-		model.addAttribute("memId", memId);
-
-		return "club/club_myclub"; 
-	}
-
-	// 신고 3회이상 회원 탈퇴
-	@PostMapping("/club_myclubjoindel")
-	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode
-								,@RequestParam(value = "memId") String memId
-								,HttpServletRequest request, Model model) {
-		String requestURI = request.getRequestURI();
-		
-		clubService.joindelete(memId, clubCode);
-		clubService.removeClubResMember(clubCode, memId);
-		model.addAttribute("currentURI", requestURI);
-		
-		return "redirect:/club/club_myclub?clubCode=" + clubCode;
-	}
-	
+//	@GetMapping("/club_myclub")
+//	public String clubManage(PageRequestDTO pageRequestDTO,
+//			@RequestParam(value = "clubCode", required = false) String clubCode, Authentication authentication,
+//			HttpServletRequest request, Model model) {
+//		String requestURI = request.getRequestURI();
+//		String memId = authentication.getName();
+//
+//		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId);
+//		log.info("ownerClubList: {}", ownerClubList);
+//
+//		PageResponseDTO<Member> responseDTO = null;
+//		if (clubCode != null) {
+//			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
+//		}
+//		
+//		// 사용자 정보 가져오기
+//		Member member = memberRepository.findById(memId)
+//				.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//		model.addAttribute("member", member); // 사용자 정보를 모델에 추가
+//
+//		model.addAttribute("responseDTO", responseDTO);
+//		model.addAttribute("clubCode", clubCode);
+//		model.addAttribute("currentURI", requestURI);
+//		model.addAttribute("ownerClubList", ownerClubList);
+//		model.addAttribute("memId", memId);
+//
+//		return "club/club_myclub";
+//	}
+//
+//	// 신고 3회이상 회원 탈퇴
+//	@PostMapping("/club_myclubjoindel")
+//	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode,
+//			@RequestParam(value = "memId") String memId, HttpServletRequest request, Model model) {
+//		String requestURI = request.getRequestURI();
+//
+//		clubService.joindelete(memId, clubCode);
+//		clubService.removeClubResMember(clubCode, memId);
+//		model.addAttribute("currentURI", requestURI);
+//
+//		return "redirect:/club/club_myclub?clubCode=" + clubCode;
+//	}
+//
 	// 클럽 회원 신고
 	@PostMapping("/club_report")
-	public String clubReport(@RequestParam(value = "clubCode") String clubCode
-							, @RequestParam(value = "memId") String memId
-							, RedirectAttributes redirectAttributes
-							, HttpServletResponse response
-							, HttpServletRequest request, Model model
-							, @AuthenticationPrincipal User user
-							, @CookieValue(value = "reported", required = false) String reportCookie) {
+	public String clubReport(@RequestParam(value = "clubCode") String clubCode,
+			@RequestParam(value = "memId") String memId, RedirectAttributes redirectAttributes,
+			HttpServletResponse response, HttpServletRequest request, Model model, @AuthenticationPrincipal User user,
+			@CookieValue(value = "reported", required = false) String reportCookie) {
 		String requestURI = request.getRequestURI();
-	    model.addAttribute("currentURI", requestURI);
-	    
-	    // 쿠키 확인해서 신고 제한 - 아이디당 하루에 한번
-	    String cookieValue = user.getUsername() + "_" + memId;
-	    if (reportCookie != null && reportCookie.contains(cookieValue)) {
-	    	redirectAttributes.addFlashAttribute("message", "하루에 한 번만 신고 할 수 있습니다.");
-	    	return "redirect:/club/club_member?clubCode=" + clubCode;
-	    }
-	    
-	    // 쿠키에 신고기록 저장 	    
-	    String newCookieValue = (reportCookie == null ? "" : reportCookie + ",") + cookieValue;
+		model.addAttribute("currentURI", requestURI);
+
+		// 쿠키 확인해서 신고 제한 - 아이디당 하루에 한번
+		String cookieValue = user.getUsername() + "_" + memId;
+		if (reportCookie != null && reportCookie.contains(cookieValue)) {
+			redirectAttributes.addFlashAttribute("message", "하루에 한 번만 신고 할 수 있습니다.");
+			return "redirect:/club/club_member?clubCode=" + clubCode;
+		}
+
+		// 쿠키에 신고기록 저장
+		String newCookieValue = (reportCookie == null ? "" : reportCookie + ",") + cookieValue;
 		try {
 			String encodeValue = URLEncoder.encode(newCookieValue, StandardCharsets.UTF_8.name());
 			Cookie cookie = new Cookie("reported", encodeValue);
-		    cookie.setMaxAge(24 * 60 * 60); // 24시간 유지
-		    cookie.setPath("/");  // 모든경로 사용가능
-		    response.addCookie(cookie);
-		} catch (UnsupportedEncodingException e) {			
+			cookie.setMaxAge(24 * 60 * 60); // 24시간 유지
+			cookie.setPath("/"); // 모든경로 사용가능
+			response.addCookie(cookie);
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
-	    try {
-			clubService.clubReport(memId, clubCode);		
+		try {
+			clubService.clubReport(memId, clubCode);
 			redirectAttributes.addFlashAttribute("message", "신고가 완료되었습니다.");
-	    } catch (Exception e) {
-	    	redirectAttributes.addFlashAttribute("message", "신고 중 오류가 발생했습니다.");	    	
-	    }
-		
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "신고 중 오류가 발생했습니다.");
+		}
+
 		return "redirect:/club/club_member?clubCode=" + clubCode;
-	}	
+	}
+
 
 }
