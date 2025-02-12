@@ -101,6 +101,7 @@
 				            li.innerHTML = `
 				                <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
 				                <p>${history.status} | ${history.receiverId || ''}</p>
+								<p>사유 : <span>${history.memo}</span></p>
 				                <strong>${icon} ${history.amount.toLocaleString()}원</strong>
 				                <hr>
 				            `;
@@ -126,6 +127,7 @@
 			                li.innerHTML = `
 			                    <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
 			                    <p><span>${statusText}</span> | ${history.senderId || ''}</p>
+								<p>사유 : <span>${history.memo}</span></p>
 			                    <strong>${icon} ${history.amount.toLocaleString()}원</strong>
 			                    <hr>
 			                `;

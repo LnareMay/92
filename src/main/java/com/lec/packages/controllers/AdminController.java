@@ -303,7 +303,7 @@ public class AdminController {
 
 	@GetMapping("/Facility_delete/{facilityCode}")
 	public String deleteFacility(@PathVariable("facilityCode") String facilityCode, Model model,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal UserDetails userDetails, Object redirectAttributes) {
 		// 시설 정보 조회
 		Optional<Facility> optionalFacility = facilityRepository.findByFacilityCode(facilityCode);
 
@@ -315,6 +315,10 @@ public class AdminController {
 		}
 
 		String userId = userDetails.getUsername();
+		
+		// 시설 삭제로 인한 예약 취소 및 환불 처리
+		facilityService.cancelAllBookingByFacilityCode(facilityCode);
+        
 
 		// Member 객체를 가져오는 로직 추가 [관리자정보]
 		Optional<Member> managerOptional = memberRepository.findById(userId);
@@ -426,7 +430,7 @@ public class AdminController {
 
 	// 예약 승인
 	@GetMapping("/Reservation_confirm/{reservationCode}")
-	public String confirmReservation(@PathVariable("reservationCode") String reservationCode, Model model,
+	public String confirmReservation(TransferHistoryDTO transferHistoryDTO, @PathVariable("reservationCode") String reservationCode, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 
 		// 예약 정보를 가져오기 위해 서비스 호출
@@ -435,7 +439,8 @@ public class AdminController {
 		// DTO를 엔티티로 변환하고 상태 변경
 		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
 				.orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
-
+		
+		
 		// 예약 상태 변경
 		reservation.setReservationProgress("예약완료");
 		reservationRepository.save(reservation);
@@ -446,6 +451,13 @@ public class AdminController {
 		Optional<Member> managerOptional = memberRepository.findById(memId);
 		if (managerOptional.isPresent()) {
 			model.addAttribute("manager", managerOptional.get());
+		}
+		
+		// 만약 관리자가 예약거절했다가 승인할 경우
+		if(reservation.isDeleteFlag() == true) {
+			// 예약 정보를 가져오기 위해 서비스 호출
+		    ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+			facilityService.cancelAndBookAgainbyManager(memId, transferHistoryDTO, reservationDTO);
 		}
 		return "redirect:/admin/Reservation_list";
 	}

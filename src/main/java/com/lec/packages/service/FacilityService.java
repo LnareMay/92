@@ -42,6 +42,9 @@ public interface FacilityService {
 	List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius);
 
 	List<Facility> getPublicFacility();
+	void cancelAndBookAgainbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
+			ReservationDTO reservationDTO);
+	void cancelAllBookingByFacilityCode(String facilityCode);
 	
 
 }

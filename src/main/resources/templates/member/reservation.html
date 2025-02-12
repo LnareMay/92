@@ -101,6 +101,9 @@
 						<strong>예약 상태:</strong> <span th:text="${reservation.reservationProgress}"
 							th:classappend="'status-' +  ${reservation.reservationProgress}"></span>
 					</p>
+					<p>
+						(<span th:text="${reservation.memo}"></span>)
+					</p>
 					<form th:action="@{/facility/cancel-booking}" method="post">
 						<input type="hidden" name="reservationCode" th:value="${reservation.reservationCode}">
 						<input type="hidden" name="memId" th:value="${reservation.memId}">
