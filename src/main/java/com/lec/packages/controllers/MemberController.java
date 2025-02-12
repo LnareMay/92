@@ -420,43 +420,7 @@ public class MemberController {
 		return "redirect:/member/club_myclub?clubCode=" + clubCode;
 	}
 
-	// 클럽 회원 신고
-	@PostMapping("/club_report")
-	public String clubReport(@RequestParam(value = "clubCode") String clubCode,
-			@RequestParam(value = "memId") String memId, RedirectAttributes redirectAttributes,
-			HttpServletResponse response, HttpServletRequest request, Model model, @AuthenticationPrincipal User user,
-			@CookieValue(value = "reported", required = false) String reportCookie) {
-		String requestURI = request.getRequestURI();
-		model.addAttribute("currentURI", requestURI);
-
-		// 쿠키 확인해서 신고 제한 - 아이디당 하루에 한번
-		String cookieValue = user.getUsername() + "_" + memId;
-		if (reportCookie != null && reportCookie.contains(cookieValue)) {
-			redirectAttributes.addFlashAttribute("message", "하루에 한 번만 신고 할 수 있습니다.");
-			return "redirect:/member/club_member?clubCode=" + clubCode;
-		}
-
-		// 쿠키에 신고기록 저장
-		String newCookieValue = (reportCookie == null ? "" : reportCookie + ",") + cookieValue;
-		try {
-			String encodeValue = URLEncoder.encode(newCookieValue, StandardCharsets.UTF_8.name());
-			Cookie cookie = new Cookie("reported", encodeValue);
-			cookie.setMaxAge(24 * 60 * 60); // 24시간 유지
-			cookie.setPath("/"); // 모든경로 사용가능
-			response.addCookie(cookie);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			clubService.clubReport(memId, clubCode);
-			redirectAttributes.addFlashAttribute("message", "신고가 완료되었습니다.");
-		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("message", "신고 중 오류가 발생했습니다.");
-		}
-
-		return "redirect:/member/club_member?clubCode=" + clubCode;
-	}
+	
 
 	// 비밀번호 찾기
 	@GetMapping("/find_pw")

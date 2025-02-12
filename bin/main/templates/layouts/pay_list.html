@@ -1,42 +1,5 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head>
-<style>
-/* 로딩 화면 스타일 */
-#payloadingOverlay {
-     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 9999;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* 로딩 스피너 스타일 */
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
-</head>
-	
 
 <div th:fragment="pay_list" id="pay_list">
 
@@ -92,17 +55,14 @@
 		    try {
 		        // 로딩 메시지 추가
 		        document.getElementById("pay_list_popup").style.display = "block";
-		        document.getElementById("payloadingOverlay").style.display = "block";
+		        document.getElementById("payloadingOverlay").style.display = "flex";
+				document.getElementById("overlay").style.display = "block";
 		        
 		        const payListPopup = document.getElementById("pay_list_popup");
 		        const payListPopupWrap = document.getElementById("pay_list_popup_wrap");
 		        const overlay = document.getElementById("overlay");
 		
-		        /* const loadingMessage = document.createElement("p");
-		        loadingMessage.textContent = "로딩 중...";
-		        loadingMessage.id = "loadingMessage";
-		        payListPopup.appendChild(loadingMessage); */
-		
+
 		        // 송금 내역 요청
 		        const transferResponse = await fetch("/member/pay_list/transfer", {
 		            method: "GET",
@@ -124,11 +84,7 @@
 		        });
 		        const chargeData = await chargeResponse.json();
 		
-		        // 로딩 메시지 제거
-		        /* const loadingMessageElement = document.getElementById("loadingMessage");
-		        if (loadingMessageElement) {
-		            payListPopup.removeChild(loadingMessageElement);
-		        } */
+		        
 		        document.getElementById("payloadingOverlay").style.display = "none";
 		        payListPopupWrap.style.display="block";
 		
@@ -145,7 +101,7 @@
 				            li.innerHTML = `
 				                <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
 				                <p>${history.status} | ${history.receiverId || ''}</p>
-				                <strong>${icon} ${history.amount}원</strong>
+				                <strong>${icon} ${history.amount.toLocaleString()}원</strong>
 				                <hr>
 				            `;
 				            transferList.appendChild(li);
@@ -170,7 +126,7 @@
 			                li.innerHTML = `
 			                    <p style="color:#999">${history.transferDate.replace("T", " ")}</p>
 			                    <p><span>${statusText}</span> | ${history.senderId || ''}</p>
-			                    <strong>${icon} ${history.amount}원</strong>
+			                    <strong>${icon} ${history.amount.toLocaleString()}원</strong>
 			                    <hr>
 			                `;
 
@@ -190,7 +146,7 @@
 		                const li = document.createElement("li");
 		                li.innerHTML = `
 		                    <p style="color:#999">${ history.chargeDate.replace("T", " ")}</p>
-		                    <p><i class="bi bi-plus-circle" style="color: blue"></i> ${history.amount}원</p>
+		                    <p><i class="bi bi-plus-circle" style="color: blue"></i> ${history.amount.toLocaleString()}원</p>
 		                    <hr>
 		                `;
 		                chargeList.appendChild(li); 
