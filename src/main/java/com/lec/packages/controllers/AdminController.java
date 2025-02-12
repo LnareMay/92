@@ -424,6 +424,7 @@ public class AdminController {
 		} else {
 			// 예약 상태 변경
 			reservation.setReservationProgress("예약완료");
+			reservation.setMemo("관리자의 승인으로 인한 예약완료");
 			reservationRepository.save(reservation);
 		}
 
