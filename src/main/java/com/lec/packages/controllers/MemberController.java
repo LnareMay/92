@@ -1,6 +1,9 @@
 package com.lec.packages.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -12,11 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +35,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.lec.packages.domain.Member;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.dto.ChargeHistoryDTO;
+import com.lec.packages.dto.ClubDTO;
 import com.lec.packages.dto.MemberJoinDTO;
 import com.lec.packages.dto.MemberSecurityDTO;
+import com.lec.packages.dto.PageRequestDTO;
+import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
@@ -38,7 +47,9 @@ import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.MemberService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -57,10 +68,10 @@ public class MemberController {
 	private final MemberRepository memberRepository;
 	private final ReservationRepository reservationRepository;
 	private final PasswordEncoder passwordEncoder;
-	
+
 	private final ClubService clubService;
 
-	@GetMapping({"/login/{logout}" })
+	@GetMapping({ "/login/{logout}" })
 	public void loginGet(@RequestParam(name = "logout", defaultValue = "") @PathVariable Optional<String> logout,
 			Model model) {
 		log.info("login get ................... ");
@@ -73,11 +84,10 @@ public class MemberController {
 	}
 
 	@GetMapping("/login")
-	public void loginErrorGet(@RequestParam(name = "error", required = false) String error,Model model) {
+	public void loginErrorGet(@RequestParam(name = "error", required = false) String error, Model model) {
 		if (error != null) {
-	        model.addAttribute("errorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
-	    }	
-		
+			model.addAttribute("errorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
+		}
 
 	}
 
@@ -176,7 +186,7 @@ public class MemberController {
 		}
 
 		try {
-			
+
 //			// 기존 사용자 정보 가져오기
 //		    Optional<Member> existingMember = memberRepository.findById(principal.getName());
 //		    
@@ -187,10 +197,9 @@ public class MemberController {
 //		        // 새 비밀번호가 입력되었으면 암호화 후 저장
 //		    	memberJoinDTO.setMemPw(passwordEncoder.encode(memberJoinDTO.getMemPw()));
 //		    }
-		    
+
 			// 회원 정보 수정
 			memberService.modify(memberJoinDTO, storedFileName);
-			
 
 			// 수정된 사용자 정보 가져오기
 			UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memberJoinDTO.getMemId());
@@ -223,13 +232,13 @@ public class MemberController {
 
 			// 회원이 가입한 클럽 목록 조회
 			List<String> clubCodes = clubService.findJoinClubCodeByMemId(username);
-					
+
 			// 회원이 가입한 클럽 탈퇴, 참여한 일정 삭제
 			for (String clubCode : clubCodes) {
-				clubService.joindelete(username, clubCode);	
+				clubService.joindelete(username, clubCode);
 				clubService.removeClubResMember(clubCode, username);
 			}
-			
+
 			// 회원 삭제 처리 (DELETE_FLAG를 1로 설정)
 			memberService.remove(username);
 
@@ -369,6 +378,86 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/club_myclub")
+	public String clubManage(PageRequestDTO pageRequestDTO,
+			@RequestParam(value = "clubCode", required = false) String clubCode, Authentication authentication,
+			HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		String memId = authentication.getName();
+
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId);
+		log.info("ownerClubList: {}", ownerClubList);
+
+		PageResponseDTO<Member> responseDTO = null;
+		if (clubCode != null) {
+			responseDTO = clubService.findMemberAll(clubCode, pageRequestDTO);
+		}
+		
+		// 사용자 정보 가져오기
+		Member member = memberRepository.findById(memId)
+				.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+		model.addAttribute("member", member); // 사용자 정보를 모델에 추가
+
+		model.addAttribute("responseDTO", responseDTO);
+		model.addAttribute("clubCode", clubCode);
+		model.addAttribute("currentURI", requestURI);
+		model.addAttribute("ownerClubList", ownerClubList);
+		model.addAttribute("memId", memId);
+
+		return "member/club_myclub";
+	}
+
+	// 신고 3회이상 회원 탈퇴
+	@PostMapping("/club_myclubjoindel")
+	public String clubJoinString(@RequestParam(value = "clubCode") String clubCode,
+			@RequestParam(value = "memId") String memId, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+
+		clubService.joindelete(memId, clubCode);
+		clubService.removeClubResMember(clubCode, memId);
+		model.addAttribute("currentURI", requestURI);
+
+		return "redirect:/member/club_myclub?clubCode=" + clubCode;
+	}
+
+	// 클럽 회원 신고
+	@PostMapping("/club_report")
+	public String clubReport(@RequestParam(value = "clubCode") String clubCode,
+			@RequestParam(value = "memId") String memId, RedirectAttributes redirectAttributes,
+			HttpServletResponse response, HttpServletRequest request, Model model, @AuthenticationPrincipal User user,
+			@CookieValue(value = "reported", required = false) String reportCookie) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+
+		// 쿠키 확인해서 신고 제한 - 아이디당 하루에 한번
+		String cookieValue = user.getUsername() + "_" + memId;
+		if (reportCookie != null && reportCookie.contains(cookieValue)) {
+			redirectAttributes.addFlashAttribute("message", "하루에 한 번만 신고 할 수 있습니다.");
+			return "redirect:/member/club_member?clubCode=" + clubCode;
+		}
+
+		// 쿠키에 신고기록 저장
+		String newCookieValue = (reportCookie == null ? "" : reportCookie + ",") + cookieValue;
+		try {
+			String encodeValue = URLEncoder.encode(newCookieValue, StandardCharsets.UTF_8.name());
+			Cookie cookie = new Cookie("reported", encodeValue);
+			cookie.setMaxAge(24 * 60 * 60); // 24시간 유지
+			cookie.setPath("/"); // 모든경로 사용가능
+			response.addCookie(cookie);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			clubService.clubReport(memId, clubCode);
+			redirectAttributes.addFlashAttribute("message", "신고가 완료되었습니다.");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "신고 중 오류가 발생했습니다.");
+		}
+
+		return "redirect:/member/club_member?clubCode=" + clubCode;
+	}
+
 	// 비밀번호 찾기
 	@GetMapping("/find_pw")
 	public String findPwGet(HttpServletRequest request, Model model) {
@@ -390,13 +479,13 @@ public class MemberController {
 		}
 
 	}
-	
+
 	@GetMapping("/email-template")
 	public String getEmailTemplate(HttpServletRequest request, Model model) {
 
 		return "member/email-template";
 	}
-	
+
 	// 운동캘린더 조회
 	@GetMapping("/member_planner")
 	public String plannerGet(HttpServletRequest request, Model model) {
