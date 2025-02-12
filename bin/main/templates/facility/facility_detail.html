@@ -472,7 +472,8 @@ option[value=""][disabled] {
     function reset(){
     	 const useFitpayInput = parseFloat(document.getElementById("useFitpay").value);
     	
-    	 memMoney = memMoney + totalPaid;
+    	memMoney = memMoney + totalPaid;
+		memMoneyFormatted = memMoney.toLocaleString();
     	totalPaid = 0;
         const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
         
@@ -484,9 +485,9 @@ option[value=""][disabled] {
         useFullAmountButton.disabled = false; // 버튼 활성화
 
         // UI 초기화
-        document.getElementById("memMoney_ip").value = memMoneyFormatted;
+        document.getElementById("memMoney_ip").value = memMoney;
         document.getElementById("memMoney").textContent = memMoneyFormatted;
-        document.getElementById("totalPaid").textContent = totalPaidFormatted;
+        document.getElementById("totalPaid").textContent = totalPaid;
         document.getElementById("remainingAmount").textContent = remainingAmountFormatted;
         document.getElementById("useFitpay").value = "";
         return;
@@ -516,6 +517,8 @@ option[value=""][disabled] {
         // 값 업데이트
         memMoney -= useFitpayInput;
         totalPaid += useFitpayInput;
+		memMoneyFormatted = memMoney.toLocaleString();
+		totalPaidFormatted = totalPaid.toLocaleString();
         
 		const totalPrice = calculateTotalPrice(); // 최종 금액 다시 계산
         const remainingAmount = Math.max(totalPrice - totalPaid, 0);
@@ -525,7 +528,7 @@ option[value=""][disabled] {
 
         // UI 업데이트
         document.getElementById("memMoney").textContent = memMoneyFormatted;
-        document.getElementById("totalPaid").textContent = (totalPrice - remainingAmount).toLocaleString();
+        document.getElementById("totalPaid").textContent = totalPaidFormatted;
         document.getElementById("useFitpay").value = "";
         document.getElementById("remainingAmount").textContent = remainingAmountFormatted;
     });
@@ -715,7 +718,7 @@ option[value=""][disabled] {
     	            // alert("결제가 성공했습니다!");
     	            memMoney += money; // 충전 금액 추가
     	            $("#memMoney_ip").val(memMoney);
-    	            $("#memMoney").val(memMoney);
+    	            $("#memMoney").text(memMoney.toLocaleString());
 					
     	            // 서버로 충전 금액 전송
     	            $.ajax({
