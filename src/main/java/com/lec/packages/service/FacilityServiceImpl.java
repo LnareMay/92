@@ -401,7 +401,7 @@ public class FacilityServiceImpl implements FacilityService{
 	            .build();
 
 	    // 5. 예약 상태 업데이트
-	    reservation.setMemo("개인이 예약 취소");
+	    reservation.setMemo("예약자의 취소로 인한 예약 취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
 
