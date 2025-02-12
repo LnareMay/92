@@ -9,6 +9,7 @@ public interface ClubReservationInterface {
     String getClubCode();
     Integer getCount();
     Integer getNowMemCount();
+    String getMemberList(); 
     LocalTime getReservationStartTime();
     Date getReservationDate();
     String getReservationProgress();

@@ -662,7 +662,7 @@ public class ClubServiceImpl implements ClubService {
 		for (ClubReservationInterface clubReservationInterface : clubReservationDTOs) {
 			ClubReservationDTO dto = ClubReservationDTO.builder().ReservationProgress(clubReservationInterface.getReservationProgress())
 									.clubCode(clubReservationInterface.getClubCode()).count(clubReservationInterface.getCount())
-									.facilityName(clubReservationInterface.getFacilityName()).nowMemCount(clubReservationInterface.getNowMemCount())
+									.facilityName(clubReservationInterface.getFacilityName()).nowMemCount(clubReservationInterface.getNowMemCount()).memberList(clubReservationInterface.getMemberList())
 									.reservationCode(clubReservationInterface.getReservationCode()).reservationStartTime(clubReservationInterface.getReservationStartTime())
 									.reservationDate(clubReservationInterface.getReservationDate()).build();
 			dtos.add(dto);
