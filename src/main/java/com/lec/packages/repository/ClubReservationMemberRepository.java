@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
 import com.lec.packages.domain.primaryKeyClasses.ClubReservationMemberKeyClass;
 
@@ -40,6 +41,10 @@ public interface ClubReservationMemberRepository
 	int updateReservationMemberFlag(@Param("reservationCode") String reservationCode, 
 	                                @Param("clubCode") String clubCode, 
 	                                @Param("memId") String memId);
+
+	
+	@Query("SELECT r FROM Reservation r where r.memId = :memId and r.clubCode is null and r.deleteFlag is false")
+	List<Reservation> findMemberReservationsWithDetails(@Param("memId") String memId);
 
 
 }

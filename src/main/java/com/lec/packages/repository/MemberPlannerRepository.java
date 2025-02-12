@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface MemberPlannerRepository extends JpaRepository<Member_Planner, Integer> {
 
-    // 특정 회원이 등록한 일정 조회
-	@Query("SELECT m FROM Member_Planner m WHERE m.memId = :memId and m.deleteFlag = false and m.planIsclub = false")
+    // 특정 회원이 등록한 일정 조회 (클럽일정x, 시설예약일정x)
+	@Query("SELECT m FROM Member_Planner m WHERE m.memId = :memId and m.deleteFlag = false and m.planIsclub = false and m.reservationCode is null")
     List<Member_Planner> findByMemId(@Param("memId") String memId);
 
     // 특정 회원의 특정 날짜 일정 조회
