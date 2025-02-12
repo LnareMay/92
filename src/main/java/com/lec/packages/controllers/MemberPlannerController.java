@@ -156,7 +156,7 @@ public class MemberPlannerController {
                 map.put("planText", "장소 : " + facilityName + "\n시간 :" + startTime + "~" + endTime);
                 map.put("planIschk", false);
                 map.put("planIsclub", false);
-                map.put("color", "#ff9800");
+                map.put("color", "#02b875");
                 map.put("reservationCode", res.getReservationCode());  // 예약 코드 추가
                 // map.put("clubCode", res.getClubCode());  // 클럽 코드 추가
                 map.put("memId", res.getMemId());  // 예약한 사용자 ID 추가

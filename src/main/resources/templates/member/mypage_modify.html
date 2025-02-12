@@ -182,7 +182,7 @@
 
 						<th:block th:if="${#authentication.principal.memSocial == true}">
 							<!-- 소셜로그인 프로필이미지 -->
-							<img th:src="${member.memPicture}" alt="프로필 이미지">
+							<img th:src="${member.memPicture}" alt="프로필 이미지" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 							<input type="hidden" name="memPicture" th:value="${member.memPicture}">
 
 							<input type="hidden" id="memPw" name="memPw" th:value="${#authentication.principal.memPw}">

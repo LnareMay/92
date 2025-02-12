@@ -101,7 +101,7 @@
 					<th:block
 						th:if="${member.memSocial == true && member.memPicture != null && member.memPicture !=''}">
 						<img th:src="${member.memPicture}"
-							alt="프로필 이미지">
+							alt="프로필 이미지" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 					</th:block>
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
