@@ -88,7 +88,11 @@
 					<p>
 						<strong>예약 코드:</strong> <span
 							th:text="${reservation.reservationCode}"></span>
-					</p>
+					</p>					
+					<p th:if="${reservation.clubCode != null}">
+						<strong>클럽명:</strong> <span
+							th:text="${clubNameMap[reservation.clubCode]}"></span>
+					</p>									
 					<p>
 						<strong>이용 날짜:</strong> <span
 							th:text="${reservation.reservationDate}"></span>

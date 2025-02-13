@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -286,6 +287,13 @@ public class MemberController {
 		List<Reservation> reservations = reservationRepository.findByMemId(memId);
 		if (!reservations.isEmpty()) {
 			model.addAttribute("reservations", reservations); // 예약 목록을 모델에 추가
+			// 클럽예약 - 클럽명 가져오기
+			Map<String, Object> clubNameMap = new HashMap<>();
+			for (Reservation reservation : reservations) {				
+				String clubName = clubService.getClubNameByCode(reservation.getClubCode());
+				clubNameMap.put(reservation.getClubCode(), clubName);				
+			}		
+			model.addAttribute("clubNameMap", clubNameMap); 
 		} else {
 			model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
 		}

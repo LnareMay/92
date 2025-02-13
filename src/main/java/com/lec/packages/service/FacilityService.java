@@ -38,13 +38,15 @@ public interface FacilityService {
 	void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 	void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO);
 
-
+	List<FacilityDTO> getPrivateFacilityWithRadius(BigDecimal lat, BigDecimal longt, double radius);
 	List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius);
 
 	List<Facility> getPublicFacility();
 	void cancelAndBookAgainbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO);
 	void cancelAllBookingByFacilityCode(String facilityCode);
+	
+	
 	
 
 }

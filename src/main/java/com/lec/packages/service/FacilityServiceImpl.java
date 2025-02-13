@@ -741,6 +741,16 @@ public class FacilityServiceImpl implements FacilityService{
 		
 	}
 	
+	// 사설시설
+	public List<FacilityDTO> getPrivateFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius) {
+		List<Facility> facilities = facilityRepository.findPrivateFacilityWithRadius(userLat, userLng, radius);
+		
+		return facilities.stream()
+				.map(facility -> modelMapper.map(facility, FacilityDTO.class))
+				.collect(Collectors.toList());
+	}
+	
+	// 공공시설
 	@Override
 	public List<FacilityDTO> getFacilityWithRadius(BigDecimal userLat, BigDecimal userLng, double radius) {
 		List<Facility> facilities = facilityRepository.findFacilityWithRadius(userLat, userLng, radius);

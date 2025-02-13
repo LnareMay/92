@@ -36,10 +36,22 @@ public class FacilityRestController {
         return localTimes;
     }
     
+    // 위치기반 사설시설가져오기
+    @GetMapping("/privatesearch")
+    public ResponseEntity<List<FacilityDTO>> getPrivateFacilityWithRadius(
+    		  @RequestParam(name = "lat") BigDecimal lat
+    		, @RequestParam(name = "longt") BigDecimal longt
+    		, @RequestParam(name = "radius") double radius) {
+    	
+    	List<FacilityDTO> facility = facilityService.getPrivateFacilityWithRadius(lat, longt, radius);
+    	
+    	return ResponseEntity.ok(facility);
+    }
+    
     // 위치기반 공공시설가져오기
     @GetMapping("/search")
     public ResponseEntity<List<FacilityDTO>> getFacilityWithRadius(
-    		  @RequestParam(name = "lat") BigDecimal lat
+    		@RequestParam(name = "lat") BigDecimal lat
     		, @RequestParam(name = "longt") BigDecimal longt
     		, @RequestParam(name = "radius") double radius) {
     	
