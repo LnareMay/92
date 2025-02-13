@@ -24,7 +24,7 @@ public interface MemberPlannerRepository extends JpaRepository<Member_Planner, I
     @Query("SELECT m FROM Member_Planner m WHERE m.planNo = :planNo and m.deleteFlag = false")
     Optional<Member_Planner> findByPlanNoAndDeleteFlagFalse(@Param("planNo") Integer planNo);
 
-    @Query("SELECT m FROM Member_Planner m WHERE m.reservationCode = :reservationCode AND m.memId = :memId and m.deleteFlag = false")
+    @Query("SELECT m FROM Member_Planner m WHERE m.reservationCode = :reservationCode AND m.memId = :memId")
     Optional<Member_Planner> findByReservationCodeAndMemId(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
     
     @Query("SELECT m FROM Member_Planner m WHERE m.reservationCode = :reservationCode AND m.memId = :memId and m.deleteFlag = true")
@@ -32,8 +32,10 @@ public interface MemberPlannerRepository extends JpaRepository<Member_Planner, I
 
 
 	List<Member_Planner> findByReservationCodeAndMemIdAndDeleteFlagTrue(String reservationCode, String memId);
+	List<Member_Planner> findByReservationCodeIsNullAndMemIdAndDeleteFlagFalse(String reservationCode);
 
-	List<Member_Planner> findByReservationCodeAndMemIdAndDeleteFlagFalse(String reservationCode, String memId);
+	List<Member_Planner> findByReservationCodeAndMemIdAndDeleteFlagFalse(String reservationCode, String memId);	
+	List<Member_Planner> findByReservationCodeIsNullAndMemIdAndDeleteFlagTrue(String memId);
 
 
 }

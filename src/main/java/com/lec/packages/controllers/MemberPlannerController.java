@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lec.packages.domain.Member_Planner;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.Reservation_Member_List;
+import com.lec.packages.dto.ReservationDTO;
+import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.repository.MemberPlannerRepository;
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -188,7 +192,7 @@ public class MemberPlannerController {
 
 	@DeleteMapping("/delete")
 	@Transactional
-	public ResponseEntity<String> deletePlanner(@RequestBody Map<String, Object> requestData) {
+	public ResponseEntity<String> deletePlanner(@RequestBody Map<String, Object> requestData, @AuthenticationPrincipal UserDetails userDetails) {
 	    try {
 	        System.out.println("🚀 [DELETE 요청] 요청 데이터: " + requestData);
 
@@ -212,7 +216,10 @@ public class MemberPlannerController {
 	            clubMemberRemoved = clubService.removeClubResMember(reservationCode, clubCode, memId).equals("success");
 	            System.out.println("🛠️ [삭제 완료] 클럽 멤버 삭제 여부: " + clubMemberRemoved);
 	        } else {
-	        	boolean plannerDeleted = memberPlannerService.deletePlanner(planNo);
+	        	// DTO 객체를 새로 생성 (필요 시 추가)
+	            TransferHistoryDTO transferHistoryDTO = new TransferHistoryDTO();
+	            ReservationDTO reservationDTO = new ReservationDTO();
+	        	boolean plannerDeleted = memberPlannerService.deletePlanner(planNo, transferHistoryDTO, reservationDTO, userDetails);
 	        }
 	        
 	        return ResponseEntity.ok("✅ 클럽 일정이 삭제되었습니다.");
