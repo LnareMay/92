@@ -85,5 +85,40 @@ public class FacilityDTO {
     
 	private BigDecimal facilityLat;
 	private BigDecimal facilityLongt;
+	
+	public FacilityDTO(int number, String facilityCode, String facilityAddress, String facilityAddressDetail
+						,String facilityZipCode, String facilityDescription
+						, String facilityImage1, String facilityImage2
+						, String facilityImage3, String facilityImage4
+						, String exerciseCode, String exerciseName
+						, boolean facilityIsOnlyClub, String memId
+						, BigDecimal price, LocalDateTime createDate
+						,LocalDateTime modifyDate, boolean deleteFlag
+						,BigDecimal facilityLat, BigDecimal facilityLongt) {
+		
+		this.number=number;
+		this.facilityCode=facilityCode;
+		this.facilityAddress=facilityAddress;
+		this.facilityAddressDetail=facilityAddressDetail;
+		this.facilityZipcode=facilityZipCode;
+		this.facilityDescription=facilityDescription;
+		this.facilityImage1=facilityImage1;
+		this.facilityImage2=facilityImage2;
+		this.facilityImage3=facilityImage3;
+		this.facilityImage4=facilityImage4;
+		this.exerciseCode=exerciseCode;
+		this.exerciseName=exerciseName;
+		this.facilityIsOnlyClub=facilityIsOnlyClub;
+		this.memId=memId;
+		this.price=price;
+		this.createDate=createDate;
+		this.modifyDate=modifyDate;
+		this.deleteFlag=deleteFlag;
+		this.facilityLat=facilityLat;
+		this.facilityLongt=facilityLongt;
+		
+	}
+	
+	
     
 }

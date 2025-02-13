@@ -104,14 +104,20 @@ public class Facility extends BaseEntity{
 	    @Column(name = "DELETE_FLAG")
 	    private boolean deleteFlag;
 	    
-	    public void modifyFacility(String facilityName, String facilityDescription
+	    public void modifyFacility(String facilityName, 
+	    							String facilityAddress, String facilityAddressDetail, String facilityZipcode,
+	    							String facilityDescription
 	    							,boolean facilityIsOnlyClub, BigDecimal price
 	    							,LocalTime  facilityStartTime, LocalTime  facilityEndTime
 	    							,String exerciseCode,String facilityImage1 
 	    							,String facilityImage2
-	    							,String facilityImage3 ,String facilityImage4) {
+	    							,String facilityImage3 ,String facilityImage4
+	    							,BigDecimal facilityLat, BigDecimal facilityLongt) {
 	    	
 	    	this.facilityName = facilityName;
+	    	this.facilityAddress=facilityAddress;
+	    	this.facilityAddressDetail=facilityAddressDetail;
+	    	this.facilityZipcode=facilityZipcode;
 	    	this.facilityDescription = facilityDescription;
 	    	this.facilityIsOnlyClub = facilityIsOnlyClub;
 	    	this.price = price;
@@ -122,6 +128,8 @@ public class Facility extends BaseEntity{
 	    	this.facilityImage2 = facilityImage2;
 	    	this.facilityImage3 = facilityImage3;
 	    	this.facilityImage4 = facilityImage4;
+	    	this.facilityLat=facilityLat;
+	    	this.facilityLongt=facilityLongt;
 	    }
 	    
 	    

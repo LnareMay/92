@@ -1,6 +1,11 @@
 package com.lec.packages.service;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,8 +13,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +48,9 @@ import lombok.extern.log4j.Log4j2;
 public class FacilityServiceImpl implements FacilityService{
 
 
+	 @Value("${kakao.rest.api.key}")
+	 private String kakaoApiKey;
+	 
 	private final ModelMapper modelMapper;
 
 	private final FacilityRepository facilityRepository;
@@ -61,7 +71,46 @@ public class FacilityServiceImpl implements FacilityService{
 		//고유한 FacilityCode 생성
         String uniqueFacilityCode = RandomStringGenerator.generateRandomString(8,facilityRepository); // 8자리 랜덤 문자열
         facility.setFacilityCode("FACIL_"+uniqueFacilityCode);
-		
+        
+        // Kakao 지도 API를 사용해 위경도 가져오기
+        try {
+            String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
+            String query = URLEncoder.encode(facilityDTO.getFacilityAddress(), "UTF-8");
+            URL url = new URL(apiUrl + "?query=" + query);
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "KakaoAK " + kakaoApiKey);
+
+            if (connection.getResponseCode() == 200) { // HTTP OK
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+
+                JSONObject jsonObject = new JSONObject(response.toString());
+                JSONArray documents = jsonObject.getJSONArray("documents");
+
+                if (documents.length() > 0) {
+                    JSONObject addressData = documents.getJSONObject(0);
+                    double lat = addressData.getDouble("y"); // 위도
+                    double lon = addressData.getDouble("x"); // 경도
+
+                    facility.setFacilityLat(BigDecimal.valueOf(lat)); // 위도 저장
+                    facility.setFacilityLongt(BigDecimal.valueOf(lon)); // 경도 저장
+                }
+            } else {
+                throw new RuntimeException("Geocoding 실패: HTTP " + connection.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Geocoding 중 오류 발생.");
+        }
+
+       	
         // 파일 경로 설정 (DTO에서 이미 설정된 경로를 사용)
         facility.setFacilityImage1(facilityDTO.getFacilityImage1());
         facility.setFacilityImage2(facilityDTO.getFacilityImage2());
@@ -216,32 +265,86 @@ public class FacilityServiceImpl implements FacilityService{
 		return modelMapper.map(facility, FacilityDTO.class);
 	}
 
+	//시설수정하기
 	@Override
 	public void modify(FacilityDTO facilityDTO) {
 		
 		Optional<Facility> result = facilityRepository.findByFacilityCode(facilityDTO.getFacilityCode());
 		Facility facility = result.orElseThrow();
+		
+		 // Kakao 지도 API를 사용해 위경도 가져오기
+        try {
+            String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
+            String query = URLEncoder.encode(facilityDTO.getFacilityAddress(), "UTF-8");
+            URL url = new URL(apiUrl + "?query=" + query);
+
+            System.out.println("Kakao API 요청 URL: " + apiUrl);
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "KakaoAK " + kakaoApiKey);
+
+            System.out.println("Kakao API 응답 코드: " + connection.getResponseCode());
+            
+            if (connection.getResponseCode() == 200) { // HTTP OK
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+                
+                // 응답 데이터 출력
+                System.out.println("Kakao API 응답 데이터: " + response.toString());
+
+                JSONObject jsonObject = new JSONObject(response.toString());
+                JSONArray documents = jsonObject.getJSONArray("documents");
+
+                if (documents.length() > 0) {
+                    JSONObject addressData = documents.getJSONObject(0);
+                    double lat = addressData.getDouble("y"); // 위도
+                    double lon = addressData.getDouble("x"); // 경도
+
+                    facilityDTO.setFacilityLat(BigDecimal.valueOf(lat)); // 위도 저장
+                    facilityDTO.setFacilityLongt(BigDecimal.valueOf(lon)); // 경도 저장
+                }
+            } else {
+                throw new RuntimeException("Geocoding 실패: HTTP " + connection.getResponseCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Geocoding 중 오류 발생.");
+        }
+
 		 
 	    if (facilityDTO.getFacilityImage1() == null) facilityDTO.setFacilityImage1(facility.getFacilityImage1());
 	    if (facilityDTO.getFacilityImage2() == null) facilityDTO.setFacilityImage2(facility.getFacilityImage2());
 	    if (facilityDTO.getFacilityImage3() == null) facilityDTO.setFacilityImage3(facility.getFacilityImage3());
 	    if (facilityDTO.getFacilityImage4() == null) facilityDTO.setFacilityImage4(facility.getFacilityImage4());
 
-		
+	    System.out.println("Before modifyFacility: Lat = " + facilityDTO.getFacilityLat() + ", Longt = " + facilityDTO.getFacilityLongt());
+	    
 		facility.modifyFacility(facilityDTO.getFacilityName()
-							   ,facilityDTO.getFacilityDescription()
-							   ,facilityDTO.isFacilityIsOnlyClub()
-							   ,facilityDTO.getPrice()
-							   ,facilityDTO.getFacilityStartTime()
-							   ,facilityDTO.getFacilityEndTime()
-							   ,facilityDTO.getExerciseCode()
-							   ,facilityDTO.getFacilityImage1()
-							   ,facilityDTO.getFacilityImage2()
-							   ,facilityDTO.getFacilityImage3()
-							   ,facilityDTO.getFacilityImage4());
+								,facilityDTO.getFacilityAddress()
+								,facilityDTO.getFacilityAddressDetail()
+								,facilityDTO.getFacilityZipcode()
+							    ,facilityDTO.getFacilityDescription()
+							    ,facilityDTO.isFacilityIsOnlyClub()
+							    ,facilityDTO.getPrice()
+							    ,facilityDTO.getFacilityStartTime()
+							    ,facilityDTO.getFacilityEndTime()
+							    ,facilityDTO.getExerciseCode()
+							    ,facilityDTO.getFacilityImage1()
+							    ,facilityDTO.getFacilityImage2()
+							    ,facilityDTO.getFacilityImage3()
+							    ,facilityDTO.getFacilityImage4()
+							    ,facilityDTO.getFacilityLat()
+							    ,facilityDTO.getFacilityLongt());
 		
 		facilityRepository.save(facility);
-		
+		System.out.println("DB 저장 완료: " + facility.getFacilityLat() + ", " + facility.getFacilityLongt());
 		
 	}
 	
@@ -504,5 +607,84 @@ public class FacilityServiceImpl implements FacilityService{
 	public List<Facility> getPublicFacility() {
 		return facilityRepository.findPublic();
 	}
+	
+	 /**
+     * 주소 문자열에서 지역 정보 추출
+     */
+    public String extractRegionFromAddress(String facilityAddress) {
+        String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json";
+        String result = null;
+
+        try {
+            // URL 인코딩
+            String query = URLEncoder.encode(facilityAddress, "UTF-8");
+            String requestUrl = apiUrl + "?query=" + query;
+
+            // HTTP 요청
+            URL url = new URL(requestUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "KakaoAK " + kakaoApiKey);
+
+            // 응답 처리
+            int responseCode = connection.getResponseCode();
+            System.out.println("Request URL: " + requestUrl);
+            System.out.println("Response Code: " + responseCode);
+
+            if (responseCode == 200) { // HTTP OK
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+
+                System.out.println("Response: " + response.toString());
+
+                // JSON 파싱
+                JSONObject jsonObject = new JSONObject(response.toString());
+                JSONArray documents = jsonObject.getJSONArray("documents");
+
+                if (documents.length() > 0) {
+                    JSONObject address = documents.getJSONObject(0).getJSONObject("address");
+
+                    // 시, 구, 동 정보 추출 및 조합
+                    String region1 = address.optString("region_1depth_name", "시 정보 없음");
+                    String region2 = address.optString("region_2depth_name", "구/군 정보 없음");
+                    String region3 = address.optString("region_3depth_name", "동/면 정보 없음");
+
+                    // 특별시, 광역시, 도 등의 이름 변환
+                    if ("서울".equals(region1)) {
+                        region1 = "서울특별시";
+                    } else if ("부산".equals(region1)) {
+                        region1 = "부산광역시";
+                    } else if ("대구".equals(region1)) {
+                        region1 = "대구광역시";
+                    } else if ("인천".equals(region1)) {
+                        region1 = "인천광역시";
+                    } else if ("광주".equals(region1)) {
+                        region1 = "광주광역시";
+                    } else if ("대전".equals(region1)) {
+                        region1 = "대전광역시";
+                    } else if ("울산".equals(region1)) {
+                        region1 = "울산광역시";
+                    } else if ("세종".equals(region1)) {
+                        region1 = "세종특별자치시";
+                    }
+                    
+                    // 결과 조합
+                    result = String.format("%s %s %s", region1, region2, region3);
+                }
+            } else {
+                System.err.println("Error: HTTP response code " + responseCode);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result != null ? result : "지역 정보가 없습니다.";
+    }
 
 }

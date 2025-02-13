@@ -182,11 +182,11 @@
 							<thead>
 								<tr>
 									<th style="width: 1%">#</th>
-									<th style="width: 20%">시설명</th>
+									<th style="width: 20%; text-align: center;">시설명</th>
 									<th>가격</th>
-									<th style="width: 10%">예약코드</th>
-									<th style="width: 20%">예약시간</th>
-									<th style="width: 12%">상태</th>
+									<th style="width: 10%; text-align: center;">예약코드</th>
+									<th style="width: 20%; text-align: center;">예약시간</th>
+									<th style="width: 12%; text-align: center;">상태</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -197,7 +197,7 @@
 									</td>
 									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
 									<td th:text="${reservation.reservationCode}"></td>
-									<td><a
+									<td style="text-align: center;"><a
 										th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></a>
 										</br> <small
 										th:with="duration=${T(java.time.Duration).between(reservation.reservationStartTime, reservation.reservationEndTime)}"
