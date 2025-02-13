@@ -44,7 +44,7 @@
 					<!-- 소셜로그인x -->
 					<th:block
 						th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty() and !#authentication.principal.memPicture.startsWith('http')}">
-						<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지">
+						<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 					</th:block>
 
 					<!-- 프로필이미지x -->
