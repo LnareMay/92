@@ -43,7 +43,7 @@ public interface ClubReservationMemberRepository
 	                                @Param("memId") String memId);
 
 	
-	@Query("SELECT r FROM Reservation r where r.memId = :memId and r.clubCode is null and r.deleteFlag is false")
+	@Query("SELECT r FROM Reservation r where r.memId = :memId and r.clubCode is null and r.deleteFlag = false")
 	List<Reservation> findMemberReservationsWithDetails(@Param("memId") String memId);
 
 

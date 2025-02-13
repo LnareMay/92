@@ -232,10 +232,10 @@
 						충전하기</button>
 				</div>
 				<div>
-					<input type="text" id="useFitpay" class="form-control me-2" placeholder="사용할 금액 입력" min="0"
-						style="width: 150px; display: inline-block">
+					<input type="text" id="useFitpay" class="form-control me-2" placeholder="사용한 금액" min="0"
+						style="width: 150px; display: inline-block" disabled>
 
-					<button class="btn btn-secondary" id="useFitpayButton" type="button">사용</button>
+					<!--<button class="btn btn-secondary" id="useFitpayButton" type="button">사용</button>-->
 					<button class="btn btn-primary" id="useFullAmount" type="button">전액
 						사용</button>
 					<button class="btn btn-danger" id="deleteAmount" type="button">취소</button>
@@ -502,7 +502,7 @@
 
 
 		// '사용' 버튼 클릭 이벤트
-		document.getElementById("useFitpayButton").addEventListener("click", () => {
+		/*document.getElementById("useFitpayButton").addEventListener("click", () => {
 			// reset();
 			const useFitpayInput = parseFloat(document.getElementById("useFitpay").value.replaceAll(',', ''));
 
@@ -534,7 +534,7 @@
 			document.getElementById("totalPaid").textContent = totalPaidFormatted;
 			document.getElementById("useFitpay").value = "";
 			document.getElementById("remainingAmount").textContent = remainingAmountFormatted;
-		});
+		});*/
 
 
 		// '전액 사용' 버튼 클릭 이벤트
