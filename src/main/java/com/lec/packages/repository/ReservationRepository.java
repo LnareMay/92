@@ -71,32 +71,31 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	Page<Reservation> findInprogressReservationsWithUser(@Param("memId") String memId, Pageable pageable);
 
 
-	// 시설 예약 내역 클럽원 현재 인원 수
 	@Query(value = "SELECT \r\n"
-			+ "    r.*, \r\n"
-			+ "    COUNT(rml.MEM_ID) AS nowMemCount, \r\n"
-			+ "    JSON_ARRAYAGG(\r\n"
-			+ "        JSON_OBJECT(\r\n"
-			+ "            'memId', m.MEM_ID,\r\n"
-			+ "            'memNickname', m.MEM_NICKNAME,\r\n"
-			+ "            'memPicture', m.MEM_PICTURE,\r\n"
-			+ "            'memSocial', m.MEM_SOCIAL\r\n"
-			+ "        )\r\n"
-			+ "    ) AS memberList\r\n"
-			+ "FROM reservation r\r\n"
-			+ "LEFT JOIN reservation_member_list rml \r\n"
-			+ "    ON r.club_code = rml.CLUB_CODE \r\n"
-			+ "    AND r.RESERVATION_CODE = rml.RESERVATION_CODE\r\n"
-			+ "LEFT JOIN member m \r\n"
-			+ "    ON rml.MEM_ID = m.MEM_ID \r\n"
-			+ "WHERE \r\n"
-			+ "    r.club_code = :clubCode \r\n"
-			+ "    AND r.RESERVATION_DATE > NOW() \r\n"
-			+ "    AND rml.DELETE_FLAG IS NOT TRUE \r\n"
-			+ "    AND r.RESERVATION_PROGRESS = '예약완료'\r\n"
-			+ "GROUP BY r.RESERVATION_CODE;\r\n"
-			+ "", nativeQuery = true)
+	        + "    r.*, \r\n"
+	        + "    IFNULL(COUNT(DISTINCT CASE WHEN rml.DELETE_FLAG is null THEN rml.MEM_ID END), 0) AS nowMemCount, \r\n"
+	        + "    JSON_ARRAYAGG(\r\n"
+	        + "        JSON_OBJECT(\r\n"
+	        + "            'memId', m.MEM_ID,\r\n"
+	        + "            'memNickname', m.MEM_NICKNAME,\r\n"
+	        + "            'memPicture', m.MEM_PICTURE,\r\n"
+	        + "            'memSocial', m.MEM_SOCIAL\r\n"
+	        + "        )\r\n"
+	        + "    ) AS memberList\r\n"
+	        + "FROM reservation r\r\n"
+	        + "LEFT JOIN reservation_member_list rml \r\n"
+	        + "    ON r.club_code = rml.CLUB_CODE \r\n"
+	        + "    AND r.RESERVATION_CODE = rml.RESERVATION_CODE\r\n"
+	        + "LEFT JOIN member m \r\n"
+	        + "    ON rml.MEM_ID = m.MEM_ID \r\n"
+	        + "WHERE \r\n"
+	        + "    r.club_code = :clubCode \r\n"
+	        + "    AND r.RESERVATION_DATE > NOW() \r\n"
+	        + "    AND r.RESERVATION_PROGRESS = '예약완료'\r\n"
+	        + "GROUP BY r.RESERVATION_CODE;\r\n",
+	        nativeQuery = true)
 	List<ClubReservationInterface> getClubResList(@Param("clubCode") String clubCode);
+
 
 	List<Reservation> findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(String facilityCode,
 			Date reservationDate, boolean deleteFlag);

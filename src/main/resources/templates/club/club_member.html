@@ -58,7 +58,7 @@
 						<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 						<th:block
 							th:if="${clubmember.memSocial == false && clubmember.memPicture != null && clubmember.memPicture !=''}">
-							<img th:src="|/view/${clubmember.memPicture}|" alt="프로필 이미지">
+							<img th:src="|/view/${clubmember.memPicture}|" alt="프로필 이미지" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 						</th:block>
 
 						<!-- 기본 프로필 이미지 -->
