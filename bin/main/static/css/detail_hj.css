@@ -39,6 +39,9 @@ ul {
 	gap: 20px;
 	overflow-x:scroll;
 }
+#club_main_pg #my_club .container::-webkit-scrollbar {
+    display: none;
+  }
 
 #club_main_pg #my_club .card {
 	background-color: #fff;
