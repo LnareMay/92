@@ -216,20 +216,20 @@ public class MemberPlannerController {
 	            clubMemberRemoved = clubService.removeClubResMember(reservationCode, clubCode, memId).equals("success");
 	            System.out.println("🛠️ [삭제 완료] 클럽 멤버 삭제 여부: " + clubMemberRemoved);
 	        } else {
-	        	// DTO 객체를 새로 생성 (필요 시 추가)
+	            // ✅ 기존 예약을 단순 취소하도록 설정 (새로운 예약 생성 X)
 	            TransferHistoryDTO transferHistoryDTO = new TransferHistoryDTO();
 	            ReservationDTO reservationDTO = new ReservationDTO();
-	        	boolean plannerDeleted = memberPlannerService.deletePlanner(planNo, transferHistoryDTO, reservationDTO, userDetails);
+	            boolean plannerDeleted = memberPlannerService.deletePlanner(planNo, transferHistoryDTO, reservationDTO, userDetails);
 	        }
-	        
-	        return ResponseEntity.ok("✅ 클럽 일정이 삭제되었습니다.");
 
-	        
+	        return ResponseEntity.ok("✅ 일정이 삭제되었습니다.");
+
 	    } catch (Exception e) {
 	        System.out.println("❌ [에러 발생] " + e.getMessage());
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 삭제 중 오류 발생: " + e.getMessage());
 	    }
 	}
+
 
 
 
