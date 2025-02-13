@@ -143,37 +143,8 @@ public class FacilityServiceImpl implements FacilityService{
 				   			  .total(result.getTotalPages())
 				   			  .build();
 	}
-	
-	//시설 목록
-	/*
-	@Override
-	public PageResponseDTO<FacilityDTO> list(PageRequestDTO pageRequestDTO) {
-		
-		String[] types = pageRequestDTO.getTypes();
-		String[] keywords = pageRequestDTO.getKeywords();
-		Pageable pageable = pageRequestDTO.getPageable("facilityCode");
-		
-				
-		
-		Page<Facility> result = facilityRepository.searchAllImpl(types, keywords, pageable);
 
-		
-		List<FacilityDTO> dtoList = result.getContent()
-										  .stream()
-										  .distinct() // 중복 제거
-										  .map(facility -> modelMapper.map(facility, FacilityDTO.class))
-										  .collect(Collectors.toList());
-	
-		
-		return PageResponseDTO.<FacilityDTO>withAll()
-				.pageRequestDTO(pageRequestDTO)
-				.dtoList(dtoList)
-				.total(result.getTotalPages())
-				.build();
-	}
-	*/
-	
-	// 시설목록 새로만듬
+	// 시설목록 
 	@Override
 	public PageResponseDTO<FacilityDTO> listAllFacility(PageRequestDTO pageRequestDTO
 				,String facilityAddress, String exerciseCode, Boolean facilityIsOnlyClub) {		
@@ -397,6 +368,7 @@ public class FacilityServiceImpl implements FacilityService{
 					.reservationDate(reservationDTO.getReservationDate())
 					.count(reservationDTO.getCount())
 					.price(totalPrice)
+					.memo("관리자의 승인 대기 중")
 					.reservationProgress("예약진행중") // 초기 상태 설정
 					.deleteFlag(false) // 초기 상태 설정
 					.build();
@@ -413,6 +385,7 @@ public class FacilityServiceImpl implements FacilityService{
 					.reservationDate(reservationDTO.getReservationDate())
 					.count(reservationDTO.getCount())
 					.price(totalPrice)
+					.memo("관리자의 승인 대기 중")
 					.reservationProgress("예약진행중") // 초기 상태 설정
 					.deleteFlag(false) // 초기 상태 설정
 					.clubCode(reservationDTO.getClubCode())
@@ -425,7 +398,7 @@ public class FacilityServiceImpl implements FacilityService{
 		            .transferCode(reservationCode)
 		            .payCode(payCode)
 		            .amount(totalPrice)
-		            .memo(transferHistoryDTO.getMemo())
+		            .memo("시설예약")
 		            .status("송금성공")
 		            .transferDate(LocalDateTime.now())
 		            .receiverId(memberRepository.findById(transferHistoryDTO.getReceiverId())
@@ -438,7 +411,7 @@ public class FacilityServiceImpl implements FacilityService{
 		            .transferCode(reservationCode)
 		            .payCode(payCode)
 		            .amount(totalPrice)
-		            .memo(transferHistoryDTO.getMemo())
+		            .memo("시설예약")
 		            .status("송금성공")
 		            .transferDate(LocalDateTime.now())
 		            .receiverId(memberRepository.findById(transferHistoryDTO.getReceiverId())
@@ -514,15 +487,15 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
 	            .transferCode(String.valueOf(System.currentTimeMillis()))
 	            .payCode(UUID.randomUUID().toString())
 	            .amount(transferHistory.getAmount())
-	            .memo(transferHistoryDTO.getMemo())
+	            .memo("시설예약 취소로 인한 환불")
 	            .status("송금취소")
 	            .transferDate(LocalDateTime.now())
 	            .receiverId(receiver)
@@ -531,6 +504,7 @@ public class FacilityServiceImpl implements FacilityService{
 	            .build();
 
 	    // 5. 예약 상태 업데이트
+	    reservation.setMemo("예약자의 취소로 인한 예약 취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
 
@@ -541,7 +515,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservationRepository.save(reservation);
 	}
 
-
+	// 관리자가 승인거절 눌렀을때
 	@Override
 	public void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO) {
@@ -565,15 +539,15 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(reservation.getPrice()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(reservation.getPrice()));
+	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
 	            .transferCode(String.valueOf(System.currentTimeMillis()))
 	            .payCode(UUID.randomUUID().toString())
 	            .amount(transferHistory.getAmount())
-	            .memo(transferHistoryDTO.getMemo())
+	            .memo("관리자의 승인거절로 인한 환불")
 	            .status("송금취소")
 	            .transferDate(LocalDateTime.now())
 	            .receiverId(receiver)
@@ -582,8 +556,112 @@ public class FacilityServiceImpl implements FacilityService{
 	            .build();
 
 	    // 5. 예약 상태 업데이트
+	    reservation.setMemo("관리자의 승인 거절로 인한 예약취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
+
+	    // 6. 데이터 저장
+	    memberRepository.save(sender);
+	    memberRepository.save(receiver);
+	    transferHistoryRepository.save(newTransferHistory);
+	    reservationRepository.save(reservation);
+		
+	}
+	
+	// 시설삭제했을시, 해당 시설 코드의 예약들 전부 예약 취소 및 환불처리
+	 @Transactional
+	    public void cancelAllBookingByFacilityCode(String facilityCode) {
+	        // 해당 시설과 관련된 모든 예약 조회
+	        List<Reservation> reservations = reservationRepository.findByFacilityCode(facilityCode);
+
+	        for (Reservation reservation : reservations) {
+	            // 예약에 대한 이체 내역 조회
+	            Optional<TransferHistory> transferHistoryOptional = transferHistoryRepository.findByPayCode(reservation.getPayCode());
+	            
+	            if (transferHistoryOptional.isPresent()) {
+	                TransferHistory transferHistory = transferHistoryOptional.get();
+	                
+	                // Sender와 Receiver 정보 조회
+	                Member sender = memberRepository.findById(transferHistory.getSenderId().getMemId())
+	                        .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
+	                Member receiver = memberRepository.findById(transferHistory.getReceiverId().getMemId())
+	                        .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
+	                
+	                // 금액 업데이트 (환불 처리)
+	                sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
+	                receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
+	                
+	                // 새로운 송금 취소 내역 추가
+	                TransferHistory newTransferHistory = TransferHistory.builder()
+	                        .transferCode(String.valueOf(System.currentTimeMillis()))
+	                        .payCode(UUID.randomUUID().toString())
+	                        .amount(transferHistory.getAmount())
+	                        .memo("시설 삭제로 인한 환불")
+	                        .status("송금취소")
+	                        .transferDate(LocalDateTime.now())
+	                        .receiverId(receiver)
+	                        .senderId(sender)
+	                        .clubCode(reservation.getClubCode())
+	                        .build();
+	                
+	                // 예약 상태 업데이트
+	                reservation.setMemo("시설삭제로 인한 예약취소");
+	                reservation.setReservationProgress("예약취소");
+	                reservation.setDeleteFlag(true);
+	                
+	                // 변경 사항 저장
+	                memberRepository.save(sender);
+	                memberRepository.save(receiver);
+	                transferHistoryRepository.save(newTransferHistory);
+	                reservationRepository.save(reservation);
+	            }
+	        }
+	    }
+	
+	// 관리자가 승인거절눌렀다가 다시 승인 눌렀을때
+	@Override
+	public void cancelAndBookAgainbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
+			ReservationDTO reservationDTO) {
+		  // 1. 예약 정보 조회
+	    Reservation reservation = reservationRepository.findById(reservationDTO.getReservationCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다."));
+
+	    // 2. TransferHistory 정보 조회
+	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	    // 3. Sender와 Receiver ID 확인
+	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
+	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
+	    }
+
+	    Member sender = memberRepository.findById(transferHistory.getSenderId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getSenderId()));
+
+	    Member receiver = memberRepository.findById(transferHistory.getReceiverId().getMemId())
+	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
+
+	    // 금액 업데이트
+	    sender.setMemMoney(sender.getMemMoney().subtract(transferHistory.getAmount()));
+	    receiver.setMemMoney(receiver.getMemMoney().add(transferHistory.getAmount()));
+
+	    // 4. 새로운 TransferHistory 생성
+	    TransferHistory newTransferHistory = TransferHistory.builder()
+	            .transferCode(String.valueOf(System.currentTimeMillis()))
+	            .payCode(UUID.randomUUID().toString())
+	            .amount(transferHistory.getAmount())
+	            .memo("관리자의 승인으로 송금")
+	            .status("송금성공")
+	            .transferDate(LocalDateTime.now())
+	            .receiverId(receiver)
+	            .senderId(sender)
+	            .clubCode(reservation.getClubCode())
+	            .build();
+
+	    // 5. 예약 상태 업데이트
+	    reservation.setMemo("관리자의 승인으로 인한 예약완료");
+	    reservation.setReservationProgress("예약완료");
+	    reservation.setDeleteFlag(false);
 
 	    // 6. 데이터 저장
 	    memberRepository.save(sender);

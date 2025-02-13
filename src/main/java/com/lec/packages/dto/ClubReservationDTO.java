@@ -18,6 +18,7 @@ public class ClubReservationDTO {
     String clubCode;
     Integer count;
     Integer nowMemCount;
+    String memberList; 
     LocalTime reservationStartTime;
     Date reservationDate;
     String ReservationProgress;

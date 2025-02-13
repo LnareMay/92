@@ -112,6 +112,57 @@ public class MemberPlannerController {
 
                 formattedPlanners.add(map);
 	        }
+	        
+	     // 3. 개인 시설 예약 일정(Reservation_Member_List) 가져오기
+	        List<Reservation> memberReservations = memberPlannerService.getMemberReservations(memId);
+
+	        for (Reservation res : memberReservations) {
+	            // ✅ 이미 등록된 일정인지 확인
+	            Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemId(res.getReservationCode(),res.getMemId());
+
+	            
+	            List<Object[]> results = reservationRepository.findFacilityAndTimesByCode(res.getReservationCode());
+	            Object[] result = results.stream().findFirst().orElse(new Object[]{"시설 정보 없음", null, null}); // ✅ 기본값 설정
+
+
+	            String facilityName = (result[0] instanceof String) ? (String) result[0] : "시설 정보 없음";
+	            String startTime = (result[1] instanceof java.time.LocalTime) ? result[1].toString() : "시작 시간 없음";
+	            String endTime = (result[2] instanceof java.time.LocalTime) ? result[2].toString() : "종료 시간 없음";
+
+
+	            if (existingPlanner.isEmpty()) { // ✅ 중복 등록 방지
+	                // ✅ DB에 시설 예약 일정 추가
+	                Member_Planner newPlanner = Member_Planner.builder()
+	                        .memId(res.getMemId())
+	                        .planDate(res.getReservationDate())
+	                        // planNo(existingPlanner.get().getPlanNo())
+	                        .planName("[시설예약] " + facilityName)
+	                        .planText("장소 : " + facilityName + "\n시간 :" + startTime + "~" + endTime)
+	                        .planIschk(false)
+	                        .planIsclub(false)
+	                        .reservationCode(res.getReservationCode())
+	                        .deleteFlag(false)
+	                        .build();
+
+	                memberPlannerService.savePlanner(newPlanner); // ✅ 일정 저장
+
+	               
+	            }
+	            
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("id", res.getMemId()+res.getReservationCode());
+                map.put("title", "[시설예약] " + facilityName);
+                map.put("start", res.getReservationDate().toString());
+                map.put("planText", "장소 : " + facilityName + "\n시간 :" + startTime + "~" + endTime);
+                map.put("planIschk", false);
+                map.put("planIsclub", false);
+                map.put("color", "#02b875");
+                map.put("reservationCode", res.getReservationCode());  // 예약 코드 추가
+                // map.put("clubCode", res.getClubCode());  // 클럽 코드 추가
+                map.put("memId", res.getMemId());  // 예약한 사용자 ID 추가
+
+                formattedPlanners.add(map);
+	        }
 
 	        return ResponseEntity.ok(formattedPlanners);
 

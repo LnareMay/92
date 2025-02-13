@@ -4,8 +4,7 @@
 	<div class="container">
 		<div class="toggle-buttons">
 			<!-- 클럽 버튼 -->
-			<button class="toggle-button life"
-				th:classappend="${currentURI.startsWith('/facility/') ? 'selected' : ''}"
+			<button class="toggle-button life" th:classappend="${currentURI.startsWith('/facility/') ? 'selected' : ''}"
 				onclick="location.href='/facility/main'">시설예약</button>
 			<button class="toggle-button life"
 				th:classappend="${currentURI == '/' || currentURI.startsWith('/member/') || currentURI.startsWith('/club/') || currentURI.startsWith('/clubByaddress') ? 'selected' : ''}"
@@ -32,147 +31,213 @@
 				<div id="current-weather"></div>
 				<div id="current-date" style="display: none;"></div>
 				<!-- <h4>이번 주 날씨</h4> -->
-				<div class="weather" id="weather-container" style="position:absolute;left: -500px;z-index: 100;"></div>
+				<div class="weather" id="weather-container" style="position:absolute; z-index: 100; left: 50%;
+    transform: translate(-50%, 0);"></div>
 			</div>
 			<script>
-			// 날씨 가져오기 
-			document.addEventListener('DOMContentLoaded', function () {
-    const weatherContainer = document.getElementById('weather-container');
-    const currentWeather = document.getElementById('current-weather');
-    const currentDateEl = document.getElementById('current-date');
+				// 날씨 가져오기 
+				document.addEventListener('DOMContentLoaded', function () {
+					const weatherContainer = document.getElementById('weather-container');
+					const currentWeather = document.getElementById('current-weather');
+					const currentDateEl = document.getElementById('current-date');
 
-    // ✅ 사용자의 위치를 가져오는 함수
-    function getUserLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    fetchWeather(lat, lon);
-                },
-                (error) => {
-                    console.error('위치 정보를 가져올 수 없습니다:', error);
-                    fetchWeatherByIP(); // 위치 권한을 거부했을 경우 IP 기반 위치 조회
-                }
-            );
-        } else {
-            console.error('Geolocation을 지원하지 않는 브라우저입니다.');
-            fetchWeatherByIP(); // Geolocation이 지원되지 않는 경우 IP 기반 조회
-        }
-    }
+					// ✅ 사용자의 위치를 가져오는 함수
+					function getUserLocation() {
+						if (navigator.geolocation) {
+							navigator.geolocation.getCurrentPosition(
+								(position) => {
+									const lat = position.coords.latitude;
+									const lon = position.coords.longitude;
+									fetchWeather(lat, lon);
+								},
+								(error) => {
+									console.error('위치 정보를 가져올 수 없습니다:', error);
+									fetchWeatherByIP(); // 위치 권한을 거부했을 경우 IP 기반 위치 조회
+								}
+							);
+						} else {
+							console.error('Geolocation을 지원하지 않는 브라우저입니다.');
+							fetchWeatherByIP(); // Geolocation이 지원되지 않는 경우 IP 기반 조회
+						}
+					}
 
-    // ✅ OpenWeather API에서 날씨 데이터를 가져오는 함수
-    function fetchWeather(lat, lon) {
-        fetch(`/api/weather?lat=${lat}&lon=${lon}`)
-            .then(response => response.json())
-            .then(data => displayWeather(data))
-            .catch(error => console.error('날씨 정보를 가져오지 못했습니다:', error));
-    }
+					// ✅ OpenWeather API에서 날씨 데이터를 가져오는 함수
+					function fetchWeather(lat, lon, region = "") {
+						fetch(`/api/weather?lat=${lat}&lon=${lon}`)
+							.then(response => response.json())
+							.then(data => displayWeather(data))
+							.catch(error => console.error('날씨 정보를 가져오지 못했습니다:', error));
+					}
 
-    // ✅ IP 기반 위치 조회 (위치 권한이 없을 때 대체)
-    function fetchWeatherByIP() {
-        fetch('https://ipapi.co/json/')
-            .then(response => response.json())
-            .then(data => {
-                console.log("IP 기반 위치 데이터:", data);
-                fetchWeather(data.latitude, data.longitude);
-            })
-            .catch(error => {
-                console.error('IP 위치 정보를 가져오지 못했습니다:', error);
-                fetchWeather(37.5665, 126.9780); // 기본값: 서울
-            });
-    }
+					// ✅ IP 기반 위치 조회 (위치 권한이 없을 때 대체) - 한국어 지역명 가져오기
+					function fetchWeatherByIP() {
+						fetch('https://ipapi.co/json/')
+							.then(response => response.json())
+							.then(data => {
+								console.log("IP 기반 위치 데이터:", data);
 
-    // ✅ OpenWeather API 데이터를 화면에 표시하는 함수
-    function displayWeather(data) {
-        // 날짜별로 날씨 정보를 집계
-        const weatherMap = {};
-        data.list.forEach(item => {
-            const date = new Date(item.dt * 1000);
-            const options = { weekday: 'short', month: 'short', day: 'numeric' };
-            const formattedDate = date.toLocaleDateString('ko-KR', options);
+								const lat = data.latitude;
+								const lon = data.longitude;
 
-            if (!weatherMap[formattedDate]) {
-                weatherMap[formattedDate] = {
-                    tempSum: 0,
-                    count: 0,
-                    weatherDescription: item.weather[0].description,
-                    iconCode: item.weather[0].icon
-                };
-            }
-            weatherMap[formattedDate].tempSum += item.main.temp;
-            weatherMap[formattedDate].count += 1;
-        });
+								// 지역명을 한국어로 가져오기
+								fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ko`)
+									.then(response => response.json())
+									.then(locationData => {
+										const region = locationData.address.state || locationData.address.city || locationData.address.town;
+										console.log("한국어 지역명:", region);
 
-        // 평균 온도 계산 및 출력
-        const weatherItems = Object.keys(weatherMap).map(date => {
-            const weatherInfo = weatherMap[date];
-            const averageTemp = (weatherInfo.tempSum / weatherInfo.count).toFixed(1);
-            const iconUrl = `http://openweathermap.org/img/wn/${weatherInfo.iconCode}@2x.png`;
+										fetchWeather(lat, lon, region);
+									})
+									.catch(error => {
+										console.error("지역명을 가져오는 데 실패했습니다:", error);
+										fetchWeather(lat, lon, "알 수 없음");
+									});
+							})
+							.catch(error => {
+								console.error('IP 위치 정보를 가져오지 못했습니다:', error);
+								fetchWeather(37.5665, 126.9780, "서울"); // 기본값: 서울
+							});
+					}
 
-            return `
-                <div class="weather-item">
-                    <div class="day">${date}</div>
-                    <div class="temp">${averageTemp}°C</div>
-                    <img src="${iconUrl}" alt="날씨 아이콘" class="weather-icon" width="80px"/>
-                    <div>${weatherInfo.weatherDescription}</div>
+					// ✅ OpenWeather API 데이터를 화면에 표시하는 함수
+					function displayWeather(data) {
+						// 날짜별로 날씨 정보를 집계
+						const weatherMap = {};
+
+						// 현재 시간 가져오기
+						const now = new Date().getTime() / 1000; // 초 단위 변환
+
+						// 가장 가까운 시간대의 날씨 데이터 찾기
+						let closestItem = data.list.reduce((prev, curr) =>
+							Math.abs(curr.dt - now) < Math.abs(prev.dt - now) ? curr : prev
+						);
+
+						data.list.forEach(item => {
+							const date = new Date(item.dt * 1000);
+							const options = {weekday: 'short', month: 'short', day: 'numeric'};
+							const formattedDate = date.toLocaleDateString('ko-KR', options);
+
+							if (!weatherMap[formattedDate]) {
+								weatherMap[formattedDate] = {
+									tempSum: 0,
+									tempMin: item.main.temp_min,
+									tempMax: item.main.temp_max,
+									count: 0,
+									weatherDescription: item.weather[0].description,
+									iconCode: item.weather[0].icon,
+									noonWeather: null  // ✅ 정오 날씨 저장용
+								};
+							} else {
+								// ✅ 최저, 최고 온도 갱신
+								weatherMap[formattedDate].tempMin = Math.min(weatherMap[formattedDate].tempMin, item.main.temp_min);
+								weatherMap[formattedDate].tempMax = Math.max(weatherMap[formattedDate].tempMax, item.main.temp_max);
+							}
+
+							// ✅ 정오(12:00) 데이터가 있으면 weather 업데이트
+							if (item.dt_txt.includes("12:00:00")) {
+								weatherMap[formattedDate].noonWeather = {
+									icon: item.weather[0].icon,
+									description: item.weather[0].description
+								};
+							}
+
+							// ✅ 평균 온도 계산을 위한 합계
+							weatherMap[formattedDate].tempSum += item.main.temp;
+							weatherMap[formattedDate].count += 1;
+						});
+
+						// ✅ 평균, 최저, 최고 온도 계산 및 출력
+						const weatherItems = Object.keys(weatherMap).map(date => {
+							const weatherInfo = weatherMap[date];
+							const averageTemp = (weatherInfo.tempSum / weatherInfo.count).toFixed(1);
+							const tempMin = weatherInfo.tempMin.toFixed(1);
+							const tempMax = weatherInfo.tempMax.toFixed(1);
+
+							// ✅ 정오(12:00) 데이터가 있으면 weather 업데이트
+							if (weatherInfo.noonWeather) {
+								weatherInfo.iconCode = weatherInfo.noonWeather.icon;
+								weatherInfo.weatherDescription = weatherInfo.noonWeather.description;
+							}
+
+							// ✅ 로컬 이미지 경로 (img 폴더 내)
+							const iconUrl = `/img/${weatherInfo.iconCode}.png`;
+
+							return `
+            <div class="weather-item" style="display: flex; align-items: center; min-width:300px; gap: 10px; margin-top:10px;">
+                <img src="${iconUrl}" alt="날씨 아이콘" class="weather-icon" width="40px"/>
+                <div class="temp" style="display: flex; align-items: center; gap: 10px; font-size:18px;">
+                    <span>${tempMin}°C</span> <span style="font-size:14px;color:#999;">${tempMax}°C</span>
                 </div>
-            `;
-        }).join('');
+                <div class="day" style="color: #999; margin-left: auto;">${date}</div>
+            </div>
+        `;
+						}).join('');
 
-        weatherContainer.innerHTML = weatherItems;
+						weatherContainer.innerHTML = weatherItems;
 
-        const today = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = today.toLocaleDateString('ko-KR', options);
+						const today = new Date();
+						const options = {year: 'numeric', month: 'long', day: 'numeric'};
+						const formattedDate = today.toLocaleDateString('ko-KR', options);
 
-        // 현재 날씨 정보 표시
-        const cityName = data.city.name;
-        const currentItem = data.list[0];
-        currentWeather.innerHTML = `
-            <img src="http://openweathermap.org/img/wn/${currentItem.weather[0].icon}@2x.png" width="50px" alt="날씨 아이콘" class="weather-icon"/>
-            <div class="now_weather_wrap">
-            <div class="current-location">${cityName}</div> 
-            <div class="current-temp">${currentItem.main.temp}°C</div>
-            <div class="current-description">${currentItem.weather[0].description}</div>
-        	</div>
-            `;
-        currentDateEl.innerHTML = `<div>${formattedDate}</div>`;
-    }
+						// ✅ 현재 시간과 가장 가까운 날씨 데이터 표시
+						const cityName = data.city.name;
+						currentWeather.innerHTML = `
+        <img src="/img/${closestItem.weather[0].icon}.png" width="40px" alt="날씨 아이콘" class="weather-icon"/>
+        <div class="current-temp" style="font-size: 15px; color:#fff;margin: 0 12px 0 4px;">${closestItem.main.temp}°C</div>
+        <div class="now_weather_wrap">
+            <div class="current-location">${cityName}</div>
+            <div class="current-description">${closestItem.weather[0].description}</div>
+        </div>
+    `;
 
-    getUserLocation(); // ✅ 페이지 로드 시 사용자 위치 가져오기
-});
-			$(document).ready(function(){
-				$("#weather-container").hide();
-				$("#current-weather").click(function(){
-					$("#weather-container").toggle();
+						currentDateEl.innerHTML = `<div>${formattedDate}</div>`;
+					}
+
+					getUserLocation(); // ✅ 페이지 로드 시 사용자 위치 가져오기
+
 				});
-			});
+				$(document).ready(function () {
+					$("#weather-container").hide(); // 처음에는 숨김
+
+					// ✅ 현재 날씨 클릭 시 토글
+					$("#current-weather").click(function (event) {
+						$("#weather-container").toggle();
+						event.stopPropagation(); // 클릭 이벤트가 body까지 전파되지 않도록 방지
+					});
+
+					// ✅ 외부 클릭 시 숨김
+					$(document).mouseup(function (e) {
+						const container = $("#weather-container");
+
+						// ✅ 클릭한 요소가 #weather-container 안에 있는지 확인
+						if (!container.is(e.target) && container.has(e.target).length === 0) {
+							container.hide(); // #weather-container 바깥을 클릭하면 숨김
+						}
+					});
+				});
 
 			</script>
 
 			<ul>
-				<li class="nav-item dropdown"><a
-					class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-					href="#none" role="button" aria-haspopup="true"
-					aria-expanded="false">마이페이지</a>
+				<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#none"
+						role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="/member/mypage">나의정보</a> <a
-							class="dropdown-item" href="/member/reservation">나의시설예약</a><a
-							class="dropdown-item" href="/member/member_planner">운동캘린더</a> <a
-							class="dropdown-item" href="/club/club_myclub">나의클럽관리</a>
+						<a class="dropdown-item" href="/member/mypage">나의정보</a> <a class="dropdown-item"
+							href="/member/reservation">나의시설예약</a><a class="dropdown-item"
+							href="/member/member_planner">운동캘린더</a> <a class="dropdown-item"
+							href="/member/club_myclub">나의클럽관리</a>
 						<div class="dropdown-divider"></div>
 						<!-- 로그인 상태에 따라 변경 -->
-						<a class="dropdown-item"
-							th:if="${#authentication.principal != 'anonymousUser'}"
+						<a class="dropdown-item" th:if="${#authentication.principal != 'anonymousUser'}"
 							href="/member/logout">로그아웃</a> <a class="dropdown-item"
-							th:if="${#authentication.principal == 'anonymousUser'}"
-							href="/member/login">로그인</a>
-					</div></li>
+							th:if="${#authentication.principal == 'anonymousUser'}" href="/member/login">로그인</a>
+					</div>
+				</li>
 			</ul>
 		</div>
 		<!-- 날씨 -->
 
 	</div>
 </header>
+
 </html>

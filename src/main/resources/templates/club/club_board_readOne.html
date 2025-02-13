@@ -3,7 +3,7 @@
 <head>
 <!-- meta_tag include -->
 <head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title>클럽 게시글</title>
+<title>클럽게시글</title>
 
 <!-- 공통 css -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css" integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -71,7 +71,7 @@
               </div>
               <div class="my-4">
                 <div class="float-end">
-                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE})}" class="text-decoration-none">
+                  <a th:href="@{/club/club_board(clubCode=${dto.CLUB_CODE},type='ALL')}" class="text-decoration-none">
                     <button class="btn btn-primary submitBtn">목록</button>
                   </a>
                   <a th:href="@{/club/club_board_modify(clubCode=${dto.CLUB_CODE},boardNo=${dto.BOARD_NO})}" class="text-decoration-none">

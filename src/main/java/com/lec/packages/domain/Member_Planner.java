@@ -44,7 +44,7 @@ public class Member_Planner extends BaseEntity {
 	@Column(nullable = false, name = "PLAN_NAME", length = 50)
 	private String planName;
 
-	@Column(nullable = false, name = "PLAN_TEXT", columnDefinition = "TEXT")
+	@Column(name = "PLAN_TEXT", columnDefinition = "TEXT")
 	private String planText;
 
 	// 운동한 날은 체크 표시

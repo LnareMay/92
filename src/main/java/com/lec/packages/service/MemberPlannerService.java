@@ -71,6 +71,10 @@ public class MemberPlannerService {
 	public List<Reservation_Member_List> getClubReservations(String memId) {
 		return clubReservationMemberRepository.findClubReservationsWithDetails(memId);
 	}
+
+	public List<Reservation> getMemberReservations(String memId) {
+		return clubReservationMemberRepository.findMemberReservationsWithDetails(memId);
+	}
 	
 	
 

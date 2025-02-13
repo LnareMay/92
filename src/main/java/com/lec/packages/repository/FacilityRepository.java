@@ -53,7 +53,7 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);
   
     // 공공데이터 위치기반 시설
-    @Query("SELECT f FROM Facility f WHERE f.facilityLat IS NOT NULL AND f.facilityLongt IS NOT NULL "
+    @Query("SELECT f FROM Facility f WHERE f.facilityCode LIKE '00DATA%' AND f.facilityLat IS NOT NULL AND f.facilityLongt IS NOT NULL "
     		+ "AND FUNCTION('ST_Distance_Sphere', POINT(f.facilityLongt, f.facilityLat), POINT(:longt, :lat)) <= :radius * 1000")
     List<Facility> findFacilityWithRadius(@Param("lat") BigDecimal lat, @Param("longt") BigDecimal longt, @Param("radius") double radius);
     
