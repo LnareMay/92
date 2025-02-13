@@ -335,6 +335,7 @@ public class FacilityServiceImpl implements FacilityService{
 	
 	// 시설예약
 	@Override
+	@Transactional
 	public void bookByMember(TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO, BigDecimal memMoney) {
 	    // Step 1: 예약 정보를 검증
 	    if (reservationDTO.getReservationStartTime().isAfter(reservationDTO.getReservationEndTime())) {
@@ -433,7 +434,8 @@ public class FacilityServiceImpl implements FacilityService{
 		// Step 6: senderId(예약자)의 memMoney 업데이트
 		Member sender = memberRepository.findById(transferHistoryDTO.getSenderId())
 		        .orElseThrow(() -> new IllegalArgumentException("송신자를 찾을 수 없습니다."));
-		sender.setMemMoney(memMoney);
+		BigDecimal updatedSenderMoney = sender.getMemMoney().subtract(totalPrice); // 기존 금액 - totalPrice
+		sender.setMemMoney(updatedSenderMoney);
 		memberRepository.save(sender);
 
 		// Step 7: receiverId의 memMoney 업데이트
@@ -467,10 +469,19 @@ public class FacilityServiceImpl implements FacilityService{
 		List<Reservation> reservations = reservationRepository.findByFacilityCodeAndReservationDateAndDeleteFlagOrderByReservationStartTime(facilityCode, reservationDate, false);
 		return reservations;
 	}
-
+	 @Override
+	    public boolean isAlreadyCancelled(String reservationCode) {
+	        return reservationRepository.existsByReservationCodeAndReservationProgress(reservationCode, "예약취소");
+	    }
+	 
 	@Override
 	@Transactional
 	public void cancelBooking(String memId, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO) {
+	    // ✅ reservationDTO 검증
+	    if (reservationDTO == null || reservationDTO.getReservationCode() == null) {
+	        throw new IllegalArgumentException("reservationDTO 또는 reservationCode가 null입니다.");
+	    }
+
 	    // 1. 예약 정보 조회
 	    Reservation reservation = reservationRepository.findById(reservationDTO.getReservationCode())
 	            .orElseThrow(() -> new IllegalArgumentException("해당 예약 정보를 찾을 수 없습니다."));
@@ -479,7 +490,6 @@ public class FacilityServiceImpl implements FacilityService{
 	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
 	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
 
-	    
 	    // 3. Sender와 Receiver ID 확인
 	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
 	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
@@ -492,9 +502,11 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
-
+	    BigDecimal updatedSenderMoney = sender.getMemMoney().add(transferHistory.getAmount()); // 기존 금액 - totalPrice
+		sender.setMemMoney(updatedSenderMoney);
+		
+		BigDecimal updatedReceiverMoney = receiver.getMemMoney().subtract(transferHistory.getAmount()); // 기존 금액 + totalPrice
+		receiver.setMemMoney(updatedReceiverMoney);
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
 	            .transferCode(String.valueOf(System.currentTimeMillis()))
@@ -512,19 +524,20 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setMemo("예약자의 취소로 인한 예약 취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
-	    
 
-	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
-	    List<Member_Planner> planners;
+	    // ✅ 예약에 대한 일정 조회 후 삭제 플래그 업데이트
+	    Optional<Member_Planner> optionalPlanner = memberPlannerRepository.findFirstByReservationCodeAndMemId(
+	            reservationDTO.getReservationCode(), transferHistory.getSenderId().getMemId());
 
-	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
-
-	    // 일정이 존재하는 경우만 처리
-	    if (!planners.isEmpty()) {
-	        for (Member_Planner planner : planners) {
-	            planner.setDeleteFlag(true);
-	        }
-	        memberPlannerRepository.saveAll(planners); // ✅ 중복 제거 및 공통 처리
+	    if (optionalPlanner.isPresent()) {
+	        Member_Planner planner = optionalPlanner.get();
+	        System.out.println("변경 전 deleteFlag: " + planner.getDeleteFlag());
+	        planner.setDeleteFlag(true);
+	        memberPlannerRepository.save(planner);
+	        memberPlannerRepository.flush(); // ✅ 즉시 반영
+	    } else {
+	        throw new IllegalArgumentException("해당 예약 코드에 대한 Planner 데이터가 없습니다. 예약코드: " 
+	            + reservationDTO.getReservationCode() + ", 회원ID: " + transferHistory.getSenderId().getMemId());
 	    }
 
 	    // 6. 데이터 저장
@@ -534,7 +547,9 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservationRepository.save(reservation);
 	}
 
+
 	// 관리자가 승인거절 눌렀을때
+	@Transactional
 	@Override
 	public void cancelBookingbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO) {
@@ -559,8 +574,11 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
-	    receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
+	    BigDecimal updatedSenderMoney = sender.getMemMoney().add(transferHistory.getAmount()); // 기존 금액 - totalPrice
+		sender.setMemMoney(updatedSenderMoney);
+		
+		BigDecimal updatedReceiverMoney = receiver.getMemMoney().subtract(transferHistory.getAmount()); // 기존 금액 + totalPrice
+		receiver.setMemMoney(updatedReceiverMoney);
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
@@ -581,17 +599,16 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setDeleteFlag(true);
 	    
 	    
-	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
-	    List<Member_Planner> planners;
+	    Optional<Member_Planner> optionalPlanner = memberPlannerRepository.findFirstByReservationCodeAndMemId(reservationDTO.getReservationCode(), transferHistory.getSenderId().getMemId());
 
-	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
-
-	    // 일정이 존재하는 경우만 처리
-	    if (!planners.isEmpty()) {
-	        for (Member_Planner planner : planners) {
-	            planner.setDeleteFlag(true);
-	        }
-	        memberPlannerRepository.saveAll(planners); // ✅ 중복 제거 및 공통 처리
+	    if (optionalPlanner.isPresent()) {
+	        Member_Planner planner = optionalPlanner.get();
+	        System.out.println("변경 전 deleteFlag: " + planner.getDeleteFlag());
+	        planner.setDeleteFlag(true);
+	        memberPlannerRepository.save(planner); // ✅ 단일 엔티티 저장
+	    } else {
+	        throw new IllegalArgumentException("해당 예약 코드에 대한 Planner 데이터가 없습니다. 예약코드: " 
+	            + reservationDTO.getReservationCode() + ", 회원ID: " + transferHistory.getSenderId().getMemId());
 	    }
 
 	    
@@ -624,8 +641,11 @@ public class FacilityServiceImpl implements FacilityService{
 	                        .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다."));
 	                
 	                // 금액 업데이트 (환불 처리)
-	                sender.setMemMoney(sender.getMemMoney().add(transferHistory.getAmount()));
-	                receiver.setMemMoney(receiver.getMemMoney().subtract(transferHistory.getAmount()));
+	        	    BigDecimal updatedSenderMoney = sender.getMemMoney().add(transferHistory.getAmount()); // 기존 금액 - totalPrice
+	        		sender.setMemMoney(updatedSenderMoney);
+	        		
+	        		BigDecimal updatedReceiverMoney = receiver.getMemMoney().subtract(transferHistory.getAmount()); // 기존 금액 + totalPrice
+	        		receiver.setMemMoney(updatedReceiverMoney);
 	                
 	                // 새로운 송금 취소 내역 추가
 	                TransferHistory newTransferHistory = TransferHistory.builder()
@@ -656,6 +676,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    }
 	
 	// 관리자가 승인거절눌렀다가 다시 승인 눌렀을때
+	 @Transactional
 	@Override
 	public void cancelAndBookAgainbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO) {
@@ -681,8 +702,12 @@ public class FacilityServiceImpl implements FacilityService{
 	            .orElseThrow(() -> new IllegalArgumentException("수신자를 찾을 수 없습니다. ID: " + transferHistoryDTO.getReceiverId()));
 
 	    // 금액 업데이트
-	    sender.setMemMoney(sender.getMemMoney().subtract(transferHistory.getAmount()));
-	    receiver.setMemMoney(receiver.getMemMoney().add(transferHistory.getAmount()));
+	 // 금액 업데이트
+	    BigDecimal updatedSenderMoney = sender.getMemMoney().subtract(transferHistory.getAmount()); // 기존 금액 - totalPrice
+		sender.setMemMoney(updatedSenderMoney);
+		
+		BigDecimal updatedReceiverMoney = receiver.getMemMoney().add(transferHistory.getAmount()); // 기존 금액 + totalPrice
+		receiver.setMemMoney(updatedReceiverMoney);
 
 	    // 4. 새로운 TransferHistory 생성
 	    TransferHistory newTransferHistory = TransferHistory.builder()
@@ -698,23 +723,23 @@ public class FacilityServiceImpl implements FacilityService{
 	            .build();
 
 	    // 5. 예약 상태 업데이트
-	    reservation.setMemo("관리자의 승인으로 인한 예약완료");
+	    reservation.setMemo("관리자가 거절했다가 다시 승인으로 인한 예약완료");
 	    reservation.setReservationProgress("예약완료");
 	    reservation.setDeleteFlag(false);
 	    
 	    
-	 // 6. Member_Planner 일정 추가 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
-	    List<Member_Planner> planners;
+	    Optional<Member_Planner> optionalPlanner = memberPlannerRepository.findFirstByReservationCodeAndMemId(reservationDTO.getReservationCode(), transferHistory.getSenderId().getMemId());
 
-	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagTrue(reservationDTO.getReservationCode(), memId);
-
-	    // 일정이 존재하는 경우만 처리
-	    if (!planners.isEmpty()) {
-	        for (Member_Planner planner : planners) {
-	            planner.setDeleteFlag(false);
-	        }
-	        memberPlannerRepository.saveAll(planners); // ✅ 중복 제거 및 공통 처리
+	    if (optionalPlanner.isPresent()) {
+	        Member_Planner planner = optionalPlanner.get();
+	        System.out.println("변경 전 deleteFlag: " + planner.getDeleteFlag());
+	        planner.setDeleteFlag(false);
+	        memberPlannerRepository.save(planner); // ✅ 단일 엔티티 저장
+	    } else {
+	        throw new IllegalArgumentException("해당 예약 코드에 대한 Planner 데이터가 없습니다. 예약코드: " 
+	            + reservationDTO.getReservationCode() + ", 회원ID: " + transferHistory.getSenderId().getMemId());
 	    }
+
 
 	    
 	    // 6. 데이터 저장

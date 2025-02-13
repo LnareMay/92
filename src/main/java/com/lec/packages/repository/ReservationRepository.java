@@ -21,6 +21,7 @@ import com.lec.packages.dto.ClubReservationInterface;
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
 
 	Optional<Reservation> findByReservationCode(@Param("reservationCode") String reservationCode);
+	
 
 	Page<Reservation> searchByMemId(String memId, Pageable pageable);
 
@@ -127,4 +128,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     @Query("SELECT r FROM Reservation r WHERE r.reservationDate < :date AND r.reservationProgress = :status")
     List<Reservation> findReservationDateBeforeAndStatus( @Param("date") LocalDate date, @Param("status") String status);
+
+    
+    @Query("SELECT r FROM Reservation r "
+			+ "WHERE r.payCode = :payCode and r.deleteFlag is true")
+	Optional<Reservation> findByPayCodeAndDeleteFlag(@Param("payCode") String payCode);
+
+
+	boolean existsByReservationCodeAndReservationProgress(String reservationCode, String string);
 }

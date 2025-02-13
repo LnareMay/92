@@ -28,6 +28,7 @@ public interface ReservationService {
 //	MemberSecurityDTO getMemberInfoByReservationCode(String reservationCode);
 
 	void cancelExpiredReservation();
+	ReservationDTO getReservationBypayCodeAndDeleteFlag(String payCode);
 	
 	
 }

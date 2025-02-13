@@ -45,6 +45,7 @@ public interface FacilityService {
 	void cancelAndBookAgainbyManager(String memId, TransferHistoryDTO transferHistoryDTO,
 			ReservationDTO reservationDTO);
 	void cancelAllBookingByFacilityCode(String facilityCode);
+	boolean isAlreadyCancelled(String reservationCode);
 	
 	
 	

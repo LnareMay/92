@@ -9,10 +9,14 @@ import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lec.packages.domain.Member_Planner;
 import com.lec.packages.domain.Reservation;
@@ -36,6 +40,7 @@ public class MemberPlannerService {
 	private final MemberPlannerRepository memberPlannerRepository;
 	private final ClubReservationMemberRepository clubReservationMemberRepository;
 	private final FacilityService facilityService;
+	private final ClubService clubService;
 
 	// 일정 저장
 	public Member_Planner savePlanner(Member_Planner planner) {
@@ -52,38 +57,6 @@ public class MemberPlannerService {
 		return memberPlannerRepository.findByMemId(memId);
 	}
 
-	// 일정 삭제
-	public boolean deletePlanner(Integer planNo, TransferHistoryDTO transferHistoryDTO, ReservationDTO reservationDTO,
-			@AuthenticationPrincipal UserDetails userDetails) {
-		try {
-// 1. 일정 조회
-			Member_Planner member_planner = memberPlannerRepository.findById(planNo)
-					.orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다."));
-
-// 2. 예약 코드 여부 확인
-			if (member_planner.getReservationCode() != null) {
-// (클럽시설 또는 시설) 예약 일정인 경우, 일정 비활성화 처리
-				String memId = userDetails.getUsername();
-				facilityService.cancelBooking(memId, transferHistoryDTO, reservationDTO);
-				return true;
-			} else {
-// 개인 일정인 경우, 예약 취소
-				try {
-					member_planner.setDeleteFlag(true);
-					memberPlannerRepository.save(member_planner);
-					return true;
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.err.println("🚨 개인 일정 예약 취소 중 오류 발생: " + e.getMessage());
-					return false;
-				}
-			}
-		} catch (Exception e) {
-			System.err.println("🚨 일정 삭제 중 오류 발생: " + e.getMessage());
-			return false;
-		}
-	}
-
 	public Member_Planner getPlannerById(Integer planNo) {
 		return memberPlannerRepository.findByPlanNoAndDeleteFlagFalse(planNo)
 				.orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다. planNo: " + planNo));
@@ -95,6 +68,69 @@ public class MemberPlannerService {
 
 	public List<Reservation> getMemberReservations(String memId) {
 		return clubReservationMemberRepository.findMemberReservationsWithDetails(memId);
+	}
+
+	@Transactional
+	public boolean deletePlanner(Integer planNo, String reservationCode, String clubCode, String memId) {
+		try {
+			
+
+			if (planNo == null) {
+				// 1. 일정 조회
+				Member_Planner memberPlanner = memberPlannerRepository.findByReservationCodeAndMemIAndDeleteFlagFalse(reservationCode,memId)
+						.orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다. PlanNo: " + planNo));
+
+				System.out.println("🛠️ [삭제 진행] 예약 코드: " + reservationCode + ", 클럽 코드: " + clubCode + ", 사용자 ID: " + memId);
+
+				// 2. 클럽 예약 삭제 처리
+				if (clubCode != null && !clubCode.trim().isEmpty()) {
+					System.out.println("🛠️ [클럽 예약 삭제] 예약 코드: " + reservationCode + ", 클럽 코드: " + clubCode);
+					boolean clubMemberRemoved = clubService.removeClubResMember(reservationCode, clubCode, memId)
+							.equals("success");
+
+					if (clubMemberRemoved) {
+						System.out.println("✅ [클럽 예약 삭제 완료]");
+						return true;
+					} else {
+						throw new RuntimeException("🚨 클럽 예약 삭제 실패");
+					}
+				}
+
+				// 3. 일반 시설 예약 또는 일반 예약 삭제 처리
+				if (reservationCode != null && !reservationCode.trim().isEmpty()) {
+					System.out.println("🛠️ [시설 예약 또는 일반 예약 삭제] 예약 코드: " + reservationCode);
+
+					TransferHistoryDTO transferHistoryDTO = new TransferHistoryDTO();
+					ReservationDTO reservationDTO = new ReservationDTO();
+				    reservationDTO.setReservationCode(reservationCode); // ✅ reservationCode 설정
+					System.out.println("🛠️ [시설 예약 또는 일반 예약 삭제] 예약 코드: " + reservationCode);
+
+					// ✅ `cancelBooking()` 호출 후 예외가 발생하지 않으면 성공 처리
+					facilityService.cancelBooking(memId, transferHistoryDTO, reservationDTO);
+
+					System.out.println("✅ [시설 예약 또는 일반 예약 삭제 완료]");
+					return true;
+
+				}
+			}
+			
+			// ✅ planNo가 있을 경우 일반 삭제 처리
+	        Member_Planner memberPlanner = memberPlannerRepository.findById(planNo)
+	                .orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다. PlanNo: " + planNo));
+
+			// 4. 개인 일정(예약 없이 직접 추가한 일정) 삭제 처리
+			System.out.println("🛠️ [개인 일정 삭제] PlanNo: " + planNo);
+			memberPlanner.setDeleteFlag(true);
+			memberPlannerRepository.save(memberPlanner);
+			memberPlannerRepository.flush(); // ✅ 즉시 DB 반영
+
+			System.out.println("✅ [개인 일정 삭제 완료]");
+			return true;
+
+		} catch (Exception e) {
+			System.err.println("🚨 [일정 삭제 중 오류 발생] " + e.getMessage());
+			return false;
+		}
 	}
 
 }
