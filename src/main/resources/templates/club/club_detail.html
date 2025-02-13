@@ -411,7 +411,7 @@
 	                    else if (member.memSocial === 0 && member.memPicture) {
 	                        profileImg = `<img src="/view/${member.memPicture}" 
 	                                         style="width:30px; height:30px; border-radius:50%; margin-right:5px;"
-	                                         alt="프로필 이미지" >`;
+	                                         alt="프로필 이미지" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">`;
 	                    }
 	                    // ✅ 기본 프로필 이미지
 	                    else {

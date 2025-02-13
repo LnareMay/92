@@ -2,7 +2,6 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -558,6 +557,7 @@
 
 			// 값 업데이트
 			memMoney -= useFitpayInput;
+			memMoneyFormatted = memMoney.toLocaleString();
 			totalPaid += useFitpayInput;
 			const remainingAmount = Math.max(calculateTotalPrice() - totalPaid, 0);
 			document.getElementById("memMoney_ip").value = memMoney;
@@ -768,7 +768,7 @@
 					str = `<p>생성한 클럽이 없습니다.</p>`;
 				} else {
 					document.querySelector(".changeToClub").textContent = "예약할 클럽";
-					str = `<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;" onchange="(selectBoxChange(this.value))">`
+					str = `<select class="custom-select" id="inputGroupSelect01" name="clubCode" style="text-align: center;">`
 					data.forEach(club => {
 						str += `<option selected value="${club.clubCode}">${club.clubName}</option>`
 					});
@@ -802,6 +802,7 @@
 				amountInput.value = parseFloat(totalPriceElement.textContent) || 0; // 숫자로 변환
 			}
 		}
+
 
 	
 	// 서버에서 전달받은 시설의 위도와 경도 (예: Thymeleaf로 전달)
@@ -839,6 +840,7 @@
 	           kakao.maps.event.trigger(map, 'resize');
 	       }
 	   });
+
 
 
 

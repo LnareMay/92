@@ -107,7 +107,7 @@
 							<th:block
 								th:if="${#authentication.principal.memPicture != null and !#authentication.principal.memPicture.isEmpty()}">
 								<img th:src="|/view/${#authentication.principal.memPicture}|" alt="프로필 이미지"
-									id="profileImage">
+									id="profileImage" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
 								<input type="file" id="memPicture" name="files" class="blind">
 								<input type="hidden" name="memPicture"
 									th:value="${#authentication.principal.memPicture}">
