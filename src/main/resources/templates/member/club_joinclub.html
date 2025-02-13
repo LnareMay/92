@@ -6,7 +6,7 @@
 	<!-- meta_tag include -->
 
 	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-	<title>나의클럽관리</title>
+	<title>가입한클럽</title>
 
 	<!-- 공통 css -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
@@ -45,8 +45,8 @@
 					<a href="/member/mypage">나의정보</a>
 					<a href="/member/reservation">나의시설예약</a>
 					<a href="/member/member_planner">운동캘린더</a>
-					<a href="/member/club_myclub" class="active">나의클럽관리</a>
-					<a href="/member/club_joinclub">가입한클럽</a>
+					<a href="/member/club_myclub">나의클럽관리</a>
+					<a href="/member/club_joinclub" class="active">가입한클럽</a>
 				</div>
 
 				<div style="align-items: center;">
@@ -72,56 +72,18 @@
 		<div class="container d-flex">
 			<aside class="myclub-list">
 				<div class="header">
-					<h6>클럽목록</h6>
-					<p style="font-size:15px;">조회할 클럽을 선택해주세요</p>
+					<h6>가입한 클럽목록</h6>
 				</div>
 				<ul class="myclub-list-group">
-					<li th:if="${ownerClubList.isEmpty()}" style="margin-top:10px">
-						<p>아직 만든 클럽이 없습니다.
-							<a href="/club/club_create"><img src="/img/plus_icon.png"
-									style="width:20px; height:20px;"></a>
-						</p>
+					<li th:if="${myClubList.isEmpty()}" style="margin-top:10px">
+						<p>아직 가입한 클럽이 없습니다.
 					</li>
-					<li class="myclub-list-item" th:each="club : ${ownerClubList}">
+					<li class="myclub-list-item" th:each="club : ${myClubList}">
 						<button th:text="${club.clubName}" class="clubbutton"
 							th:data-clubcode="${club.clubCode}"></button>
 					</li>
 				</ul>
 			</aside>
-
-			<div class="myclub-member">
-				<div id="myclub-memberlist">
-					<div class="header">
-						<h6>회원목록</h6>
-						<span class="myclub-member-item" style="margin:0px">
-							<span class="mem">아이디</span>
-							<span class="mem">이름</span>
-							<span class="mem">닉네임</span>
-							<span style="width:130px;">전화번호</span>
-							<span class="mem">신고</span>
-						</span>
-
-					</div>
-					<ul class="myclub-member-group" th:if="${responseDTO != null}">
-						<li class="myclub-member-item" th:each="clubmember : ${responseDTO.dtoList}"
-							th:if="${clubmember.memId != memId}">
-							<span th:text="${clubmember.memId}" class="mem"></span>
-							<span th:text="${clubmember.memName}" class="mem"></span>
-							<span th:text="${clubmember.memNickname}" class="mem"></span>
-							<span th:text="${clubmember.memTell}" style="width:130px;"></span>
-							<span th:text="${clubmember.reportCount}" class="mem"></span>
-							<form action="/member/club_myclubjoindel" method="post"
-								th:if="${clubmember.reportCount >= 3}"
-								th:attr="onsubmit='return confirm(\'' + ${clubmember.memId} + ' 회원을 탈퇴시키겠습니까?\');'"
-								style="display: inline;">
-								<input type="hidden" name="clubCode" th:value="${clubCode}" />
-								<input type="hidden" name="memId" th:value="${clubmember.memId}" />
-								<button type="submit" class="btn btn-danger delbtn">탈퇴</button>
-							</form>
-						</li>
-					</ul>
-				</div>
-			</div>
 		</div>
 
 	</main>
@@ -138,7 +100,7 @@
 
 		button.addEventListener("click", function () {
 			if (clubCode) {
-				window.location.href = `/member/club_myclub?clubCode=${clubCode}`;
+				window.location.href = `/club/club_detail?clubCode=${clubCode}`;
 			}
 		});
 
