@@ -413,18 +413,19 @@ public class AdminController {
 		// DTO를 엔티티로 변환하고 상태 변경
 		Reservation reservation = reservationRepository.findByReservationCode(reservationCode)
 				.orElseThrow(() -> new IllegalArgumentException("예약 정보를 찾을 수 없습니다."));
+		String payCode = reservation.getPayCode();
 
 		String memId = userDetails.getUsername();
 
 		// 만약 관리자가 예약거절했다가 승인할 경우
 		if (reservation.isDeleteFlag() == true) {
 			// 예약 정보를 가져오기 위해 서비스 호출
-			ReservationDTO reservationDTO = reservationService.getReservationByCode(reservationCode);
+			ReservationDTO reservationDTO = reservationService.getReservationBypayCodeAndDeleteFlag(payCode);
 			facilityService.cancelAndBookAgainbyManager(memId, transferHistoryDTO, reservationDTO);
 		} else {
 			// 예약 상태 변경
 			reservation.setReservationProgress("예약완료");
-			reservation.setMemo("관리자의 승인으로 인한 예약완료");
+			reservation.setMemo("관리자의 예약 승인");
 			reservationRepository.save(reservation);
 		}
 

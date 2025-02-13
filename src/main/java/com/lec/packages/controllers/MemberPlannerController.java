@@ -10,16 +10,22 @@ import com.lec.packages.repository.ClubRepository;
 import com.lec.packages.repository.ClubReservationMemberRepository;
 import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.security.CustomUserDetailsService;
 import com.lec.packages.service.ClubService;
 import com.lec.packages.service.MemberPlannerService;
 import com.lec.packages.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +46,8 @@ public class MemberPlannerController {
 
 	private final MemberPlannerService memberPlannerService;
 	private final ClubService clubService;
+	@Autowired
+	private final CustomUserDetailsService customUserDetailsService;
 	private final ReservationService reservationService;
 	private final ClubRepository clubRepository;
 	private final ReservationRepository reservationRepository;
@@ -70,7 +78,7 @@ public class MemberPlannerController {
 
 	        for (Reservation_Member_List res : clubReservations) {
 	            // ✅ 이미 등록된 일정인지 확인
-	            Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemId(res.getReservationCode(),res.getMemId());
+	            Optional<Member_Planner> existingPlanner = memberPlannerRepository.findFirstByReservationCodeAndMemId(res.getReservationCode(),res.getMemId());
 
 	            String clubName = clubRepository.findClubNameByClubCode(res.getClubCode());
 	            
@@ -122,7 +130,7 @@ public class MemberPlannerController {
 
 	        for (Reservation res : memberReservations) {
 	            // ✅ 이미 등록된 일정인지 확인
-	            Optional<Member_Planner> existingPlanner = memberPlannerRepository.findByReservationCodeAndMemId(res.getReservationCode(),res.getMemId());
+	            Optional<Member_Planner> existingPlanner = memberPlannerRepository.findFirstByReservationCodeAndMemId(res.getReservationCode(),res.getMemId());
 
 	            
 	            List<Object[]> results = reservationRepository.findFacilityAndTimesByCode(res.getReservationCode());
@@ -192,44 +200,45 @@ public class MemberPlannerController {
 
 	@DeleteMapping("/delete")
 	@Transactional
-	public ResponseEntity<String> deletePlanner(@RequestBody Map<String, Object> requestData, @AuthenticationPrincipal UserDetails userDetails) {
-	    try {
-	        System.out.println("🚀 [DELETE 요청] 요청 데이터: " + requestData);
+    public ResponseEntity<?> deletePlanner(@RequestBody Map<String, Object> requestBody) {
+        try {
+            Integer planNo = (Integer) requestBody.get("planNo");
+            String reservationCode = (String) requestBody.get("reservationCode");
+            String clubCode = (String) requestBody.get("clubCode");
+            String memId = (String) requestBody.get("memId");
 
-	        Integer planNo = null;
-	        if (requestData.get("planNo") != null) {
-	            try {
-	                planNo = Integer.parseInt(requestData.get("planNo").toString());
-	            } catch (NumberFormatException e) {
-	                System.out.println("❌ [에러] 잘못된 planNo 형식: " + requestData.get("planNo"));
-	                return ResponseEntity.badRequest().body("🚨 잘못된 planNo 형식입니다.");
-	            }
-	        }
+            System.out.println("🛠️ [DELETE 요청] planNo: " + planNo + ", reservationCode: " + reservationCode + ", clubCode: " + clubCode + ", memId: " + memId);
 
-	        String reservationCode = (String) requestData.get("reservationCode");
-	        String clubCode = (String) requestData.get("clubCode");
-	        String memId = (String) requestData.get("memId");
 
-	        boolean clubMemberRemoved = true; // 기본값 설정
-	        if (clubCode != null && !clubCode.trim().isEmpty()) {
-	            System.out.println("🛠️ [삭제 진행] 예약 코드: " + reservationCode + ", 클럽 코드: " + clubCode);
-	            clubMemberRemoved = clubService.removeClubResMember(reservationCode, clubCode, memId).equals("success");
-	            System.out.println("🛠️ [삭제 완료] 클럽 멤버 삭제 여부: " + clubMemberRemoved);
-	        } else {
-	            // ✅ 기존 예약을 단순 취소하도록 설정 (새로운 예약 생성 X)
-	            TransferHistoryDTO transferHistoryDTO = new TransferHistoryDTO();
-	            ReservationDTO reservationDTO = new ReservationDTO();
-	            boolean plannerDeleted = memberPlannerService.deletePlanner(planNo, transferHistoryDTO, reservationDTO, userDetails);
-	        }
+            boolean deleted = memberPlannerService.deletePlanner(planNo, reservationCode, clubCode, memId);
 
-	        return ResponseEntity.ok("✅ 일정이 삭제되었습니다.");
+            if (deleted) {
+           
+    			
+    			if (memId == null) {
+    				return ResponseEntity.ok().body("✅ 일정이 삭제되었습니다.");
+    			}else {
+    				// 수정된 사용자 정보 가져오기
 
-	    } catch (Exception e) {
-	        System.out.println("❌ [에러 발생] " + e.getMessage());
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 삭제 중 오류 발생: " + e.getMessage());
-	    }
-	}
+    				UserDetails updatedUser = customUserDetailsService.loadUserByUsername(memId);
 
+    				// 새 인증 정보 생성
+    				Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, updatedUser.getPassword(),
+    						updatedUser.getAuthorities());
+
+    				// 보안 컨텍스트 갱신
+    				SecurityContextHolder.getContext().setAuthentication(newAuth);
+    	    			return ResponseEntity.ok().body("✅ 일정이 삭제되었습니다.");
+    		        }
+    			
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 일정 삭제 실패");
+            }
+        } catch (Exception e) {
+            System.err.println("❌ [에러 발생] " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("🚨 삭제 중 오류 발생: " + e.getMessage());
+        }
+    }
 
 
 
