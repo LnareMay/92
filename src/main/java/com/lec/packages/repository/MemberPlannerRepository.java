@@ -31,4 +31,9 @@ public interface MemberPlannerRepository extends JpaRepository<Member_Planner, I
     Optional<Member_Planner> findByReservationCodeAndMemIAndDeleteFlagTrue(@Param("reservationCode") String reservationCode, @Param("memId") String memId);
 
 
+	List<Member_Planner> findByReservationCodeAndMemIdAndDeleteFlagTrue(String reservationCode, String memId);
+
+	List<Member_Planner> findByReservationCodeAndMemIdAndDeleteFlagFalse(String reservationCode, String memId);
+
+
 }

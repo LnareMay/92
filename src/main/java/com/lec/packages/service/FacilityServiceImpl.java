@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lec.packages.domain.Facility;
 import com.lec.packages.domain.Member;
+import com.lec.packages.domain.Member_Planner;
 import com.lec.packages.domain.Reservation;
 import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.FacilityDTO;
@@ -26,6 +27,7 @@ import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.dto.TransferHistoryDTO;
 import com.lec.packages.repository.FacilityRepository;
+import com.lec.packages.repository.MemberPlannerRepository;
 import com.lec.packages.repository.MemberRepository;
 import com.lec.packages.repository.ReservationRepository;
 import com.lec.packages.repository.TransferHistoryRepository;
@@ -46,6 +48,8 @@ public class FacilityServiceImpl implements FacilityService{
 	private final FacilityRepository facilityRepository;
 
 	private final MemberRepository memberRepository;
+	
+	private final MemberPlannerRepository memberPlannerRepository;
 	
 	private final ReservationRepository reservationRepository;
 	
@@ -372,6 +376,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
 	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
 
+	    
 	    // 3. Sender와 Receiver ID 확인
 	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
 	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
@@ -405,6 +410,15 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
 
+
+	    // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
+	    List<Member_Planner> planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
+	    for (Member_Planner planner : planners) {
+	        planner.setDeleteFlag(true);
+	    }
+	    memberPlannerRepository.saveAll(planners);
+
+	    
 	    // 6. 데이터 저장
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
@@ -424,6 +438,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
 	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
 
+	   
 	    // 3. Sender와 Receiver ID 확인
 	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
 	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
@@ -457,6 +472,13 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
 
+	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
+	    List<Member_Planner> planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
+	    for (Member_Planner planner : planners) {
+	        planner.setDeleteFlag(true);
+	    }
+	    memberPlannerRepository.saveAll(planners);
+	    
 	    // 6. 데이터 저장
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
@@ -506,6 +528,7 @@ public class FacilityServiceImpl implements FacilityService{
 	                reservation.setReservationProgress("예약취소");
 	                reservation.setDeleteFlag(true);
 	                
+	                
 	                // 변경 사항 저장
 	                memberRepository.save(sender);
 	                memberRepository.save(receiver);
@@ -527,6 +550,8 @@ public class FacilityServiceImpl implements FacilityService{
 	    TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
 	            .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
 
+	   
+	    
 	    // 3. Sender와 Receiver ID 확인
 	    if (transferHistory.getSenderId().getMemId() == null || transferHistory.getReceiverId().getMemId() == null) {
 	        throw new IllegalArgumentException("Sender ID 또는 Receiver ID가 null입니다.");
@@ -559,7 +584,14 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setMemo("관리자의 승인으로 인한 예약완료");
 	    reservation.setReservationProgress("예약완료");
 	    reservation.setDeleteFlag(false);
-
+	    
+	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
+	    List<Member_Planner> planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagTrue(reservationDTO.getReservationCode(), memId);
+	    for (Member_Planner planner : planners) {
+	        planner.setDeleteFlag(false);
+	    }
+	    memberPlannerRepository.saveAll(planners);
+	    
 	    // 6. 데이터 저장
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
