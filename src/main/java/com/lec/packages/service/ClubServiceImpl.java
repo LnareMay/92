@@ -759,4 +759,8 @@ public class ClubServiceImpl implements ClubService {
 		}	
 	}
 
+	@Override
+	public String getClubNameByCode(String clubCode) {
+        return clubRepository.findClubNameByClubCode(clubCode);
+    }
 }
