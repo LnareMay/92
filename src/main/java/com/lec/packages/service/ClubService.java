@@ -113,8 +113,10 @@ public interface ClubService {
 
     List<ClubBoardDTO> getBoardListByMemID(String username);
 
-    Map<String, String> getClubNamesByCodes(List<String> clubCodes);
-    
+	String getClubNameByCode(String clubCode);
+	
+	Map<String, String> getClubNamesByCodes(List<String> clubCodes);
+
 	String removeClubResMember(String reservationCode, String clubCode, String memId);
 
 }
