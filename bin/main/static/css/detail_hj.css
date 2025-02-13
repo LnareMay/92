@@ -37,25 +37,28 @@ ul {
 #club_main_pg #my_club .container {
 	display: flex;
 	gap: 20px;
+	overflow-x:scroll;
 }
 
 #club_main_pg #my_club .card {
 	background-color: #fff;
 	border-radius: 20px;
 	overflow: hidden;
-	width: 200px;
+	min-width: 200px;
 	text-align: center;
 	border: 0;
+	width: 200px;
 }
 
 #club_main_pg #my_club .card.create {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	justify-content: center;
-	font-size: 18px;
-	color: #555;
-	height: 250px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    font-size: 18px;
+    color: #555;
+    min-width: 200px;
+    height: 250px;
 }
 
 #club_main_pg #my_club .card.create img {
@@ -103,6 +106,7 @@ ul {
 #club_main_pg #my_club .card.ad {
 	position: relative;
 }
+
 
 /* 클럽 테마 */
 #club_main_pg .btn-secondary.active {

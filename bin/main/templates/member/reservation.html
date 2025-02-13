@@ -111,7 +111,7 @@
 						<strong>인원:</strong> <span th:text="${reservation.count}"></span>명
 					</p>
 					<p>
-						<strong>금액:</strong> <span th:text="${reservation.price}"></span>원
+						<strong>금액:</strong> <span th:text="${#numbers.formatInteger(reservation.price, 0, 'COMMA')}" id="memMoney"></span>원
 					</p>
 					<p>
 						<strong>예약 상태:</strong> <span
