@@ -191,7 +191,7 @@ public class ReservationServiceImpl implements ReservationService {
 	    for (Reservation reservation : expiredReservations) {
 	        // 예약 상태를 "예약취소"로 변경
 	        reservation.setReservationProgress("예약취소");
-
+	        reservation.setMemo("기간만료로 인한 예약취소");
 	        // TransferHistory 정보 조회
 	        TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
 	                .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));

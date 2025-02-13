@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -287,16 +288,21 @@ public class MemberController {
 		// 예약 정보 가져오기
 		List<Reservation> reservations = reservationRepository.findByMemId(memId);
 		if (!reservations.isEmpty()) {
-			model.addAttribute("reservations", reservations); // 예약 목록을 모델에 추가
-			// 클럽예약 - 클럽명 가져오기
-			Map<String, Object> clubNameMap = new HashMap<>();
-			for (Reservation reservation : reservations) {				
-				String clubName = clubService.getClubNameByCode(reservation.getClubCode());
-				clubNameMap.put(reservation.getClubCode(), clubName);				
-			}		
-			model.addAttribute("clubNameMap", clubNameMap); 
+		    model.addAttribute("reservations", reservations); // 예약 목록 추가
+		    
+		    // ✅ 모든 clubCode를 리스트로 추출 (중복 제거)
+		    List<String> clubCodes = reservations.stream()
+		                                         .map(Reservation::getClubCode)
+		                                         .filter(Objects::nonNull)
+		                                         .distinct()
+		                                         .collect(Collectors.toList());
+
+		    // ✅ clubCode 리스트를 한 번의 쿼리로 조회하여 맵으로 변환
+		    Map<String, String> clubNameMap = clubService.getClubNamesByCodes(clubCodes);
+		    
+		    model.addAttribute("clubNameMap", clubNameMap); 
 		} else {
-			model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
+		    model.addAttribute("noReservations", "예약이 없습니다."); // 예약이 없는 경우 메시지 추가
 		}
 
 		// 보안 컨텍스트 갱신 (선택 사항, 필요하면 유지)
