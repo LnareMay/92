@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -428,7 +429,35 @@ public class MemberController {
 		return "redirect:/member/club_myclub?clubCode=" + clubCode;
 	}
 
-	
+	// 가입한 클럽보기
+	@GetMapping("/club_joinclub")
+	public String clubJoinList(PageRequestDTO pageRequestDTO,
+			@RequestParam(value = "clubCode", required = false) String clubCode, 
+			Authentication authentication,
+			HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		String memId = authentication.getName();
+
+		// 클럽장인 클럽 제외한 클럽만 가져오기
+		List<ClubDTO> myClubList = clubService.clubListWithMemID(memId);	
+		List<ClubDTO> ownerClubList = clubService.ownerClubListWithMemId(memId);
+		List<ClubDTO> filterClubList = myClubList.stream()
+				.filter(club -> ownerClubList.stream().noneMatch(ownerClub -> ownerClub.getClubCode().equals(club.getClubCode())))
+				.collect(Collectors.toList());		
+		
+		// 사용자 정보 가져오기
+		Member member = memberRepository.findById(memId)
+				.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+		model.addAttribute("member", member); // 사용자 정보를 모델에 추가
+		
+		model.addAttribute("clubCode", clubCode);
+		model.addAttribute("currentURI", requestURI);
+		model.addAttribute("myClubList", filterClubList);
+		model.addAttribute("memId", memId);
+
+		return "member/club_joinclub";
+	}
+
 
 	// 비밀번호 찾기
 	@GetMapping("/find_pw")
