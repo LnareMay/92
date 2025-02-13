@@ -512,18 +512,12 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setMemo("예약자의 취소로 인한 예약 취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
-	    reservationRepository.save(reservation);
+	    
 
 	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
 	    List<Member_Planner> planners;
 
-	    if (reservation.getClubCode() != null) {
-	        // 클럽 일정 (예약 코드 존재)
-	        planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
-	    } else {
-	        // 개인 일정 (예약 코드 없음)
-	        planners = memberPlannerRepository.findByReservationCodeIsNullAndMemIdAndDeleteFlagFalse(memId);
-	    }
+	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
 
 	    // 일정이 존재하는 경우만 처리
 	    if (!planners.isEmpty()) {
@@ -537,7 +531,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(newTransferHistory);
-	    
+	    reservationRepository.save(reservation);
 	}
 
 	// 관리자가 승인거절 눌렀을때
@@ -585,18 +579,12 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setMemo("관리자의 승인 거절로 인한 예약취소");
 	    reservation.setReservationProgress("예약취소");
 	    reservation.setDeleteFlag(true);
-	    reservationRepository.save(reservation);
+	    
 	    
 	 // 6. Member_Planner 일정 삭제 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
 	    List<Member_Planner> planners;
 
-	    if (reservation.getClubCode() != null) {
-	        // 클럽 일정 (예약 코드 존재)
-	        planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
-	    } else {
-	        // 개인 일정 (예약 코드 없음)
-	        planners = memberPlannerRepository.findByReservationCodeIsNullAndMemIdAndDeleteFlagFalse(memId);
-	    }
+	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagFalse(reservationDTO.getReservationCode(), memId);
 
 	    // 일정이 존재하는 경우만 처리
 	    if (!planners.isEmpty()) {
@@ -612,6 +600,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(newTransferHistory);
+	    reservationRepository.save(reservation);
 		
 	}
 	
@@ -712,18 +701,12 @@ public class FacilityServiceImpl implements FacilityService{
 	    reservation.setMemo("관리자의 승인으로 인한 예약완료");
 	    reservation.setReservationProgress("예약완료");
 	    reservation.setDeleteFlag(false);
-	    reservationRepository.save(reservation);
+	    
 	    
 	 // 6. Member_Planner 일정 추가 업데이트 (예약 코드가 일치하는 모든 일정 비활성화)
 	    List<Member_Planner> planners;
 
-	    if (reservation.getClubCode() != null) {
-	        // 클럽 일정 (예약 코드 존재)
-	        planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagTrue(reservationDTO.getReservationCode(), memId);
-	    } else {
-	        // 개인 일정 (예약 코드 없음)
-	        planners = memberPlannerRepository.findByReservationCodeIsNullAndMemIdAndDeleteFlagTrue(memId);
-	    }
+	    planners = memberPlannerRepository.findByReservationCodeAndMemIdAndDeleteFlagTrue(reservationDTO.getReservationCode(), memId);
 
 	    // 일정이 존재하는 경우만 처리
 	    if (!planners.isEmpty()) {
@@ -738,7 +721,7 @@ public class FacilityServiceImpl implements FacilityService{
 	    memberRepository.save(sender);
 	    memberRepository.save(receiver);
 	    transferHistoryRepository.save(newTransferHistory);
-		
+	    reservationRepository.save(reservation);
 	}
 	
 	// 사설시설
