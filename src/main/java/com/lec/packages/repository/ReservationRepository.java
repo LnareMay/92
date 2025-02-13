@@ -87,6 +87,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 	        + "LEFT JOIN reservation_member_list rml \r\n"
 	        + "    ON r.club_code = rml.CLUB_CODE \r\n"
 	        + "    AND r.RESERVATION_CODE = rml.RESERVATION_CODE\r\n"
+	        + "    AND rml.DELETE_FLAG IS NULL\r\n"
 	        + "LEFT JOIN member m \r\n"
 	        + "    ON rml.MEM_ID = m.MEM_ID \r\n"
 	        + "WHERE \r\n"
