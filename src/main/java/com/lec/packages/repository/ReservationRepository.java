@@ -2,6 +2,7 @@ package com.lec.packages.repository;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,4 +123,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     @Transactional
     @Query("UPDATE Reservation r SET r.deleteFlag = true WHERE r.reservationDate < :today AND r.deleteFlag = false")
     int markOldReservationsAsDeleted(@Param("today") LocalDate today);
+
+    @Query("SELECT r FROM Reservation r WHERE r.reservationDate < :date AND r.reservationProgress = :status")
+    List<Reservation> findReservationDateBeforeAndStatus( @Param("date") LocalDate date, @Param("status") String status);
 }

@@ -1,19 +1,25 @@
 package com.lec.packages.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.lec.packages.domain.Reservation;
+import com.lec.packages.domain.TransferHistory;
 import com.lec.packages.dto.PageRequestDTO;
 import com.lec.packages.dto.PageResponseDTO;
 import com.lec.packages.dto.ReservationDTO;
 import com.lec.packages.repository.ReservationRepository;
+import com.lec.packages.repository.TransferHistoryRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +33,8 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	private final ModelMapper modelMapper;
 	private final ReservationRepository reservationRepository;
+	private final TransferHistoryRepository transferHistoryRepository;
+	private final FacilityService facilityService;
 	
 		//로그인 한 유저가 등록한 시설(facilityCode)의 예약내역 
 //		@Override	
@@ -168,6 +176,58 @@ public class ReservationServiceImpl implements ReservationService {
 					              .build();
 	 
 	}
+
+	//예약일이 지난 예약 자동으로 예약 취소 
+	@Scheduled(cron = "0 0 0 * * ?") // 매일 00:00 실행
+	@Transactional
+	@Override
+	public void cancelExpiredReservation() {
+	    LocalDate now = LocalDate.now();
+	    String statusInProgress = "예약진행중";
+
+	    // 만료된 예약 조회
+	    List<Reservation> expiredReservations = reservationRepository.findReservationDateBeforeAndStatus(now, statusInProgress);
+
+	    for (Reservation reservation : expiredReservations) {
+	        // 예약 상태를 "예약취소"로 변경
+	        reservation.setReservationProgress("예약취소");
+
+	        // TransferHistory 정보 조회
+	        TransferHistory transferHistory = transferHistoryRepository.findByPayCode(reservation.getPayCode())
+	                .orElseThrow(() -> new IllegalArgumentException("해당 이체 내역을 찾을 수 없습니다."));
+
+	        // 금액 업데이트
+	        transferHistory.getSenderId().setMemMoney(
+	                transferHistory.getSenderId().getMemMoney().add(transferHistory.getAmount())
+	        );
+	        transferHistory.getReceiverId().setMemMoney(
+	                transferHistory.getReceiverId().getMemMoney().subtract(transferHistory.getAmount())
+	        );
+	        
+	        // 4. 새로운 TransferHistory 생성
+		    TransferHistory newTransferHistory = TransferHistory.builder()
+		            .transferCode(String.valueOf(System.currentTimeMillis()))
+		            .payCode(UUID.randomUUID().toString())
+		            .amount(transferHistory.getAmount())
+		            .memo("기간만료로 인한 환불")
+		            .status("송금취소")
+		            .transferDate(LocalDateTime.now())
+		            .receiverId(transferHistory.getReceiverId())
+		            .senderId(transferHistory.getSenderId())
+		            .clubCode(reservation.getClubCode())
+		            .build();
+
+
+	        // TransferHistory 저장
+	        transferHistoryRepository.save(newTransferHistory);
+	    }
+
+	    // 변경된 예약 저장
+	    reservationRepository.saveAll(expiredReservations);
+
+	    System.out.println(expiredReservations.size() + "개의 만료된 예약이 취소되었습니다.");
+	}
+
 
 
 
