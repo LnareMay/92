@@ -190,13 +190,16 @@
 
 									<div class="form-group">
 										<label for="inputfacilityAddress">시설주소</label> <br />
-										<input type="text" id="facilityZipcode" name="facilityZipcode"
-											placeholder="우편번호" /> <input type="button"
-											onclick="searchPostcode()" value="우편번호 찾기" /><br> <input
-											type="text" class="form-control" id="facilityAddress"
-											name="facilityAddress" placeholder="주소" required /> <input
-											type="text" id="facilityAddressDetail"
-											name="facilityAddressDetail" placeholder="상세주소" required />
+										<input type="text" id="facilityZipcode" name="facilityZipcode" placeholder="우편번호" /> 
+										<input type="button" onclick="searchPostcode()" value="우편번호 찾기" /><br> 
+										<input type="text" class="form-control" id="facilityAddress" name="facilityAddress" placeholder="주소" required /> 
+										<input type="text" id="facilityAddressDetail" name="facilityAddressDetail" placeholder="상세주소" required />
+										
+										<input type="hidden" id="facilityLat" name="facilityLat">
+										<input type="hidden" id="facilityLongt" name="facilityLongt">
+
+											
+											
 									</div>
 
 
@@ -506,6 +509,7 @@
 					}).open();
 		}
 	</script>
+	
 
 
 </body>

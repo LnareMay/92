@@ -169,8 +169,10 @@
 			<section class="content">
 				<form id="facilityEdit" action="/admin/modify" method="post"
 					enctype="multipart/form-data">
-					<input type="hidden" name="facilityCode"
-						th:value="${facility.facilityCode}" />
+					<input type="hidden" name="facilityCode"th:value="${facility.facilityCode}" />
+					<!-- 숨겨진 필드: 위도와 경도 -->
+					<input type="hidden" id="facilityLat" name="facilityLat" th:value="${facility.facilityLat}"/>
+					<input type="hidden" id="facilityLongt" name="facilityLongt" th:value="${facility.facilityLongt}"/>
 					<div class="row">
 						<div class="col-md-6">
 							<div class="card card-primary">
@@ -205,6 +207,8 @@
 											placeholder="주소" required /> <input type="text"
 											id="facilityAddressDetail" name="facilityAddressDetail"
 											placeholder="상세주소" required />
+											
+
 									</div>
 
 

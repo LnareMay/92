@@ -179,12 +179,12 @@
 						<table class="table table-striped projects">
 							<thead>
 								<tr>
-									<th style="width: 1%">#</th>
-									<th style="width: 20%">시설명</th>
+									<th style="width: 1% ; text-align: center;">#</th>
+									<th style="width: 20%; text-align: center;">시설명</th>
+									<th style="width: 12%; text-align: center;">상태</th>
+									<th style="width: 10%; text-align: center;">예약코드</th>
+									<th style="width: 20%; text-align: center;">예약시간</th>
 									<th>가격</th>
-									<th style="width: 10%">예약코드</th>
-									<th style="width: 20%">예약시간</th>
-									<th style="width: 12%">상태</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -193,15 +193,7 @@
 									<td><a th:text="${reservation.facilityName}"></a>
 										<br /> <small>예약생성일:</small> <small th:text="${reservation.formattedCreateDate}"></small>
 									</td>
-									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
-									<td th:text="${reservation.reservationCode}"></td>
-									<td><a
-										th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></a>
-										</br> <small
-										th:with="duration=${T(java.time.Duration).between(reservation.reservationStartTime, reservation.reservationEndTime)}"
-										th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
-										<small>예약일:</small> <small th:text="${reservation.reservationDate}"></small>
-									</td>
+									
 									<td>
 										<span class="ReservationProgressTag"
 											  th:if="${reservation.reservationProgress=='예약진행중'}">예약진행중</span>
@@ -210,7 +202,19 @@
 										<span class="ReservationProgressTag_refuse"
 											  th:if="${reservation.reservationProgress=='예약취소'}">예약취소</span>
 									</td>
-									<td class="project-actions text-right"><a
+									<td th:text="${reservation.reservationCode}"></td>
+									<td style="text-align: center;"><a 
+										th:text="|${#temporals.format(reservation.reservationStartTime, 'HH:mm')} ~ ${#temporals.format(reservation.reservationEndTime, 'HH:mm')}|"></a>
+										</br> <small
+										th:with="duration=${T(java.time.Duration).between(reservation.reservationStartTime, reservation.reservationEndTime)}"
+										th:text="${'('+duration.toHours() + '시간 ' + (duration.toMinutes() % 60) + '분)'}"></small>
+										<small>예약일:</small> <small th:text="${reservation.reservationDate}"></small>
+									</td>
+									<td th:text="|₩ ${reservation.formattedPrice}|"></td>
+									
+									
+									<td class="project-actions text-right">
+										<a
 										th:href="@{/admin/Reservation_detail/{reservationCode}(reservationCode=${reservation.reservationCode})}"
 										class="btn btn-primary btn-sm"> <i class="fas fa-folder"></i>
 											View

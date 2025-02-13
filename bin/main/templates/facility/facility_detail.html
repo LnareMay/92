@@ -2,6 +2,7 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -296,6 +297,27 @@
 				</div>
 				<!-- 시설 주소  -->
 				<div class="form-group">
+					<label for="facilityAddress">시설 주소: </label> <span
+						th:text="${facility.facilityAddress}"></span>
+						<!-- 지도 버튼 -->
+						<button type="button" class="btn btn-success" style=" border: none;" data-bs-toggle="modal" data-bs-target="#mapModal">
+						   <i class="bi bi-geo-alt"></i></button>
+					
+							<!-- 모달창 -->
+							<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+							    <div class="modal-dialog modal-lg">
+							        <div class="modal-content">
+							            <div class="modal-header">
+							                <h5 class="modal-title" id="mapModalLabel">시설 위치</h5>
+							                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							            </div>
+							            <div class="modal-body">
+							                <!-- 지도를 표시할 div -->
+							                <div id="map" style="width: 100%; height: 400px;"></div>
+							            </div>
+							        </div>
+							    </div>
+							</div>
 					<label for="facilityAddress">시설 주소: </label> <span th:text="${facility.facilityAddress}"></span>
 				</div>
 				<div class="form-group">
@@ -316,7 +338,7 @@
 
 	<!-- Footer -->
 	<div th:insert="~{layouts/footer :: footer}"></div>
-
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3cd1cbb83ed8cd66805a1d9f6fd57a32"></script>
 	<script>
 		// 날짜 선택 Flatpickr 초기화
 		flatpickr("#reservationDate", {
@@ -781,10 +803,42 @@
 			}
 		}
 
+	
+	// 서버에서 전달받은 시설의 위도와 경도 (예: Thymeleaf로 전달)
+	   const facilityLat = /*[[${facility.facilityLat}]]*/ 37.5665; // 예시 위도
+	   const facilityLng = /*[[${facility.facilityLongt}]]*/ 126.9780; // 예시 경도
 
-		function selectBoxChange(value) {
-			// document.querySelector("#senderId").value = value
-		}
+	   let map, marker;
+
+	   // 모달이 열릴 때 지도 초기화
+	   $('#mapModal').on('shown.bs.modal', function () {
+	       if (!map) {
+	           // 지도 생성
+	           const mapContainer = document.getElementById('map');
+	           const mapOption = {
+	               center: new kakao.maps.LatLng(facilityLat, facilityLng), // 중심 좌표
+	               level: 3 // 확대 레벨
+	           };
+	           map = new kakao.maps.Map(mapContainer, mapOption);
+
+	           // 마커 생성 및 표시
+	           const markerPosition = new kakao.maps.LatLng(facilityLat, facilityLng);
+	           marker = new kakao.maps.Marker({
+	               position: markerPosition,
+	               map: map
+	           });
+	       } else {
+	           // 지도 중심 이동 (모달 재열림 시)
+	           map.setCenter(new kakao.maps.LatLng(facilityLat, facilityLng));
+	       }
+	   });
+
+	   // 모달이 닫힐 때 지도 리사이즈 처리
+	   $('#mapModal').on('hidden.bs.modal', function () {
+	       if (map) {
+	           kakao.maps.event.trigger(map, 'resize');
+	       }
+	   });
 
 
 
