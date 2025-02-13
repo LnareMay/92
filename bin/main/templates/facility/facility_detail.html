@@ -224,10 +224,9 @@
 				<!-- 결제 옵션 -->
 				<h4>결제하기</h4>
 				<div id="paymentOptions">
-					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> <span
-						th:if="${#authentication.principal.memMoney == 0}">0</span>
-					<span th:unless="${#authentication.principal.memMoney == 0}"
-						th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 3, 'COMMA')}" id="memMoney"></span>원
+					<label for="memMoney" class="form-label me-2">FITPAY 잔액:</label> 
+					<span 
+						th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 0, 'COMMA')}" id="memMoney"></span>원
 					<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 
 					<button class="btn btn-success" id="fitpayCharge" type="button">FITPAY
