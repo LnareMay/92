@@ -45,6 +45,7 @@ public interface ClubRepository extends JpaRepository<Club, String> {
     List<Club> getClubListWithMemID(@Param("memId") String memId);
     
     // clubCode로 clubName 가져오기
-    @Query("SELECT c.clubName FROM Club c WHERE c.clubCode = :clubCode")
-    String findClubNameByClubCode(@Param("clubCode") String clubCode);
+    @Query("SELECT c.clubCode, c.clubName FROM Club c WHERE c.clubCode IN :clubCodes")
+    List<Object[]> findClubNamesByClubCodes(@Param("clubCodes") List<String> clubCodes);
+
 }

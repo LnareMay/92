@@ -735,9 +735,17 @@ public class ClubServiceImpl implements ClubService {
 	}
 	
 	// 클럽 코드로 이름 가져오기
-	public String getClubNameByCode(String clubCode) {
-        return clubRepository.findClubNameByClubCode(clubCode);
-    }
+	public Map<String, String> getClubNamesByCodes(List<String> clubCodes) {
+	    if (clubCodes.isEmpty()) return new HashMap<>(); // ❌ 빈 리스트 방지
+	    List<Object[]> results = clubRepository.findClubNamesByClubCodes(clubCodes);
+	    
+	    return results.stream()
+	                  .collect(Collectors.toMap(
+	                      result -> (String) result[0],  // clubCode
+	                      result -> (String) result[1]   // clubName
+	                  ));
+	}
+
 
 	// 클럽 일정에 참가한 회원 취소
 	@Override
