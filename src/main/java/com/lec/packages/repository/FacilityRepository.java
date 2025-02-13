@@ -33,17 +33,16 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     Page<Facility> searchAll(@Param("address") String facilityAddress, @Param("exerciseCode") String exerciseCode,
     					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);
     
- // 시설검색
+    // 사설시설검색
     @Query("SELECT f FROM Facility f WHERE f.deleteFlag = false "
     		+ "AND (:address IS NULL OR f.facilityAddress LIKE %:address%) "
     		+ "AND (:exerciseCode IS NULL OR f.exerciseCode LIKE %:exerciseCode%) "
     		+ "AND (:isOnlyClub IS NULL OR f.facilityIsOnlyClub = :isOnlyClub) "
     		+ "AND f.facilityCode LIKE 'FACIL%'")
     Page<Facility> searchPrivate(@Param("address") String facilityAddress, @Param("exerciseCode") String exerciseCode,
-    					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);
+    					 @Param("isOnlyClub") Boolean facilityIsOnlyClub, Pageable pageable);   
     
-    
- // 공공시설검색
+    // 공공시설검색
     @Query("SELECT f FROM Facility f WHERE f.deleteFlag = false "
     		+ "AND (:address IS NULL OR f.facilityAddress LIKE %:address%) "
     		+ "AND (:exerciseCode IS NULL OR f.exerciseCode LIKE %:exerciseCode%) "
@@ -57,6 +56,11 @@ public interface FacilityRepository extends JpaRepository<Facility,String>{
     		+ "AND FUNCTION('ST_Distance_Sphere', POINT(f.facilityLongt, f.facilityLat), POINT(:longt, :lat)) <= :radius * 1000")
     List<Facility> findFacilityWithRadius(@Param("lat") BigDecimal lat, @Param("longt") BigDecimal longt, @Param("radius") double radius);
     
+    // 사설기반 시설
+    @Query("SELECT f FROM Facility f WHERE f.facilityCode LIKE 'FACIL%' AND f.facilityLat IS NOT NULL AND f.facilityLongt IS NOT NULL "
+    		+ "AND FUNCTION('ST_Distance_Sphere', POINT(f.facilityLongt, f.facilityLat), POINT(:longt, :lat)) <= :radius * 1000")
+    List<Facility> findPrivateFacilityWithRadius(@Param("lat") BigDecimal lat, @Param("longt") BigDecimal longt, @Param("radius") double radius);
+
     @Query("SELECT f FROM Facility f WHERE f.facilityCode LIKE 'FACIL%'")
     List<Facility> findAll();
     
