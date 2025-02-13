@@ -41,7 +41,7 @@
 				<label class="col-form-label mt-2" for="memId"><span
 					class="text-danger">*</span> 아이디</label> <input type="text"
 					class="form-control" placeholder="아이디" id="memId" name="memId"
-					required style="display: inline-block; width: 50%;">
+					required style="display: inline-block; width: 50%;" maxlength="20">
 				<button type="button" id="checkIdButton" class="btn btn-primary">중복확인</button>
 				<small class="text-muted" style="display: block;">아이디는
 					5~20자의 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.</small>
@@ -65,16 +65,16 @@
 				<!-- MEM_NAME -->
 				<label class="col-form-label mt-2" for="memName"><span
 					class="text-danger">*</span> 이름</label> <input type="text" id="memName"
-					name="memName" class="form-control" placeholder="이름" required />
-				<small class="text-danger">이름은 2~20자의 한글 또는 영문이어야 합니다.</small>
+					name="memName" class="form-control" placeholder="이름" required maxlength="5"/>
+				<small class="text-danger">이름은 2~5자의 한글 또는 영문이어야 합니다.</small>
 
 
 				<!-- MEM_NICKNAME -->
 				<label class="col-form-label mt-2" for="memNickname"><span
 					class="text-danger">*</span> 닉네임</label> <input type="text"
 					id="memNickname" name="memNickname" class="form-control"
-					placeholder="닉네임" required /> <small class="text-muted">닉네임은
-					2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.</small>
+					placeholder="닉네임" required maxlength="10"/> <small class="text-muted">닉네임은
+					2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.</small>
 
 
 				<!-- MEM_EXERCISE (Select Buttons) -->
@@ -404,8 +404,8 @@
 	        { id: 'memId', label: '* 아이디', validate: (value) => /^[a-zA-Z0-9_]{5,20}$/.test(value), errorMessage: '아이디는 5~20자의 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.' },
 	        { id: 'memPw', label: '* 비밀번호', validate: (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value), errorMessage: '비밀번호는 최소 8자 이상, 하나의 문자, 숫자, 특수문자를 포함해야 합니다.' },
 	        { id: 'memPwCk', label: '* 비밀번호 확인', validate: (value) => value === document.getElementById('memPw').value.trim(), errorMessage: '비밀번호와 비밀번호 확인이 일치하지 않습니다.' },
-	        { id: 'memName', label: '* 이름', validate: (value) => /^[가-힣a-zA-Z]{2,20}$/.test(value), errorMessage: '이름은 2~20자의 한글 또는 영문이어야 합니다.' },
-	        { id: 'memNickname', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,20}$/.test(value), errorMessage: '닉네임은 2~20자의 한글, 영문, 숫자만 사용할 수 있습니다.' },
+	        { id: 'memName', label: '* 이름', validate: (value) => /^[가-힣a-zA-Z]{2,5}$/.test(value), errorMessage: '이름은 2~20자의 한글 또는 영문이어야 합니다.' },
+	        { id: 'memNickname', label: '* 닉네임', validate: (value) => /^[a-zA-Z0-9가-힣]{2,10}$/.test(value), errorMessage: '닉네임은 2~10자의 한글, 영문, 숫자만 사용할 수 있습니다.' },
 	        { id: 'memTell', label: '* 전화번호', validate: (value) => /^010\d{8}$/.test(value), errorMessage: '전화번호는 010으로 시작하며, 숫자 11자리여야 합니다.' },
 	        { id: 'memEmail', label: '* 이메일', validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), errorMessage: '유효한 이메일 주소를 입력해주세요.' },
 	        { id: 'memZipcode', label: '* 우편번호', validate: (value) => /^\d{5}$/.test(value), errorMessage: '우편번호는 5자리 숫자여야 합니다.' },
