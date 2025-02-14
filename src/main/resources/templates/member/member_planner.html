@@ -115,7 +115,8 @@
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
 						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 0, 'COMMA')}" id="memMoney"></span>원 
+							<span th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 0, 'COMMA')}"
+								id="memMoney"></span>원
 							<input type="number" id="memMoney_ip" name="memMoney" class="blind">
 						</p>
 					</div>
@@ -133,6 +134,14 @@
 		</div>
 		<div class="main">
 			<h2 class="blind">운동 캘린더</h2>
+			<div style="padding: 10px;
+			background-color: #f6f6f6;
+			margin-bottom: 30px;
+			font-size: 13px;
+			border-radius: 10px;">
+				<p>* 운동캘린더에서 [시설예약] 일정을 삭제할 경우, 시설예약이 자동으로 취소됩니다.</p>
+				<p>* 운동캘린더에서 [클럽] 일정을 삭제할 경우, 해당 일정 참가가 자동으로 취소됩니다.</p>
+			</div>
 			<div id="calendar"></div>
 		</div>
 
