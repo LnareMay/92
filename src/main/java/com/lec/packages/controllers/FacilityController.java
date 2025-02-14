@@ -161,7 +161,7 @@ public class FacilityController {
 		    log.info(reservationDTO);
 
 	        facilityService.bookByMember(transferHistoryDTO, reservationDTO, memMoney);
-	        redirectAttributes.addFlashAttribute("result", "시설예약 성공");
+	        redirectAttributes.addFlashAttribute("result", "시설예약에 성공했습니다.");
 		    
 
 	        String redirectUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -186,7 +186,7 @@ public class FacilityController {
 		    
 		       
 		        facilityService.cancelBooking(memId,transferHistoryDTO, reservationDTO);
-		        redirectAttributes.addFlashAttribute("result", "예약취소 성공");
+		        redirectAttributes.addFlashAttribute("cancelResult", "예약취소에 성공했습니다.");
 		    
 		        String redirectUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
 	                    .path("/member/reservation")
@@ -194,9 +194,6 @@ public class FacilityController {
 
 		        return "redirect:" + redirectUrl; 
 			
-		    
-		    
-		    
 		    }
 		    redirectAttributes.addFlashAttribute("error", "로그인 정보가 필요합니다.");
 		    return "redirect:/login";

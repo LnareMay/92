@@ -2,35 +2,30 @@
 <html lang="ko-KR" xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
+
 <head>
-<!-- meta_tag include -->
-<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
-<title>나의시설예약</title>
+	<!-- meta_tag include -->
 
-<!-- 공통 css -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
-	integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-	rel="stylesheet">
-<link rel="stylesheet" th:href="@{/css/common.css}">
+	<head th:insert="~{layouts/meta_tag :: headMeta}"></head>
+	<title>나의시설예약</title>
 
-<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
-<!-- Linking CSS files -->
-<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
+	<!-- 공통 css -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/litera/bootstrap.min.css"
+		integrity="sha512-TUtnNUXMMWp2IALAR9t2z1vuorOUQL4dPWG3J9ANInEj6xu/rz5fzni/faoEGzuqeY1Z1yGD6COYAW72oiDVYA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/css/common.css}">
 
-<!-- 공통 js -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-	crossorigin="anonymous"></script>
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript"
-	src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+	<!-- 여기에 본인 css 작성해주세요 (detail_hj.css) -->
+	<!-- Linking CSS files -->
+	<link rel="stylesheet" th:href="@{/css/detail_hj.css}" />
 
+	<!-- 공통 js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 </head>
 
 <body>
@@ -44,8 +39,8 @@
 
 			<div class="btn_wrap">
 				<div class="header">
-					<a href="/member/mypage">나의정보</a> <a href="/member/reservation"
-						class="active">나의시설예약</a> <a href="/member/member_planner">운동캘린더</a>
+					<a href="/member/mypage">나의정보</a> <a href="/member/reservation" class="active">나의시설예약</a> <a
+						href="/member/member_planner">운동캘린더</a>
 					<a href="/member/club_myclub">나의클럽관리</a>
 					<a href="/member/club_joinclub">가입한클럽</a>
 				</div>
@@ -53,15 +48,14 @@
 					<div
 						style="cursor: pointer; display: inline-flex; gap: 5px; margin: 10px 0; justify-content: space-between; width: 100%;">
 						<p style="font-size: 16px; font-weight: bold; margin: 0;">FITPAY</p>
-						<p
-							style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
-							<span th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 0, 'COMMA')}" id="memMoney"></span>원  <input type="number" id="memMoney_ip"
-								name="memMoney" class="blind">
+						<p style="font-size: 16px; font-weight: bold; color: #333; margin: 0;">
+							<span th:text="${#numbers.formatInteger(#authentication.principal.memMoney, 0, 'COMMA')}"
+								id="memMoney"></span>원 <input type="number" id="memMoney_ip" name="memMoney"
+								class="blind">
 						</p>
 					</div>
 					<div style="display: inline-flex; gap: 5px; width: 100%">
-						<button class="btn btn-primary" id="fitpayCharge"
-							style="width: 50%">충전</button>
+						<button class="btn btn-primary" id="fitpayCharge" style="width: 50%">충전</button>
 						<button class="btn btn-success" id="payList" style="width: 50%">내역</button>
 					</div>
 				</div>
@@ -87,20 +81,16 @@
 							th:onclick="|location.href='@{/facility/detail/{facilityCode}(facilityCode=${reservation.facilityCode})}'|"></span>
 					</p>
 					<p>
-						<strong>예약 코드:</strong> <span
-							th:text="${reservation.reservationCode}"></span>
-					</p>					
+						<strong>예약 코드:</strong> <span th:text="${reservation.reservationCode}"></span>
+					</p>
 					<p th:if="${reservation.clubCode != null}">
-						<strong>클럽명:</strong> <span
-							th:text="${clubNameMap[reservation.clubCode]}"></span>
-					</p>									
-					<p>
-						<strong>이용 날짜:</strong> <span
-							th:text="${reservation.reservationDate}"></span>
+						<strong>클럽명:</strong> <span th:text="${clubNameMap[reservation.clubCode]}"></span>
 					</p>
 					<p>
-						<strong>예약 시간:</strong> <span
-							th:text="${reservation.reservationStartTime}"></span> - <span
+						<strong>이용 날짜:</strong> <span th:text="${reservation.reservationDate}"></span>
+					</p>
+					<p>
+						<strong>예약 시간:</strong> <span th:text="${reservation.reservationStartTime}"></span> - <span
 							th:text="${reservation.reservationEndTime}"></span>
 					</p>
 					<p>
@@ -111,18 +101,18 @@
 						<strong>인원:</strong> <span th:text="${reservation.count}"></span>명
 					</p>
 					<p>
-						<strong>금액:</strong> <span th:text="${#numbers.formatInteger(reservation.price, 0, 'COMMA')}" id="memMoney"></span>원
+						<strong>금액:</strong> <span th:text="${#numbers.formatInteger(reservation.price, 0, 'COMMA')}"
+							id="memMoney"></span>원
 					</p>
 					<p>
-						<strong>예약 상태:</strong> <span
-							th:text="${reservation.reservationProgress}"
+						<strong>예약 상태:</strong> <span th:text="${reservation.reservationProgress}"
 							th:classappend="'status-' +  ${reservation.reservationProgress}"></span>
 					</p>
 					<p>
 						(<span th:text="${reservation.memo}"></span>)
 					</p>
 					<form th:action="@{/facility/cancel-booking}" method="post">
-						<input type="hidden" name="reservationCode" th:value="${reservation.reservationCode}"> 
+						<input type="hidden" name="reservationCode" th:value="${reservation.reservationCode}">
 						<input type="hidden" name="memId" th:value="${reservation.memId}">
 						<input type="hidden" name="price" th:value="${reservation.price}">
 
@@ -139,9 +129,24 @@
 	</main>
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
-	<script>
+	<script th:inline="javascript">
+		// 예약성공 메시지
+		window.onload = function () {
+			/* 시설 예약 성공 메시지 */
+			let result = /*[[${result}]]*/ null;
+			if (result) {
+				alert(result);
+			}
+
+			/* 예약 취소 성공 메시지 */
+			let cancelResult = /*[[${cancelResult}]]*/ null;
+			if (cancelResult) {
+				alert(cancelResult);
+			}
+		};
+
 		// 모든 .formatted-date 요소를 처리
-		document.querySelectorAll('.formatted-date').forEach(function(element) {
+		document.querySelectorAll('.formatted-date').forEach(function (element) {
 			const createDate = element.getAttribute('data-createdate'); // 예약 요청일 가져오기
 			if (createDate) {
 				const formattedDate = createDate.replace("T", " "); // 'T'를 공백으로 변환
@@ -151,6 +156,7 @@
 			}
 		});
 	</script>
+
 </body>
 
 </html>
