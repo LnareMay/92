@@ -130,20 +130,6 @@
 
 	<div th:insert="~{layouts/footer :: footer}"></div>
 	<script th:inline="javascript">
-		// 예약성공 메시지
-		window.onload = function () {
-			/* 시설 예약 성공 메시지 */
-			let result = /*[[${result}]]*/ null;
-			if (result) {
-				alert(result);
-			}
-
-			/* 예약 취소 성공 메시지 */
-			let cancelResult = /*[[${cancelResult}]]*/ null;
-			if (cancelResult) {
-				alert(cancelResult);
-			}
-		};
 
 		// 모든 .formatted-date 요소를 처리
 		document.querySelectorAll('.formatted-date').forEach(function (element) {
