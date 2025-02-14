@@ -101,6 +101,20 @@
 
 					// ✅ OpenWeather API 데이터를 화면에 표시하는 함수
 					function displayWeather(data) {
+						// 5일 날씨 보여줄때 낮/밤 시간대에 따라 아이콘 변경
+						function getDayOrNightIcon(iconCode, forecastDateUTC) {
+						    // OpenWeather API의 forecastDate는 UTC 기준 → 로컬 시간(KST 등)으로 변환 필요
+							const forecastDateObj = new Date(forecastDateUTC); // 문자열 → Date 객체 변환
+							const localHour = forecastDateObj.getHours(); // 변환된 객체에서 시간 추출
+
+						    console.log(`🌞 예측 시간(로컬 기준): ${localHour}시`); // 디버깅용
+
+						    // 오후 6시(18) ~ 다음날 오전 6시(6) 사이는 'n'(night), 나머지는 'd'(day)
+						    const isNight = localHour >= 18 || localHour < 6;
+
+						    return isNight ? iconCode.slice(0, -1) + 'n' : iconCode.slice(0, -1) + 'd';
+						}
+
 						// 날짜별로 날씨 정보를 집계
 						const weatherMap = {};
 
@@ -161,10 +175,25 @@
 
 							// ✅ 로컬 이미지 경로 (img 폴더 내)
 							const iconUrl = `/img/${weatherInfo.iconCode}.png`;
+							function getFormattedISODate(dateObj) {
+							    const year = dateObj.getFullYear();
+							    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // 1월=0이므로 +1
+							    const day = String(dateObj.getDate()).padStart(2, '0');
+							    const hours = String(dateObj.getHours()).padStart(2, '0');
+							    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+							    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+							    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+							}
+
+							// ✅ 현재 시간 기준으로 변환 (로컬 시간)
+							const now = new Date();
+							console.log(getFormattedISODate(now)); 
 
 							return `
             <div class="weather-item" style="display: flex; align-items: center; min-width:300px; gap: 10px; margin-top:10px;">
-                <img src="${iconUrl}" alt="날씨 아이콘" class="weather-icon" width="40px"/>
+				<img src="/img/${getDayOrNightIcon(weatherInfo.iconCode,getFormattedISODate(now))}.png" 
+				            alt="날씨 아이콘" class="weather-icon" width="40px"/>
                 <div class="temp" style="display: flex; align-items: center; gap: 10px; font-size:18px;">
                     <span>${tempMin}°C</span> <span style="font-size:14px;color:#999;">${tempMax}°C</span>
                 </div>
@@ -174,6 +203,8 @@
 						}).join('');
 
 						weatherContainer.innerHTML = weatherItems;
+
+
 
 						const today = new Date();
 						const options = {year: 'numeric', month: 'long', day: 'numeric'};
@@ -225,7 +256,7 @@
 						<a class="dropdown-item" href="/member/mypage">나의정보</a> <a class="dropdown-item"
 							href="/member/reservation">나의시설예약</a><a class="dropdown-item"
 							href="/member/member_planner">운동캘린더</a> <a class="dropdown-item"
-							href="/member/club_myclub">나의클럽관리</a> <a class="dropdown-item" 
+							href="/member/club_myclub">나의클럽관리</a> <a class="dropdown-item"
 							href="/member/club_joinclub">가입한클럽</a>
 						<div class="dropdown-divider"></div>
 						<!-- 로그인 상태에 따라 변경 -->
