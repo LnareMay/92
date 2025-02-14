@@ -63,7 +63,7 @@ public class ClubController {
 	}
 
 	@GetMapping({"/club_detail", "/club_modify"})
-	public void clubDetail(@RequestParam("clubCode") String clubCode
+	public String clubDetail(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
 			, HttpServletRequest request, Model model) {
 		String requestURI = request.getRequestURI();
@@ -93,6 +93,8 @@ public class ClubController {
 		model.addAttribute("memberCount", memberCount);
 
         model.addAttribute("clubdto", clubDTO);
+        
+        return "club/club_detail";
 	}
 	
 	@PreAuthorize("hasRole('USER')")

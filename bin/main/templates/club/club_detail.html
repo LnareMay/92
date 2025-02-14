@@ -38,7 +38,7 @@
 </style>
 
 <body>
-	<div th:insert="~{/layouts/header :: header}"></div>
+	<div th:insert="~{layouts/header :: header}"></div>
 
 	<main class="container my-4">
 		<div id="flashMessage" th:if="${message != null}" th:data-message="${message}" style="display: none;"></div>

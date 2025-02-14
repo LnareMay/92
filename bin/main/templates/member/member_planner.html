@@ -193,8 +193,23 @@
 	<input type="hidden" id="loggedInMemId" th:value="${#authentication.principal.memId}">
 
 
-	<script>
+	<script th:inline="javascript">
+		
 		document.addEventListener('DOMContentLoaded', function () {
+
+			/* 시설 예약 성공 메시지 */
+			let result = /*[[${result}]]*/ null;
+			if (result) {
+				alert(result);
+			}
+
+			/* 예약 취소 성공 메시지 */
+			let cancelResult = /*[[${cancelResult}]]*/ null;
+			if (cancelResult) {
+				alert(cancelResult);
+			}
+
+
 			let calendarEl = document.getElementById('calendar');
 			let memId = document.getElementById("loggedInMemId").value; // 로그인한 사용자 ID 가져오기
 
