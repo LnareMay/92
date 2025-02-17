@@ -62,7 +62,8 @@ public class ClubController {
 		return "club/club_create"; 
 	}
 
-	@GetMapping({"/club_detail", "/club_modify"})
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/club_detail")
 	public String clubDetail(@RequestParam("clubCode") String clubCode
 			, PageRequestDTO pageRequestDTO
 			, HttpServletRequest request, Model model) {
@@ -95,6 +96,42 @@ public class ClubController {
         model.addAttribute("clubdto", clubDTO);
         
         return "club/club_detail";
+	}
+	
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/club_modify")
+	public String clubModify(@RequestParam("clubCode") String clubCode
+			, PageRequestDTO pageRequestDTO
+			, HttpServletRequest request, Model model) {
+		String requestURI = request.getRequestURI();
+		model.addAttribute("currentURI", requestURI);
+		
+		ClubDTO clubDTO = clubService.detail(clubCode);		
+		if(clubDTO.getClubTheme() != null && !clubDTO.getClubTheme().isEmpty()) {
+			clubDTO.setClubTheme(clubDTO.getClubTheme());
+		}
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		MemberSecurityDTO principal = (MemberSecurityDTO) authentication.getPrincipal();
+		model.addAttribute("principal", principal);
+		
+		String memId = principal.getMemId();
+		boolean isMember = clubService.isJoinMember(memId, clubCode);
+		model.addAttribute("isMember", isMember);
+		
+		// 클럽상세보기에서 회원3명만 보여지기 제한
+		List<Member> clubmembers = clubService.findMemberDetails(clubCode)
+				.stream()
+				.limit(3)
+				.collect(Collectors.toList());
+		model.addAttribute("clubmembers", clubmembers);
+		
+		Map<String, Integer> memberCount = clubService.membercount();
+		model.addAttribute("memberCount", memberCount);
+		
+		model.addAttribute("clubdto", clubDTO);
+		
+		return "club/club_modify";
 	}
 	
 	@PreAuthorize("hasRole('USER')")
@@ -283,16 +320,18 @@ public class ClubController {
 	}
 	
 	// 클럽 회원 신고
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/club_report")
 	public String clubReport(@RequestParam(value = "clubCode") String clubCode,
 			@RequestParam(value = "memId") String memId, RedirectAttributes redirectAttributes,
-			HttpServletResponse response, HttpServletRequest request, Model model, @AuthenticationPrincipal User user,
-			@CookieValue(value = "reported", required = false) String reportCookie) {
+			HttpServletResponse response, HttpServletRequest request, Model model
+			, @AuthenticationPrincipal MemberSecurityDTO principal
+			, @CookieValue(value = "reported", required = false) String reportCookie) {
 		String requestURI = request.getRequestURI();
 		model.addAttribute("currentURI", requestURI);
 
 		// 쿠키 확인해서 신고 제한 - 아이디당 하루에 한번
-		String cookieValue = user.getUsername() + "_" + memId;
+		String cookieValue = principal.getMemId() + "_" + memId;
 		if (reportCookie != null && reportCookie.contains(cookieValue)) {
 			redirectAttributes.addFlashAttribute("message", "하루에 한 번만 신고 할 수 있습니다.");
 			return "redirect:/club/club_member?clubCode=" + clubCode;

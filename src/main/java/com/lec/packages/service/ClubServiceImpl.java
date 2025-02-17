@@ -234,6 +234,7 @@ public class ClubServiceImpl implements ClubService {
 
 	// 클럽수정
 	@Override
+	@Transactional
 	public void modify(ClubDTO clubDTO) {
 	    Optional<Club> result = clubRepository.findById(clubDTO.getClubCode());
 	    Club club = result.orElseThrow();
@@ -318,6 +319,7 @@ public class ClubServiceImpl implements ClubService {
 		
 	// 클럽회원 신고
 	@Override
+	@Transactional
 	public int clubReport(String memId, String clubCode) {	  
 		
 		Club_Member_List clubMember = clubMemberRepository.findJoinMember(memId, clubCode)
