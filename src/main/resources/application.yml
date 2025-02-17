@@ -117,3 +117,6 @@ com:
 weather:
   api:
     key: a74d20a06c48d4cfefc8e013886b562b
+
+  session:
+    store-type: redis
