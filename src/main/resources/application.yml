@@ -21,7 +21,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: ./src/main/resources/static/img/upload/
+      location: ./usr/local/bin/img/upload
       max-request-size: 30MB
       max-file-size: 10MB  
     encoding:
@@ -36,7 +36,7 @@ spring:
             client-secret: 4Oe7ujoygIDNnBO7FlITIzl3uhgLM9Xn
             scope: profile_nickname, profile_image, account_email
             client-authentication-method: client_secret_post
-            redirect-uri: http://localhost:8088/login/oauth2/code/kakao
+            redirect-uri: https://fitlink92.shop/login/oauth2/code/kakao
             client-name: Kakao
           naver:
             client-id: IPESeR9eKPjxm1I4y83o
@@ -44,10 +44,11 @@ spring:
             scope: name, email, nickname, profile_image, gender, birthday, mobile, birthyear
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8088/login/oauth2/code/naver
+            redirect-uri: https://fitlink92.shop/login/oauth2/code/naver
           google:
             client-id: 787991624529-e34gkqol0q268q58m8rqgsneivio4rvm.apps.googleusercontent.com
             client-secret: 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
+            redirect-uri: https://{baseHost}{basePort}/login/oauth2/code/google
             scope: email, profile
 
 
@@ -65,7 +66,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: hester0703@gmail.com  
+    username: fitlink92@gmail.com  
     password: xkpy snhs zbup muhe
     properties:
       mail:
@@ -100,13 +101,13 @@ server:
 
 #file upload/download
 path:
-  upload: ./src/main/resources/static/img/upload/
-  download: ./src/main/resources/static/img/download/
+  upload: ./usr/local/bin/img/upload
+  download: ./usr/local/bin/img/upload
 
 com:
   lec:
     upload:
-      path: ./src/main/resources/static/img/upload/
+      path: ./usr/local/bin/img/upload
 
 00Data:
   admin:
