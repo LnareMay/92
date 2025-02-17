@@ -104,8 +104,8 @@
 
 					<!-- 일반 사용자(memSocial == 0)이고 프로필 이미지가 있는 경우 -->
 					<th:block
-						th:if="${member.memSocial == false && member.memPicture != null && member.memPicture !=''}" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'">
-						<img th:src="|/view/${member.memPicture}|"
+						th:if="${member.memSocial == false && member.memPicture != null && member.memPicture !=''}" >
+						<img th:src="|/view/${member.memPicture}|" onerror="this.src='https://ssl.pstatic.net/static/pwe/address/img_profile.png'"
 							alt="프로필 이미지">
 					</th:block>
 
