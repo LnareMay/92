@@ -22,6 +22,7 @@ spring:
     multipart:
       enabled: true
       location: ./usr/local/bin/img/upload
+      # location: ./src/main/resources/static/img/upload/
       max-request-size: 30MB
       max-file-size: 10MB  
     encoding:
@@ -67,7 +68,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: fitlink92@gmail.com  
-    password: xkpy snhs zbup muhe
+    password: epre ptdd devy vwgl
     properties:
       mail:
         smtp:
@@ -102,12 +103,15 @@ server:
 #file upload/download
 path:
   upload: ./usr/local/bin/img/upload
+  # upload: ./src/main/resources/static/img/upload/
   download: ./usr/local/bin/img/upload
+  # download: ./src/main/resources/static/img/upload/
 
 com:
   lec:
     upload:
       path: ./usr/local/bin/img/upload
+      # path: ./src/main/resources/static/img/upload/
 
 00Data:
   admin:
